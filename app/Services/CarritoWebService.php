@@ -22,8 +22,8 @@ class CarritoWebService
     {
         $user = Auth::user();
 
-        $cliente = Cliente::where('usuario',$user->id)->first();
-        $carrito = Carrito::where('cliente',$cliente->id)->first();
+        $cliente = Cliente::where('usuario', $user->id)->first();
+        $carrito = Carrito::where('cliente', $cliente->id)->first();
         $detalle = CarritoDetalle::where('carrito', $carrito->id)
         ->selectRaw('SUM(precio) as total_precio, SUM(cantidad) as total_cantidad')
         ->get();

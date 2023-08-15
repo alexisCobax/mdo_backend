@@ -49,7 +49,7 @@ class InvoiceWebService
     {
         $invoice = Invoice::find($request->id);
 
-        $invoiceTranformada = new FindByIdTransformer;
+        $invoiceTranformada = new FindByIdTransformer();
         $invoiceTranformada = $invoiceTranformada->transform($invoice);
 
         return response()->json(['data' => $invoiceTranformada], Response::HTTP_OK);
