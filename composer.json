@@ -9,7 +9,7 @@
         "bacoder/servicesgenerator": "dev-main",
         "barryvdh/laravel-cors": "^3.0",
         "barryvdh/laravel-dompdf": "^2.0",
-        "fruitcake/laravel-cors": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.15",
