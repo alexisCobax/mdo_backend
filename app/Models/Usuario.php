@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * Created by Reliese Model.
+ */
+
+namespace App\Models;
+
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+/**
+ * Class Usuario
+ *
+ * @property int $id
+ * @property string $nombre
+ * @property string $apellido
+ * @property string $email
+ * @property string $clave
+ * @property int $permisos
+ * @property bool $suspendido
+ * @property string|null $token
+ * @property Carbon|null $token_exp
+ *
+ * @package App\Models
+ */
+class Usuario extends Authenticatable
+{
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    protected $table = 'usuario';
+    public $timestamps = false;
+
+    protected $casts = [
+        'permisos' => 'int',
+        'suspendido' => 'bool',
+        'token_exp' => 'datetime'
+    ];
+
+    protected $hidden = [
+        'token'
+    ];
+
+    protected $fillable = [
+        'nombre',
+        'apellido',
+        'email',
+        'clave',
+        'permisos',
+        'suspendido',
+        'token',
+        'token_exp'
+    ];
+}

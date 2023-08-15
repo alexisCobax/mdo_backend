@@ -1,0 +1,151 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Producto;
+use App\Models\Cotizacion;
+use App\Helpers\CalcHelper;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
+use App\Models\Cotizaciondetalle;
+use App\Http\Requests\CotizacionRequest;
+use App\Filters\Cotizaciones\CotizacionesFilters;
+use App\Transformers\Cotizacion\FindByIdTransformer;
+
+class CotizacionService
+{
+    public function findAll(Request $request)
+    {
+        try {
+            $data = CotizacionesFilters::getPaginateCotizaciones($request, Cotizacion::class);
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener las cotizaciones', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function findById(Request $request)
+    {
+        try {
+            $data = collect([Cotizacion::find($request->id)]);
+
+            if ($data[0]) {
+                $transformer = new FindByIdTransformer();
+
+                $cotizacionTransformada = $data->map(function ($cotizacion) use ($transformer) {
+                    return $transformer->transform($cotizacion);
+                });
+
+                $response = [
+                    'status' => Response::HTTP_OK,
+                    'message' => $cotizacionTransformada
+                ];
+
+                return response()->json(['data' => $response], Response::HTTP_OK);
+            } else {
+                return response()->json(['data' => null], Response::HTTP_NOT_FOUND);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener la cotización'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function create(Request $request)
+    {
+        $cotizacion = new Cotizacion();
+
+        if (!$cotizacion) {
+            return response()->json(['error' => 'Failed to create Cotizacion'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $cotizacion->fecha = NOW();
+        $cotizacion->cliente = $request->cliente;
+        $cotizacion->estado = 1;
+        $cotizacion->save();
+        $cotizacionId = $cotizacion->id;
+
+        $total = 0;
+
+        foreach ($request->productos as $p) {
+
+            $producto = Producto::find($p['idProducto']);
+            $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
+            $total = $precio * $p['cantidad'];
+            $cotizacionDetalle = new Cotizaciondetalle();
+            $cotizacionDetalle->cotizacion = $cotizacionId;
+            $cotizacionDetalle->producto = $p['idProducto'];
+            $cotizacionDetalle->precio = $total;
+            $cotizacionDetalle->cantidad = $p['cantidad'];
+            $cotizacionDetalle->save();
+
+            $total += $p['precio'];
+        }
+
+        $cotizacion = Cotizacion::find($cotizacion->id);
+        $cotizacion->total = $total;
+        $cotizacion->save();
+
+        return response()->json($cotizacion, Response::HTTP_OK);
+    }
+
+    public function update(Request $request)
+    {
+        $cotizacion = Cotizacion::find($request->id);
+
+        if (!$cotizacion) {
+            return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $cotizacion->cliente = $request->cliente;
+
+        $cotizacion->save();
+
+        $total = 0;
+        $existingProductIds = [];
+
+        foreach ($request->productos as $p) {
+            $producto = Producto::find($p['idProducto']);
+            $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
+            $total += $precio * $p['cantidad'];
+
+            $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->id)
+                ->where('producto', $p['idProducto'])
+                ->first();
+
+            if (!$cotizacionDetalle) {
+                $cotizacionDetalle = new Cotizaciondetalle();
+                $cotizacionDetalle->cotizacion = $request->id;
+                $cotizacionDetalle->producto = $p['idProducto'];
+            }
+
+            $cotizacionDetalle->precio = $precio * $p['cantidad'];
+            $cotizacionDetalle->cantidad = $p['cantidad'];
+            $cotizacionDetalle->save();
+
+            $existingProductIds[] = $p['idProducto'];
+        }
+
+        Cotizaciondetalle::where('cotizacion', $request->id)
+            ->whereNotIn('producto', $existingProductIds)
+            ->delete();
+
+        $cotizacion->total = $total;
+        $cotizacion->save();
+
+        return response()->json($cotizacion, Response::HTTP_OK);
+    }
+
+    public function delete(Request $request)
+    {
+        $cotizacion = Cotizacion::find($request->id);
+
+        if (!$cotizacion) {
+            return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $cotizacion->delete();
+
+        return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+}

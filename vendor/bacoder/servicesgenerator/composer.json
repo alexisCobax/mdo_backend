@@ -1,0 +1,19 @@
+{
+    "name": "bacoder/servicesgenerator",
+    "description": "Services Generator from model package",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bacoder\\Servicesgenerator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alexis Saucedo",
+            "email": "alexissaucedo@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

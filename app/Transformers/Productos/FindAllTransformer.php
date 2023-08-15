@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Transformers\Productos;
+
+use App\Models\Producto;
+use League\Fractal\TransformerAbstract;
+use App\Enums\EstadosProductosEnums;
+
+class FindAllTransformer extends TransformerAbstract
+{
+    public function transform(Producto $producto)
+    {
+        $arrayEnum = EstadosProductosEnums::toArray();
+
+        return [
+            'id' => $producto->id,
+            'imagenPrincipal' => $producto->imagenPrincipal.'.'.env('EXTENSION_IMAGEN_PRODUCTO'),
+            'nombre' => $producto->nombre,
+            'codigo' => $producto->codigo,
+            'categoria' => $producto->categoria,
+            'categoriaNombre' => optional($producto->categorias)->nombre,
+            'precio' => $producto->precioPromocional == 0 ? $producto->precio : $producto->precioPromocional,
+            'precioLista' => $producto->precio,
+            'stock' => $producto->stock,
+            'destacado' => $producto->destacado,
+            'marca' => optional($producto->marcas)->nombre,
+            'nombreMarca' => optional($producto->marcas)->nombre,
+            'precioPromocional' => $producto->precioPromocional,
+            'estado' => $producto->suspendido == $arrayEnum[EstadosProductosEnums::SUSPENDIDO] ? EstadosProductosEnums::SUSPENDIDO : EstadosProductosEnums::PUBLICADO
+        ];
+    }
+}

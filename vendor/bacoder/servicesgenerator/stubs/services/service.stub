@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\{{ModelName}};
+use Illuminate\Http\Request;
+
+class {{ClassName}}Service
+{
+    public function findAll()
+    {
+        $data = {{ModelName}}::all();
+
+        return response()->json(['data' => $data], 200);
+    }
+
+    public function findById(Request $request)
+    {
+        $data = {{ModelName}}::find($request->id);
+
+        return response()->json(['data' => $data], 200);
+    }
+    
+    public function create(Request $request)
+    {
+        $data = $request->all();
+        ${{modelName}} = {{ModelName}}::create($data);
+
+        if (!${{modelName}}) {
+            return response()->json(['error' => 'Failed to create {{ClassName}}'], 500);
+        }
+
+        return response()->json(${{modelName}}, 200);
+    }
+
+    public function update(Request $request)
+    {
+        ${{modelName}} = {{ModelName}}::find($request->id);
+
+        if (!${{modelName}}) {
+            return response()->json(['error' => '{{ClassName}} not found'], 404);
+        }
+
+        ${{modelName}}->update($request->all());
+        ${{modelName}}->refresh();
+
+        return response()->json(${{modelName}}, 200);
+    }
+
+    public function delete(Request $request)
+    {
+        ${{modelName}} = {{ModelName}}::find($request->id);
+
+        if (!${{modelName}}) {
+            return response()->json(['error' => '{{ClassName}} not found'], 404);
+        }
+
+        ${{modelName}}->delete();
+
+        return response()->json(['id' => $request->id], 200);
+    }
+
+}

@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * Created by Reliese Model.
+ */
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class Configuracion
+ *
+ * @property int $id
+ * @property string $variable
+ * @property string $valor
+ *
+ * @package App\Models
+ */
+class Configuracion extends Model
+{
+    protected $table = 'configuracion';
+    public $incrementing = true;
+    public $timestamps = false;
+
+    protected $casts = [
+        'id' => 'int'
+    ];
+
+    protected $fillable = [
+        'id',
+        'variable',
+        'valor'
+    ];
+}

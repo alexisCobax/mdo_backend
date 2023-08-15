@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * Created by Reliese Model.
+ */
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class Encargadodeventa
+ *
+ * @property int $id
+ * @property string $nombre
+ * @property string $iniciales
+ * @property bool $suspendido
+ *
+ * @package App\Models
+ */
+class Encargadodeventa extends Model
+{
+    protected $table = 'encargadodeventa';
+    public $incrementing = true;
+    public $timestamps = false;
+
+    protected $casts = [
+        'id' => 'int',
+        'suspendido' => 'bool'
+    ];
+
+    protected $fillable = [
+        'id',
+        'nombre',
+        'iniciales',
+        'suspendido'
+    ];
+}

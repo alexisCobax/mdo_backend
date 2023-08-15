@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Estuche;
+use Illuminate\Http\Request;
+use App\Helpers\PaginateHelper;
+use Illuminate\Http\Response;
+
+class EstucheService
+{
+    public function findAll(Request $request)
+    {
+        try {
+            $data = PaginateHelper::getPaginatedData($request, Estuche::class);
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function findById(Request $request)
+    {
+        $data = Estuche::find($request->id);
+
+        return response()->json(['data' => $data], Response::HTTP_OK);
+    }
+
+    public function create(Request $request)
+    {
+        $data = $request->all();
+        $estuche = Estuche::create($data);
+
+        if (!$estuche) {
+            return response()->json(['error' => 'Failed to create Estuche'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($estuche, Response::HTTP_OK);
+    }
+
+    public function update(Request $request)
+    {
+        $estuche = Estuche::find($request->id);
+
+        if (!$estuche) {
+            return response()->json(['error' => 'Estuche not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $estuche->update($request->all());
+        $estuche->refresh();
+
+        return response()->json($estuche, Response::HTTP_OK);
+    }
+
+    public function delete(Request $request)
+    {
+        $estuche = Estuche::find($request->id);
+
+        if (!$estuche) {
+            return response()->json(['error' => 'Estuche not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $estuche->delete();
+
+        return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+
+}
