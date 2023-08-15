@@ -25,12 +25,12 @@ class CotizacionPedidoService
     {
         $cotizacion = Cotizacion::find($request->cotizacion)->first();
 
-        $cotizacionTransformer = new CreateCotizacionTransformer;
-        $cotizacionData = $cotizacionTransformer->transform($cotizacion); 
+        $cotizacionTransformer = new CreateCotizacionTransformer();
+        $cotizacionData = $cotizacionTransformer->transform($cotizacion);
 
         // $pedido = Pedido::create($cotizacionData);
 
-        $cotizacionDetalle = Cotizaciondetalle::where('cotizacion',$request->cotizacion)->first();
+        $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->first();
 
         $foo = [
             "cotizacion"=>$cotizacionDetalle->cotizacion,

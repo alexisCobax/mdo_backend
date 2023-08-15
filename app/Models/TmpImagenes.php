@@ -21,7 +21,7 @@ class TmpImagenes extends Model
     protected $casts = [];
 
     protected $fillable = [
-        'imagen', 
+        'imagen',
         'nombre'
     ];
 }

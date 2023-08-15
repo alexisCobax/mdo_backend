@@ -38,7 +38,7 @@ class PedidoService
 
     public function create(Request $request)
     {
-        $transformer = new CreateTransformer;
+        $transformer = new CreateTransformer();
         $pedidoTransformer = $transformer->transform($request);
 
         $pedido = Pedido::create($pedidoTransformer);
@@ -79,7 +79,7 @@ class PedidoService
 
         // $upPedido = Pedido::find($pedido->id);
         // $upPedido->total = $total;
-        // $upPedido->save(); 
+        // $upPedido->save();
 
 
         if (!$pedido) {
