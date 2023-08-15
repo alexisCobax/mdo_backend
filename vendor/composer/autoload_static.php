@@ -193,7 +193,6 @@ class ComposerStaticInit52248498446f052dd19e0390e3ab5502
         ),
         'A' => 
         array (
-            'Asm89\\Stack\\' => 12,
             'App\\' => 4,
         ),
     );
@@ -475,9 +474,9 @@ class ComposerStaticInit52248498446f052dd19e0390e3ab5502
         ),
         'Fruitcake\\Cors\\' => 
         array (
-            0 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-cors/src',
             1 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
-            2 => __DIR__ . '/..' . '/barryvdh/laravel-cors/src',
+            2 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
         ),
         'FontLib\\' => 
         array (
@@ -582,10 +581,6 @@ class ComposerStaticInit52248498446f052dd19e0390e3ab5502
         'Bacoder\\Servicesgenerator\\' => 
         array (
             0 => __DIR__ . '/..' . '/bacoder/servicesgenerator/src',
-        ),
-        'Asm89\\Stack\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/asm89/stack-cors/src',
         ),
         'App\\' => 
         array (
@@ -919,8 +914,6 @@ class ComposerStaticInit52248498446f052dd19e0390e3ab5502
         'App\\Transformers\\Productos\\CreateBulkTransformer' => __DIR__ . '/../..' . '/app/Transformers/Productos/CreateBulkTransformer.php',
         'App\\Transformers\\Productos\\FindAllTransformer' => __DIR__ . '/../..' . '/app/Transformers/Productos/FindAllTransformer.php',
         'App\\Transformers\\Productos\\FindByIdTransformer' => __DIR__ . '/../..' . '/app/Transformers/Productos/FindByIdTransformer.php',
-        'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Cors.php',
-        'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/CorsService.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Bacoder\\Servicesgenerator\\GenerateService' => __DIR__ . '/..' . '/bacoder/servicesgenerator/src/GenerateService.php',
         'Barryvdh\\Debugbar\\Console\\ClearCommand' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Console/ClearCommand.php',
@@ -2409,9 +2402,9 @@ class ComposerStaticInit52248498446f052dd19e0390e3ab5502
         'FontLib\\WOFF\\Header' => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib/WOFF/Header.php',
         'FontLib\\WOFF\\TableDirectoryEntry' => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib/WOFF/TableDirectoryEntry.php',
         'Fruitcake\\Cors\\CorsService' => __DIR__ . '/..' . '/fruitcake/php-cors/src/CorsService.php',
-        'Fruitcake\\Cors\\CorsServiceProvider' => __DIR__ . '/..' . '/fruitcake/laravel-cors/src/CorsServiceProvider.php',
+        'Fruitcake\\Cors\\CorsServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/CorsServiceProvider.php',
         'Fruitcake\\Cors\\Exceptions\\InvalidOptionException' => __DIR__ . '/..' . '/fruitcake/php-cors/src/Exceptions/InvalidOptionException.php',
-        'Fruitcake\\Cors\\HandleCors' => __DIR__ . '/..' . '/fruitcake/laravel-cors/src/HandleCors.php',
+        'Fruitcake\\Cors\\HandleCors' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandleCors.php',
         'GrahamCampbell\\ResultType\\Error' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Error.php',
         'GrahamCampbell\\ResultType\\Result' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Result.php',
         'GrahamCampbell\\ResultType\\Success' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Success.php',

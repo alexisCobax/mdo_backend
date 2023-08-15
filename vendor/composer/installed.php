@@ -10,15 +10,6 @@
         'dev' => true,
     ),
     'versions' => array(
-        'asm89/stack-cors' => array(
-            'pretty_version' => 'v2.1.1',
-            'version' => '2.1.1.0',
-            'reference' => '73e5b88775c64ccc0b84fb60836b30dc9d92ac4a',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../asm89/stack-cors',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'bacoder/servicesgenerator' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
@@ -223,9 +214,9 @@
             'dev_requirement' => true,
         ),
         'fruitcake/laravel-cors' => array(
-            'pretty_version' => 'v2.2.0',
-            'version' => '2.2.0.0',
-            'reference' => '783a74f5e3431d7b9805be8afb60fd0a8f743534',
+            'pretty_version' => 'v3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => '7c036ec08972d8d5d9db637e772af6887828faf5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../fruitcake/laravel-cors',
             'aliases' => array(),
