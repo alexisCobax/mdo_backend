@@ -21,7 +21,7 @@ class ExcelHelper
         }
 
         return response()->json(['message' => 'No se ha proporcionado ningún archivo'], 400);
-        
+
     }
-        
+
 }

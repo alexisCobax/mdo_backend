@@ -2,21 +2,21 @@
 
 namespace App\Services;
 
-use App\Helpers\ExcelHelper;
 use App\Models\Color;
 use PHPExcel_IOFactory;
 use App\Models\Producto;
 use App\Models\TmpImagenes;
+use App\Helpers\ExcelHelper;
 use App\Models\Fotoproducto;
 use App\Models\Tipoproducto;
 use App\Models\TmpProductos;
+use Illuminate\Http\Request;
 use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
 use App\Models\Materialproducto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 
 class ExcelToJsonService
 {
@@ -29,18 +29,20 @@ class ExcelToJsonService
     {
 
         $response = ExcelHelper::upload($request);
-        $jsonData = $response->getContent(); 
+        $jsonData = $response->getContent();
         $archivo = json_decode($jsonData, true);
 
         TmpProductos::truncate();
         TmpImagenes::truncate();
         File::deleteDirectory(storage_path('app/public/compras/productos/'), true);
-        $spreadsheet = PHPExcel_IOFactory::load(storage_path('app/public/'.$archivo['path']));
+        $spreadsheet = PHPExcel_IOFactory::load(storage_path('app/public/' . $archivo['path']));
         $sheet = $spreadsheet->getActiveSheet();
         $drawingCollection = $sheet->getDrawingCollection();
         $skipFirstRow = true;
         $errorMessages = [];
+        $i = 0;
         foreach ($sheet->getRowIterator() as $row) {
+            $i++;
             $errorMessages = [];
 
             if ($skipFirstRow) {
@@ -92,10 +94,9 @@ class ExcelToJsonService
                     $errorMessages[] = "El campo Material esta vacio Celda H" . $row->getRowIndex();
                 }
 
-                // if (!is_numeric($cantidad)) {
-
-                //     $errorMessages[] = "El campo Cantidad es invalido Celda I" . $row->getRowIndex();
-                // }
+                if (!is_numeric($cantidad)) {
+                    $errorMessages[] = "El campo Cantidad es invalido Celda I" . $row->getRowIndex();
+                }
 
                 if (empty($estuche)) {
                     $errorMessages[] = "El campo Estuche esta vacio Celda J" . $row->getRowIndex();
@@ -113,7 +114,7 @@ class ExcelToJsonService
                     $errorMessages[] = "El campo UPC esta vacio Celda M" . $row->getRowIndex();
                 }
 
-                $tmpProductos = new TmpProductos;
+                $tmpProductos = new TmpProductos();
                 $tmpProductos->sku = $sku;
                 $tmpProductos->marca = $marca;
                 $tmpProductos->nombre = $nombre;
@@ -131,7 +132,7 @@ class ExcelToJsonService
                 if ($errorMessages) {
                     $tmpProductos->error = json_encode($errorMessages);
                 }
-                if ($cantidad != 0) {
+                if ($cantidad > 0) {
                     $tmpProductos->save();
                 }
             } else {
@@ -146,7 +147,7 @@ class ExcelToJsonService
 
         foreach ($drawingCollection as $drawing) {
 
-            $tmpImages = new TmpImagenes;
+            $tmpImages = new TmpImagenes();
             $imageName = $drawing->getIndexedFilename();
 
             $cellAnchor = $drawing->getCoordinates();
@@ -159,6 +160,8 @@ class ExcelToJsonService
             $tmpImages->save();
         }
 
+        File::delete(storage_path('app/public/' . $archivo['path']), true);
+
         return $this->buscoCoincidencias();
     }
 
@@ -166,20 +169,19 @@ class ExcelToJsonService
     /**
      * buscoCoincidencias
      *
-     * busco productos con SKU iguales 
-     * 
+     * busco productos con SKU iguales
+     *
      * @return void
      */
     public function buscoCoincidencias()
     {
 
-        $skusNoEncontrados = TmpProductos::whereNotIn('sku', function ($query) {
-            $query->select('codigo')->from('producto');
-        })->get();
+        $skusNoEncontrados = TmpProductos::leftJoin('producto', 'tmp_productos.sku', '=', 'producto.codigo')
+            ->whereNull('producto.codigo')
+            ->get(['tmp_productos.*']);
 
         foreach ($skusNoEncontrados as $tmpProducto) {
-
-            $producto = new Producto;
+            $producto = new Producto();
             $producto->nombre = $tmpProducto->nombre;
             $producto->descripcion = "pruebaimportacion";
             $producto->tipo = $this->BuscarTipo($tmpProducto->tipo);
@@ -194,7 +196,7 @@ class ExcelToJsonService
             $producto->comision = 1;
             $producto->stock = 0;
             $producto->stockMinimo = 0;
-            $producto->codigo = $tmpProducto->SKU;
+            $producto->codigo = $tmpProducto->sku;
             $producto->alarmaStockMinimo = 0;
             $producto->color = $tmpProducto->color_fabricante;
             $producto->tamano = $tmpProducto->tamanio;
@@ -243,7 +245,7 @@ class ExcelToJsonService
         }
 
         $productosProcesados = DB::table('tmp_productos as tp')
-            ->select('tp.id', 'tp.nombre', 'tp.cantidad', 'tp.precio_venta as precio')
+            ->select('p.id', 'p.nombre', 'tp.cantidad', 'p.precio')
             ->leftJoin('producto as p', 'tp.sku', '=', 'p.codigo')
             ->get();
 
@@ -259,13 +261,12 @@ class ExcelToJsonService
                 "enDeposito" => 1
             ];
         }
-
         return response()->json(['data' => $productosTransformados], Response::HTTP_OK);
     }
 
     /**
      * procesarImagenes
-     * 
+     *
      * agrego al modelo fotoProductos, traigo el id nuevo y actualizo producto.
      *
      * @param  mixed $imagen
@@ -280,7 +281,7 @@ class ExcelToJsonService
         $nueva = storage_path('app/public/compras/productos/' . $productoId . '.jpg');
         if (rename($anterior, $nueva)) {
 
-            $fotoProducto = new fotoProducto;
+            $fotoProducto = new fotoProducto();
             $fotoProducto->idProducto = $productoId;
             $fotoProducto->orden = 0;
             $fotoProducto->save();
@@ -291,13 +292,9 @@ class ExcelToJsonService
         }
     }
 
-    public function productosProcesados()
-    {
-    }
-
     /**
      * BuscarMarcas
-     * 
+     *
      * Busco marcas coindicentes sino las creo
      *
      * @param  mixed $marca
@@ -328,7 +325,7 @@ class ExcelToJsonService
 
     /**
      * BuscarColores
-     * 
+     *
      * Busco solores coincidentes sino los creo
      *
      * @param  mixed $color
@@ -355,7 +352,7 @@ class ExcelToJsonService
 
     /**
      * BuscarMateriales
-     * 
+     *
      * Busco materiales coincidentes sino los creo
      *
      * @param  mixed $material
@@ -413,10 +410,5 @@ class ExcelToJsonService
                 return $nuevo_tipo->id;
             }
         }
-    }
-
-    public function procesarProductos($productos)
-    {
-        //-- 
     }
 }

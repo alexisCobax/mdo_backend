@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\ExcelToJsonService;
 use Illuminate\Http\Request;
 
-
 class ExcelController extends Controller
 {
-
     private $service;
 
     public function __construct(ExcelToJsonService $ExcelToJsonService)
@@ -16,7 +14,8 @@ class ExcelController extends Controller
         $this->service = $ExcelToJsonService;
     }
 
-    public function procesarExcel(Request $request){
+    public function procesarExcel(Request $request)
+    {
 
         return $this->service->procesar($request);
 

@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\CotizacionPedidoService;
+
 class CotizacionPedidoController extends Controller
 {
-
     private $service;
 
     public function __construct(CotizacionPedidoService $CotizacionPedidoService)

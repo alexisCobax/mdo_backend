@@ -23,7 +23,7 @@ class TmpProductos extends Model
     ];
 
     protected $fillable = [
-        'SKU', 
+        'SKU',
         'marca',
         'nombre',
         'tipo',

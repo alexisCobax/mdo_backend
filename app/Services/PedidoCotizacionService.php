@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
 //use App\Transformers\PedidoCotizacion\CreateTransformer;
 
 class PedidoCotizacionService
@@ -21,11 +22,12 @@ class PedidoCotizacionService
 
     public function create(Request $request)
     {
-        echo 2;die;
+        echo 2;
+        die;
         $pedido = Pedido::find($request->cotizacion)->first();
 
         // $cotizacionTransformer = new CreateTransformer;
-        // $cotizacionData = $cotizacionTransformer->transform($cotizacion); 
+        // $cotizacionData = $cotizacionTransformer->transform($cotizacion);
 
         // $pedido = Pedido::create($cotizacionData);
 

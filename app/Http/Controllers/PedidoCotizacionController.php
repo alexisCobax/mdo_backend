@@ -7,7 +7,6 @@ use App\Services\PedidoCotizacionService;
 
 class PedidoCotizacionController extends Controller
 {
-
     private $service;
 
     public function __construct(PedidoCotizacionService $PedidoCotizacionService)
