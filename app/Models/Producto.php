@@ -221,7 +221,7 @@ class Producto extends Model
     //Filters
 
     public function scopeCodigo($query, $codigo)
-    { 
+    {
         if ($codigo) {
             return $query->where('codigo', $codigo);
         }
