@@ -152,6 +152,8 @@ class AuthController extends Controller
 
         $user = Auth::user();
         unset($user->clave);
+        unset($user->token_exp);
+        unset($user->apellido);
 
         return response()->json(['user' => $user], 200);
     }
