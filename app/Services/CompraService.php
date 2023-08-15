@@ -36,49 +36,46 @@ class CompraService
 
     public function create(Request $request)
     {
+        $compra = new Compra();
 
-        return response()->json(['error' => 'blah!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        if (!$compra) {
+            return response()->json(['error' => 'Failed to create compra'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-        // $compra = new Compra();
+        $compra->proveedor = $request->proveedor;
+        $compra->fechaDeIngreso = $request->fechaDeIngreso;
+        $compra->fechaDePago = $request->fechaDePago;
+        $compra->precio = $request->precio;
+        $compra->numeroLote = $request->numeroLote;
+        $compra->observaciones = $request->observaciones;
+        $compra->pagado = $request->pagado;
+        $compra->enDeposito = $request->enDeposito;
+        $compra->save();
+        $compraId = $compra->id;
 
-        // if (!$compra) {
-        //     return response()->json(['error' => 'Failed to create compra'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        // }
+        if ($request->productos) {
+            foreach ($request->productos as $p) {
+                $compraDetalle = new Compradetalle();
+                $compraDetalle->compra = $compraId;
+                $compraDetalle->producto = $p['producto'];
+                $compraDetalle->cantidad = $p['cantidad'];
+                $compraDetalle->precioUnitario = $p['precioUnitario'];
+                $compraDetalle->enDeposito = $p['enDeposito'];
+                $compraDetalle->save();
+            }
+        }
 
-        // $compra->proveedor = $request->proveedor;
-        // $compra->fechaDeIngreso = $request->fechaDeIngreso;
-        // $compra->fechaDePago = $request->fechaDePago;
-        // $compra->precio = $request->precio;
-        // $compra->numeroLote = $request->numeroLote;
-        // $compra->observaciones = $request->observaciones;
-        // $compra->pagado = $request->pagado;
-        // $compra->enDeposito = $request->enDeposito;
-        // $compra->save();
-        // $compraId = $compra->id;
+        if ($request->gastos) {
+            foreach ($request->gastos as $g) {
+                $compraGastos = new Compradetallenn();
+                $compraGastos->descripcion = $g['descripcion'];
+                $compraGastos->precio = $g['precioGasto'];
+                $compraGastos->idCompra = $compraId;
+                $compraGastos->save();
+            }
+        }
 
-        // if ($request->productos) {
-        //     foreach ($request->productos as $p) {
-        //         $compraDetalle = new Compradetalle();
-        //         $compraDetalle->compra = $compraId;
-        //         $compraDetalle->producto = $p['producto'];
-        //         $compraDetalle->cantidad = $p['cantidad'];
-        //         $compraDetalle->precioUnitario = $p['precioUnitario'];
-        //         $compraDetalle->enDeposito = $p['enDeposito'];
-        //         $compraDetalle->save();
-        //     }
-        // }
-
-        // if ($request->gastos) {
-        //     foreach ($request->gastos as $g) {
-        //         $compraGastos = new Compradetallenn();
-        //         $compraGastos->descripcion = $g['descripcion'];
-        //         $compraGastos->precio = $g['precioGasto'];
-        //         $compraGastos->idCompra = $compraId;
-        //         $compraGastos->save();
-        //     }
-        // }
-
-        // return response()->json($compra, Response::HTTP_OK);
+        return response()->json($compra, Response::HTTP_OK);
     }
 
     public function update(Request $request)
