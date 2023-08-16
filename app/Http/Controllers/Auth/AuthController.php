@@ -35,7 +35,7 @@ class AuthController extends Controller
             );
 
             $user = Usuario::where('nombre', $request->nombre)->first();
-            if($user) {
+            if ($user) {
                 return response()->json([
                     'status' => false,
                     'message' => 'El nombre de usuario ya existe en el sistema',
@@ -104,7 +104,12 @@ class AuthController extends Controller
             }
 
             $user = Usuario::where('nombre', $request->nombre)->first();
-
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuario inexistente.',
+                ], Response::HTTP_NOT_FOUND);
+            }
             return response()->json([
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
                 'user' => [
