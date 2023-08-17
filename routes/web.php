@@ -825,7 +825,7 @@ Route::get('/grupo/{id}', [GrupoController::class, 'show']);
 Route::get('/producto', [ProductoController::class, 'index']);
 Route::get('/producto/{id}', [ProductoController::class, 'show']);
 
-Route::get('/pdf/proforma', [PdfController::class, 'proforma']);
+Route::get('/pdf/proforma/{id}', [PdfController::class, 'proforma']);
 Route::get('/pdf/factura', [PdfController::class, 'factura']);
 Route::get('/pdf/recibo', [PdfController::class, 'recibo']);
 
