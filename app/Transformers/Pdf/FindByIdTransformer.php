@@ -9,10 +9,10 @@ use League\Fractal\TransformerAbstract;
 class FindByIdTransformer extends TransformerAbstract
 {
 
-    public function transform($pedido)
+    public function transform($pedido, $request)
     {
         $pedidoDetalle = [];
-        $detalle = Pedidodetalle::find($pedido->id)->get();
+        $detalle = Pedidodetalle::where('pedido', $request->id)->get();
 
         foreach ($detalle as $d) {
 
@@ -22,10 +22,13 @@ class FindByIdTransformer extends TransformerAbstract
                 "imagen" => "",
                 "cantidad" => $d->cantidad,
                 "codigo" => $d->id,
-                "nombre" => $d->productos->nombre,
-                // "color" => $d->colores->nombre,
+                "nombreProducto" => optional($d->productos)->nombre,
+                "producto" => $d->productos->id,
+                "nombreColor" => optional($d->productos->colores)->nombre,
+                "color" => optional($d->productos->colores)->id,
                 "precio" => $d->precio,
-                "total" => $precio
+                "total" => $precio,
+                "imagen" => env('URL_IMAGENES_PRODUCTOS').optional($d->productos)->imagenPrincipal . '.' . env('EXTENSION_IMAGEN_PRODUCTO')
             ];
         }
 
