@@ -3,35 +3,33 @@
 namespace App\Http\Controllers;
 
 // use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\InvoiceService;
 use App\Services\ProformaService;
+use App\Transformers\Invoices\FindByIdTransformer;
 
 class PdfController extends Controller
 {
 
-    private $service;
+    private $proforma;
+    private $invoice;
 
-    public function __construct(ProformaService $ProformaService)
+    public function __construct(ProformaService $ProformaService, InvoiceService $InvoiceService)
     {
-        $this->service = $ProformaService;
+        $this->proforma = $ProformaService;
+        $this->invoice = $InvoiceService;
     }
 
     public function proforma(Request $request)
     {
-        return $this->service->findById($request);
+        return $this->proforma->findById($request);
     }
 
-    public function factura()
+    public function invoice(Request $request)
     {
-
-        // $data = ['nombre'=>'alexis'];
-        // $pdf = Pdf::loadView('pdf.factura', $data);
-
-        // $dom_pdf = $pdf->getDomPDF();
-
-        // return $pdf->stream();
-
-        //return $pdf->download('factura.pdf');
+        return $this->invoice->findById($request);
     }
 
     public function recibo()

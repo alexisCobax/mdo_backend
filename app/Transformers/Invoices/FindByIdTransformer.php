@@ -7,10 +7,9 @@ use League\Fractal\TransformerAbstract;
 
 class FindByIdTransformer extends TransformerAbstract
 {
-    public function transform($invoice)
+    public function transform($invoice,$request)
     {
-
-        $invoiceDetalle = Invoicedetalle::where('invoice', $invoice->id)->get();
+        $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->ToArray();
 
         $detalle = [];
 

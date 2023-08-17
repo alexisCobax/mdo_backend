@@ -11,6 +11,12 @@ class CreateTransformer extends TransformerAbstract
     {
         $subTotal = $pedido->total-$pedido->descuentoNeto;
         $vendedor = Encargadodeventa::find($pedido->vendedor)->first();
+        
+        if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $pedido->fecha)) {
+            $pedido_fecha = NULL;
+        }else{
+            $pedido_fecha = $pedido->fecha;
+        }
 
         return [
             'fecha'=>NOW(),
@@ -25,8 +31,8 @@ class CreateTransformer extends TransformerAbstract
             'shipVia' =>"",
             'FOB' =>"",
             'Terms' =>"",
-            'fechaOrden' =>$pedido->fecha,
-            'salesPerson' => $vendedor->nombre,
+            'fechaOrden' => $pedido_fecha,
+            'salesPerson' => optional($vendedor)->nombre,
             'orden' =>$pedido->id,
             'peso' =>0,
             'cantidad' => $cantidad[0]->suma_cantidad,
