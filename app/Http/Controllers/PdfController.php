@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Services\ProformaService;
 
 class PdfController extends Controller
 {
-    public function proforma()
+
+    private $service;
+
+    public function __construct(ProformaService $ProformaService)
     {
+        $this->service = $ProformaService;
+    }
 
+    public function proforma(Request $request)
+    {
+        $proforma = $this->service->findById($request);
 
-        $data = ['nombre'=>'alexis'];
-        $pdf = Pdf::loadView('pdf.proforma', $data);
+        $pdf = Pdf::loadView('pdf.proforma', $proforma);
 
         $dom_pdf = $pdf->getDomPDF();
 
