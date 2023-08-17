@@ -23,32 +23,27 @@
                             <table class="table-de">
                                 <tr>
                                     <td>
-                                        MDO INC
+                                        {{$proforma['tienda']['direccion']}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        2618 NW 112th AVENUE. MIAMI, FL 33172
+                                        <strong>Phone:</strong> {{$proforma['tienda']['telefono']}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Phone:</strong> 513 9177 / 305 424 8199
+                                        <strong>Nº pedido:</strong> {{$proforma['tienda']['numero_pedido']}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Nº pedido:</strong> 10444
+                                        <strong>Fecha de pedido:</strong> {{$proforma['tienda']['fecha_pedido']}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Fecha de pedido:</strong> 01-Jun-2023
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>e-Mail:</strong> fashionglassesrd@gmail.com
+                                        <strong>e-Mail:</strong> f{{$proforma['tienda']['email']}}
                                     </td>
                                 </tr>
                             </table>
@@ -60,17 +55,17 @@
                             <table class="table-cliente">
                                 <tr>
                                     <td>
-                                        Fashion Glasses R.D
+                                        {{$proforma['cliente']['nombre']}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Nº de Cliente:</strong> 8007
+                                        <strong>Nº de Cliente:</strong> {{$proforma['cliente']['numero']}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Tel:</strong> 829-215-0343
+                                        <strong>Tel:</strong> {{$proforma['cliente']['telefono']}}
                                     </td>
                                 </tr>
                                 <tr>
@@ -80,11 +75,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Franklyn Alberto de la Cruz
-                                        6800 NW 84th Ave
-                                        OPS-666
-                                        Miami, FL 33166
-                                        PH:305/477-7103
+                                        {{$proforma['cliente']['direccion']}}
                                     </td>
                                 </tr>
                             </table>
@@ -112,145 +103,27 @@
                         <thead>
                             <tr>
                                 <th>Imagen</th>
-                                <th>Cant</th>
-                                <th>Código</th>
-                                <th>Nombre</th>
-                                <th>Color</th>
-                                <th>Precio</th>
-                                <th>Total</th>
+                                <th class="align-center">Cant</th>
+                                <th class="align-center">Código</th>
+                                <th class="align-left">Nombre</th>
+                                <th class="align-left">Color</th>
+                                <th class="align-center">Precio</th>
+                                <th class="align-center">Total</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($proforma['detalle'] as $p)
                             <tr>
                                 <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
+                                        style="width:90px; height: 70px;" alt=""/></td>
+                                <td class="align-center" style="padding-top:20px;">{{$p['cantidad']}}</td>
+                                <td class="align-center" style="padding-top:20px;">{{$p['codigo']}}</td>
+                                <td class="align-left" style="padding-top:20px;">{{$p['nombreProducto']}}</td>
+                                <td class="align-left" style="padding-top:20px;">{{$p['nombreColor']}}</td>
+                                <td class="align-center" style="padding-top:20px;">{{$p['precio']}}</td>
+                                <td class="align-center" style="padding-top:20px;">{{$p['total']}}</td>
                             </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""></td>
-                                <td class="align-center">1</td>
-                                <td>752499484563</td>
-                                <td>ále 600 3Blue Tortoise. 53-15-140</td>
-                                <td>BLUE/TORTOISE</td>
-                                <td class="align-center">14,99</td>
-                                <td class="align-center">14,99</td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

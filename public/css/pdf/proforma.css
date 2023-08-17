@@ -103,9 +103,13 @@ td {
 }
 
 .container-table-cliente {
-    margin-left: 10px;
+    margin-left: 40px;
 }
 
 .align-center{
     text-align:center;
+}
+
+.align-left{
+    text-align:left;
 }
