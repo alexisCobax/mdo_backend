@@ -4,15 +4,16 @@ namespace App\Services;
 
 use App\Models\Pedido;
 use App\Models\Invoice;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Filters\Invoices\InvoicesFilters;
 use App\Helpers\CalcHelper;
-use App\Models\Invoicedetalle;
+use Illuminate\Http\Request;
 use App\Models\Pedidodetalle;
+use Illuminate\Http\Response;
+use App\Models\Invoicedetalle;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Filters\Invoices\InvoicesFilters;
+use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
 use App\Transformers\Invoices\CreateDetalleTransformer;
-use App\Transformers\Invoices\CreateTransformer;
 
 class InvoiceService
 {
@@ -28,12 +29,27 @@ class InvoiceService
 
     public function findById(Request $request)
     {
+        // $invoice = Invoice::find($request->id);
+
+        // $invoiceTranformada = new FindByIdTransformer();
+        // $invoiceTranformada = $invoiceTranformada->transform($invoice,$request);
+
+        // return response()->json(['data' => $invoiceTranformada], Response::HTTP_OK);
+
         $invoice = Invoice::find($request->id);
 
-        $invoiceTranformada = new FindByIdTransformer();
-        $invoiceTranformada = $invoiceTranformada->transform($invoice);
+        $tranformer = new FindByIdTransformer();
+        $invoice = $tranformer->transform($invoice, $request);
 
-        return response()->json(['data' => $invoiceTranformada], Response::HTTP_OK);
+        $pdf = Pdf::loadView('pdf.invoice', ["invoice"=>$invoice]);
+
+        //$dom_pdf = $pdf->getDomPDF();
+
+        return $pdf->stream();
+
+        //return $pdf->download('proforma.pdf');
+
+        //return $tranformer->transform($pedido, $request);
     }
 
     public function create(Request $request)
