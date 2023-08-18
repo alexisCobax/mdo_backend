@@ -32,29 +32,18 @@ class PdfController extends Controller
     public function invoice(Request $request)
     {
         return $this->invoice->findById($request);
-
-        // $data = ['nombre'=>'alexis'];
-        // $pdf = Pdf::loadView('pdf.factura', $data);
-
-        // $dom_pdf = $pdf->getDomPDF();
-
-        // return $pdf->stream();
-
-        //return $pdf->download('factura.pdf');
-
     }
 
     public function recibo()
     {
 
+        $data = ['nombre'=>'alexis'];
+        $pdf = Pdf::loadView('pdf.recibo', $data);
 
-        // $data = ['nombre'=>'alexis'];
-        // $pdf = Pdf::loadView('pdf.recibo', $data);
+        $dom_pdf = $pdf->getDomPDF();
 
-        // $dom_pdf = $pdf->getDomPDF();
+        return $pdf->stream();
 
-        // return $pdf->stream();
-
-        //return $pdf->download('factura.pdf');
+        return $pdf->download('factura.pdf');
     }
 }
