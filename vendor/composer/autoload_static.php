@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit21f696ad5609a1fdc854e6362ff73999
+class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -874,6 +874,7 @@ class ComposerStaticInit21f696ad5609a1fdc854e6362ff73999
         'App\\Services\\PortadaService' => __DIR__ . '/../..' . '/app/Services/PortadaService.php',
         'App\\Services\\ProductoService' => __DIR__ . '/../..' . '/app/Services/ProductoService.php',
         'App\\Services\\ProductogeneroService' => __DIR__ . '/../..' . '/app/Services/ProductogeneroService.php',
+        'App\\Services\\ProformaService' => __DIR__ . '/../..' . '/app/Services/ProformaService.php',
         'App\\Services\\PromocioncomprandoxgratiszService' => __DIR__ . '/../..' . '/app/Services/PromocioncomprandoxgratiszService.php',
         'App\\Services\\ProspectoService' => __DIR__ . '/../..' . '/app/Services/ProspectoService.php',
         'App\\Services\\ProveedorService' => __DIR__ . '/../..' . '/app/Services/ProveedorService.php',
@@ -906,6 +907,7 @@ class ComposerStaticInit21f696ad5609a1fdc854e6362ff73999
         'App\\Transformers\\Invoices\\CreateTransformer' => __DIR__ . '/../..' . '/app/Transformers/Invoices/CreateTransformer.php',
         'App\\Transformers\\Invoices\\FindAllTransformer' => __DIR__ . '/../..' . '/app/Transformers/Invoices/FindAllTransformer.php',
         'App\\Transformers\\Invoices\\FindByIdTransformer' => __DIR__ . '/../..' . '/app/Transformers/Invoices/FindByIdTransformer.php',
+        'App\\Transformers\\Pdf\\FindByIdTransformer' => __DIR__ . '/../..' . '/app/Transformers/Pdf/FindByIdTransformer.php',
         'App\\Transformers\\PedidoCotizacion\\CreateTransformer' => __DIR__ . '/../..' . '/app/Transformers/PedidoCotizacion/CreateTransformer.php',
         'App\\Transformers\\Pedidos\\CreateTransformer' => __DIR__ . '/../..' . '/app/Transformers/Pedidos/CreateTransformer.php',
         'App\\Transformers\\Pedidos\\FindAllTransformer' => __DIR__ . '/../..' . '/app/Transformers/Pedidos/FindAllTransformer.php',
@@ -6923,10 +6925,10 @@ class ComposerStaticInit21f696ad5609a1fdc854e6362ff73999
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit21f696ad5609a1fdc854e6362ff73999::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit21f696ad5609a1fdc854e6362ff73999::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit21f696ad5609a1fdc854e6362ff73999::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit21f696ad5609a1fdc854e6362ff73999::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133::$classMap;
 
         }, null, ClassLoader::class);
     }
