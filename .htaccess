@@ -1,7 +1,0 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine on
-    RewriteBase /api/
-
-    RewriteCond %{REQUEST_URI} !^/api/public/
-    RewriteRule ^(.*)$ /api/public/$1 [L]
-</IfModule>
