@@ -223,7 +223,7 @@ class Producto extends Model
     public function scopeCodigo($query, $codigo)
     {
         if ($codigo) {
-            return $query->where('codigo', $codigo);
+            return $query->where('id', $codigo);
         }
         return $query;
     }
