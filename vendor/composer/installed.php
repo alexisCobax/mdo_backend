@@ -690,6 +690,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'payeezy/payeezy-php' => array(
+            'pretty_version' => 'v1.0-alpha1',
+            'version' => '1.0.0.0-alpha1',
+            'reference' => '31a1d12bc334abcf65312c6a43f6a62dd233a5c8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../payeezy/payeezy-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'phar-io/manifest' => array(
             'pretty_version' => '2.0.3',
             'version' => '2.0.3.0',
@@ -894,8 +903,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0',
-                1 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                1 => '1.0|2.0',
             ),
         ),
         'psr/simple-cache' => array(
