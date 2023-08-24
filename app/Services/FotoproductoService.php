@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Producto;
 use App\Models\Fotoproducto;
 use Illuminate\Http\Request;
-use App\Helpers\PaginateHelper;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
+use Illuminate\Support\Facades\File;
 
 class FotoproductoService
 {
@@ -28,6 +30,38 @@ class FotoproductoService
 
     public function create(Request $request)
     {
+        switch (strtolower($request->action)) {
+            case 'principal':
+                try {
+                    $producto = Producto::find($request->idProducto);
+
+                    if ($producto) {
+                        $producto->update(['imagenPrincipal' => $request->idImagen]);
+                        return response()->json($producto, Response::HTTP_OK);
+                    } else {
+                        return response()->json(['error' => 'Producto not found'], Response::HTTP_NOT_FOUND);
+                    }
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+                break;
+
+            case 'eliminar':
+                try {
+                    $producto = FotoProducto::find($request->idImagen);
+                    if ($producto) {
+                        File::delete(storage_path('app/public/images/' . $request->idImagen . '.' . env('EXTENSION_IMAGEN_PRODUCTO')), true);
+                        $producto->delete();
+                        return response()->json($producto, Response::HTTP_OK);
+                    } else {
+                        return response()->json(['error' => 'Failed to delete Fotoproducto'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                    }
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+                break;
+        }
+
         $data = $request->all();
         $fotoproducto = Fotoproducto::create($data);
 
@@ -64,5 +98,4 @@ class FotoproductoService
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
-
 }
