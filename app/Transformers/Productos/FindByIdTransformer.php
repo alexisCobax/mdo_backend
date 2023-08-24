@@ -17,12 +17,11 @@ class FindByIdTransformer extends TransformerAbstract
 
         if ($fotos) {
             foreach ($producto->fotos as $foto) {
-                $imagen = [
+                $imagenes[] = [
                     'id' => $foto->id,
                     'url' => env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
                     'orden' => $foto->orden
                 ];
-                $imagenes[] = $imagen;
             }
         }
 
@@ -74,7 +73,7 @@ class FindByIdTransformer extends TransformerAbstract
             'alto' => $producto->alto,
             'ancho' => $producto->ancho,
             'descripcionLarga' => $producto->descripcionLarga,
-            'imagenes' => [$imagenes]
+            'imagenes' => $imagenes
         ];
     }
 }
