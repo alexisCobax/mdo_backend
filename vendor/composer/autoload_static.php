@@ -356,8 +356,8 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -474,8 +474,8 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         ),
         'Fruitcake\\Cors\\' => 
         array (
-            0 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
-            1 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
+            0 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
+            1 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
         ),
         'FontLib\\' => 
         array (
@@ -590,6 +590,10 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
     public static $prefixesPsr0 = array (
         'P' => 
         array (
+            'Payeezy_' => 
+            array (
+                0 => __DIR__ . '/..' . '/payeezy/payeezy-php/src',
+            ),
             'PHPExcel' => 
             array (
                 0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
@@ -683,6 +687,7 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         'App\\Http\\Controllers\\OrigenpedidoController' => __DIR__ . '/../..' . '/app/Http/Controllers/OrigenpedidoController.php',
         'App\\Http\\Controllers\\PagostarjetumController' => __DIR__ . '/../..' . '/app/Http/Controllers/PagostarjetumController.php',
         'App\\Http\\Controllers\\PaisController' => __DIR__ . '/../..' . '/app/Http/Controllers/PaisController.php',
+        'App\\Http\\Controllers\\PaymentController' => __DIR__ . '/../..' . '/app/Http/Controllers/PaymentController.php',
         'App\\Http\\Controllers\\PaypalController' => __DIR__ . '/../..' . '/app/Http/Controllers/PaypalController.php',
         'App\\Http\\Controllers\\PdfController' => __DIR__ . '/../..' . '/app/Http/Controllers/PdfController.php',
         'App\\Http\\Controllers\\PedidoController' => __DIR__ . '/../..' . '/app/Http/Controllers/PedidoController.php',
@@ -5083,6 +5088,16 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         'PHPUnit\\Util\\Xml\\SuccessfulSchemaDetectionResult' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Xml/SuccessfulSchemaDetectionResult.php',
         'PHPUnit\\Util\\Xml\\ValidationResult' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Xml/ValidationResult.php',
         'PHPUnit\\Util\\Xml\\Validator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Xml/Validator.php',
+        'Payeezy_Client' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/Client.php',
+        'Payeezy_CreditCard' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/CreditCard.php',
+        'Payeezy_Paypal' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/Paypal.php',
+        'Payeezy_TeleCheck' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/TeleCheck.php',
+        'Payeezy_Token' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/Token.php',
+        'Payeezy_Transaction' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/Transaction.php',
+        'Payeezy_TransactionType' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/TransactionType.php',
+        'Payeezy_Util' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/Util.php',
+        'Payeezy_ValueLink' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/ValueLink.php',
+        'Payeezy_threeDS' => __DIR__ . '/..' . '/payeezy/payeezy-php/src/Payeezy/threeDS.php',
         'PharIo\\Manifest\\Application' => __DIR__ . '/..' . '/phar-io/manifest/src/values/Application.php',
         'PharIo\\Manifest\\ApplicationName' => __DIR__ . '/..' . '/phar-io/manifest/src/values/ApplicationName.php',
         'PharIo\\Manifest\\Author' => __DIR__ . '/..' . '/phar-io/manifest/src/values/Author.php',

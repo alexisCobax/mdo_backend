@@ -14,7 +14,8 @@
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
         "league/fractal": "^0.20.1",
-        "maatwebsite/excel": "^1.1"
+        "maatwebsite/excel": "^1.1",
+        "payeezy/payeezy-php": "^1.0@alpha"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

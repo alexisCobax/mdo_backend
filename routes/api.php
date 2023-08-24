@@ -24,6 +24,7 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EstucheController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PortadaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
@@ -830,5 +831,7 @@ Route::get('/pdf/proforma/{id}', [PdfController::class, 'proforma']);
 Route::get('/pdf/invoice', [PdfController::class, 'invoice']);
 
 Route::get('/pdf/recibo', [PdfController::class, 'recibo']);
+
+Route::post('/payment', [PaymentController::class, 'processPayment']);
 
 
