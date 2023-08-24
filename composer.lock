@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ccf50b89c41d3d292e91b546dbe5bf74",
+    "content-hash": "1e1dcc4a914ac08ffbdcf72b2590cf31",
     "packages": [
         {
             "name": "bacoder/servicesgenerator",
@@ -2524,6 +2524,61 @@
                 "source": "https://github.com/opis/closure/tree/3.6.3"
             },
             "time": "2022-01-27T09:35:39+00:00"
+        },
+        {
+            "name": "payeezy/payeezy-php",
+            "version": "v1.0-alpha1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/payeezy/payeezy-php.git",
+                "reference": "31a1d12bc334abcf65312c6a43f6a62dd233a5c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/payeezy/payeezy-php/zipball/31a1d12bc334abcf65312c6a43f6a62dd233a5c8",
+                "reference": "31a1d12bc334abcf65312c6a43f6a62dd233a5c8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Payeezy_": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "payeezy and contributors",
+                    "homepage": "https://github.com/payeezy/payeezy_direct_API/graphs/contributors"
+                }
+            ],
+            "description": "Payeezy PHP Library",
+            "homepage": "https://developer.payeezy.com/",
+            "keywords": [
+                "api",
+                "payeezy",
+                "payment processing"
+            ],
+            "support": {
+                "source": "https://github.com/payeezy/payeezy-php/tree/v1.0-alpha1"
+            },
+            "time": "2016-07-18T18:10:38+00:00"
         },
         {
             "name": "phenx/php-font-lib",
