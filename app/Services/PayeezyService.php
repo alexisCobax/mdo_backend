@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
 
-class PaymentsService
+class PayeezyService
 {
     private $client;
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CiudadController;
+use App\Http\Controllers\CloverController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PaypalController;
@@ -24,7 +25,7 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EstucheController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PayeezyController;
 use App\Http\Controllers\PortadaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
@@ -832,6 +833,8 @@ Route::get('/pdf/invoice', [PdfController::class, 'invoice']);
 
 Route::get('/pdf/recibo', [PdfController::class, 'recibo']);
 
-Route::post('/payment', [PaymentController::class, 'processPayment']);
+Route::post('/payment/payeezy', [PayeezyController::class, 'processPayeezyPayment']);
+
+Route::post('/payment/clover', [CloverController::class, 'processCloverPayment']);
 
 
