@@ -629,7 +629,7 @@ Route::delete('/portada/{id}', [PortadaController::class, 'delete']);
 Route::get('/producto/stock/{id}', [ProductoController::class, 'stock']);
 Route::post('/producto', [ProductoController::class, 'create']);
 Route::put('/producto/{id}', [ProductoController::class, 'update']);
-Route::delete('/producto/{id}', [ProductoController::class, 'delete']);
+Route::post('/producto/related', [ProductoController::class, 'related']);
 
 
 /** Productogenero Routes **/

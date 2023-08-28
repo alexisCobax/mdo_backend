@@ -217,4 +217,21 @@ class ProductoService
         }
         return response()->json(['id' => $request->id], 200);
     }
+
+    public function related(Request $request)
+    {
+        $producto = Producto::select('*')
+            ->where('categoria', '=', $request->categoria)
+            ->where('id', '!=', $request->producto)
+            ->where('stock', '>', 0)
+            ->orderBy('id', 'DESC')
+            ->limit(4)
+            ->get();
+
+        if (!$producto) {
+            return response()->json(['error' => 'Related product not found'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($producto, Response::HTTP_OK);
+    }
 }
