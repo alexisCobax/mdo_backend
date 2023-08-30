@@ -139,7 +139,7 @@ Route::get('/carrito/{id}', [CarritoController::class, 'show']);
 Route::post('/carrito', [CarritoController::class, 'create']);
 Route::put('/carrito/{id}', [CarritoController::class, 'update']);
 Route::delete('/carrito/{id}', [CarritoController::class, 'delete']);
-//Route::get('/carrito/status/{id}', [CarritoController::class, 'status']);
+Route::get('/carrito/status/{id}', [CarritoController::class, 'status']);
 
 
 /** Carritodetalle Routes **/
