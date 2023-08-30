@@ -802,10 +802,10 @@ Route::post('me', [AuthController::class, 'me']);
 
 /** WEB Routes **/
 
-Route::post('web/carrito/status', [CarritoWebController::class, 'show']);
-Route::post('web/invoice', [InvoiceWebController::class, 'index']);
-Route::post('web/cotizaciones', [CotizacionesWebController::class, 'index']);
-Route::post('web/usuario/password', [AuthWebController::class, 'change']);
+Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
+Route::post('/web/invoice', [InvoiceWebController::class, 'index']);
+Route::post('/web/cotizaciones', [CotizacionesWebController::class, 'index']);
+Route::post('/web/usuario/password', [AuthWebController::class, 'change']);
 
 });
 
