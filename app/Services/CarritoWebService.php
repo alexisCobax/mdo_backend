@@ -21,20 +21,24 @@ class CarritoWebService
     public function findByToken(Request $request)
     {
         $user = Auth::user();
+        $cliente = Cliente::where('usuario', $user['id'])->first();
+        $carrito = Carrito::where('cliente', $cliente->id)
+            ->where('estado', 0)
+            ->first();
+        if ($carrito) {
+            return $this->findCarritoDetalle($carrito->id);
+        } else {
+            $data = [
+                'fecha' => NOW(),
+                'cliente' => $cliente->id,
+                'estado' => 0,
+                'vendedor' => 1,
+                'formaPago' => 1
+            ];
 
-        $cliente = Cliente::where('usuario', $user->id)->first();
-        $carrito = Carrito::where('cliente', $cliente->id)->first();
-        $detalle = CarritoDetalle::where('carrito', $carrito->id)
-        ->selectRaw('SUM(precio) as total_precio, SUM(cantidad) as total_cantidad')
-        ->get();
-
-        $data = [
-            "estado" => $carrito->estado,
-            "total" => $detalle->pluck('total_precio')->first(),
-            "cantidad" => $detalle->pluck('total_cantidad')->first()
-        ];
-
-        return response()->json(['data' => $data], Response::HTTP_OK);
+            $carrito = Carrito::create($data);
+            return ["data" => ["carrito" => $carrito->id]];
+        }
     }
 
     public function findStatus(Request $request)
