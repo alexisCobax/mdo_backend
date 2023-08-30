@@ -139,7 +139,7 @@ Route::get('/carrito/{id}', [CarritoController::class, 'show']);
 Route::post('/carrito', [CarritoController::class, 'create']);
 Route::put('/carrito/{id}', [CarritoController::class, 'update']);
 Route::delete('/carrito/{id}', [CarritoController::class, 'delete']);
-Route::get('/carrito/status/{id}', [CarritoController::class, 'status']);
+//Route::get('/carrito/status/{id}', [CarritoController::class, 'status']);
 
 
 /** Carritodetalle Routes **/
@@ -802,10 +802,10 @@ Route::post('me', [AuthController::class, 'me']);
 
 /** WEB Routes **/
 
-Route::post('web/carrito/status', [CarritoWebController::class, 'show']);
-Route::post('web/invoice', [InvoiceWebController::class, 'index']);
-Route::post('web/cotizaciones', [CotizacionesWebController::class, 'index']);
-Route::post('web/usuario/password', [AuthWebController::class, 'change']);
+Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
+Route::post('/web/invoice', [InvoiceWebController::class, 'index']);
+Route::post('/web/cotizaciones', [CotizacionesWebController::class, 'index']);
+Route::post('/web/usuario/password', [AuthWebController::class, 'change']);
 
 });
 
