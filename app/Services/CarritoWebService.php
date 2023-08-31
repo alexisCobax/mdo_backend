@@ -6,6 +6,7 @@ use App\Models\Carrito;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
 use App\Models\Carritodetalle;
 use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\Auth;
@@ -20,24 +21,21 @@ class CarritoWebService
 
     public function findByToken(Request $request)
     {
-        $user = Auth::user();
-        $cliente = Cliente::where('usuario', $user['id'])->first();
-        $carrito = Carrito::where('cliente', $cliente->id)
-            ->where('estado', 0)
-            ->first();
+        $carrito = CarritoHelper::getCarrito();
+
         if ($carrito) {
-            return $this->findCarritoDetalle($carrito->id);
+            return $this->findCarritoDetalle($carrito['id']);
         } else {
             $data = [
                 'fecha' => NOW(),
-                'cliente' => $cliente->id,
+                'cliente' => $carrito['cliente'],
                 'estado' => 0,
                 'vendedor' => 1,
                 'formaPago' => 1
             ];
 
             $carrito = Carrito::create($data);
-            return ["data" => ["carrito" => $carrito->id]];
+            return ["data" => ["carrito" => $carrito['id']]];
         }
     }
 

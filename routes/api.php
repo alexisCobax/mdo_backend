@@ -80,6 +80,7 @@ use App\Http\Controllers\EstadocotizacionController;
 use App\Http\Controllers\MaterialproductoController;
 use App\Http\Controllers\PedidoCotizacionController;
 use App\Http\Controllers\SubidasfalabellaController;
+use App\Http\Controllers\CarritodetalleWebController;
 use App\Http\Controllers\CategoriaproductoController;
 use App\Http\Controllers\CotizaciondetalleController;
 use App\Http\Controllers\CategoriafalabellaController;
@@ -803,9 +804,15 @@ Route::post('me', [AuthController::class, 'me']);
 /** WEB Routes **/
 
 Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
+Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
 Route::post('/web/invoice', [InvoiceWebController::class, 'index']);
 Route::post('/web/cotizaciones', [CotizacionesWebController::class, 'index']);
 Route::post('/web/usuario/password', [AuthWebController::class, 'change']);
+Route::get('/web/carritodetalle', [CarritodetalleWebController::class, 'index']);
+Route::get('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'show']);
+Route::post('/web/carritodetalle', [CarritodetalleWebController::class, 'create']);
+Route::put('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'update']);
+Route::delete('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'delete']);
 
 });
 
