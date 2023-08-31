@@ -38,23 +38,22 @@ class CarritoWebdetalleService
         $carrito = CarritoHelper::getCarrito();
 
         $productoExistente = Carritodetalle::where('carrito', $carrito['id'])
-            ->where('producto', $request->producto)->get();
+            ->where('producto', $request->producto)->first();
 
-        if (count($productoExistente)) {
-            $cantidad = $productoExistente[0]['cantidad'] + $request->cantidad;
+        if ($productoExistente) {
+            $cantidad = $productoExistente->cantidad + $request->cantidad;
             $detalle = [
                 "carrito" => $carrito['id'],
                 "producto" => $request->producto,
-                "precio" => $productoExistente[0]['precio'] * $cantidad,
+                "precio" => $productoExistente->precio * $cantidad,
                 "cantidad" => $cantidad
             ];
 
-            $carritodetalle = Carritodetalle::find($request->id);
+            $carritodetalle = Carritodetalle::find($productoExistente->id);
 
             $carritodetalle->update($detalle);
             $carritodetalle->refresh();
         } else {
-
             $producto = Producto::find($request->producto);
             $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
 
