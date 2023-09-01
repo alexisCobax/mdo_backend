@@ -30,7 +30,8 @@ class FindAllTransformer extends TransformerAbstract
 
             $producto = [
                 'id' => $productos->id,
-                'nombre' => isset($marca->nombre) ? $marca->nombre : "",
+                'nombre' => isset($productos->nombre) ? $productos->nombre : "",
+                "marcaNombre" => isset($marca->nombre) ? $marca->nombre : "",
                 'precio' => isset($productos->precio) ? $productos->precio : "",
                 'imagen' => isset($productos->imagenPrincipal) ? $productos->imagenPrincipal : "",
                 'color' => isset($color->nombre) ? $color->nombre : "",
