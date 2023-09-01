@@ -25,9 +25,9 @@ class CarritoWebdetalleService
     public function findById(Request $request)
     {
 
-        $carrito = CarritoHelper::getCarrito();
+        $carrito = CarritoHelper::getCarrito(); 
 
-        $data = Carritodetalle::find($carrito['id']);
+        $data = Carritodetalle::where('carrito',$carrito['id'])->get();
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
