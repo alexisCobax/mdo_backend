@@ -35,10 +35,14 @@ class CloverService
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
             $response = curl_exec($ch);
+            
+            $response = json_decode($response);
+
             if (curl_errno($ch)) {
                 echo 'Error:' . curl_error($ch);
             }
             curl_close($ch);
+
 
             return response()->json($response, Response::HTTP_OK);
         } catch (ValidationException $e) {
