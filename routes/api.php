@@ -25,6 +25,7 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EstucheController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PagoWebController;
 use App\Http\Controllers\PayeezyController;
 use App\Http\Controllers\PortadaController;
 use App\Http\Controllers\UsuarioController;
@@ -815,6 +816,7 @@ Route::post('/web/carritodetalle', [CarritodetalleWebController::class, 'create'
 Route::put('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'update']);
 Route::delete('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'delete']);
 Route::put('/web/cliente', [ClienteWebController::class, 'update']);
+Route::post('/web/pagar', [PagoWebController::class, 'create']);
 });
 
 /** Login Routes Not Auth **/
