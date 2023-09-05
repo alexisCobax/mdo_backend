@@ -30,7 +30,7 @@ class FindAllTransformer extends TransformerAbstract
                 'id' => $detalle->id,
                 'carrito' => $detalle->carrito,
                 'producto' => $producto,
-                'precio' => $detalle->precio,
+                'precio' => $subTotal,
                 'cantidad' => $detalle->cantidad,
                 'subTotal' => $subTotal*$detalle->cantidad,
             ];
