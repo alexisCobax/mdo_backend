@@ -43,7 +43,6 @@ class Carritodetalle extends Model
 
     public function productos()
     {
-        //return $this->belongsTo(Producto::class, 'producto');
-        return $this->hasMany(Carritodetalle::class, 'producto');
+        return $this->belongsTo(Producto::class, 'producto');
     }
 }
