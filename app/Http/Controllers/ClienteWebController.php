@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\CotizacionesWebService;
+use App\Services\ClienteWebService;
 
-class CotizacionesWebController extends Controller
+class ClienteWebController extends Controller
 {
     private $service;
 
-    public function __construct(CotizacionesWebService $CotizacionesWebService)
+    public function __construct(ClienteWebService $ClienteWebService)
     {
-        $this->service = $CotizacionesWebService;
+        $this->service = $ClienteWebService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param  use App\Services\CotizacionesWebService $service
+     * @param  use App\Services\ClienteWebService $service
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -29,7 +29,7 @@ class CotizacionesWebController extends Controller
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  use App\Services\CotizacionesWebService $service
+     * @param  use App\Services\ClienteWebService $service
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request)
@@ -41,7 +41,7 @@ class CotizacionesWebController extends Controller
      * Creating a new resource.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  use App\Services\CotizacionesWebService $service
+     * @param  use App\Services\ClienteWebService $service
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
@@ -53,7 +53,7 @@ class CotizacionesWebController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  use App\Services\CotizacionesWebService $service
+     * @param  use App\Services\ClienteWebService $service
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -65,7 +65,7 @@ class CotizacionesWebController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  use App\Services\CotizacionesWebService $service
+     * @param  use App\Services\ClienteWebService $service
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request)
@@ -82,16 +82,5 @@ class CotizacionesWebController extends Controller
     public function store(Request $request)
     {
         //
-    }
-
-     /**
-     * Procesar.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function procesar(Request $request)
-    {
-        return $this->service->procesar($request);
     }
 }
