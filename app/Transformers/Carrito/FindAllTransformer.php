@@ -14,7 +14,7 @@ class FindAllTransformer extends TransformerAbstract
 
         $response = $detalle->map(function ($detalle) {
 
-            $subTotal = CalcHelper::ListProduct($detalle->precio, $detalle->precioPromocional, $detalle->cantidad);
+            $subTotal = CalcHelper::ListProduct($detalle->precio, $detalle->precioPromocional);
 
             $producto = [
                 'id' => optional($detalle->productos)->id,
@@ -32,7 +32,7 @@ class FindAllTransformer extends TransformerAbstract
                 'producto' => $producto,
                 'precio' => $detalle->precio,
                 'cantidad' => $detalle->cantidad,
-                'subTotal' => $subTotal,
+                'subTotal' => $subTotal*$detalle->cantidad,
             ];
 
             return $detalleCarrito;
