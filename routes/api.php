@@ -40,6 +40,7 @@ use App\Http\Controllers\ProspectoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ReintegroController;
 use App\Http\Controllers\CarritoWebController;
+use App\Http\Controllers\ClienteWebController;
 use App\Http\Controllers\CotizacionController;
 use App\Http\Controllers\DescuentosController;
 use App\Http\Controllers\InvoiceWebController;
@@ -806,13 +807,14 @@ Route::post('me', [AuthController::class, 'me']);
 Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
 Route::post('/web/invoice', [InvoiceWebController::class, 'index']);
 Route::post('/web/cotizaciones', [CotizacionesWebController::class, 'index']);
+Route::post('/web/cotizacion/carrito', [CotizacionesWebController::class, 'procesar']);
 Route::post('/web/usuario/password', [AuthWebController::class, 'change']);
 // Route::get('/web/carritodetalle', [CarritodetalleWebController::class, 'index']);
 Route::get('/web/carritodetalle', [CarritodetalleWebController::class, 'show']);
 Route::post('/web/carritodetalle', [CarritodetalleWebController::class, 'create']);
 Route::put('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'update']);
 Route::delete('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'delete']);
-
+Route::put('/web/cliente', [ClienteWebController::class, 'update']);
 });
 
 /** Login Routes Not Auth **/

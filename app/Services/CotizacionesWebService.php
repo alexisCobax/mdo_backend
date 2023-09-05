@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\CarritoHelper;
 use App\Models\Pedido;
 use App\Models\Cliente;
 use App\Models\Invoice;
@@ -11,6 +12,8 @@ use App\Models\Pedidodetalle;
 use Illuminate\Http\Response;
 use App\Models\Invoicedetalle;
 use App\Helpers\PaginateHelper;
+use App\Models\Carrito;
+use App\Models\Cotizaciondetalle;
 use Illuminate\Support\Facades\Auth;
 use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
@@ -98,6 +101,36 @@ class CotizacionesWebService
 
     public function delete(Request $request)
     {
+        $invoice = Invoice::find($request->id);
+
+        if (!$invoice) {
+            return response()->json(['error' => 'Invoice not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $invoice->delete();
+
+        return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+
+    public function procesar(Request $request)
+    {
+        $cotizacion = Cotizacion::find($request->cotizacion)->first();
+
+        $cotizacionData = [
+            "fecha" => $cotizacion->fecha,
+            "cliente" => $cotizacion->cliente,
+            "estado" => 0,
+            "vendedor" => 1,
+        ];
+
+        dd($cotizacionData);die;
+        
+        $cotizacionDetalle = Cotizaciondetalle::where('cotizacion',$request->cotizacion)->get();
+
+        $carrito = CarritoHelper::getCarrito();
+
+        echo $carrito['id'];die;
+
         $invoice = Invoice::find($request->id);
 
         if (!$invoice) {

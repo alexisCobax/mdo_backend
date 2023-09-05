@@ -24,10 +24,28 @@ class CarritoWebdetalleService
 
     public function findById(Request $request)
     {
+        $data = [];
 
-        $carrito = CarritoHelper::getCarrito(); 
+        $carrito = CarritoHelper::getCarrito();
 
-        $data = Carritodetalle::where('carrito',$carrito['id'])->get();
+        $carritoDetalle = Carritodetalle::where('carrito', $carrito['id'])->get();
+
+
+        foreach ($carritoDetalle as $c) {
+
+            $precio = CalcHelper::ListProduct(optional($c->productos)->precio, optional($c->productos)->precioPromocional);
+
+            $data[] = [
+                "idProducto" => $c->producto,
+                "nombreProducto" => optional($c->productos)->nombre,
+                "tamanioProducto" => optional($c->productos)->tamano,
+                "marcaProducto" => optional(optional($c->productos)->marcas)->nombre,
+                "modeloProducto" => "",
+                "cantidadProducto" => $c->cantidad,
+                "precioUnitario" => $precio,
+                "precioTotal" => $precio * $c->cantidad
+            ];
+        }
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
@@ -76,13 +94,27 @@ class CarritoWebdetalleService
 
     public function update(Request $request)
     {
-        $carritodetalle = Carritodetalle::find($request->id);
+
+        $producto = Producto::find($request->id)->first();
+
+        $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
+        $carrito = CarritoHelper::getCarrito();
+        $carritodetalle = CarritoDetalle::where('producto', $request->id)
+            ->where('carrito', $carrito['id'])
+            ->first();
 
         if (!$carritodetalle) {
             return response()->json(['error' => 'Carritodetalle not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $carritodetalle->update($request->all());
+        $payload = [
+            "carrito" => $carrito['id'],
+            "producto" => $request->id,
+            "precio" => $precio,
+            "cantidad" => $request->cantidad
+        ];
+
+        $carritodetalle->update($payload);
         $carritodetalle->refresh();
 
         return response()->json($carritodetalle, Response::HTTP_OK);
