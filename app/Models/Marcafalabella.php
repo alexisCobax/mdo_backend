@@ -9,15 +9,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Marcafalabella
+ * Class Marcafalabella.
  *
  * @property int $id
  * @property string $name
  * @property int $BrandId
  * @property string $GlobalIdentifier
  * @property string|null $Pais
- *
- * @package App\Models
  */
 class Marcafalabella extends Model
 {
@@ -27,7 +25,7 @@ class Marcafalabella extends Model
 
     protected $casts = [
         'id' => 'int',
-        'BrandId' => 'int'
+        'BrandId' => 'int',
     ];
 
     protected $fillable = [
@@ -35,6 +33,6 @@ class Marcafalabella extends Model
         'name',
         'BrandId',
         'GlobalIdentifier',
-        'Pais'
+        'Pais',
     ];
 }

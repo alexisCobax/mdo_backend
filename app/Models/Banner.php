@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Banner
+ * Class Banner.
  *
  * @property int $id
  * @property int $tipoUbicacion
@@ -22,8 +22,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $tipo
  * @property string|null $texto1
  * @property string|null $texto2
- *
- * @package App\Models
  */
 class Banner extends Model
 {
@@ -33,7 +31,7 @@ class Banner extends Model
     protected $casts = [
         'tipoUbicacion' => 'int',
         'suspendido' => 'bool',
-        'orden' => 'int'
+        'orden' => 'int',
     ];
 
     protected $fillable = [
@@ -46,6 +44,6 @@ class Banner extends Model
         'nombre',
         'tipo',
         'texto1',
-        'texto2'
+        'texto2',
     ];
 }

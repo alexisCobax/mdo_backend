@@ -9,15 +9,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Pedidocupon
+ * Class Pedidocupon.
  *
  * @property int $id
  * @property int|null $cupon
  * @property int|null $pedido
  * @property float|null $monto
  * @property int|null $cotizacion
- *
- * @package App\Models
  */
 class Pedidocupon extends Model
 {
@@ -30,7 +28,7 @@ class Pedidocupon extends Model
         'cupon' => 'int',
         'pedido' => 'int',
         'monto' => 'float',
-        'cotizacion' => 'int'
+        'cotizacion' => 'int',
     ];
 
     protected $fillable = [
@@ -38,6 +36,6 @@ class Pedidocupon extends Model
         'cupon',
         'pedido',
         'monto',
-        'cotizacion'
+        'cotizacion',
     ];
 }

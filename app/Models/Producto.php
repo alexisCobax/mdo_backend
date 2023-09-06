@@ -7,16 +7,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\Color;
-use App\Models\Fotoproducto;
-use App\Models\Marcaproducto;
-use App\Models\Tamanoproducto;
-use App\Models\Materialproducto;
-use App\Models\Categoriaproducto;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Producto
+ * Class Producto.
  *
  * @property int $id
  * @property string $nombre
@@ -74,8 +68,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $descripcionLarga
  * @property int $colorPrincipal
  * @property int $colorSecundario
- *
- * @package App\Models
  */
 class Producto extends Model
 {
@@ -125,7 +117,7 @@ class Producto extends Model
         'alto' => 'float',
         'ancho' => 'float',
         'colorPrincipal' => 'int',
-        'colorSecundario' => 'int'
+        'colorSecundario' => 'int',
     ];
 
     protected $fillable = [
@@ -183,7 +175,7 @@ class Producto extends Model
         'ancho',
         'descripcionLarga',
         'colorPrincipal',
-        'colorSecundario'
+        'colorSecundario',
     ];
 
     //Relationships
@@ -225,6 +217,7 @@ class Producto extends Model
         if ($codigo) {
             return $query->where('id', $codigo);
         }
+
         return $query;
     }
 
@@ -233,6 +226,7 @@ class Producto extends Model
         if ($categoria) {
             return $query->where('categoria', $categoria);
         }
+
         return $query;
     }
 
@@ -241,6 +235,7 @@ class Producto extends Model
         if ($nombre) {
             return $query->where('nombre', 'LIKE', '%' . $nombre . '%');
         }
+
         return $query;
     }
 
@@ -249,6 +244,7 @@ class Producto extends Model
         if ($suspendido) {
             return $query->where('suspendido', '=', $suspendido);
         }
+
         return $query;
     }
 
@@ -257,6 +253,7 @@ class Producto extends Model
         if ($tipo) {
             return $query->where('tipo', '=', $tipo);
         }
+
         return $query;
     }
 
@@ -265,6 +262,7 @@ class Producto extends Model
         if ($marca) {
             return $query->where('marca', '=', $marca);
         }
+
         return $query;
     }
 
@@ -273,6 +271,7 @@ class Producto extends Model
         if ($material) {
             return $query->where('material', '=', $material);
         }
+
         return $query;
     }
 
@@ -281,6 +280,7 @@ class Producto extends Model
         if ($color) {
             return $query->where('color', '=', $color);
         }
+
         return $query;
     }
 
@@ -315,6 +315,7 @@ class Producto extends Model
         if ($destacado) {
             return $query->where('destacado', '=', $destacado);
         }
+
         return $query;
     }
 }

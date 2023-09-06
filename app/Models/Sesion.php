@@ -9,13 +9,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Sesion
+ * Class Sesion.
  *
  * @property int $id
  * @property string $session
  * @property int $usuario
- *
- * @package App\Models
  */
 class Sesion extends Model
 {
@@ -25,12 +23,12 @@ class Sesion extends Model
 
     protected $casts = [
         'id' => 'int',
-        'usuario' => 'int'
+        'usuario' => 'int',
     ];
 
     protected $fillable = [
         'id',
         'session',
-        'usuario'
+        'usuario',
     ];
 }

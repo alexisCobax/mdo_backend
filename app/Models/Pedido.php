@@ -6,17 +6,12 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use App\Models\Cliente;
-use App\Models\Empleado;
-use App\Models\Formadepago;
-use App\Models\Estadopedido;
-use App\Models\Origenpedido;
-use Illuminate\Database\Eloquent\Model;
 use App\Enums\HorasEnums;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Pedido
+ * Class Pedido.
  *
  * @property int $id
  * @property Carbon $fecha
@@ -47,8 +42,6 @@ use App\Enums\HorasEnums;
  * @property string|null $transportadoraTelefono
  * @property string|null $codigoSeguimiento
  * @property bool|null $MailSeguimientoEnviado
- *
- * @package App\Models
  */
 class Pedido extends Model
 {
@@ -72,7 +65,7 @@ class Pedido extends Model
         'tipoDeEnvio' => 'int',
         'IdActiveCampaign' => 'int',
         'idTransportadora' => 'int',
-        'MailSeguimientoEnviado' => 'bool'
+        'MailSeguimientoEnviado' => 'bool',
     ];
 
     protected $fillable = [
@@ -103,7 +96,7 @@ class Pedido extends Model
         'transportadoraNombre',
         'transportadoraTelefono',
         'codigoSeguimiento',
-        'MailSeguimientoEnviado'
+        'MailSeguimientoEnviado',
     ];
 
     public function clientes()
@@ -148,6 +141,7 @@ class Pedido extends Model
         if ($codigo) {
             return $query->where('id', '=', $codigo);
         }
+
         return $query;
     }
 
@@ -158,6 +152,7 @@ class Pedido extends Model
                 $query->where('nombre', 'like', '%' . $nombreCliente . '%');
             });
         }
+
         return $query;
     }
 
@@ -166,6 +161,7 @@ class Pedido extends Model
         if ($estado) {
             return $query->where('estado', '=', $estado);
         }
+
         return $query;
     }
 
@@ -176,16 +172,18 @@ class Pedido extends Model
         if ($stockDesde !== null && $stockHasta !== null) {
             $stockDesde = $stockDesde . ' ' . $horas['desde'];
             $stockHasta = $stockHasta . ' ' . $horas['hasta'];
+
             return $query->whereBetween('fecha', [$stockDesde, $stockHasta]);
         } elseif ($stockDesde !== null) {
             $stockDesde = $stockDesde . ' ' . $horas['desde'];
+
             return $query->where('fecha', '>=', $stockDesde);
         } elseif ($stockHasta !== null) {
             $stockHasta = $stockHasta . ' ' . $horas['hasta'];
+
             return $query->where('fecha', '<=', $stockHasta);
         }
 
         return $query;
     }
-
 }

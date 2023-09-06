@@ -14,17 +14,17 @@ class CreateDetalleTransformer extends TransformerAbstract
 
         $response = $detalle->map(function ($detalle) {
 
-            $descripcion = optional($detalle->productos)->nombre." | ".optional($detalle->productos->marcas)->nombre." | ".optional($detalle->productos->colores)->nombre;
+            $descripcion = optional($detalle->productos)->nombre . ' | ' . optional($detalle->productos->marcas)->nombre . ' | ' . optional($detalle->productos->colores)->nombre;
 
             return [
-                "qordered" => $detalle->cantidad,
-                "qshipped" => $detalle->cantidad,
-                "qborder" => $detalle->cantidad,
-                "itemNumber" => $detalle->pedido,
-                "Descripcion" => $descripcion,
-                "listPrice" => $detalle->precio,
-                "netPrice" => $detalle->precio,
-                "invoice" => $this->id
+                'qordered' => $detalle->cantidad,
+                'qshipped' => $detalle->cantidad,
+                'qborder' => $detalle->cantidad,
+                'itemNumber' => $detalle->pedido,
+                'Descripcion' => $descripcion,
+                'listPrice' => $detalle->precio,
+                'netPrice' => $detalle->precio,
+                'invoice' => $this->id,
             ];
         })->toArray();
 

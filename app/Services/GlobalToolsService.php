@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Transformers\GlobalTools\FindAllTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Transformers\GlobalTools\FindAllTransformer;
 
 class GlobalToolsService
 {

@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Invoicedetalle
+ * Class Invoicedetalle.
  *
  * @property int $id
  * @property int $qordered
@@ -20,8 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float|null $listPrice
  * @property float|null $netPrice
  * @property int $invoice
- *
- * @package App\Models
  */
 class Invoicedetalle extends Model
 {
@@ -34,7 +32,7 @@ class Invoicedetalle extends Model
         'qborder' => 'int',
         'listPrice' => 'float',
         'netPrice' => 'float',
-        'invoice' => 'int'
+        'invoice' => 'int',
     ];
 
     protected $fillable = [
@@ -45,6 +43,6 @@ class Invoicedetalle extends Model
         'Descripcion',
         'listPrice',
         'netPrice',
-        'invoice'
+        'invoice',
     ];
 }

@@ -7,12 +7,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\Cliente;
-use App\Models\Cotizaciondetalle;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Cotizacion
+ * Class Cotizacion.
  *
  * @property int $id
  * @property Carbon $fecha
@@ -22,8 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $IdActiveCampaign
  * @property float|null $descuento
  * @property float|null $subTotal
- *
- * @package App\Models
  */
 class Cotizacion extends Model
 {
@@ -39,7 +35,7 @@ class Cotizacion extends Model
         'estado' => 'int',
         'IdActiveCampaign' => 'int',
         'descuento' => 'float',
-        'subTotal' => 'float'
+        'subTotal' => 'float',
     ];
 
     protected $fillable = [
@@ -50,7 +46,7 @@ class Cotizacion extends Model
         'estado',
         'IdActiveCampaign',
         'descuento',
-        'subTotal'
+        'subTotal',
     ];
 
     public function clientes()

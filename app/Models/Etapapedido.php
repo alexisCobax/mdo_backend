@@ -9,12 +9,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Etapapedido
+ * Class Etapapedido.
  *
  * @property int|null $id
  * @property string|null $nombre
- *
- * @package App\Models
  */
 class Etapapedido extends Model
 {
@@ -23,11 +21,11 @@ class Etapapedido extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'id' => 'int'
+        'id' => 'int',
     ];
 
     protected $fillable = [
         'id',
-        'nombre'
+        'nombre',
     ];
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\Cliente2Service;
+use Illuminate\Http\Request;
 
 class Cliente2Controller extends Controller
 {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ComisionService;
+use Illuminate\Http\Request;
 
 class ComisionController extends Controller
 {

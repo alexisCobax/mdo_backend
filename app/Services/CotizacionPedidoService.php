@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Pedido;
 use App\Models\Cotizacion;
 use App\Models\Cotizaciondetalle;
+use App\Models\Pedido;
+use App\Transformers\CotizacionPedido\CreateCotizacionTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Transformers\CotizacionPedido\CreateCotizacionTransformer;
 
 class CotizacionPedidoService
 {
@@ -33,15 +33,13 @@ class CotizacionPedidoService
         $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->first();
 
         $foo = [
-            "cotizacion"=>$cotizacionDetalle->cotizacion,
-            "producto"=>$cotizacionDetalle->producto,
-            "precio"=>$cotizacionDetalle->precio,
-            "cantidad"=>$cotizacionDetalle->cantidad
+            'cotizacion'=>$cotizacionDetalle->cotizacion,
+            'producto'=>$cotizacionDetalle->producto,
+            'precio'=>$cotizacionDetalle->precio,
+            'cantidad'=>$cotizacionDetalle->cantidad,
         ];
 
         dd($foo);
-
-
 
         //return response()->json($pedido, Response::HTTP_OK);
     }

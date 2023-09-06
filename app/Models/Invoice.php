@@ -7,11 +7,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\Cliente;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Invoice
+ * Class Invoice.
  *
  * @property int $id
  * @property Carbon $fecha
@@ -39,8 +38,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float|null $subTotal
  * @property float $DescuentoPorPromociones
  * @property int|null $IdActiveCampaign
- *
- * @package App\Models
  */
 class Invoice extends Model
 {
@@ -65,7 +62,7 @@ class Invoice extends Model
         'TotalEnvio' => 'float',
         'subTotal' => 'float',
         'DescuentoPorPromociones' => 'float',
-        'IdActiveCampaign' => 'int'
+        'IdActiveCampaign' => 'int',
     ];
 
     protected $fillable = [
@@ -94,7 +91,7 @@ class Invoice extends Model
         'codigoUPS',
         'subTotal',
         'DescuentoPorPromociones',
-        'IdActiveCampaign'
+        'IdActiveCampaign',
     ];
 
     //Relationships

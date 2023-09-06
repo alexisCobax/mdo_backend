@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Cupondescuento
+ * Class Cupondescuento.
  *
  * @property int $id
  * @property string $nombre
@@ -27,8 +27,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $cantidadUtilizados
  * @property Carbon|null $inicio
  * @property bool|null $combinable
- *
- * @package App\Models
  */
 class Cupondescuento extends Model
 {
@@ -49,7 +47,7 @@ class Cupondescuento extends Model
         'suspendido' => 'bool',
         'cantidadUtilizados' => 'int',
         'inicio' => 'datetime',
-        'combinable' => 'bool'
+        'combinable' => 'bool',
     ];
 
     protected $fillable = [
@@ -67,6 +65,6 @@ class Cupondescuento extends Model
         'suspendido',
         'cantidadUtilizados',
         'inicio',
-        'combinable'
+        'combinable',
     ];
 }

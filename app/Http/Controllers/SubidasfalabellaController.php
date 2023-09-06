@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\SubidasfalabellaService;
+use Illuminate\Http\Request;
 
 class SubidasfalabellaController extends Controller
 {

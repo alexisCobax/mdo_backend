@@ -56,7 +56,7 @@ class CreateBulkTransformer extends TransformerAbstract
             'largo' => $producto->largo,
             'alto' => $producto->alto,
             'ancho' => $producto->ancho,
-            'descripcionLarga' => $producto->descripcionLarga
+            'descripcionLarga' => $producto->descripcionLarga,
         ];
     }
 }

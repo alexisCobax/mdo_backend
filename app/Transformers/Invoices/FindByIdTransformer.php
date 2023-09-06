@@ -7,7 +7,7 @@ use League\Fractal\TransformerAbstract;
 
 class FindByIdTransformer extends TransformerAbstract
 {
-    public function transform($invoice,$request)
+    public function transform($invoice, $request)
     {
         $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->ToArray();
 
@@ -15,15 +15,15 @@ class FindByIdTransformer extends TransformerAbstract
 
         foreach ($invoiceDetalle as $id) {
             $detalle[] = [
-                "id" => $id['id'],
-                "qordered" => $id['qordered'],
-                "qshipped" => $id['qshipped'],
-                "qborder" => $id['qborder'],
-                "itemNumber" => $id['itemNumber'],
-                "Descripcion" => $id['Descripcion'],
-                "listPrice" => $id['listPrice'],
-                "netPrice" => $id['netPrice'],
-                "invoice" => $id['invoice']
+                'id' => $id['id'],
+                'qordered' => $id['qordered'],
+                'qshipped' => $id['qshipped'],
+                'qborder' => $id['qborder'],
+                'itemNumber' => $id['itemNumber'],
+                'Descripcion' => $id['Descripcion'],
+                'listPrice' => $id['listPrice'],
+                'netPrice' => $id['netPrice'],
+                'invoice' => $id['invoice'],
             ];
         }
 
@@ -55,7 +55,7 @@ class FindByIdTransformer extends TransformerAbstract
             'subTotal' => $invoice->subTotal,
             'DescuentoPorPromociones' => $invoice->DescuentoPorPromociones,
             'IdActiveCampaign' => $invoice->IdActiveCampaign,
-            'detalle' => $detalle
+            'detalle' => $detalle,
         ];
 
     }

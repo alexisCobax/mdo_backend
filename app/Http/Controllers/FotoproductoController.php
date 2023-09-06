@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\FotoproductoService;
+use Illuminate\Http\Request;
 
 class FotoproductoController extends Controller
 {

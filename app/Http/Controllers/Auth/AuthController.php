@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Exception;
-use App\Models\User;
-use App\Models\Usuario;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use App\Exceptions\TokenExpiredException;
 use App\Exceptions\TokenInvalidException;
 use App\Exceptions\TokenNotParsedException;
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Usuario;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     /**
-     * Create User
+     * Create User.
      * @param Request $request
      * @return User
      */
@@ -30,7 +30,7 @@ class AuthController extends Controller
                 $request->all(),
                 [
                     'nombre' => 'required',
-                    'clave' => 'required'
+                    'clave' => 'required',
                 ]
             );
 
@@ -39,7 +39,7 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'El nombre de usuario ya existe en el sistema',
-                    'errors' => $validateUser->errors()
+                    'errors' => $validateUser->errors(),
                 ], Response::HTTP_UNAUTHORIZED);
             }
 
@@ -47,7 +47,7 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
-                    'errors' => $validateUser->errors()
+                    'errors' => $validateUser->errors(),
                 ], Response::HTTP_UNAUTHORIZED);
             }
 
@@ -55,24 +55,24 @@ class AuthController extends Controller
                 'nombre' => $request->nombre,
                 'permisos' => 1,
                 'clave' => Hash::make($request->clave),
-                'suspendido' => 0
+                'suspendido' => 0,
             ]);
 
             return response()->json([
                 'status' => true,
                 'message' => 'Usuario creado correctamente!',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken('API TOKEN')->plainTextToken,
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage()
+                'message' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Login The User
+     * Login The User.
      * @param Request $request
      * @return User
      */
@@ -83,7 +83,7 @@ class AuthController extends Controller
                 $request->all(),
                 [
                     'nombre' => 'required',
-                    'clave' => 'required'
+                    'clave' => 'required',
                 ]
             );
 
@@ -91,7 +91,7 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
-                    'errors' => $validateUser->errors()
+                    'errors' => $validateUser->errors(),
                 ], Response::HTTP_UNAUTHORIZED);
             }
 
@@ -110,18 +110,19 @@ class AuthController extends Controller
                     'message' => 'Usuario inexistente.',
                 ], Response::HTTP_NOT_FOUND);
             }
+
             return response()->json([
-                'token' => $user->createToken("API TOKEN")->plainTextToken,
+                'token' => $user->createToken('API TOKEN')->plainTextToken,
                 'user' => [
-                    "nombre" => $user->nombre,
-                    "permiso" => $user->permisos
+                    'nombre' => $user->nombre,
+                    'permiso' => $user->permisos,
                 ],
 
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage()
+                'message' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -130,6 +131,7 @@ class AuthController extends Controller
     {
         try {
             $usuario = Usuario::where('nombre', $credentials['nombre'])->first();
+
             return Hash::check($credentials['clave'], $usuario->clave);
         } catch (Exception $e) {
             return $e->getMessage();
@@ -140,8 +142,9 @@ class AuthController extends Controller
     {
         try {
             auth()->user()->tokens()->delete();
+
             return [
-                'message' => 'user logged out'
+                'message' => 'user logged out',
             ];
         } catch (TokenInvalidException $e) {
             return Response::json(['error' => 'Invalid token', 'code' => 401], 401);

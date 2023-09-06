@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Marcaproducto
+ * Class Marcaproducto.
  *
  * @property int $id
  * @property string $nombre
@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $logo
  * @property bool|null $MostrarEnWeb
  * @property bool $suspendido
- *
- * @package App\Models
  */
 class Marcaproducto extends Model
 {
@@ -30,7 +28,7 @@ class Marcaproducto extends Model
         'propia' => 'bool',
         'VIP' => 'bool',
         'MostrarEnWeb' => 'bool',
-        'suspendido' => 'bool'
+        'suspendido' => 'bool',
     ];
 
     protected $fillable = [
@@ -39,6 +37,6 @@ class Marcaproducto extends Model
         'VIP',
         'logo',
         'MostrarEnWeb',
-        'suspendido'
+        'suspendido',
     ];
 }

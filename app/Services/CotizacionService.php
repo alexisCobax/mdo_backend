@@ -2,16 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\Producto;
-use App\Models\Cotizacion;
+use App\Filters\Cotizaciones\CotizacionesFilters;
 use App\Helpers\CalcHelper;
+use App\Models\Cotizacion;
+use App\Models\Cotizaciondetalle;
+use App\Models\Producto;
+use App\Transformers\Cotizacion\FindByIdTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
-use App\Models\Cotizaciondetalle;
-use App\Http\Requests\CotizacionRequest;
-use App\Filters\Cotizaciones\CotizacionesFilters;
-use App\Transformers\Cotizacion\FindByIdTransformer;
 
 class CotizacionService
 {
@@ -19,6 +17,7 @@ class CotizacionService
     {
         try {
             $data = CotizacionesFilters::getPaginateCotizaciones($request, Cotizacion::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener las cotizaciones', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -39,7 +38,7 @@ class CotizacionService
 
                 $response = [
                     'status' => Response::HTTP_OK,
-                    'message' => $cotizacionTransformada
+                    'message' => $cotizacionTransformada,
                 ];
 
                 return response()->json(['data' => $response], Response::HTTP_OK);

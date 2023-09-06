@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -19,6 +18,7 @@ class JWTMiddleWare
     public function handle(Request $request, Closure $next)
     {
         $user = JWTAuth::parseToken()->authenticate();
+
         return $next($request);
     }
 }

@@ -20,5 +20,4 @@ class ExcelController extends Controller
         return $this->service->procesar($request);
 
     }
-
 }

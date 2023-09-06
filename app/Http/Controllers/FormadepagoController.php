@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\FormadepagoService;
+use Illuminate\Http\Request;
 
 class FormadepagoController extends Controller
 {

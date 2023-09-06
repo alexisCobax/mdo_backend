@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CarriermethodService;
+use Illuminate\Http\Request;
 
 class CarriermethodController extends Controller
 {

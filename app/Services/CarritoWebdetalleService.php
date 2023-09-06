@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Producto;
 use App\Helpers\CalcHelper;
+use App\Helpers\CarritoHelper;
+use App\Helpers\PaginateHelper;
+use App\Models\Carritodetalle;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\CarritoHelper;
-use App\Models\Carritodetalle;
-use App\Helpers\PaginateHelper;
 
 class CarritoWebdetalleService
 {
@@ -16,6 +16,7 @@ class CarritoWebdetalleService
     {
         try {
             $data = PaginateHelper::getPaginatedData($request, Carritodetalle::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -30,20 +31,19 @@ class CarritoWebdetalleService
 
         $carritoDetalle = Carritodetalle::where('carrito', $carrito['id'])->get();
 
-
         foreach ($carritoDetalle as $c) {
 
             $precio = CalcHelper::ListProduct(optional($c->productos)->precio, optional($c->productos)->precioPromocional);
 
             $data[] = [
-                "idProducto" => $c->producto,
-                "nombreProducto" => optional($c->productos)->nombre,
-                "tamanioProducto" => optional($c->productos)->tamano,
-                "marcaProducto" => optional(optional($c->productos)->marcas)->nombre,
-                "modeloProducto" => "",
-                "cantidadProducto" => $c->cantidad,
-                "precioUnitario" => $precio,
-                "precioTotal" => $precio * $c->cantidad
+                'idProducto' => $c->producto,
+                'nombreProducto' => optional($c->productos)->nombre,
+                'tamanioProducto' => optional($c->productos)->tamano,
+                'marcaProducto' => optional(optional($c->productos)->marcas)->nombre,
+                'modeloProducto' => '',
+                'cantidadProducto' => $c->cantidad,
+                'precioUnitario' => $precio,
+                'precioTotal' => $precio * $c->cantidad,
             ];
         }
 
@@ -61,10 +61,10 @@ class CarritoWebdetalleService
         if ($productoExistente) {
             $cantidad = $productoExistente->cantidad + $request->cantidad;
             $detalle = [
-                "carrito" => $carrito['id'],
-                "producto" => $request->producto,
-                "precio" => $productoExistente->precio * $cantidad,
-                "cantidad" => $cantidad
+                'carrito' => $carrito['id'],
+                'producto' => $request->producto,
+                'precio' => $productoExistente->precio * $cantidad,
+                'cantidad' => $cantidad,
             ];
 
             $carritodetalle = Carritodetalle::find($productoExistente->id);
@@ -76,10 +76,10 @@ class CarritoWebdetalleService
             $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
 
             $detalle = [
-                "carrito" => $carrito['id'],
-                "producto" => $request->producto,
-                "precio" => $precio * $request->cantidad,
-                "cantidad" => $request->cantidad
+                'carrito' => $carrito['id'],
+                'producto' => $request->producto,
+                'precio' => $precio * $request->cantidad,
+                'cantidad' => $request->cantidad,
             ];
 
             $carritodetalle = Carritodetalle::create($detalle);
@@ -108,10 +108,10 @@ class CarritoWebdetalleService
         }
 
         $payload = [
-            "carrito" => $carrito['id'],
-            "producto" => $request->id,
-            "precio" => $precio,
-            "cantidad" => $request->cantidad
+            'carrito' => $carrito['id'],
+            'producto' => $request->id,
+            'precio' => $precio,
+            'cantidad' => $request->cantidad,
         ];
 
         $carritodetalle->update($payload);

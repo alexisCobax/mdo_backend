@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ProductogeneroService;
+use Illuminate\Http\Request;
 
 class ProductogeneroController extends Controller
 {

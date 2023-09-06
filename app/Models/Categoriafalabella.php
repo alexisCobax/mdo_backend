@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Categoriafalabella
+ * Class Categoriafalabella.
  *
  * @property int $id
  * @property string $Name
@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $AttributeSetId
  * @property int $PadreCategoryId
  * @property string|null $Pais
- *
- * @package App\Models
  */
 class Categoriafalabella extends Model
 {
@@ -31,7 +29,7 @@ class Categoriafalabella extends Model
         'id' => 'int',
         'CategoryId' => 'int',
         'AttributeSetId' => 'int',
-        'PadreCategoryId' => 'int'
+        'PadreCategoryId' => 'int',
     ];
 
     protected $fillable = [
@@ -41,6 +39,6 @@ class Categoriafalabella extends Model
         'GlobalIdentifier',
         'AttributeSetId',
         'PadreCategoryId',
-        'Pais'
+        'Pais',
     ];
 }

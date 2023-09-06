@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Prospecto
+ * Class Prospecto.
  *
  * @property int $id
  * @property string|null $nombre
@@ -31,8 +31,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $pais
  * @property Carbon|null $fecha
  * @property string|null $tipo
- *
- * @package App\Models
  */
 class Prospecto extends Model
 {
@@ -42,7 +40,7 @@ class Prospecto extends Model
 
     protected $casts = [
         'id' => 'int',
-        'fecha' => 'datetime'
+        'fecha' => 'datetime',
     ];
 
     protected $fillable = [
@@ -64,6 +62,6 @@ class Prospecto extends Model
         'ciudad',
         'pais',
         'fecha',
-        'tipo'
+        'tipo',
     ];
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ReintegroService;
+use Illuminate\Http\Request;
 
 class ReintegroController extends Controller
 {

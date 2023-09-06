@@ -19,7 +19,7 @@ class FindByIdTransformer extends TransformerAbstract
     {
         return [
              Cliente::find(),
-            'usuario' => Usuario::find()
+            'usuario' => Usuario::find(),
         ];
     }
 }

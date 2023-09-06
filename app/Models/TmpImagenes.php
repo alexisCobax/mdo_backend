@@ -9,9 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Banner
- *
- * @package App\Models
+ * Class Banner.
  */
 class TmpImagenes extends Model
 {
@@ -22,6 +20,6 @@ class TmpImagenes extends Model
 
     protected $fillable = [
         'imagen',
-        'nombre'
+        'nombre',
     ];
 }

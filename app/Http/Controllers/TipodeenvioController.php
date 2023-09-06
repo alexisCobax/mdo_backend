@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\TipodeenvioService;
+use Illuminate\Http\Request;
 
 class TipodeenvioController extends Controller
 {

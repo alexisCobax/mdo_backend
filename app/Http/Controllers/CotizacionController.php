@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CotizacionRequest;
-use Illuminate\Http\Request;
 use App\Services\CotizacionService;
+use Illuminate\Http\Request;
 
 class CotizacionController extends Controller
 {

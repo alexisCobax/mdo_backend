@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\TransaccionService;
+use Illuminate\Http\Request;
 
 class TransaccionController extends Controller
 {

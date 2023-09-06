@@ -9,12 +9,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Estadocotizacion
+ * Class Estadocotizacion.
  *
  * @property int $id
  * @property string $nombre
- *
- * @package App\Models
  */
 class Estadocotizacion extends Model
 {
@@ -23,11 +21,11 @@ class Estadocotizacion extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'id' => 'int'
+        'id' => 'int',
     ];
 
     protected $fillable = [
         'id',
-        'nombre'
+        'nombre',
     ];
 }

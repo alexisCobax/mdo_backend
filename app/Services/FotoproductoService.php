@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Producto;
+use App\Helpers\PaginateHelper;
 use App\Models\Fotoproducto;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\File;
 
 class FotoproductoService
@@ -15,6 +15,7 @@ class FotoproductoService
     {
         try {
             $data = PaginateHelper::getPaginatedData($request, Fotoproducto::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -37,6 +38,7 @@ class FotoproductoService
 
                     if ($producto) {
                         $producto->update(['imagenPrincipal' => $request->idImagen]);
+
                         return response()->json($producto, Response::HTTP_OK);
                     } else {
                         return response()->json(['error' => 'Producto not found'], Response::HTTP_NOT_FOUND);
@@ -52,6 +54,7 @@ class FotoproductoService
                     if ($producto) {
                         File::delete(storage_path('app/public/images/' . $request->idImagen . '.' . env('EXTENSION_IMAGEN_PRODUCTO')), true);
                         $producto->delete();
+
                         return response()->json($producto, Response::HTTP_OK);
                     } else {
                         return response()->json(['error' => 'Failed to delete Fotoproducto'], Response::HTTP_INTERNAL_SERVER_ERROR);
