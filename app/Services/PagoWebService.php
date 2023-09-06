@@ -135,7 +135,7 @@ class PagoWebService
 
     public function sendProforma($pedido)
     {
-        $pedido = Pedido::where('id',$pedido)->first();
+        $pedido = Pedido::where('id', $pedido)->first();
 
         $tranformer = new FindByIdTransformer();
         $proforma = $tranformer->transform($pedido);

@@ -95,4 +95,9 @@ class CarritoWebController extends Controller
     {
         //
     }
+
+    public function procesar(Request $request)
+    {
+        return $this->service->procesar($request);
+    }
 }

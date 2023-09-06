@@ -730,21 +730,39 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('me', [AuthController::class, 'me']);
 
-    /* WEB Routes **/
+    /*
+     *
+     * WEB Routes
+     *
+     **/
 
+    /* Carrito**/
     Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
+    Route::post('/web/carrito/cotizacion', [CarritoWebController::class, 'procesar']);
+
+    /* Invoice **/
     Route::post('/web/invoice', [InvoiceWebController::class, 'index']);
+
+    /* Cotizaciones **/
     Route::post('/web/cotizaciones', [CotizacionesWebController::class, 'index']);
     Route::post('/web/cotizacion/carrito', [CotizacionesWebController::class, 'procesar']);
+
+    /* usuario **/
     Route::post('/web/usuario/password', [AuthWebController::class, 'change']);
-    // Route::get('/web/carritodetalle', [CarritodetalleWebController::class, 'index']);
+
+    /* Carrito Detalle**/
     Route::get('/web/carritodetalle', [CarritodetalleWebController::class, 'show']);
     Route::post('/web/carritodetalle', [CarritodetalleWebController::class, 'create']);
     Route::put('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'update']);
     Route::delete('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'delete']);
+
+    /* Cliente **/
     Route::put('/web/cliente', [ClienteWebController::class, 'update']);
     Route::get('/web/cliente', [ClienteWebController::class, 'show']);
+
+    /* Pagos **/
     Route::post('/web/pagar', [PagoWebController::class, 'create']);
+
 });
 
 /* Login Routes Not Auth **/

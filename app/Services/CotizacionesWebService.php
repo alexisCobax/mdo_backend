@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Helpers\CarritoHelper;
+use App\Models\Carrito;
+use App\Models\Carritodetalle;
 use App\Models\Cliente;
 use App\Models\Cotizacion;
 use App\Models\Cotizaciondetalle;
@@ -114,31 +115,29 @@ class CotizacionesWebService
     {
         $cotizacion = Cotizacion::find($request->cotizacion)->first();
 
-        $cotizacionData = [
-            'fecha' => $cotizacion->fecha,
-            'cliente' => $cotizacion->cliente,
-            'estado' => 0,
-            'vendedor' => 1,
-        ];
-
-        dd($cotizacionData);
-        die;
+        $carrito = new Carrito;
+        $carrito->fecha = $cotizacion->fecha;
+        $carrito->cliente = $cotizacion->cliente;
+        $carrito->estado = 0;
+        $carrito->vendedor = 1;
+        $carrito->save();
 
         $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->get();
 
-        $carrito = CarritoHelper::getCarrito();
+        foreach ($cotizacionDetalle as $cd) {
 
-        echo $carrito['id'];
-        die;
-
-        $invoice = Invoice::find($request->id);
-
-        if (!$invoice) {
-            return response()->json(['error' => 'Invoice not found'], Response::HTTP_NOT_FOUND);
+            $carritoDetalle = new Carritodetalle;
+            $carritoDetalle->carrito = $carrito->id;
+            $carritoDetalle->producto = $cd['producto'];
+            $carritoDetalle->precio = $cd['precio'];
+            $carritoDetalle->cantidad = $cd['cantidad'];
+            $carritoDetalle->save();
         }
 
-        $invoice->delete();
+        if (!$carrito) {
+            return response()->json(['error' => 'Carrito not found'], Response::HTTP_NOT_FOUND);
+        }
 
-        return response()->json(['id' => $request->id], Response::HTTP_OK);
+        return response()->json(['data' => $carrito], Response::HTTP_OK);
     }
 }
