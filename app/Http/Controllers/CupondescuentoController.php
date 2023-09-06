@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CupondescuentoService;
+use Illuminate\Http\Request;
 
 class CupondescuentoController extends Controller
 {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\MarcaproductoService;
+use Illuminate\Http\Request;
 
 class MarcaproductoController extends Controller
 {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\MovimientoproductoService;
+use Illuminate\Http\Request;
 
 class MovimientoproductoController extends Controller
 {

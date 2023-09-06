@@ -12,7 +12,6 @@ class ProductoDTO
         $this->datosProducto($data);
     }
 
-
     private function datosProducto(array $data)
     {
 
@@ -70,7 +69,7 @@ class ProductoDTO
             'ancho' => $data['ancho'],
             'descripcionLarga' => $data['descripcionLarga'],
             'colorPrincipal' => $data['colorPrincipal'],
-            'colorSecundario' => $data['colorSecundario']
+            'colorSecundario' => $data['colorSecundario'],
         ];
     }
 }

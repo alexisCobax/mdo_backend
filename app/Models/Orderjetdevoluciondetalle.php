@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Orderjetdevoluciondetalle
+ * Class Orderjetdevoluciondetalle.
  *
  * @property int $id
  * @property int $idOrdenDevolucion
@@ -24,8 +24,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $amoun_tax
  * @property float $amount_shipping_cost
  * @property float $amount_shipping_tax
- *
- * @package App\Models
  */
 class Orderjetdevoluciondetalle extends Model
 {
@@ -40,7 +38,7 @@ class Orderjetdevoluciondetalle extends Model
         'amount_principal' => 'float',
         'amoun_tax' => 'float',
         'amount_shipping_cost' => 'float',
-        'amount_shipping_tax' => 'float'
+        'amount_shipping_tax' => 'float',
     ];
 
     protected $fillable = [
@@ -56,6 +54,6 @@ class Orderjetdevoluciondetalle extends Model
         'amount_principal',
         'amoun_tax',
         'amount_shipping_cost',
-        'amount_shipping_tax'
+        'amount_shipping_tax',
     ];
 }

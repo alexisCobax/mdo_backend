@@ -9,13 +9,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Deposito
+ * Class Deposito.
  *
  * @property int $id
  * @property string $nombre
  * @property bool $suspendido
- *
- * @package App\Models
  */
 class Deposito extends Model
 {
@@ -25,11 +23,11 @@ class Deposito extends Model
 
     protected $casts = [
         'id' => 'int',
-        'suspendido' => 'bool'
+        'suspendido' => 'bool',
     ];
 
     protected $fillable = [
         'nombre',
-        'suspendido'
+        'suspendido',
     ];
 }

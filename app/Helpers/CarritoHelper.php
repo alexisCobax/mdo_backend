@@ -2,15 +2,13 @@
 
 namespace App\Helpers;
 
-use Carbon\Carbon;
 use App\Models\Carrito;
 use App\Models\Cliente;
 use Illuminate\Support\Facades\Auth;
 
 class CarritoHelper
 {
-
-    static function getCarrito()
+    public static function getCarrito()
     {
         $user = Auth::user();
         $cliente = Cliente::where('usuario', $user['id'])->first();
@@ -21,7 +19,7 @@ class CarritoHelper
         return [
             'id' => $carrito->id,
             'cliente' => $cliente->id,
-            'usuario' => $user['id']
+            'usuario' => $user['id'],
         ];
     }
 }

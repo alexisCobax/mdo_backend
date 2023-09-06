@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ReciboService;
+use Illuminate\Http\Request;
 
 class ReciboController extends Controller
 {

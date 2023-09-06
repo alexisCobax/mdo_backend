@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Helpers\PaginateHelper;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-use App\Helpers\PaginateHelper;
 use Illuminate\Http\Response;
 
 class UsuarioService
@@ -13,6 +13,7 @@ class UsuarioService
     {
         try {
             $data = PaginateHelper::getPaginatedData($request, Usuario::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -29,7 +30,7 @@ class UsuarioService
     public function create(Request $request)
     {
         $existe = Usuario::where('nombre', $request->usuario)->count();
-        if($existe!=0) {
+        if ($existe != 0) {
             return response()->json(['error' => 'Usuario existente', 'code' => 401], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -69,5 +70,4 @@ class UsuarioService
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
-
 }

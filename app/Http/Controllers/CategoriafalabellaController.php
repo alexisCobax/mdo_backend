@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CategoriafalabellaService;
+use Illuminate\Http\Request;
 
 class CategoriafalabellaController extends Controller
 {

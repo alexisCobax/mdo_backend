@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Movimientoproducto
+ * Class Movimientoproducto.
  *
  * @property int $id
  * @property Carbon $fecha
@@ -19,8 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $cantidad
  * @property int $idProducto
  * @property string $comentarios
- *
- * @package App\Models
  */
 class Movimientoproducto extends Model
 {
@@ -32,7 +30,7 @@ class Movimientoproducto extends Model
         'origen' => 'int',
         'destino' => 'int',
         'cantidad' => 'int',
-        'idProducto' => 'int'
+        'idProducto' => 'int',
     ];
 
     protected $fillable = [
@@ -41,6 +39,6 @@ class Movimientoproducto extends Model
         'destino',
         'cantidad',
         'idProducto',
-        'comentarios'
+        'comentarios',
     ];
 }

@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Orderjet
+ * Class Orderjet.
  *
  * @property int $id
  * @property string|null $merchant_order_id
@@ -28,8 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $carrier_pick_up_date
  * @property string|null $carrier
  * @property string|null $enlaceDevolucion
- *
- * @package App\Models
  */
 class Orderjet extends Model
 {
@@ -43,7 +41,7 @@ class Orderjet extends Model
         'fecha' => 'datetime',
         'response_shipment_date' => 'datetime',
         'expected_delivery_date' => 'datetime',
-        'carrier_pick_up_date' => 'datetime'
+        'carrier_pick_up_date' => 'datetime',
     ];
 
     protected $fillable = [
@@ -62,6 +60,6 @@ class Orderjet extends Model
         'ship_from_zip_code',
         'carrier_pick_up_date',
         'carrier',
-        'enlaceDevolucion'
+        'enlaceDevolucion',
     ];
 }

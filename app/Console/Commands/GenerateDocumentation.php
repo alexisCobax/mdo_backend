@@ -26,6 +26,7 @@ class GenerateDocumentation extends Command
 
         $routes = array_filter($routesAll, function ($route) use ($prefix) {
             $routePrefix = $route->getPrefix();
+
             return str_starts_with($routePrefix, $prefix);
         });
 
@@ -33,9 +34,9 @@ class GenerateDocumentation extends Command
         $collection = [
             'info' => [
                 'name' => 'API MDO Documentation',
-                'schema' => 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
+                'schema' => 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
             ],
-            'item' => []
+            'item' => [],
         ];
 
         foreach ($routes as $route) {
@@ -54,9 +55,9 @@ class GenerateDocumentation extends Command
                     'method' => $routeMethods[0],
                     'header' => [
                         'Content-Type' => 'application/json',
-                        'Accept' => 'application/json'
-                    ]
-                ]
+                        'Accept' => 'application/json',
+                    ],
+                ],
             ];
 
             // Obtener el nombre de modelo a partir del routeUri
@@ -68,7 +69,7 @@ class GenerateDocumentation extends Command
                 if ($bodyParams !== null) {
                     $item['request']['body'] = [
                         'mode' => 'raw',
-                        'raw' => $bodyParams
+                        'raw' => $bodyParams,
                     ];
                 }
             }
@@ -98,7 +99,7 @@ class GenerateDocumentation extends Command
     {
 
         // Obtener el nombre completo de la clase del modelo
-        $modelClass = "App\\Models\\" . $modelName;
+        $modelClass = 'App\\Models\\' . $modelName;
         // Verificar si la clase del modelo existe
         if (!class_exists($modelClass)) {
             return null;

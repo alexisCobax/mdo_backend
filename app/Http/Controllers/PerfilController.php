@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\PerfilService;
+use Illuminate\Http\Request;
 
 class PerfilController extends Controller
 {

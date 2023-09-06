@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Transaccion
+ * Class Transaccion.
  *
  * @property int $id
  * @property Carbon $fecha
@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $pedido
  * @property string $resultado
  * @property string $ctr
- *
- * @package App\Models
  */
 class Transaccion extends Model
 {
@@ -31,7 +29,7 @@ class Transaccion extends Model
         'id' => 'int',
         'fecha' => 'datetime',
         'cliente' => 'int',
-        'pedido' => 'int'
+        'pedido' => 'int',
     ];
 
     protected $fillable = [
@@ -40,6 +38,6 @@ class Transaccion extends Model
         'cliente',
         'pedido',
         'resultado',
-        'ctr'
+        'ctr',
     ];
 }

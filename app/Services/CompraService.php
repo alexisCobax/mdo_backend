@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Compra;
-use Illuminate\Http\Request;
-use App\Models\Compradetalle;
-use Illuminate\Http\Response;
 use App\Filters\Compras\ComprasFilters;
+use App\Models\Compra;
+use App\Models\Compradetalle;
 use App\Models\Compradetallenn;
 use App\Transformers\Compra\FindByIdTransformer;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CompraService
 {
@@ -17,6 +17,7 @@ class CompraService
 
         try {
             $data = ComprasFilters::getPaginateCompras($request, Compra::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener las compras', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -28,6 +29,7 @@ class CompraService
         try {
             $transformer = new FindByIdTransformer($request);
             $transformer = $transformer->transform();
+
             return response()->json(['data' => $transformer], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener la compra'], Response::HTTP_INTERNAL_SERVER_ERROR);

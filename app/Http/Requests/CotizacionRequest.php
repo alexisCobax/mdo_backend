@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-use Illuminate\Http\Exceptions\HttpResponseException;
-
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CotizacionRequest extends FormRequest
 {
@@ -30,18 +28,14 @@ class CotizacionRequest extends FormRequest
         ];
     }
 
-
-
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
             'message'   => 'Error de validacion',
-            'data'      => $validator->errors()
+            'data'      => $validator->errors(),
         ]));
     }
-
-
 
     public function messages()
     {
@@ -49,7 +43,7 @@ class CotizacionRequest extends FormRequest
         return [
             'total.required' => 'Total es requerido',
             'cliente.required' => 'Body es requerido',
-            'fecha.required' => 'Fecha es requerido'
+            'fecha.required' => 'Fecha es requerido',
 
         ];
     }

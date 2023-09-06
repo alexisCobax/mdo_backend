@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CompraService;
+use Illuminate\Http\Request;
 
 class CompraController extends Controller
 {

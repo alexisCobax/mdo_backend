@@ -26,27 +26,27 @@ class FindByIdTransformer extends TransformerAbstract
             $productos = [];
 
             foreach ($compraDetalle as $c) {
-                $productos[] = array(
-                    "id" => $c->id,
-                    "compra" => $c->compra,
-                    "producto" => $c->producto,
-                    "nombreProducto" => optional($c->productos)->nombre,
-                    "cantidad" => $c->cantidad,
-                    "precioUnitario" => $c->precioUnitario,
-                    "enDeposito" => $c->enDeposito
-                );
+                $productos[] = [
+                    'id' => $c->id,
+                    'compra' => $c->compra,
+                    'producto' => $c->producto,
+                    'nombreProducto' => optional($c->productos)->nombre,
+                    'cantidad' => $c->cantidad,
+                    'precioUnitario' => $c->precioUnitario,
+                    'enDeposito' => $c->enDeposito,
+                ];
             }
 
             $compraDetallenn = Compradetallenn::where('idCompra', $compras->id)->get();
             $gastos = [];
 
             foreach ($compraDetallenn as $cd) {
-                $gastos[] = array(
-                    "id" => $cd->id,
-                    "descripcion" => $cd->descripcion,
-                    "precioGasto" => $cd->precio,
-                    "idCompra" => $cd->idCompra
-                );
+                $gastos[] = [
+                    'id' => $cd->id,
+                    'descripcion' => $cd->descripcion,
+                    'precioGasto' => $cd->precio,
+                    'idCompra' => $cd->idCompra,
+                ];
             }
 
             return [
@@ -61,7 +61,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'pagado' => $compras->pagado,
                 'enDeposito' => $compras->enDeposito,
                 'productos' => $productos,
-                'gastos' => $gastos
+                'gastos' => $gastos,
             ];
         })->toArray();
 

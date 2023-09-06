@@ -11,7 +11,7 @@ class HorasEnums
     {
         return [
             self::DESDE => '00:00:00',
-            self::HASTA => '23:59:59'
+            self::HASTA => '23:59:59',
         ];
     }
 }

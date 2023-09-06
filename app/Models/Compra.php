@@ -7,11 +7,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\Proveedor;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Compra
+ * Class Compra.
  *
  * @property int $id
  * @property int $proveedor
@@ -22,8 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $observaciones
  * @property bool $pagado
  * @property bool $enDeposito
- *
- * @package App\Models
  */
 class Compra extends Model
 {
@@ -36,7 +33,7 @@ class Compra extends Model
         'fechaDePago' => 'datetime',
         'precio' => 'float',
         'pagado' => 'bool',
-        'enDeposito' => 'bool'
+        'enDeposito' => 'bool',
     ];
 
     protected $fillable = [
@@ -47,7 +44,7 @@ class Compra extends Model
         'numeroLote',
         'observaciones',
         'pagado',
-        'enDeposito'
+        'enDeposito',
     ];
 
     public function proveedores()

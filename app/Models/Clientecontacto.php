@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Clientecontacto
+ * Class Clientecontacto.
  *
  * @property int $id
  * @property string $nombre
@@ -20,8 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $puesto
  * @property string $comentarios
  * @property int $idCliente
- *
- * @package App\Models
  */
 class Clientecontacto extends Model
 {
@@ -32,7 +30,7 @@ class Clientecontacto extends Model
     protected $casts = [
         'id' => 'int',
         'fechaNacimiento' => 'datetime',
-        'idCliente' => 'int'
+        'idCliente' => 'int',
     ];
 
     protected $fillable = [
@@ -43,6 +41,6 @@ class Clientecontacto extends Model
         'fechaNacimiento',
         'puesto',
         'comentarios',
-        'idCliente'
+        'idCliente',
     ];
 }

@@ -36,7 +36,7 @@ class FindAllTransformer extends TransformerAbstract
             'codigoUPS' => $invoice->codigoUPS,
             'subTotal' => $invoice->subTotal,
             'DescuentoPorPromociones' => $invoice->DescuentoPorPromociones,
-            'IdActiveCampaign' => $invoice->IdActiveCampaign
+            'IdActiveCampaign' => $invoice->IdActiveCampaign,
         ];
     }
 }

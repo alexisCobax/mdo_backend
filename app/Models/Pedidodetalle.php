@@ -6,11 +6,10 @@
 
 namespace App\Models;
 
-use App\Models\Producto;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Pedidodetalle
+ * Class Pedidodetalle.
  *
  * @property int $id
  * @property int $pedido
@@ -22,8 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float|null $tax
  * @property float|null $taxEnvio
  * @property string|null $jet_order_item_id
- *
- * @package App\Models
  */
 class Pedidodetalle extends Model
 {
@@ -38,7 +35,7 @@ class Pedidodetalle extends Model
         'costo' => 'float',
         'envio' => 'float',
         'tax' => 'float',
-        'taxEnvio' => 'float'
+        'taxEnvio' => 'float',
     ];
 
     protected $fillable = [
@@ -50,7 +47,7 @@ class Pedidodetalle extends Model
         'envio',
         'tax',
         'taxEnvio',
-        'jet_order_item_id'
+        'jet_order_item_id',
     ];
 
     public function productos()

@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Pedidodescuentospromocion
+ * Class Pedidodescuentospromocion.
  *
  * @property int $id
  * @property int $idPedido
@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $descripcion
  * @property float $montoDescuento
  * @property int $idTipoPromocion
- *
- * @package App\Models
  */
 class Pedidodescuentospromocion extends Model
 {
@@ -31,7 +29,7 @@ class Pedidodescuentospromocion extends Model
         'idPedido' => 'int',
         'idPromocion' => 'int',
         'montoDescuento' => 'float',
-        'idTipoPromocion' => 'int'
+        'idTipoPromocion' => 'int',
     ];
 
     protected $fillable = [
@@ -40,6 +38,6 @@ class Pedidodescuentospromocion extends Model
         'idPromocion',
         'descripcion',
         'montoDescuento',
-        'idTipoPromocion'
+        'idTipoPromocion',
     ];
 }

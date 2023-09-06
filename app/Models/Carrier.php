@@ -9,12 +9,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Carrier
+ * Class Carrier.
  *
  * @property int $id
  * @property string|null $nombre
- *
- * @package App\Models
  */
 class Carrier extends Model
 {
@@ -23,11 +21,11 @@ class Carrier extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'id' => 'int'
+        'id' => 'int',
     ];
 
     protected $fillable = [
         'id',
-        'nombre'
+        'nombre',
     ];
 }

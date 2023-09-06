@@ -11,7 +11,7 @@ class CondicionalesEnums
     {
         return [
             self::SI => 1,
-            self::NO => 0
+            self::NO => 0,
         ];
     }
 }

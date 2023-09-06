@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Proveedor
+ * Class Proveedor.
  *
  * @property int $id
  * @property string $nombre
@@ -26,8 +26,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $observaciones
  * @property string|null $formaDePago
  * @property bool|null $suspendido
- *
- * @package App\Models
  */
 class Proveedor extends Model
 {
@@ -36,7 +34,7 @@ class Proveedor extends Model
 
     protected $casts = [
         'ciudad' => 'int',
-        'suspendido' => 'bool'
+        'suspendido' => 'bool',
     ];
 
     protected $fillable = [
@@ -53,6 +51,6 @@ class Proveedor extends Model
         'telefonoTransportadora',
         'observaciones',
         'formaDePago',
-        'suspendido'
+        'suspendido',
     ];
 }

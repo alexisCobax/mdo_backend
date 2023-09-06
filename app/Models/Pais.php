@@ -9,13 +9,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Pais
+ * Class Pais.
  *
  * @property int $id
  * @property string $codigo
  * @property string $nombre
- *
- * @package App\Models
  */
 class Pais extends Model
 {
@@ -24,6 +22,6 @@ class Pais extends Model
 
     protected $fillable = [
         'codigo',
-        'nombre'
+        'nombre',
     ];
 }

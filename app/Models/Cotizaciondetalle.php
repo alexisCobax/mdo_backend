@@ -9,15 +9,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Cotizaciondetalle
+ * Class Cotizaciondetalle.
  *
  * @property int $id
  * @property int $cotizacion
  * @property int $producto
  * @property float $precio
  * @property int $cantidad
- *
- * @package App\Models
  */
 class Cotizaciondetalle extends Model
 {
@@ -30,7 +28,7 @@ class Cotizaciondetalle extends Model
         'cotizacion' => 'int',
         'producto' => 'int',
         'precio' => 'float',
-        'cantidad' => 'int'
+        'cantidad' => 'int',
     ];
 
     protected $fillable = [
@@ -38,12 +36,11 @@ class Cotizaciondetalle extends Model
         'cotizacion',
         'producto',
         'precio',
-        'cantidad'
+        'cantidad',
     ];
 
     public function productos()
     {
         return $this->belongsTo(Producto::class, 'producto');
     }
-
 }

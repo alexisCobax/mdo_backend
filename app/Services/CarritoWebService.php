@@ -2,15 +2,11 @@
 
 namespace App\Services;
 
+use App\Helpers\CarritoHelper;
 use App\Models\Carrito;
-use App\Models\Cliente;
+use App\Transformers\Carrito\FindAllTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\CarritoHelper;
-use App\Models\Carritodetalle;
-use App\Helpers\PaginateHelper;
-use Illuminate\Support\Facades\Auth;
-use App\Transformers\Carrito\FindAllTransformer;
 
 class CarritoWebService
 {
@@ -31,11 +27,12 @@ class CarritoWebService
                 'cliente' => $carrito['cliente'],
                 'estado' => 0,
                 'vendedor' => 1,
-                'formaPago' => 1
+                'formaPago' => 1,
             ];
 
             $carrito = Carrito::create($data);
-            return ["data" => ["carrito" => $carrito['id']]];
+
+            return ['data' => ['carrito' => $carrito['id']]];
         }
     }
 
@@ -53,11 +50,12 @@ class CarritoWebService
                 'cliente' => $request->id,
                 'estado' => 0,
                 'vendedor' => 1,
-                'formaPago' => 1
+                'formaPago' => 1,
             ];
 
             $carrito = Carrito::create($data);
-            return ["data" => ["carrito" => $carrito->id]];
+
+            return ['data' => ['carrito' => $carrito->id]];
         }
     }
 

@@ -5,9 +5,8 @@ namespace App\Services;
 use App\Helpers\CalcHelper;
 use App\Models\Marcaproducto;
 use App\Models\Producto;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\Promocioncomprandoxgratisz;
+use Illuminate\Http\Request;
 
 class DescuentosService
 {
@@ -26,11 +25,12 @@ class DescuentosService
             $precioMenor = $this->calcularPrecioMenor($detalleProductos);
             $cantidadBonificada = $this->calcularCantidadBonificada($idMarca, $cantidad);
             $marca = Marcaproducto::find($idMarca);
+
             return [
                 'id' => $idMarca,
                 'nombre' => $marca->nombre,
                 'cantidad' => $cantidadBonificada,
-                'precio' => $precioMenor * $cantidadBonificada
+                'precio' => $precioMenor * $cantidadBonificada,
             ];
         })->values();
 

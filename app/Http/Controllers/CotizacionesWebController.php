@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CotizacionesWebService;
+use Illuminate\Http\Request;
 
 class CotizacionesWebController extends Controller
 {
@@ -84,7 +84,7 @@ class CotizacionesWebController extends Controller
         //
     }
 
-     /**
+    /**
      * Procesar.
      *
      * @param  \Illuminate\Http\Request  $request

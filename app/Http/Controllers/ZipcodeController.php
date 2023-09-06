@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ZipcodeService;
+use Illuminate\Http\Request;
 
 class ZipcodeController extends Controller
 {

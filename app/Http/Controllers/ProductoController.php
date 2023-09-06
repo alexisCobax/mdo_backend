@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ProductoService;
+use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
@@ -95,7 +95,7 @@ class ProductoController extends Controller
         //
     }
 
-     /**
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

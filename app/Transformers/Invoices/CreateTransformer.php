@@ -9,12 +9,12 @@ class CreateTransformer extends TransformerAbstract
 {
     public function transform($pedido, $cantidad, $request)
     {
-        $subTotal = $pedido->total-$pedido->descuentoNeto;
+        $subTotal = $pedido->total - $pedido->descuentoNeto;
         $vendedor = Encargadodeventa::find($pedido->vendedor)->first();
-        
+
         if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $pedido->fecha)) {
-            $pedido_fecha = NULL;
-        }else{
+            $pedido_fecha = null;
+        } else {
             $pedido_fecha = $pedido->fecha;
         }
 
@@ -24,13 +24,13 @@ class CreateTransformer extends TransformerAbstract
             'total'=>$pedido->total,
             'formaDePago'=>$pedido->formaDePago,
             'estado'=>1,
-            'observaciones' =>"",
+            'observaciones' =>'',
             'anulada' =>0,
             'billTo' =>optional($pedido->clientes)->direccionBill,
             'shipTo' =>optional($pedido->clientes)->nombre,
-            'shipVia' =>"",
-            'FOB' =>"",
-            'Terms' =>"",
+            'shipVia' =>'',
+            'FOB' =>'',
+            'Terms' =>'',
             'fechaOrden' => $pedido_fecha,
             'salesPerson' => optional($vendedor)->nombre,
             'orden' =>$pedido->id,
@@ -38,12 +38,12 @@ class CreateTransformer extends TransformerAbstract
             'cantidad' => $cantidad[0]->suma_cantidad,
             'DescuentoNeto' =>$pedido->descuentoNeto,
             'DescuentoPorcentual' =>$pedido->descuentoPorcentual,
-            'UPS' =>"",
+            'UPS' =>'',
             'TotalEnvio' =>$pedido->totalEnvio,
             'codigoUPS' =>$request->codigoUPS,
             'subTotal' =>$subTotal,
             'DescuentoPorPromociones' =>0,
-            'IdActiveCampaign' =>0
+            'IdActiveCampaign' =>0,
         ];
     }
 }

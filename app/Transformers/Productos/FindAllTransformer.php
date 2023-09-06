@@ -2,9 +2,9 @@
 
 namespace App\Transformers\Productos;
 
+use App\Enums\EstadosProductosEnums;
 use App\Models\Producto;
 use League\Fractal\TransformerAbstract;
-use App\Enums\EstadosProductosEnums;
 
 class FindAllTransformer extends TransformerAbstract
 {
@@ -14,7 +14,7 @@ class FindAllTransformer extends TransformerAbstract
 
         return [
             'id' => $producto->id,
-            'imagenPrincipal' => $producto->imagenPrincipal.'.'.env('EXTENSION_IMAGEN_PRODUCTO'),
+            'imagenPrincipal' => $producto->imagenPrincipal . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
             'nombre' => $producto->nombre,
             'codigo' => $producto->codigo,
             'categoria' => $producto->categoria,
@@ -26,7 +26,7 @@ class FindAllTransformer extends TransformerAbstract
             'marca' => optional($producto->marcas)->nombre,
             'nombreMarca' => optional($producto->marcas)->nombre,
             'precioPromocional' => $producto->precioPromocional,
-            'estado' => $producto->suspendido == $arrayEnum[EstadosProductosEnums::SUSPENDIDO] ? EstadosProductosEnums::SUSPENDIDO : EstadosProductosEnums::PUBLICADO
+            'estado' => $producto->suspendido == $arrayEnum[EstadosProductosEnums::SUSPENDIDO] ? EstadosProductosEnums::SUSPENDIDO : EstadosProductosEnums::PUBLICADO,
         ];
     }
 }

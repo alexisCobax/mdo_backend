@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CloverService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Services\CloverService;
 
 class CloverController extends Controller
 {
-
     private $service;
 
     public function __construct(CloverService $CloverService)

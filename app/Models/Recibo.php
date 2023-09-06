@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Recibo
+ * Class Recibo.
  *
  * @property int $id
  * @property int $cliente
@@ -21,8 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $observaciones
  * @property int|null $pedido
  * @property bool $garantia
- *
- * @package App\Models
  */
 class Recibo extends Model
 {
@@ -36,7 +34,7 @@ class Recibo extends Model
         'total' => 'float',
         'anulado' => 'bool',
         'pedido' => 'int',
-        'garantia' => 'bool'
+        'garantia' => 'bool',
     ];
 
     protected $fillable = [
@@ -47,6 +45,6 @@ class Recibo extends Model
         'anulado',
         'observaciones',
         'pedido',
-        'garantia'
+        'garantia',
     ];
 }

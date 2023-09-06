@@ -2,9 +2,9 @@
 
 namespace App\Transformers\Compra;
 
+use App\Helpers\DateHelper;
 use App\Models\Compra;
 use League\Fractal\TransformerAbstract;
-use App\Helpers\DateHelper;
 
 class FindAllTransformer extends TransformerAbstract
 {
@@ -20,7 +20,7 @@ class FindAllTransformer extends TransformerAbstract
             'numeroLote' => $compra->numeroLote,
             'observaciones' => $compra->observaciones,
             'pagado' => $compra->pagado,
-            'enDeposito' => $compra->enDeposito
+            'enDeposito' => $compra->enDeposito,
         ];
 
         return $compra;

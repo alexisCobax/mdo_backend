@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\Producto;
-use Illuminate\Http\Request;
-use App\Helpers\ImagesHelper;
-use Illuminate\Http\Response;
 use App\DataTransferObject\ProductoDTO;
-use Illuminate\Support\Facades\Storage;
 use App\Filters\Productos\ProductosFilters;
+use App\Helpers\ImagesHelper;
 use App\Models\Fotoproducto;
+use App\Models\Producto;
 use App\Transformers\Productos\FindByIdTransformer;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoService
 {
@@ -18,6 +18,7 @@ class ProductoService
     {
         try {
             $data = ProductosFilters::getPaginateProducts($request, Producto::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -29,11 +30,11 @@ class ProductoService
         try {
             $data = Producto::find($request->id);
             $data = [
-                "stock" => $data->stock,
-                "minimo" => $data->stockMinimo,
-                "alarma" => $data->alarmaStockMinimo,
-                "roto" => $data->stockRoto,
-                "falabella" => $data->stockFalabella
+                'stock' => $data->stock,
+                'minimo' => $data->stockMinimo,
+                'alarma' => $data->alarmaStockMinimo,
+                'roto' => $data->stockRoto,
+                'falabella' => $data->stockFalabella,
             ];
 
             return response()->json(['data' => $data], Response::HTTP_OK);
@@ -57,7 +58,7 @@ class ProductoService
 
                 $response = [
                     'status' => Response::HTTP_OK,
-                    'message' => $productosTransformados
+                    'message' => $productosTransformados,
                 ];
 
                 return response()->json(['data' => $response], Response::HTTP_OK);
@@ -173,7 +174,7 @@ class ProductoService
             'ancho' => $request->ancho,
             'descripcionLarga' => $request->descripcionLarga,
             'colorPrincipal' => $request->colorPrincipal,
-            'colorSecundario' => $request->colorSecundario
+            'colorSecundario' => $request->colorSecundario,
         ];
 
         $producto->update($datosProducto);
@@ -215,6 +216,7 @@ class ProductoService
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al borrar el producto'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return response()->json(['id' => $request->id], 200);
     }
 

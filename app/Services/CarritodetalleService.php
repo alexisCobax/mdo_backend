@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Producto;
 use App\Helpers\CalcHelper;
+use App\Helpers\PaginateHelper;
+use App\Models\Carritodetalle;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Carritodetalle;
-use App\Helpers\PaginateHelper;
 
 class CarritodetalleService
 {
@@ -15,6 +15,7 @@ class CarritodetalleService
     {
         try {
             $data = PaginateHelper::getPaginatedData($request, Carritodetalle::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -37,10 +38,10 @@ class CarritodetalleService
         if (count($productoExistente)) {
             $cantidad = $productoExistente[0]['cantidad'] + $request->cantidad;
             $detalle = [
-                "carrito" => $request->carrito,
-                "producto" => $request->producto,
-                "precio" => $productoExistente[0]['precio'] * $cantidad,
-                "cantidad" => $cantidad
+                'carrito' => $request->carrito,
+                'producto' => $request->producto,
+                'precio' => $productoExistente[0]['precio'] * $cantidad,
+                'cantidad' => $cantidad,
             ];
 
             $carritodetalle = Carritodetalle::find($request->id);
@@ -53,10 +54,10 @@ class CarritodetalleService
             $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
 
             $detalle = [
-                "carrito" => $request->carrito,
-                "producto" => $request->producto,
-                "precio" => $precio * $request->cantidad,
-                "cantidad" => $request->cantidad
+                'carrito' => $request->carrito,
+                'producto' => $request->producto,
+                'precio' => $precio * $request->cantidad,
+                'cantidad' => $request->cantidad,
             ];
 
             $carritodetalle = Carritodetalle::create($detalle);

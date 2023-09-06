@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\PedidoService;
+use Illuminate\Http\Request;
 
 class PedidoController extends Controller
 {

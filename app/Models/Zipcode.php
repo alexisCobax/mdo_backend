@@ -9,14 +9,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Zipcode
+ * Class Zipcode.
  *
  * @property int $id
  * @property string $zip
  * @property string $ciudad
  * @property float|null $precio
- *
- * @package App\Models
  */
 class Zipcode extends Model
 {
@@ -26,13 +24,13 @@ class Zipcode extends Model
 
     protected $casts = [
         'id' => 'int',
-        'precio' => 'float'
+        'precio' => 'float',
     ];
 
     protected $fillable = [
         'id',
         'zip',
         'ciudad',
-        'precio'
+        'precio',
     ];
 }

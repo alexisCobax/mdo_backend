@@ -9,12 +9,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Formadepago
+ * Class Formadepago.
  *
  * @property int $id
  * @property string $nombre
- *
- * @package App\Models
  */
 class Formadepago extends Model
 {
@@ -22,6 +20,6 @@ class Formadepago extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre'
+        'nombre',
     ];
 }

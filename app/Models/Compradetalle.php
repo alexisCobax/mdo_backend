@@ -6,11 +6,10 @@
 
 namespace App\Models;
 
-use App\Models\Producto;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Compradetalle
+ * Class Compradetalle.
  *
  * @property int $id
  * @property int $compra
@@ -18,8 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $cantidad
  * @property float|null $precioUnitario
  * @property bool $enDeposito
- *
- * @package App\Models
  */
 class Compradetalle extends Model
 {
@@ -33,7 +30,7 @@ class Compradetalle extends Model
         'producto' => 'int',
         'cantidad' => 'int',
         'precioUnitario' => 'float',
-        'enDeposito' => 'bool'
+        'enDeposito' => 'bool',
     ];
 
     protected $fillable = [
@@ -42,7 +39,7 @@ class Compradetalle extends Model
         'producto',
         'cantidad',
         'precioUnitario',
-        'enDeposito'
+        'enDeposito',
     ];
 
     public function productos()

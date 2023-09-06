@@ -11,7 +11,7 @@ class EstadosProductosEnums
     {
         return [
             self::SUSPENDIDO => 1,
-            self::PUBLICADO => 0
+            self::PUBLICADO => 0,
         ];
     }
 }

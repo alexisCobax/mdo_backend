@@ -2,18 +2,17 @@
 
 namespace App\Services;
 
-use App\Models\Pedido;
-use App\Models\Invoice;
-use App\Helpers\CalcHelper;
-use Illuminate\Http\Request;
-use App\Models\Pedidodetalle;
-use Illuminate\Http\Response;
-use App\Models\Invoicedetalle;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Filters\Invoices\InvoicesFilters;
+use App\Models\Invoice;
+use App\Models\Invoicedetalle;
+use App\Models\Pedido;
+use App\Models\Pedidodetalle;
+use App\Transformers\Invoices\CreateDetalleTransformer;
 use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
-use App\Transformers\Invoices\CreateDetalleTransformer;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class InvoiceService
 {
@@ -21,6 +20,7 @@ class InvoiceService
     {
         try {
             $data = InvoicesFilters::getPaginateInvoices($request, Invoice::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los invoices'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -41,7 +41,7 @@ class InvoiceService
         $tranformer = new FindByIdTransformer();
         $invoice = $tranformer->transform($invoice, $request);
 
-        $pdf = Pdf::loadView('pdf.invoice', ["invoice"=>$invoice]);
+        $pdf = Pdf::loadView('pdf.invoice', ['invoice'=>$invoice]);
 
         //$dom_pdf = $pdf->getDomPDF();
 
@@ -104,5 +104,4 @@ class InvoiceService
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
-
 }

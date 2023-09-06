@@ -9,13 +9,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Configuracion
+ * Class Configuracion.
  *
  * @property int $id
  * @property string $variable
  * @property string $valor
- *
- * @package App\Models
  */
 class Configuracion extends Model
 {
@@ -24,12 +22,12 @@ class Configuracion extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'id' => 'int'
+        'id' => 'int',
     ];
 
     protected $fillable = [
         'id',
         'variable',
-        'valor'
+        'valor',
     ];
 }

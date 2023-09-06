@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Promocioncomprandoxgratisz
+ * Class Promocioncomprandoxgratisz.
  *
  * @property int $id
  * @property string $nombre
@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $Cantidad
  * @property int $CantidadBonificada
  * @property bool $activa
- *
- * @package App\Models
  */
 class Promocioncomprandoxgratisz extends Model
 {
@@ -31,7 +29,7 @@ class Promocioncomprandoxgratisz extends Model
         'idMarca' => 'int',
         'Cantidad' => 'int',
         'CantidadBonificada' => 'int',
-        'activa' => 'bool'
+        'activa' => 'bool',
     ];
 
     protected $fillable = [
@@ -40,6 +38,6 @@ class Promocioncomprandoxgratisz extends Model
         'idMarca',
         'Cantidad',
         'CantidadBonificada',
-        'activa'
+        'activa',
     ];
 }

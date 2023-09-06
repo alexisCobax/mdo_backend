@@ -4,7 +4,6 @@ namespace App\Transformers\Productos;
 
 use App\Models\Producto;
 use League\Fractal\TransformerAbstract;
-use App\Enums\CondicionalesEnums;
 
 class FindByIdTransformer extends TransformerAbstract
 {
@@ -20,7 +19,7 @@ class FindByIdTransformer extends TransformerAbstract
                 $imagenes[] = [
                     'id' => $foto->id,
                     'url' => env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
-                    'orden' => $foto->orden
+                    'orden' => $foto->orden,
                 ];
             }
         }
@@ -73,7 +72,7 @@ class FindByIdTransformer extends TransformerAbstract
             'alto' => $producto->alto,
             'ancho' => $producto->ancho,
             'descripcionLarga' => $producto->descripcionLarga,
-            'imagenes' => $imagenes
+            'imagenes' => $imagenes,
         ];
     }
 }

@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CarritoWebService;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class CarritoWebController extends Controller
 {

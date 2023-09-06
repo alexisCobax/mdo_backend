@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ProspectoService;
+use Illuminate\Http\Request;
 
 class ProspectoController extends Controller
 {

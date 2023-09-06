@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use App\Models\Categoriafalabella;
-use Illuminate\Http\Request;
-use App\Helpers\PaginateHelper;
 use App\Transformers\CategoriaFalabella\FindAllTransformer;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class CategoriafalabellaService
@@ -66,5 +65,4 @@ class CategoriafalabellaService
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
-
 }

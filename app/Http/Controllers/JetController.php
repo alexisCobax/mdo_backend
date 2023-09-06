@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\JetService;
+use Illuminate\Http\Request;
 
 class JetController extends Controller
 {

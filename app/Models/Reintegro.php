@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Reintegro
+ * Class Reintegro.
  *
  * @property int $id
  * @property int $cliente
@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $total
  * @property bool $anulado
  * @property string $observaciones
- *
- * @package App\Models
  */
 class Reintegro extends Model
 {
@@ -32,7 +30,7 @@ class Reintegro extends Model
         'cliente' => 'int',
         'fecha' => 'datetime',
         'total' => 'float',
-        'anulado' => 'bool'
+        'anulado' => 'bool',
     ];
 
     protected $fillable = [
@@ -41,6 +39,6 @@ class Reintegro extends Model
         'fecha',
         'total',
         'anulado',
-        'observaciones'
+        'observaciones',
     ];
 }

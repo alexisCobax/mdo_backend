@@ -9,12 +9,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Plataformaproducto
+ * Class Plataformaproducto.
  *
  * @property int $idProducto
  * @property int $idPlataforma
- *
- * @package App\Models
  */
 class Plataformaproducto extends Model
 {
@@ -24,6 +22,6 @@ class Plataformaproducto extends Model
 
     protected $casts = [
         'idProducto' => 'int',
-        'idPlataforma' => 'int'
+        'idPlataforma' => 'int',
     ];
 }

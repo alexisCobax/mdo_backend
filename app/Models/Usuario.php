@@ -7,15 +7,13 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * Class Usuario
+ * Class Usuario.
  *
  * @property int $id
  * @property string $nombre
@@ -26,8 +24,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @property bool $suspendido
  * @property string|null $token
  * @property Carbon|null $token_exp
- *
- * @package App\Models
  */
 class Usuario extends Authenticatable
 {
@@ -40,11 +36,11 @@ class Usuario extends Authenticatable
     protected $casts = [
         'permisos' => 'int',
         'suspendido' => 'bool',
-        'token_exp' => 'datetime'
+        'token_exp' => 'datetime',
     ];
 
     protected $hidden = [
-        'token'
+        'token',
     ];
 
     protected $fillable = [
@@ -55,6 +51,6 @@ class Usuario extends Authenticatable
         'permisos',
         'suspendido',
         'token',
-        'token_exp'
+        'token_exp',
     ];
 }

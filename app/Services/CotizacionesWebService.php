@@ -3,21 +3,19 @@
 namespace App\Services;
 
 use App\Helpers\CarritoHelper;
-use App\Models\Pedido;
 use App\Models\Cliente;
-use App\Models\Invoice;
 use App\Models\Cotizacion;
-use Illuminate\Http\Request;
-use App\Models\Pedidodetalle;
-use Illuminate\Http\Response;
-use App\Models\Invoicedetalle;
-use App\Helpers\PaginateHelper;
-use App\Models\Carrito;
 use App\Models\Cotizaciondetalle;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Invoice;
+use App\Models\Invoicedetalle;
+use App\Models\Pedido;
+use App\Models\Pedidodetalle;
+use App\Transformers\Invoices\CreateDetalleTransformer;
 use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
-use App\Transformers\Invoices\CreateDetalleTransformer;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CotizacionesWebService
 {
@@ -117,19 +115,21 @@ class CotizacionesWebService
         $cotizacion = Cotizacion::find($request->cotizacion)->first();
 
         $cotizacionData = [
-            "fecha" => $cotizacion->fecha,
-            "cliente" => $cotizacion->cliente,
-            "estado" => 0,
-            "vendedor" => 1,
+            'fecha' => $cotizacion->fecha,
+            'cliente' => $cotizacion->cliente,
+            'estado' => 0,
+            'vendedor' => 1,
         ];
 
-        dd($cotizacionData);die;
-        
-        $cotizacionDetalle = Cotizaciondetalle::where('cotizacion',$request->cotizacion)->get();
+        dd($cotizacionData);
+        die;
+
+        $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->get();
 
         $carrito = CarritoHelper::getCarrito();
 
-        echo $carrito['id'];die;
+        echo $carrito['id'];
+        die;
 
         $invoice = Invoice::find($request->id);
 

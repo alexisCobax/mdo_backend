@@ -10,14 +10,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Jet
+ * Class Jet.
  *
  * @property int $id
  * @property string $token
  * @property Carbon $vencimiento
  * @property string $tokenType
- *
- * @package App\Models
  */
 class Jet extends Model
 {
@@ -27,17 +25,17 @@ class Jet extends Model
 
     protected $casts = [
         'id' => 'int',
-        'vencimiento' => 'datetime'
+        'vencimiento' => 'datetime',
     ];
 
     protected $hidden = [
-        'token'
+        'token',
     ];
 
     protected $fillable = [
         'id',
         'token',
         'vencimiento',
-        'tokenType'
+        'tokenType',
     ];
 }

@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Carrito;
-use App\Models\Carritodetalle;
-use Illuminate\Http\Request;
 use App\Helpers\PaginateHelper;
-use Illuminate\Http\Response;
+use App\Models\Carrito;
 use App\Transformers\Carrito\FindAllTransformer;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CarritoService
 {
@@ -15,6 +14,7 @@ class CarritoService
     {
         try {
             $data = PaginateHelper::getPaginatedData($request, Carrito::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -42,11 +42,12 @@ class CarritoService
                 'cliente' => $request->id,
                 'estado' => 0,
                 'vendedor' => 1,
-                'formaPago' => 1
+                'formaPago' => 1,
             ];
 
             $carrito = Carrito::create($data);
-            return ["data" => ["carrito" => $carrito->id]];
+
+            return ['data' => ['carrito' => $carrito->id]];
         }
     }
 

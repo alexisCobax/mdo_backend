@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Subidasfalabella
+ * Class Subidasfalabella.
  *
  * @property int $id
  * @property Carbon|null $fecha
@@ -19,8 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $resultado
  * @property string|null $feed
  * @property string|null $pais
- *
- * @package App\Models
  */
 class Subidasfalabella extends Model
 {
@@ -31,7 +29,7 @@ class Subidasfalabella extends Model
     protected $casts = [
         'id' => 'int',
         'fecha' => 'datetime',
-        'idProducto' => 'int'
+        'idProducto' => 'int',
     ];
 
     protected $fillable = [
@@ -41,6 +39,6 @@ class Subidasfalabella extends Model
         'idProducto',
         'resultado',
         'feed',
-        'pais'
+        'pais',
     ];
 }

@@ -9,15 +9,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Pagostarjetum
+ * Class Pagostarjetum.
  *
  * @property int $id
  * @property int $idPedido
  * @property string $respuesta
  * @property string $CC
  * @property string $Vencimiento
- *
- * @package App\Models
  */
 class Pagostarjetum extends Model
 {
@@ -27,7 +25,7 @@ class Pagostarjetum extends Model
 
     protected $casts = [
         'id' => 'int',
-        'idPedido' => 'int'
+        'idPedido' => 'int',
     ];
 
     protected $fillable = [
@@ -35,6 +33,6 @@ class Pagostarjetum extends Model
         'idPedido',
         'respuesta',
         'CC',
-        'Vencimiento'
+        'Vencimiento',
     ];
 }

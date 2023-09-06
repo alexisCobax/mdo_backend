@@ -16,7 +16,7 @@ class FindAllTransformer extends TransformerAbstract
                 'id' => $categoria->CategoryId,
                 'name' => $categoria->Name,
                 'hasChild' => true,
-                'expanded' => false
+                'expanded' => false,
             ];
 
             if ($categoria->PadreCategoryId != 0) {

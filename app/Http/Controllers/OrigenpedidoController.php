@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\OrigenpedidoService;
+use Illuminate\Http\Request;
 
 class OrigenpedidoController extends Controller
 {

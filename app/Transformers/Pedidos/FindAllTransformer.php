@@ -2,9 +2,9 @@
 
 namespace App\Transformers\Pedidos;
 
+use App\Helpers\DateHelper;
 use App\Models\Pedido;
 use League\Fractal\TransformerAbstract;
-use App\Helpers\DateHelper;
 
 class FindAllTransformer extends TransformerAbstract
 {
@@ -45,7 +45,7 @@ class FindAllTransformer extends TransformerAbstract
             'transportadoraNombre' => $pedido->transportadoraNombre,
             'transportadoraTelefono' => $pedido->transportadoraTelefono,
             'codigoSeguimiento' => $pedido->codigoSeguimiento,
-            'MailSeguimientoEnviado' => $pedido->MailSeguimientoEnviado
+            'MailSeguimientoEnviado' => $pedido->MailSeguimientoEnviado,
         ];
     }
 }

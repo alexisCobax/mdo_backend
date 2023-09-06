@@ -7,7 +7,7 @@ use Carbon\Carbon;
 class DateHelper
 {
     /**
-     * getDateCustom
+     * getDateCustom.
      *
      * @param  mixed $date
      * @return void

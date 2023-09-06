@@ -6,19 +6,16 @@
 
 namespace App\Models;
 
-use App\Models\Producto;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Carritodetalle
+ * Class Carritodetalle.
  *
  * @property int $id
  * @property int $carrito
  * @property int $producto
  * @property float $precio
  * @property int $cantidad
- *
- * @package App\Models
  */
 class Carritodetalle extends Model
 {
@@ -29,14 +26,14 @@ class Carritodetalle extends Model
         'carrito' => 'int',
         'producto' => 'int',
         'precio' => 'float',
-        'cantidad' => 'int'
+        'cantidad' => 'int',
     ];
 
     protected $fillable = [
         'carrito',
         'producto',
         'precio',
-        'cantidad'
+        'cantidad',
     ];
 
     //Relationships

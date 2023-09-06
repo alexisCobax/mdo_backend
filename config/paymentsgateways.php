@@ -16,7 +16,7 @@ return [
         'apiSecret' => env('PAYEEZY_APISECRET'),
         'merchantToken' => env('PAYEEZY_MERCHANTTOKEN'),
         'tokenUrl' => env('PAYEEZY_TOKENURL'),
-        'url' => env('PAYEEZY_URL')
+        'url' => env('PAYEEZY_URL'),
     ],
 
     // 'clover' => [

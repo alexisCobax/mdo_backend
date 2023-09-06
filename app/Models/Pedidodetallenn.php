@@ -9,15 +9,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Pedidodetallenn
+ * Class Pedidodetallenn.
  *
  * @property int $id
  * @property string|null $descripcion
  * @property float $precio
  * @property int $pedido
  * @property int $cantidad
- *
- * @package App\Models
  */
 class Pedidodetallenn extends Model
 {
@@ -27,13 +25,13 @@ class Pedidodetallenn extends Model
     protected $casts = [
         'precio' => 'float',
         'pedido' => 'int',
-        'cantidad' => 'int'
+        'cantidad' => 'int',
     ];
 
     protected $fillable = [
         'descripcion',
         'precio',
         'pedido',
-        'cantidad'
+        'cantidad',
     ];
 }
