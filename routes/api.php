@@ -743,6 +743,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'update']);
     Route::delete('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'delete']);
     Route::put('/web/cliente', [ClienteWebController::class, 'update']);
+    Route::get('/web/cliente', [ClienteWebController::class, 'show']);
     Route::post('/web/pagar', [PagoWebController::class, 'create']);
 });
 
