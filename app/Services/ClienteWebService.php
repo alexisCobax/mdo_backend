@@ -25,9 +25,9 @@ class ClienteWebService
 
     public function findByToken(Request $request)
     {
-        $user = Auth::user();   
+        $user = Auth::user();
 
-        $data = Cliente::where('usuario',$user->id)->first();
+        $data = Cliente::where('usuario', $user->id)->first();
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }

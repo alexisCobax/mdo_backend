@@ -16,7 +16,7 @@ class ProformaService
 
     public function findById(Request $request)
     {
-        $pedido = Pedido::where('id',$request->id)->first();
+        $pedido = Pedido::where('id', $request->id)->first();
 
         $tranformer = new FindByIdTransformer();
         $proforma = $tranformer->transform($pedido);

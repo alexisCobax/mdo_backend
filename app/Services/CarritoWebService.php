@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Helpers\CarritoHelper;
 use App\Models\Carrito;
+use App\Models\Carritodetalle;
+use App\Models\Cotizacion;
+use App\Models\Cotizaciondetalle;
 use App\Transformers\Carrito\FindAllTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -107,5 +110,39 @@ class CarritoWebService
         $carrito->delete();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+
+    public function procesar(Request $request)
+    {
+
+        $carritoDetalle = Carritodetalle::where('carrito', $request->carrito)->get();
+        $total = 0;
+        foreach ($carritoDetalle as $cd) {
+
+            $cotizacion = new Cotizaciondetalle;
+            $cotizacion->cotizacion = $cotizacion->id;
+            $cotizacion->producto = $cd['producto'];
+            $cotizacion->precio = $cd['precio'];
+            $cotizacion->cantidad = $cd['cantidad'];
+            $cotizacion->save();
+
+            $total += $cd['precio'];
+        }
+
+        $carrito = Carrito::find($request->carrito)->first();
+
+        $cotizacion = new Cotizacion;
+        $cotizacion->fecha = $carrito->fecha;
+        $cotizacion->cliente = $carrito->cliente;
+        $cotizacion->total = $total;
+        $cotizacion->estado = $carrito->estado;
+        $cotizacion->descuento = '0.00';
+        $cotizacion->save();
+
+        if (!$cotizacion) {
+            return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json(['data' => $cotizacion], Response::HTTP_OK);
     }
 }
