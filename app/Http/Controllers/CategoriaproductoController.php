@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CategoriaproductoService;
+use Illuminate\Http\Request;
 
 class CategoriaproductoController extends Controller
 {

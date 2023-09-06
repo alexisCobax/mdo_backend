@@ -3,10 +3,9 @@
 namespace App\Services;
 
 use App\Models\Pedido;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Transformers\Pdf\FindByIdTransformer;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 
 class ProformaService
 {
@@ -17,12 +16,11 @@ class ProformaService
 
     public function findById(Request $request)
     {
-
-        $pedido = Pedido::find($request->id)->first();
+        $pedido = Pedido::where('id',$request->id)->first();
 
         $tranformer = new FindByIdTransformer();
-        $proforma = $tranformer->transform($pedido, $request);
-        $pdf = Pdf::loadView('pdf.proforma', ["proforma"=>$proforma]);
+        $proforma = $tranformer->transform($pedido);
+        $pdf = Pdf::loadView('pdf.proforma', ['proforma'=>$proforma]);
 
         //$dom_pdf = $pdf->getDomPDF();
 

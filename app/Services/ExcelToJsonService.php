@@ -2,26 +2,25 @@
 
 namespace App\Services;
 
-use App\Models\Color;
-use PHPExcel_IOFactory;
-use App\Models\Producto;
-use App\Models\TmpImagenes;
 use App\Helpers\ExcelHelper;
+use App\Models\Color;
 use App\Models\Fotoproducto;
+use App\Models\Marcaproducto;
+use App\Models\Materialproducto;
+use App\Models\Producto;
 use App\Models\Tipoproducto;
+use App\Models\TmpImagenes;
 use App\Models\TmpProductos;
 use Illuminate\Http\Request;
-use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
-use App\Models\Materialproducto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
+use PHPExcel_IOFactory;
 
 class ExcelToJsonService
 {
     /**
-     * procesar
+     * procesar.
      *
      * @return void
      */
@@ -67,51 +66,51 @@ class ExcelToJsonService
             if (!empty($sku) && is_numeric($sku)) {
 
                 if (empty($marca)) {
-                    $errorMessages[] = "El campo Marca esta vacio Celda B" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Marca esta vacio Celda B' . $row->getRowIndex();
                 }
 
                 if (empty($nombre)) {
-                    $errorMessages[] = "El campo Nombre esta vacio Celda C" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Nombre esta vacio Celda C' . $row->getRowIndex();
                 }
 
                 if (empty($tipo)) {
-                    $errorMessages[] = "El campo Tipo esta vacio Celda D" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Tipo esta vacio Celda D' . $row->getRowIndex();
                 }
 
                 if (empty($color_fabricante)) {
-                    $errorMessages[] = "El campo Color Fabricante esta vacio Celda E" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Color Fabricante esta vacio Celda E' . $row->getRowIndex();
                 }
 
                 if (empty($color_generico)) {
-                    $errorMessages[] = "El campo Color Generico esta vacio Celda F" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Color Generico esta vacio Celda F' . $row->getRowIndex();
                 }
 
                 if (empty($tamanio)) {
-                    $errorMessages[] = "El campo Tamaño esta vacio Celda G" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Tamaño esta vacio Celda G' . $row->getRowIndex();
                 }
 
                 if (empty($material)) {
-                    $errorMessages[] = "El campo Material esta vacio Celda H" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Material esta vacio Celda H' . $row->getRowIndex();
                 }
 
                 if (!is_numeric($cantidad)) {
-                    $errorMessages[] = "El campo Cantidad es invalido Celda I" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Cantidad es invalido Celda I' . $row->getRowIndex();
                 }
 
                 if (empty($estuche)) {
-                    $errorMessages[] = "El campo Estuche esta vacio Celda J" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Estuche esta vacio Celda J' . $row->getRowIndex();
                 }
 
                 if (!is_numeric($costo)) {
-                    $errorMessages[] = "El campo Costo esta vacio o es invalido en Celda K" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Costo esta vacio o es invalido en Celda K' . $row->getRowIndex();
                 }
 
                 if (empty($precio_venta)) {
-                    $errorMessages[] = "El campo Precio Venta esta vacio Celda L" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Precio Venta esta vacio Celda L' . $row->getRowIndex();
                 }
 
                 if (empty($upc)) {
-                    $errorMessages[] = "El campo UPC esta vacio Celda M" . $row->getRowIndex();
+                    $errorMessages[] = 'El campo UPC esta vacio Celda M' . $row->getRowIndex();
                 }
 
                 $tmpProductos = new TmpProductos();
@@ -165,9 +164,8 @@ class ExcelToJsonService
         return $this->buscoCoincidencias();
     }
 
-
     /**
-     * buscoCoincidencias
+     * buscoCoincidencias.
      *
      * busco productos con SKU iguales
      *
@@ -183,7 +181,7 @@ class ExcelToJsonService
         foreach ($skusNoEncontrados as $tmpProducto) {
             $producto = new Producto();
             $producto->nombre = $tmpProducto->nombre;
-            $producto->descripcion = "pruebaimportacion";
+            $producto->descripcion = 'pruebaimportacion';
             $producto->tipo = $this->BuscarTipo($tmpProducto->tipo);
             $producto->categoria = 1;
             $producto->marca = $this->BuscarMarcas($tmpProducto->marca);
@@ -200,7 +198,7 @@ class ExcelToJsonService
             $producto->alarmaStockMinimo = 0;
             $producto->color = $tmpProducto->color_fabricante;
             $producto->tamano = $tmpProducto->tamanio;
-            $producto->ubicacion = "";
+            $producto->ubicacion = '';
             $producto->grupo = 0;
             $producto->pagina = 0;
             $producto->costo = $tmpProducto->costo;
@@ -214,7 +212,7 @@ class ExcelToJsonService
             $producto->UPCreal = $tmpProducto->upc;
             $producto->mdoNet = 1;
             $producto->jet = 0;
-            $producto->precioJet = "0.00";
+            $producto->precioJet = '0.00';
             $producto->stockJet = 0;
             $producto->multipack = 0;
             $producto->nodeJet = 0;
@@ -234,7 +232,7 @@ class ExcelToJsonService
             $producto->largo = 0;
             $producto->alto = 0;
             $producto->ancho = 0;
-            $producto->descripcionLarga = "";
+            $producto->descripcionLarga = '';
             $producto->colorPrincipal = $this->BuscarColores($tmpProducto->color_generico);
             $producto->colorSecundario = 0;
             $producto->save();
@@ -253,19 +251,20 @@ class ExcelToJsonService
 
         foreach ($productosProcesados as $pp) {
             $productosTransformados[] = [
-                "compra" => 0,
-                "producto" => $pp->id,
-                "nombreProducto" => $pp->nombre,
-                "cantidad" => $pp->cantidad,
-                "precioUnitario" => $pp->precio,
-                "enDeposito" => 1
+                'compra' => 0,
+                'producto' => $pp->id,
+                'nombreProducto' => $pp->nombre,
+                'cantidad' => $pp->cantidad,
+                'precioUnitario' => $pp->precio,
+                'enDeposito' => 1,
             ];
         }
+
         return response()->json(['data' => $productosTransformados], Response::HTTP_OK);
     }
 
     /**
-     * procesarImagenes
+     * procesarImagenes.
      *
      * agrego al modelo fotoProductos, traigo el id nuevo y actualizo producto.
      *
@@ -293,7 +292,7 @@ class ExcelToJsonService
     }
 
     /**
-     * BuscarMarcas
+     * BuscarMarcas.
      *
      * Busco marcas coindicentes sino las creo
      *
@@ -324,7 +323,7 @@ class ExcelToJsonService
     }
 
     /**
-     * BuscarColores
+     * BuscarColores.
      *
      * Busco solores coincidentes sino los creo
      *
@@ -351,7 +350,7 @@ class ExcelToJsonService
     }
 
     /**
-     * BuscarMateriales
+     * BuscarMateriales.
      *
      * Busco materiales coincidentes sino los creo
      *

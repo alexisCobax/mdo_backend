@@ -23,9 +23,9 @@ class FindByIdTransformer extends TransformerAbstract
                 'producto' => $detalles->productos->nombre,
                 'precio' => $detalles->precio,
                 'cantidad' => $detalles->cantidad,
-                "codigo" =>$detalles->productos->codigo,
-                "marca"=> optional($detalles->productos->marcas)->nombre,
-                "color"=> optional($detalles->productos->colores)->nombre
+                'codigo' =>$detalles->productos->codigo,
+                'marca'=> optional($detalles->productos->marcas)->nombre,
+                'color'=> optional($detalles->productos->colores)->nombre,
             ];
         })->toArray();
 
@@ -39,7 +39,7 @@ class FindByIdTransformer extends TransformerAbstract
             'IdActiveCampaign' => $cotizacion->IdActiveCampaign,
             'descuento' => $cotizacion->descuento,
             'subTotal' => $cotizacion->subTotal,
-            'detalle' => $detalleDatos
+            'detalle' => $detalleDatos,
         ];
     }
 }

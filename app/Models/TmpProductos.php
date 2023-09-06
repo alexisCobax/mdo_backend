@@ -9,9 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Banner
- *
- * @package App\Models
+ * Class Banner.
  */
 class TmpProductos extends Model
 {
@@ -19,7 +17,7 @@ class TmpProductos extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'SKU' => 'int'
+        'SKU' => 'int',
     ];
 
     protected $fillable = [
@@ -36,6 +34,6 @@ class TmpProductos extends Model
         'costo',
         'precio_venta',
         'upc',
-        'Image'
+        'Image',
     ];
 }

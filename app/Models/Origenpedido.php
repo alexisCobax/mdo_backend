@@ -9,12 +9,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Origenpedido
+ * Class Origenpedido.
  *
  * @property int $id
  * @property string $nombre
- *
- * @package App\Models
  */
 class Origenpedido extends Model
 {
@@ -23,11 +21,11 @@ class Origenpedido extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'id' => 'int'
+        'id' => 'int',
     ];
 
     protected $fillable = [
         'id',
-        'nombre'
+        'nombre',
     ];
 }

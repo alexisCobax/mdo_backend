@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Paypal
+ * Class Paypal.
  *
  * @property int $id
  * @property int|null $idPedido
@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $estado
  * @property string|null $respuestaFinal
  * @property int|null $idCotizacion
- *
- * @package App\Models
  */
 class Paypal extends Model
 {
@@ -31,11 +29,11 @@ class Paypal extends Model
         'id' => 'int',
         'idPedido' => 'int',
         'estado' => 'int',
-        'idCotizacion' => 'int'
+        'idCotizacion' => 'int',
     ];
 
     protected $hidden = [
-        'token'
+        'token',
     ];
 
     protected $fillable = [
@@ -45,6 +43,6 @@ class Paypal extends Model
         'respuesta',
         'estado',
         'respuestaFinal',
-        'idCotizacion'
+        'idCotizacion',
     ];
 }

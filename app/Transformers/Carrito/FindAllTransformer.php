@@ -2,9 +2,9 @@
 
 namespace App\Transformers\Carrito;
 
+use App\Helpers\CalcHelper;
 use App\Models\Carritodetalle;
 use League\Fractal\TransformerAbstract;
-use App\Helpers\CalcHelper;
 
 class FindAllTransformer extends TransformerAbstract
 {
@@ -19,11 +19,11 @@ class FindAllTransformer extends TransformerAbstract
             $producto = [
                 'id' => optional($detalle->productos)->id,
                 'nombre' => optional($detalle->productos)->nombre,
-                "marcaNombre" => optional(optional($detalle->productos)->marcas)->nombre,
+                'marcaNombre' => optional(optional($detalle->productos)->marcas)->nombre,
                 'precio' => $subTotal,
                 'imagen' => optional($detalle->productos)->imagenPrincipal,
                 'color' => optional(optional($detalle->productos)->colores)->nombre,
-                'tamano' => optional($detalle->productos)->tamano
+                'tamano' => optional($detalle->productos)->tamano,
             ];
 
             $detalleCarrito = [
@@ -32,7 +32,7 @@ class FindAllTransformer extends TransformerAbstract
                 'producto' => $producto,
                 'precio' => $subTotal,
                 'cantidad' => $detalle->cantidad,
-                'subTotal' => $subTotal*$detalle->cantidad,
+                'subTotal' => $subTotal * $detalle->cantidad,
             ];
 
             return $detalleCarrito;

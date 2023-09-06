@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use Payeezy_Client;
-use Payeezy_Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
+use Payeezy_Client;
+use Payeezy_Transaction;
 
 class PayeezyService
 {

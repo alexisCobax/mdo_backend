@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Empleado
+ * Class Empleado.
  *
  * @property int $id
  * @property string $nombre
@@ -20,8 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $telefono
  * @property string $email
  * @property int $ciudad
- *
- * @package App\Models
  */
 class Empleado extends Model
 {
@@ -32,7 +30,7 @@ class Empleado extends Model
         'puesto' => 'int',
         'suspendido' => 'bool',
         'usuario' => 'int',
-        'ciudad' => 'int'
+        'ciudad' => 'int',
     ];
 
     protected $fillable = [
@@ -43,6 +41,6 @@ class Empleado extends Model
         'direccion',
         'telefono',
         'email',
-        'ciudad'
+        'ciudad',
     ];
 }

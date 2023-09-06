@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CompradetalleService;
+use Illuminate\Http\Request;
 
 class CompradetalleController extends Controller
 {

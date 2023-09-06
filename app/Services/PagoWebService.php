@@ -2,34 +2,28 @@
 
 namespace App\Services;
 
-use App\Models\Banner;
-use App\Models\Pedido;
-use App\Models\Producto;
-use App\Models\Transaccion;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Helpers\CarritoHelper;
 use App\Models\Carritodetalle;
-use App\Helpers\PaginateHelper;
+use App\Models\Pedido;
+use App\Models\Pedidodetalle;
+use App\Models\Producto;
+use App\Models\Transaccion;
+use App\Transformers\Pdf\FindByIdTransformer;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
 class PagoWebService
 {
     public function findAll(Request $request)
     {
-        // try {
-        //     $data = PaginateHelper::getPaginatedData($request, Banner::class);
-        //     return response()->json(['data' => $data], Response::HTTP_OK);
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        // }
+        //--
     }
 
     public function findById(Request $request)
     {
-        // $data = Banner::find($request->id);
-
-        // return response()->json(['data' => $data], Response::HTTP_OK);
+        //--
     }
 
     public function create(Request $request)
@@ -37,43 +31,43 @@ class PagoWebService
 
         $pago = $this->creditCard($request->amount, $request->token);
 
-        $jsonData = $pago->getContent(); 
-        $data = json_decode($jsonData); 
+        $pagoResponse = $pago->getContent();
+        $pago = json_decode($pagoResponse);
 
         $carrito = CarritoHelper::getCarrito();
 
-        $productosCarrito = Carritodetalle::where('carrito',$carrito['id'])->get();
-        
-        $productosPedidos = [];
+        $productosCarrito = Carritodetalle::where('carrito', $carrito['id'])->get();
 
-        $stock = '';
+        /* Si concreto la operacion realizo el guardado de datos **/
+        if (isset($pago->paid) && $pago->paid) {
 
-        foreach($productosCarrito as $pc){
-        
-        $producto = Producto::find($pc['producto']);
+            /** Guardo pedido**/
+            $pedido = $this->savePedido($carrito['cliente']);
 
-        if($pc['cantidad']>$producto['stock']){
-            $stock = $producto['stock'];
-        }else{
-            $stock = $pc['cantidad'];
+            /* Guardo detalle de pedidos **/
+            $this->saveDetallePedido($productosCarrito, $pedido);
+
+            /* Guardo Transaccion**/
+            $this->saveTransaction($carrito['cliente'], $pedido, $pago->status, $pagoResponse);
+
+            /* genero y envio la proforma**/
+            $this->sendProforma($pedido);
+
+            return response()->json('El pedido fue generado de forma exitosa', Response::HTTP_OK);
         }
 
-        // $productosPedidos[] = [
-        //     "producto" => $pc['producto'],
-        //     "stock" => $producto['stock'],
-        //     "cantidad" => $pc['cantidad'],
-        //     "carrito" => $pc['carrito'],
-        //     "precio" => $pc['precio'],
-        //     "stock" => $stock
-        // ];
-        }
+        return response()->json(['error' => $pago], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    public function savePedido($cliente)
+    {
 
         $pedido = new Pedido;
         $pedido->fecha = NOW();
-        $pedido->cliente = $carrito['cliente'];      
+        $pedido->cliente = $cliente;
         $pedido->estado = 4;
         $pedido->vendedor = 1;
-        $pedido->formaDePago = 1;
+        $pedido->formaDePago = 2;
         $pedido->invoice = 0;
         $pedido->total = '0.00';
         $pedido->descuentoPorcentual = '0.00';
@@ -82,57 +76,75 @@ class PagoWebService
         $pedido->origen = 1;
         $pedido->save();
 
-        
+        return $pedido;
+    }
+
+    public function saveTransaction($cliente, $pedido, $status, $data)
+    {
 
         $transaccion = new Transaccion;
         $transaccion->fecha = NOW();
-        $transaccion->cliente = $carrito['cliente'];
-        $transaccion->pedido = $pedido->id;
-        $transaccion->resultado = $data->status;
-        $transaccion->ctr = $jsonData;
+        $transaccion->cliente = $cliente;
+        $transaccion->pedido = $pedido;
+        $transaccion->resultado = $status;
+        $transaccion->ctr = $data;
         $transaccion->save();
+    }
 
-        dd('ok');
-        dd($productosPedidos);
+    public function saveDetallePedido($productosCarrito, $pedido)
+    {
+        $cantidad = '';
+        $controlStock = false;
+        foreach ($productosCarrito as $pc) {
+            $controlStock = true;
+            $producto = Producto::find($pc['producto']);
 
-        $data = $request->all();
-        $banner = Banner::create($data);
+            if ($pc['cantidad'] > $producto['stock']) {
+                $cantidad = $producto['stock'];
+            } elseif ($pc['cantidad'] < $producto['stock']) {
+                $cantidad = $pc['cantidad'];
+            } elseif ($producto['stock'] == 0) {
+                $controlStock = false;
+            }
 
-        if (!$banner) {
-            return response()->json(['error' => 'Failed to create Banner'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            if ($controlStock) {
+                $pedidoDetalle = new Pedidodetalle;
+                $pedidoDetalle->pedido = $pedido->id;
+                $pedidoDetalle->producto = $pc['producto'];
+                $pedidoDetalle->precio = $pc['precio'];
+                $pedidoDetalle->cantidad = $cantidad;
+                $pedidoDetalle->costo = '0.00';
+                $pedidoDetalle->envio = '0.00';
+                $pedidoDetalle->tax = '0.00';
+                $pedidoDetalle->taxEnvio = '0.00';
+                $pedidoDetalle->save();
+
+                $this->updateStock($pc['producto'], $cantidad);
+            }
         }
-
-        return response()->json($banner, Response::HTTP_OK);
     }
 
-    public function update(Request $request)
+    public function updateStock($producto, $cantidad)
     {
-        // $banner = Banner::find($request->id);
 
-        // if (!$banner) {
-        //     return response()->json(['error' => 'Banner not found'], Response::HTTP_NOT_FOUND);
-        // }
-
-        // $banner->update($request->all());
-        // $banner->refresh();
-
-        // return response()->json($banner, Response::HTTP_OK);
+        $producto = Producto::findOrFail($producto);
+        $stock = $producto->stock - $cantidad;
+        $producto->stock = $stock;
+        $producto->save();
     }
 
-    public function delete(Request $request)
+    public function sendProforma($pedido)
     {
-        // $banner = Banner::find($request->id);
+        $pedido = Pedido::where('id',$pedido)->first();
 
-        // if (!$banner) {
-        //     return response()->json(['error' => 'Banner not found'], Response::HTTP_NOT_FOUND);
-        // }
+        $tranformer = new FindByIdTransformer();
+        $proforma = $tranformer->transform($pedido);
+        $pdf = Pdf::loadView('pdf.proforma', ['proforma' => $proforma]);
 
-        // $banner->delete();
-
-        // return response()->json(['id' => $request->id], Response::HTTP_OK);
+        return $pdf->stream();
     }
 
-    public function creditCard($amount,$token)
+    public function creditCard($amount, $token)
     {
         try {
 
@@ -141,9 +153,9 @@ class PagoWebService
             curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"amount\":" . $amount . ",\"currency\":\"usd\",\"source\":\"" . $token . "\"}");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $amount . ',"currency":"usd","source":"' . $token . '"}');
 
-            $headers = array();
+            $headers = [];
             $headers[] = 'Accept: application/json';
             $headers[] = 'Authorization: Bearer 859c0171-ee8b-7c4b-7a07-3a02288fbc03';
             $headers[] = 'idempotency-key ' . $this->gen_uuid();
@@ -152,14 +164,13 @@ class PagoWebService
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
             $response = curl_exec($ch);
-            
+
             $response = json_decode($response);
 
             if (curl_errno($ch)) {
                 echo 'Error:' . curl_error($ch);
             }
             curl_close($ch);
-
 
             return response()->json($response, Response::HTTP_OK);
         } catch (ValidationException $e) {
@@ -169,7 +180,7 @@ class PagoWebService
         }
     }
 
-    function gen_uuid()
+    public function gen_uuid()
     {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -195,5 +206,4 @@ class PagoWebService
             mt_rand(0, 0xffff)
         );
     }
-
 }

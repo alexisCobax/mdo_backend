@@ -66,3 +66,8 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 ## Formato de fecha
 
 ISO 8601
+
+# php fixed
+
+composer sniff 
+composer lint

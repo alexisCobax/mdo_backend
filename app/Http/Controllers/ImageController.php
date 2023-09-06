@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Helpers\ImagesHelper;
+use Illuminate\Http\Request;
 
 class ImageController extends Controller
 {
@@ -13,6 +13,7 @@ class ImageController extends Controller
         return view('images');
 
     }
+
     public function upload(Request $request)
     {
         // Validar el formulario si es necesario

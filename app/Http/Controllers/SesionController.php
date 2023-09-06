@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\SesionService;
+use Illuminate\Http\Request;
 
 class SesionController extends Controller
 {

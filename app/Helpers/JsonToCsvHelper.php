@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 class JsonToCsvHelper
 {
     /**
-     * getPaginatedData
+     * getPaginatedData.
      *
      * @param  mixed $request
      * @param  mixed $model

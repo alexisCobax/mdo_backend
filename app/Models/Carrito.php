@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Carrito
+ * Class Carrito.
  *
  * @property int $id
  * @property Carbon|null $fecha
@@ -20,8 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $formaDePago
  * @property string $session
  * @property string|null $observaciones
- *
- * @package App\Models
  */
 class Carrito extends Model
 {
@@ -35,7 +33,7 @@ class Carrito extends Model
         'cliente' => 'int',
         'estado' => 'int',
         'vendedor' => 'int',
-        'formaDePago' => 'int'
+        'formaDePago' => 'int',
     ];
 
     protected $fillable = [
@@ -46,6 +44,6 @@ class Carrito extends Model
         'vendedor',
         'formaDePago',
         'session',
-        'observaciones'
+        'observaciones',
     ];
 }

@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Cliente
+ * Class Cliente.
  *
  * @property int $id
  * @property string|null $nombre
@@ -57,8 +57,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $IdActiveCampaign
  * @property int|null $IdActiveCampaignContact
  * @property bool $notification
- *
- * @package App\Models
  */
 class Cliente extends Model
 {
@@ -79,7 +77,7 @@ class Cliente extends Model
         'ultimoLogin' => 'datetime',
         'prospecto' => 'bool',
         'IdActiveCampaign' => 'int',
-        'IdActiveCampaignContact' => 'int'
+        'IdActiveCampaignContact' => 'int',
     ];
 
     protected $fillable = [
@@ -126,6 +124,6 @@ class Cliente extends Model
         'contactoApellido',
         'IdActiveCampaign',
         'IdActiveCampaignContact',
-        'notification'
+        'notification',
     ];
 }

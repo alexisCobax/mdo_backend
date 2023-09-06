@@ -5,7 +5,7 @@ namespace App\Helpers;
 class ImagesHelper
 {
     /**
-     * uploadMultipleImages
+     * uploadMultipleImages.
      *
      * @param  mixed $request
      * @param  mixed $folder

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CiudadService;
+use Illuminate\Http\Request;
 
 class CiudadController extends Controller
 {

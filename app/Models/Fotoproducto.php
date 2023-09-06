@@ -6,17 +6,14 @@
 
 namespace App\Models;
 
-use App\Models\Producto;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Fotoproducto
+ * Class Fotoproducto.
  *
  * @property int $id
  * @property int $idProducto
  * @property int $orden
- *
- * @package App\Models
  */
 class Fotoproducto extends Model
 {
@@ -25,12 +22,12 @@ class Fotoproducto extends Model
 
     protected $casts = [
         'idProducto' => 'int',
-        'orden' => 'int'
+        'orden' => 'int',
     ];
 
     protected $fillable = [
         'idProducto',
-        'orden'
+        'orden',
     ];
 
     public function producto()

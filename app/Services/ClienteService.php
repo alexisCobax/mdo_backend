@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Cliente;
-use Illuminate\Http\Request;
 use App\Helpers\PaginateHelper;
+use App\Models\Cliente;
 use App\Models\Usuario;
-use Illuminate\Http\Response;
 use App\Transformers\Cliente\CreateTransformer;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ClienteService
 {
@@ -15,6 +15,7 @@ class ClienteService
     {
         try {
             $data = PaginateHelper::getPaginatedData($request, Cliente::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los clientes'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -42,10 +43,10 @@ class ClienteService
         }
 
         $usuario = [
-            "nombre" => $request->usuario,
-            "clave" => $request->clave,
-            "permisos" => 1,
-            "suspendido" => 0
+            'nombre' => $request->usuario,
+            'clave' => $request->clave,
+            'permisos' => 1,
+            'suspendido' => 0,
         ];
 
         $usuario = Usuario::create($usuario);
@@ -72,11 +73,11 @@ class ClienteService
         $usuario = Usuario::findOrFail($cliente->usuario);
 
         $dataUsuario = [
-            "id" => $usuario->id,
-            "nombre" => $request->usuario,
-            "clave" => $request->clave,
-            "permisos" => 1,
-            "suspendido" => 0
+            'id' => $usuario->id,
+            'nombre' => $request->usuario,
+            'clave' => $request->clave,
+            'permisos' => 1,
+            'suspendido' => 0,
         ];
 
         $usuario->update($dataUsuario);
@@ -89,11 +90,11 @@ class ClienteService
 
         $response = [
             $cliente,
-            "usuario" => [
-                "nombre" => $usuario->nombre,
-                "permisos" => $usuario->permisos,
-                "suspendido" => $usuario->suspendido
-            ]
+            'usuario' => [
+                'nombre' => $usuario->nombre,
+                'permisos' => $usuario->permisos,
+                'suspendido' => $usuario->suspendido,
+            ],
         ];
 
         return response()->json($response, Response::HTTP_OK);

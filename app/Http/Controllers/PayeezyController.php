@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PayeezyService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Services\PayeezyService;
 
 class PayeezyController extends Controller
 {
-
     private $service;
 
     public function __construct(PayeezyService $PayeezyService)

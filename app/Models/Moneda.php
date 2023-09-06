@@ -9,14 +9,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Moneda
+ * Class Moneda.
  *
  * @property int $id
  * @property string $NombreMoneda
  * @property string $Pais
  * @property float $Cotizacion
- *
- * @package App\Models
  */
 class Moneda extends Model
 {
@@ -26,13 +24,13 @@ class Moneda extends Model
 
     protected $casts = [
         'id' => 'int',
-        'Cotizacion' => 'float'
+        'Cotizacion' => 'float',
     ];
 
     protected $fillable = [
         'id',
         'NombreMoneda',
         'Pais',
-        'Cotizacion'
+        'Cotizacion',
     ];
 }

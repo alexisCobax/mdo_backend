@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\EtapapedidoService;
+use Illuminate\Http\Request;
 
 class EtapapedidoController extends Controller
 {

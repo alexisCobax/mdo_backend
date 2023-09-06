@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ClientecontactoService;
+use Illuminate\Http\Request;
 
 class ClientecontactoController extends Controller
 {

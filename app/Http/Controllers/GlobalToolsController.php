@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\GlobalToolsService;
+use Illuminate\Http\Request;
 
 class GlobalToolsController extends Controller
 {

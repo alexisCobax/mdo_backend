@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\CuentaCorrienteService;
+use Illuminate\Http\Request;
 
 class CuentaCorrienteController extends Controller
 {

@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Tipobanner
+ * Class Tipobanner.
  *
  * @property int $id
  * @property string $palabraClave
@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $alto
  * @property int|null $ancho
  * @property string|null $codigo
- *
- * @package App\Models
  */
 class Tipobanner extends Model
 {
@@ -28,7 +26,7 @@ class Tipobanner extends Model
 
     protected $casts = [
         'alto' => 'int',
-        'ancho' => 'int'
+        'ancho' => 'int',
     ];
 
     protected $fillable = [
@@ -37,6 +35,6 @@ class Tipobanner extends Model
         'descripcion',
         'alto',
         'ancho',
-        'codigo'
+        'codigo',
     ];
 }

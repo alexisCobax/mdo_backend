@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Cliente2
+ * Class Cliente2.
  *
  * @property int $id
  * @property string|null $nombre
@@ -54,8 +54,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $ipUltimoLogin
  * @property bool|null $prospecto
  * @property string|null $contactoApellido
- *
- * @package App\Models
  */
 class Cliente2 extends Model
 {
@@ -74,7 +72,7 @@ class Cliente2 extends Model
         'tipoDeEnvio' => 'int',
         'fechaAlta' => 'datetime',
         'ultimoLogin' => 'datetime',
-        'prospecto' => 'bool'
+        'prospecto' => 'bool',
     ];
 
     protected $fillable = [
@@ -118,6 +116,6 @@ class Cliente2 extends Model
         'ultimoLogin',
         'ipUltimoLogin',
         'prospecto',
-        'contactoApellido'
+        'contactoApellido',
     ];
 }

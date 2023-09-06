@@ -9,7 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Orderjetdevolucion
+ * Class Orderjetdevolucion.
  *
  * @property int $id
  * @property string $enlace
@@ -27,8 +27,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $return_status
  * @property string|null $shipping_carrier
  * @property string|null $tracking_number
- *
- * @package App\Models
  */
 class Orderjetdevolucion extends Model
 {
@@ -39,7 +37,7 @@ class Orderjetdevolucion extends Model
     protected $casts = [
         'id' => 'int',
         'agree_to_return_charge' => 'bool',
-        'refund_without_return' => 'bool'
+        'refund_without_return' => 'bool',
     ];
 
     protected $fillable = [
@@ -58,6 +56,6 @@ class Orderjetdevolucion extends Model
         'return_date',
         'return_status',
         'shipping_carrier',
-        'tracking_number'
+        'tracking_number',
     ];
 }

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Helpers\PaginateHelper;
 use App\Models\Banner;
 use Illuminate\Http\Request;
-use App\Helpers\PaginateHelper;
 use Illuminate\Http\Response;
 
 class BannerService
@@ -13,6 +13,7 @@ class BannerService
     {
         try {
             $data = PaginateHelper::getPaginatedData($request, Banner::class);
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -64,5 +65,4 @@ class BannerService
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
-
 }

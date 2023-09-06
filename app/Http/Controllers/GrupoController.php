@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\GrupoService;
+use Illuminate\Http\Request;
 
 class GrupoController extends Controller
 {

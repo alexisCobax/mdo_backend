@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ProveedorService;
+use Illuminate\Http\Request;
 
 class ProveedorController extends Controller
 {

@@ -9,15 +9,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Portada
+ * Class Portada.
  *
  * @property int $id
  * @property string $nombre
  * @property bool $visible
  * @property int $marca
  * @property int $posicion
- *
- * @package App\Models
  */
 class Portada extends Model
 {
@@ -29,7 +27,7 @@ class Portada extends Model
         'id' => 'int',
         'visible' => 'bool',
         'marca' => 'int',
-        'posicion' => 'int'
+        'posicion' => 'int',
     ];
 
     protected $fillable = [
@@ -37,6 +35,6 @@ class Portada extends Model
         'nombre',
         'visible',
         'marca',
-        'posicion'
+        'posicion',
     ];
 }

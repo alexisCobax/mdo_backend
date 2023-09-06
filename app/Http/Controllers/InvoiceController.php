@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\InvoiceService;
+use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {

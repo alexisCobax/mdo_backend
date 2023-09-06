@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\PagoWebService;
+use Illuminate\Http\Request;
 
 class PagoWebController extends Controller
 {

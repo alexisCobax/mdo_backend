@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\PuestoService;
+use Illuminate\Http\Request;
 
 class PuestoController extends Controller
 {

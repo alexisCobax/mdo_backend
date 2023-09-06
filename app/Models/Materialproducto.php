@@ -9,13 +9,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Materialproducto
+ * Class Materialproducto.
  *
  * @property int $id
  * @property string $nombre
  * @property bool $suspendido
- *
- * @package App\Models
  */
 class Materialproducto extends Model
 {
@@ -23,11 +21,11 @@ class Materialproducto extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'suspendido' => 'bool'
+        'suspendido' => 'bool',
     ];
 
     protected $fillable = [
         'nombre',
-        'suspendido'
+        'suspendido',
     ];
 }

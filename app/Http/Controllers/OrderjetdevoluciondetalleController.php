@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\OrderjetdevoluciondetalleService;
+use Illuminate\Http\Request;
 
 class OrderjetdevoluciondetalleController extends Controller
 {

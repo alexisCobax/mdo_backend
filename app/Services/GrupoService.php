@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Grupo;
 use Illuminate\Http\Request;
-use App\Helpers\PaginateHelper;
 use Illuminate\Http\Response;
 
 class GrupoService
@@ -13,6 +12,7 @@ class GrupoService
     {
         try {
             $data = Grupo::all();
+
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
