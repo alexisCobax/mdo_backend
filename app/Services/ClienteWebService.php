@@ -23,9 +23,11 @@ class ClienteWebService
         }
     }
 
-    public function findById(Request $request)
+    public function findByToken(Request $request)
     {
-        $data = Cliente::find($request->id);
+        $user = Auth::user();   
+
+        $data = Cliente::where('usuario',$user->id)->first();
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }

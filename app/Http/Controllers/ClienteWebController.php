@@ -34,7 +34,7 @@ class ClienteWebController extends Controller
      */
     public function show(Request $request)
     {
-        return $this->service->findById($request);
+        return $this->service->findByToken($request);
     }
 
     /**
