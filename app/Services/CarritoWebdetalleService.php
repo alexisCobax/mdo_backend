@@ -94,10 +94,10 @@ class CarritoWebdetalleService
 
     public function update(Request $request)
     {
-
-        $producto = Producto::find($request->id)->first();
+        $producto = Producto::where('id',$request->id)->first();
 
         $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
+
         $carrito = CarritoHelper::getCarrito();
         $carritodetalle = CarritoDetalle::where('producto', $request->id)
             ->where('carrito', $carrito['id'])
