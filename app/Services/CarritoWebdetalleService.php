@@ -95,7 +95,7 @@ class CarritoWebdetalleService
     public function update(Request $request)
     {
         $producto = Producto::where('id',$request->id)->first();
-
+ 
         $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
 
         $carrito = CarritoHelper::getCarrito();
@@ -104,7 +104,7 @@ class CarritoWebdetalleService
             ->first();
 
         if (!$carritodetalle) {
-            return response()->json(['error' => 'Carritodetalle not found'], Response::HTTP_NOT_FOUND);
+            return response()->json(['error' => 'Carrito detalle not found'], Response::HTTP_NOT_FOUND);
         }
 
         $payload = [
