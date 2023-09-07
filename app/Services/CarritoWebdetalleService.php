@@ -32,7 +32,7 @@ class CarritoWebdetalleService
         $carritoDetalle = Carritodetalle::where('carrito', $carrito['id'])->get();
 
         foreach ($carritoDetalle as $c) {
-
+// traER DE PRIDUCTO
             $precio = CalcHelper::ListProduct(optional($c->productos)->precio, optional($c->productos)->precioPromocional);
 
             $data[] = [
