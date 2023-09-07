@@ -92,6 +92,7 @@ use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ActiveCampaignController;
 
 /*
 |--------------------------------------------------------------------------
@@ -763,6 +764,9 @@ Route::middleware('auth:sanctum')->group(function () {
     /* Pagos **/
     Route::post('/web/pagar', [PagoWebController::class, 'create']);
 
+    /** Producto **/
+    Route::get('/web/producto/{id}', [ProductoController::class, 'show']);
+
 });
 
 /* Login Routes Not Auth **/
@@ -792,3 +796,7 @@ Route::get('/pdf/recibo', [PdfController::class, 'recibo']);
 Route::post('/payment/payeezy', [PayeezyController::class, 'processPayeezyPayment']);
 
 Route::post('/payment/clover', [CloverController::class, 'processCloverPayment']);
+
+
+
+Route::post('/subir-cuenta', [ActiveCampaignController::class, 'subirCuenta']);
