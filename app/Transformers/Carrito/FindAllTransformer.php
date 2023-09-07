@@ -40,6 +40,14 @@ class FindAllTransformer extends TransformerAbstract
 
         $total = $response->sum('subTotal');
 
-        return ['carrito' => $id, 'total' => $total, 'detalles' => $response->toArray()];
+        return [
+        'carrito' => $id, 
+        'total' => $total, 
+        'descuentos'=> '0.00', 
+        'subtotal'=> '0.00', 
+        'totalSinEnvio'=> '0.00', 
+        'totalConEnvio'=>'0.00', 
+        'totalEnvio' => '0.00',
+        'detalles' => $response->toArray()];
     }
 }
