@@ -117,7 +117,16 @@ class CarritoWebdetalleService
         $carritodetalle->update($payload);
         $carritodetalle->refresh();
 
-        return response()->json($carritodetalle, Response::HTTP_OK);
+        $response = [
+            "id"=> $carritodetalle->id,
+            "carrito"=> $carritodetalle->carrito,
+            "producto"=> $carritodetalle->producto,
+            "precio"=> $carritodetalle->precio,
+            "cantidad"=> $carritodetalle->cantidad,
+            "total"=> $carritodetalle->precio*$carritodetalle->cantidad
+        ]; 
+
+        return response()->json($response, Response::HTTP_OK);
     }
 
     public function delete(Request $request)
