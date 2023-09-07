@@ -92,6 +92,7 @@ use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ActiveCampaignController;
 
 /*
 |--------------------------------------------------------------------------
@@ -792,3 +793,7 @@ Route::get('/pdf/recibo', [PdfController::class, 'recibo']);
 Route::post('/payment/payeezy', [PayeezyController::class, 'processPayeezyPayment']);
 
 Route::post('/payment/clover', [CloverController::class, 'processCloverPayment']);
+
+
+
+Route::post('/subir-cuenta', [ActiveCampaignController::class, 'subirCuenta']);
