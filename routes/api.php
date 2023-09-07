@@ -764,6 +764,9 @@ Route::middleware('auth:sanctum')->group(function () {
     /* Pagos **/
     Route::post('/web/pagar', [PagoWebController::class, 'create']);
 
+    /** Producto **/
+    Route::get('/web/producto/{id}', [ProductoController::class, 'show']);
+
 });
 
 /* Login Routes Not Auth **/

@@ -197,7 +197,7 @@ class Producto extends Model
 
     public function fotos()
     {
-        return $this->hasMany(FotoProducto::class, 'idProducto');
+        return $this->hasMany(Fotoproducto::class, 'idProducto');
     }
 
     public function materiales()
