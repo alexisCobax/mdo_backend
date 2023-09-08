@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use App\Services\BannerService;
+use App\Services\ActiveCampaignService;
 
 class ActiveCampaignController extends Controller
 {
     private $ApiToken = "c7efcf1f232e6e487613cf97ff21e13d2b02db40a6c2fc88dcf349d0c9da59b833a6053c";
     private $url = "https://cobax1694091376.api-us1.com/api/3/";
+
+    private $service;
+
+    public function __construct(ActiveCampaignService $ActiveCampaignService)
+    {
+        $this->service = $ActiveCampaignService;
+    }
 
 
     // Subir un ciente al eCommerce - esto lo ejecuto cuando el cliente cambia de prospecto a cliente (endpoint generar nuevo cliente)
