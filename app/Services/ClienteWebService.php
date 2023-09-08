@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
 use App\Models\Cliente;
 use App\Models\Usuario;
-use App\Transformers\Cliente\CreateTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\Auth;
+use App\Transformers\Cliente\CreateTransformer;
+use App\Transformers\Cliente\CreateWebTransformer;
 
 class ClienteWebService
 {
@@ -58,8 +59,8 @@ class ClienteWebService
             return response()->json(['error' => 'Failed to create Usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $transformer = new CreateTransformer();
-        $cliente = $transformer->transform($request, 1);
+        $transformer = new CreateWebTransformer();
+        $cliente = $transformer->transform($request, $usuario->id);
 
         $cliente = Cliente::create($cliente);
 

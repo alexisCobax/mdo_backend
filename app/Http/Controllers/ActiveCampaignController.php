@@ -12,7 +12,8 @@ class ActiveCampaignController extends Controller
     private $url = "https://cobax1694091376.api-us1.com/api/3/";
 
 
-    public function SubirCuenta($objCliente)
+    // Subir un ciente al eCommerce - esto lo ejecuto cuando el cliente cambia de prospecto a cliente (endpoint generar nuevo cliente)
+    public function SubirCuenta($objCliente) // objeto cliente con todos sus datos
     {
         $resultadoFuncion = "";
         $respuesta = "";
@@ -24,20 +25,23 @@ class ActiveCampaignController extends Controller
 
         $objDatosCliente = new Cliente();
 
+        //si no esta en la db local el active campaign
         if ($objCliente->IdActiveCampaign === 0) {
             $respuesta = $this->Consulta("ecomCustomers?filters[email]=" . $objCliente->Email);
+
             dd($respuesta);
             $resultadoFuncion = $respuesta;
             $resultado = json_decode($respuesta);
             dd($resultado);
             if (count($resultado->ecomCustomers) > 0) {
+                //grabo el id 4 en la db esto corresponde al cliente primero, el dato lo guardo en activecampaign
                 $objCliente->IdActiveCampaign = $resultado->ecomCustomers[0]->id;
-                $objDatosCliente->guardar($objCliente);
+                $objDatosCliente->guardar($objCliente); //update
 
-                if ($resultado->ecomCustomers[0]->externalid !== $objCliente->Id) {
+                if ($resultado->ecomCustomers[0]->externalid !== $objCliente->Id) { // si el external id no es igual al id de la db lo update
                     $this->Modificacion("ecomCustomers/" . $objCliente->IdActiveCampaign, '{"ecomCustomer":{"externalid":"' . $objCliente->Id . '"}}');
                 }
-            } else {
+            } else {// sino lo doy de alta
                 $postData = '{"ecomCustomer": {"connectionid": "2", "externalid": "' . $objCliente->Id . '", "email": "' . $objCliente->Email . '", "acceptsMarketing": "1"}}';
                 $respuesta = $this->Alta("ecomCustomers/", $postData);
                 $resultadoFuncion = $respuesta;
@@ -50,13 +54,12 @@ class ActiveCampaignController extends Controller
                     $resultadoFuncion .= $ex->getMessage();
                 }
             }
-        } else {
-            $resultadoFuncion = "Modificacion:" . $this->Modificacion("ecomCustomers/" . $objCliente->IdActiveCampaign . "/", '{"ecomCustomer":{"externalid":"' . $objCliente->Id . '"}}');
-        }
+        } 
 
         return $resultadoFuncion;
     }
 
+    // este genera el contacto FUERA DEL ECOMMERCE - esto se ejecuta cuando alguien se registra como prospecto
     public function SubirContacto($objCliente)
     {
         $resultadoFuncion = "";
@@ -87,11 +90,12 @@ class ActiveCampaignController extends Controller
         }
 
         $objDatosCliente->guardar($objCliente);
-        $resultadoFuncion = $this->NuevaEtiqueta($objCliente, 61);
+        $resultadoFuncion = $this->NuevaEtiqueta($objCliente, 61); //prospecto 
 
         return $resultadoFuncion;
     }
 
+    //genero nueva etiqueta prospecto
     public function NuevaEtiqueta($objCliente, $idEtiqueta)
     {
         $resultadoFuncion = "";
@@ -114,6 +118,7 @@ class ActiveCampaignController extends Controller
         return $resultadoFuncion;
     }
 
+    //cuando genero el invoice ejecuto este funcion
     public function SubirPedido($objInvoice)
     {
         $resp = "";
@@ -225,6 +230,7 @@ class ActiveCampaignController extends Controller
         return $resp;
     }
 
+    //esto se ejecuta cuanmdo genero cotizacion - endpoint carrito a cotizacion
     public function SubirCotizacion($objCotizacion)
     {
         $resp = "";
@@ -317,6 +323,7 @@ class ActiveCampaignController extends Controller
         return $resp;
     }
 
+    // este funcion es el helper de curl
     public function Alta($strUrl, $strMensaje)
     {
         try {
@@ -349,6 +356,7 @@ class ActiveCampaignController extends Controller
         }
     }
 
+     // este funcion es el helper de curl
     public function Consulta($strUrl)
     {
         try {
@@ -382,6 +390,7 @@ class ActiveCampaignController extends Controller
         }
     }
 
+     // este funcion es el helper de curl
     public function Modificacion($strUrl, $strMensaje)
     {
         try {
@@ -414,9 +423,4 @@ class ActiveCampaignController extends Controller
         }
     }
 
-    public function ConsultarCampos()
-    {
-        $respuesta = $this->Consulta("fields?limit=100");
-        return $respuesta;
-    }
 }
