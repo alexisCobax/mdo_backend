@@ -4,6 +4,7 @@ namespace App\Transformers\Carrito;
 
 use App\Helpers\CalcHelper;
 use App\Models\Carritodetalle;
+use App\Helpers\CalcEnvioHelper;
 use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract
@@ -40,14 +41,20 @@ class FindAllTransformer extends TransformerAbstract
 
         $total = $response->sum('subTotal');
 
+        $subTotal = $response->sum('subTotal'); 
+        $cantidades = $response->sum('cantidad');
+        $totalEnvio = CalcEnvioHelper::calcular($cantidades);
+        $descuentos = '0.00';
+        $total = $subTotal-$descuentos;
+        $totalConEnvio = $total+$totalEnvio;
+
         return [
         'carrito' => $id, 
-        'total' => $total, 
-        'descuentos'=> '0.00', 
-        'subtotal'=> '0.00', 
-        'totalSinEnvio'=> '0.00', 
-        'totalConEnvio'=>'0.00', 
-        'totalEnvio' => '0.00',
+        'total' => $total == 0 ? '0.00' : $total,
+        'descuentos'=> $descuentos == 0 ? '0.00' : $descuentos, 
+        'subtotal'=> $subTotal == 0 ? '0.00' : $subTotal, 
+        'totalConEnvio'=> $totalConEnvio == 0 ? '0.00' : $totalConEnvio, 
+        'totalEnvio' => $totalEnvio == 0 ? '0.00' : $totalEnvio,
         'detalles' => $response->toArray()];
     }
 }
