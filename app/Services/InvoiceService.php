@@ -41,7 +41,7 @@ class InvoiceService
         $tranformer = new FindByIdTransformer();
         $invoice = $tranformer->transform($invoice, $request);
 
-        dd($invoice);
+         dd($invoice);
 
         $pdf = Pdf::loadView('pdf.invoice', ['invoice'=>$invoice]);
 
