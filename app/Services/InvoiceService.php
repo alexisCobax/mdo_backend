@@ -29,6 +29,7 @@ class InvoiceService
 
     public function findById(Request $request)
     {
+        echo 1;die;
         // $invoice = Invoice::find($request->id);
 
         // $invoiceTranformada = new FindByIdTransformer();
