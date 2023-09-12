@@ -16,15 +16,6 @@ use Illuminate\Validation\ValidationException;
 
 class PagoWebService
 {
-    public function findAll(Request $request)
-    {
-        //--
-    }
-
-    public function findById(Request $request)
-    {
-        //--
-    }
 
     public function create(Request $request)
     {
@@ -48,7 +39,7 @@ class PagoWebService
             $this->saveDetallePedido($productosCarrito, $pedido);
 
             /* Guardo Transaccion**/
-            $this->saveTransaction($carrito['cliente'], $pedido, $pago->status, $pagoResponse);
+            $this->saveTransaction($carrito['cliente'], json_encode($pedido), $pago->status, $pagoResponse);
 
             /* genero y envio la proforma**/
             $this->sendProforma($pedido);
@@ -61,7 +52,6 @@ class PagoWebService
 
     public function savePedido($cliente)
     {
-
         $pedido = new Pedido;
         $pedido->fecha = NOW();
         $pedido->cliente = $cliente;
@@ -85,7 +75,7 @@ class PagoWebService
         $transaccion = new Transaccion;
         $transaccion->fecha = NOW();
         $transaccion->cliente = $cliente;
-        $transaccion->pedido = $pedido;
+        $transaccion->pedido = $pedido ? $pedido = 0 : $pedido;
         $transaccion->resultado = $status;
         $transaccion->ctr = $data;
         $transaccion->save();
@@ -135,10 +125,10 @@ class PagoWebService
 
     public function sendProforma($pedido)
     {
-        $pedido = Pedido::where('id', $pedido)->first();
+        $pedidoReponse = Pedido::where('id', $pedido->id)->first();
 
         $tranformer = new FindByIdTransformer();
-        $proforma = $tranformer->transform($pedido);
+        $proforma = $tranformer->transform($pedidoReponse);
         $pdf = Pdf::loadView('pdf.proforma', ['proforma' => $proforma]);
 
         return $pdf->stream();

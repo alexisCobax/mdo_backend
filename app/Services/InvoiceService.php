@@ -29,29 +29,15 @@ class InvoiceService
 
     public function findById(Request $request)
     {
-        // $invoice = Invoice::find($request->id);
-
-        // $invoiceTranformada = new FindByIdTransformer();
-        // $invoiceTranformada = $invoiceTranformada->transform($invoice,$request);
-
-        // return response()->json(['data' => $invoiceTranformada], Response::HTTP_OK);
 
         $invoice = Invoice::find($request->id);
 
         $tranformer = new FindByIdTransformer();
-        $invoice = $tranformer->transform($invoice, $request);
+        $invoiceTransformer = $tranformer->transform($invoice, $request);
 
-         dd($invoice);
-
-        $pdf = Pdf::loadView('pdf.invoice', ['invoice'=>$invoice]);
-
-        //$dom_pdf = $pdf->getDomPDF();
+        $pdf = Pdf::loadView('pdf.invoice', ['invoice' => $invoiceTransformer]);
 
         return $pdf->stream();
-
-        //return $pdf->download('proforma.pdf');
-
-        //return $tranformer->transform($pedido, $request);
     }
 
     public function create(Request $request)
@@ -60,8 +46,8 @@ class InvoiceService
         $pedido = Pedido::find($request->pedido);
 
         $cantidad = Pedidodetalle::where('pedido', $request->pedido)->groupBy('pedido')
-        ->selectRaw('pedido, SUM(cantidad) as suma_cantidad')
-        ->get();
+            ->selectRaw('pedido, SUM(cantidad) as suma_cantidad')
+            ->get();
 
         $invoiceData = new CreateTransformer();
         $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
