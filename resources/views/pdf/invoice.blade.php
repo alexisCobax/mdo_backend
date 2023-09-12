@@ -5,14 +5,10 @@
     <style>
 
         .header-table {
-            /* border: 1px solid blue; */
+
             width: 700px;
         }
-/* 
-        .header-table tr th,
-        .header-table tr td {
-            border: 1px solid blue;
-        } */
+
 
         .logo {
             width: 310px;
@@ -90,7 +86,7 @@
                                     <strong>Factura N°:</strong>
                                 </td>
                                 <td>
-                                    8608
+                                    {{$invoice['detalle'][0]['id']}}
                                 </td>
                             </tr>
                             <tr>
@@ -98,7 +94,7 @@
                                     Fecha:
                                 </td>
                                 <td>
-                                    12-Jun-2023
+                                    {{$invoice['fecha']}}
                                 </td>
                             </tr>
                         </table>
@@ -146,32 +142,27 @@
                             </tr>
                             <tr>
                                 <td>
-                                    Rolando R Hernandez
+                                    {{$invoice['clienteNombre']}}
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    4634 NW 74TH Avenue
+                                    {{$invoice['clienteDireccionShape']}}
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    SUITE: CKN3918191
+                                    {{$invoice['clienteCiudad']}}
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    Miami Florida
+                                    {{$invoice['clienteCodigoPostal']}}, {{$invoice['clientePais']}}
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    33166, USA
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    TEL876-289-9192
+                                    TEL: {{$invoice['clienteTelefono']}}
                                 </td>
                             </tr>
                         </table>
@@ -182,16 +173,16 @@
                 compra</p></div>
             <table class="header-table">
                 <tr>
-                    <td colspan="3" style="border: 1px solid black;">Cliente:8818-Diagnostics and Eye Health Center</td>
+                    <td colspan="3" style="border: 1px solid black;">Cliente:{{$invoice['clienteId']}}-{{$invoice['clienteNombre']}}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid black;">Orden #10447</td>
-                    <td style="border: 1px solid black;">Envio Via:FEDEX G</td>
+                    <td style="border: 1px solid black;">Orden #{{$invoice['id']}}</td>
+                    <td style="border: 1px solid black;">Envio Via:{{$invoice['shipTo']}}</td>
                     <td style="border: 1px solid black;">F.O.B.:MIAMI-MDO</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid black;">Fecha Orden:05-Jun-2023</td>
-                    <td style="border: 1px solid black;">Vendedor:MDO S</td>
+                    <td style="border: 1px solid black;">Fecha Orden:{{$invoice['fecha']}}</td>
+                    <td style="border: 1px solid black;">Vendedor: {{$invoice['salesPerson']}}</td>
                     <td style="border: 1px solid black;">Terminos: PREPAGO</td>
                 </tr>
             </table>
@@ -214,7 +205,16 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ( $invoice['detalle'] as $d)
                             <tr>
+                                <td>{{$d['qborder']}}</td>
+                                <td class="align-center">872016157159</td>
+                                <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
+                                <td>18,99</td>
+                                <td>18,99</td>
+                            </tr>
+                            @endforeach
+                            {{-- <tr>
                                 <td>1</td>
                                 <td class="align-center">872016157159</td>
                                 <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
@@ -291,13 +291,6 @@
                                 <td>18,99</td>
                                 <td>18,99</td>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td class="align-center">872016157159</td>
-                                <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
-                                <td>18,99</td>
-                                <td>18,99</td>
-                            </tr>
                             </tr>
                             <tr>
                                 <td>1</td>
@@ -353,20 +346,6 @@
                                 <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
                                 <td>18,99</td>
                                 <td>18,99</td>
-                            </tr>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td class="align-center">872016157159</td>
-                                <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
-                                <td>18,99</td>
-                                <td>18,99</td>
-                            </tr>
-                            <td>1</td>
-                            <td class="align-center">872016157159</td>
-                            <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
-                            <td>18,99</td>
-                            <td>18,99</td>
                             </tr>
                             </tr>
                             <tr>
@@ -474,6 +453,20 @@
                                 <td>18,99</td>
                                 <td>18,99</td>
                             </tr>
+                            <td>1</td>
+                            <td class="align-center">872016157159</td>
+                            <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
+                            <td>18,99</td>
+                            <td>18,99</td>
+                            </tr>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td class="align-center">872016157159</td>
+                                <td>4634 NW 74TH Avenue SUITE: CKN3918191</td>
+                                <td>18,99</td>
+                                <td>18,99</td>
+                            </tr> --}}
                         </tbody>
                     </table>
                 
