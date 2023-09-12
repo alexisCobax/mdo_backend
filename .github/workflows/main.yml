@@ -11,13 +11,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set SSH key
-        run: |
-             echo "$PRIVATE_KEY" > SSH_PRIVATE_KEY
-             chmod 600 /home/master/.ssh/id_rsa
-             env:
-             PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       
       - name: Push to server
         uses: appleboy/ssh-action@v1.0.0
@@ -28,4 +21,4 @@ jobs:
           port: 22  
           script: |
             cd ${{ secrets.PROJECT_PATH }}
-            git pull
+            git pull git@github.com:alexisCobax/mdo_backend.git
