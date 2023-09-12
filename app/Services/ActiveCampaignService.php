@@ -2,17 +2,20 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
+use Exception;
 use App\Models\Ciudad;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Exception;
+use App\Helpers\PaginateHelper;
 
 class ActiveCampaignService
 {
      // Subir un ciente al eCommerce - esto lo ejecuto cuando el cliente cambia de prospecto a cliente (endpoint generar nuevo cliente)
      public function SubirCuenta($objCliente) // objeto cliente con todos sus datos
      {
+
+         $cliente = Cliente::where('id',1)->get();
          $resultadoFuncion = "";
          $respuesta = "";
          $resultado = "";

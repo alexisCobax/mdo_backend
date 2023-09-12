@@ -790,7 +790,7 @@ Route::get('/producto/{id}', [ProductoController::class, 'show']);
 
 Route::get('/pdf/proforma/{id}', [PdfController::class, 'proforma']);
 
-Route::get('/pdf/invoice', [PdfController::class, 'invoice']);
+Route::get('/pdf/invoice/{id}', [PdfController::class, 'invoice']);
 
 Route::get('/pdf/recibo', [PdfController::class, 'recibo']);
 

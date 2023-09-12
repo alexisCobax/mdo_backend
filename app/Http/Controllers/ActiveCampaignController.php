@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use App\Services\BannerService;
 use App\Services\ActiveCampaignService;
@@ -21,15 +22,17 @@ class ActiveCampaignController extends Controller
 
 
     // Subir un ciente al eCommerce - esto lo ejecuto cuando el cliente cambia de prospecto a cliente (endpoint generar nuevo cliente)
-    public function SubirCuenta($objCliente) // objeto cliente con todos sus datos
+    public function SubirCuenta() // objeto cliente con todos sus datos
     {
+        $objCliente = Cliente::find(1);
+
         $resultadoFuncion = "";
         $respuesta = "";
         $resultado = "";
 
-        if ($objCliente->IdActiveCampaign !== 0) {
-            return "";
-        }
+        // if ($objCliente->IdActiveCampaign !== 0) {
+        //     return "";
+        // }
 
         $objDatosCliente = new Cliente();
 
