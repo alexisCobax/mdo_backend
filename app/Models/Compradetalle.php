@@ -46,4 +46,15 @@ class Compradetalle extends Model
     {
         return $this->belongsTo(Producto::class, 'producto');
     }
+
+    /** Filters **/
+
+    public function scopeEnDeposito($query, $estado)
+    {
+        if ($estado) {
+            return $query->where('enDeposito', $estado);
+        }
+
+        return $query;
+    }
 }

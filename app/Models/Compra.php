@@ -51,4 +51,15 @@ class Compra extends Model
     {
         return $this->belongsTo(Proveedor::class, 'proveedor');
     }
+
+    /** Filters **/
+
+    public function scopeEnDeposito($query, $estado)
+    {
+        if ($estado) {
+            return $query->where('enDeposito', $estado);
+        }
+
+        return $query;
+    }
 }
