@@ -2,17 +2,18 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
-use App\Models\Compradetalle;
 use Illuminate\Http\Request;
+use App\Models\Compradetalle;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
+use App\Filters\CompraDetalle\CompraDetalleFilters;
 
 class CompradetalleService
 {
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Compradetalle::class);
+            $data = CompraDetalleFilters::getPaginateCompraDetalle($request, Compradetalle::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
