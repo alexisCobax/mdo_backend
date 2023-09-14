@@ -20,14 +20,14 @@ class PagoWebService
     public function create(Request $request)
     {
 
-        $pago = $this->creditCard($request->amount, $request->token);
-
-        $pagoResponse = $pago->getContent();
-        $pago = json_decode($pagoResponse);
-
         $carrito = CarritoHelper::getCarrito();
 
         $productosCarrito = Carritodetalle::where('carrito', $carrito['id'])->get();
+
+        $pago = $this->creditCard($productosCarrito->sum('precio'), $request->token);
+
+        $pagoResponse = $pago->getContent();
+        $pago = json_decode($pagoResponse);
 
         /* Si concreto la operacion realizo el guardado de datos **/
         if (isset($pago->paid) && $pago->paid) {
