@@ -49,8 +49,17 @@ class Compradetalle extends Model
 
     public function scopeEnDeposito($query, $estado)
     {
-        if ($estado == 0 or $estado == 1) {
+        if ($estado == '0' or $estado == 1) {
             return $query->where('enDeposito', $estado);
+        }
+
+        return $query;
+    }
+
+    public function scopeCompra($query, $compra)
+    {
+        if ($compra) {
+            return $query->where('compra', $compra);
         }
 
         return $query;
