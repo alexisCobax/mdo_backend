@@ -79,24 +79,25 @@ class ClienteWebService
         $usuario = Usuario::findOrFail($user->id);
         $cliente = Cliente::where('usuario', $user->id);
 
-        $dataUsuario = [
-            'id' => $usuario->id,
-            'nombre' => $request->usuario,
-            'clave' => $request->clave,
-            'permisos' => 1,
-            'suspendido' => 0,
-        ];
+        if ($request->usuario) {
+            $dataUsuario = [
+                'id' => $usuario->id,
+                'nombre' => $request->usuario,
+                'clave' => $request->clave,
+                'permisos' => 1,
+                'suspendido' => 0,
+            ];
 
-        $usuario->update($dataUsuario);
+            $usuario->update($dataUsuario);
+        }
 
         $transformer = new CreateTransformer();
-        $dataCliente = $transformer->transform($request, $cliente->usuario);
+        $dataCliente = $transformer->transform($request, $user->id);
 
         $cliente->update($dataCliente);
-        $usuario = Usuario::find($usuario->id);
 
         $response = [
-            $cliente,
+            $cliente->get(),
             'usuario' => [
                 'nombre' => $usuario->nombre,
                 'permisos' => $usuario->permisos,
