@@ -94,13 +94,13 @@ class ClienteWebService
 
         if ($cliente) {
             $camposActualizables = [
-                'nombre', 'Notas', 'WhatsApp', 'checkboxNotificarUsuario',
-                'ciudad', 'clave', 'codigoPostal', 'contacto', 'contactoApellido',
-                'cpShape', 'direccion', 'direccionBill', 'direccionShape', 'email',
-                'estadoCliente', 'montoMaximoDePago', 'observaciones', 'pais',
-                'paisShape', 'prospecto', 'puestoContacto', 'telefono',
-                'telefonoTransportadora', 'tipoDeEnvio', 'transportadora',
-                'usuario', 'vendedor', 'web', 'notification'
+                'nombre', 'direccion', 'codigoPostal', 'telefono', 
+                'email', 'contactoApellido', 'contacto', 'puestoContacto', 
+                'transportadora', 'telefonoTransportadora', 'observaciones', 
+                'usuario', 'web', 'direccionShape', 'direccionBill', 'vendedor', 
+                'ciudad', 'pais', 'cpShape', 'paisShape', 'montoMaximoDePago', 
+                'WhatsApp', 'Notas', 'tipoDeEnvio', 'prospecto', 'clave', 
+                'checkboxNotificarUsuario', 'suspendido', 'estadoCliente'
             ];
             $dataCliente = $request->only($camposActualizables);
 
