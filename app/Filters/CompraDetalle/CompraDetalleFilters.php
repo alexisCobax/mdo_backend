@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filters\Compras;
+namespace App\Filters\CompraDetalle;
 
-use App\Transformers\Compra\FindAllTransformer;
+use App\Transformers\CompraDetalle\FindAllTransformer;
 use Illuminate\Http\Response;
 
-class ComprasFilters
+class CompraDetalleFilters
 {
-    public static function getPaginateCompras($request, $model)
+    public static function getPaginateCompraDetalle($request, $model)
     {
         // Obtén los parámetros de la solicitud
         $page = $request->input('pagina', env('PAGE'));
