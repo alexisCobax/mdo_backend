@@ -10,6 +10,7 @@ use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\Auth;
 use App\Transformers\Cliente\CreateTransformer;
 use App\Transformers\Cliente\CreateWebTransformer;
+use App\Transformers\Cliente\UpdateTransformer;
 
 class ClienteWebService
 {
@@ -91,10 +92,33 @@ class ClienteWebService
             $usuario->update($dataUsuario);
         }
 
-        $transformer = new CreateTransformer();
-        $dataCliente = $transformer->transform($request, $user->id);
+        // $transformer = new UpdateTransformer();
+        // $dataCliente = $transformer->transform($request, $user->id);
 
-        $cliente->update($dataCliente);
+        $dataCliente = [];
+
+            // Lista de campos que se pueden actualizar
+            $camposActualizables = [
+                'nombre', 'Notas', 'WhatsApp', 'checkboxNotificarUsuario',
+                'ciudad', 'clave', 'codigoPostal', 'contacto', 'contactoApellido',
+                'cpShape', 'direccion', 'direccionBill', 'direccionShape', 'email',
+                'estadoCliente', 'montoMaximoDePago', 'observaciones', 'pais',
+                'paisShape', 'prospecto', 'puestoContacto', 'telefono',
+                'telefonoTransportadora', 'tipoDeEnvio', 'transportadora',
+                'usuario', 'vendedor', 'web', 'notification'
+            ];
+
+            // Recorre los campos y agrega solo los que están presentes en la solicitud
+            foreach ($camposActualizables as $campo) {
+                if ($request->has($campo)) {
+                    $dataCliente[$campo] = $request->input($campo);
+                }
+            }
+
+            // Realiza el update solo con los campos presentes en $dataCliente
+            $cliente->update($dataCliente);
+
+        // $cliente->update($dataCliente);
 
         $response = [
             $cliente->get(),
