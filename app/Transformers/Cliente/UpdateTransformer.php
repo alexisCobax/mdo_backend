@@ -6,7 +6,6 @@ class UpdateTransformer
 {
     public static function transform($request, $usuarioId)
     {
-
         $cliente = [
             'nombre' => $request->nombre,
             'Notas' => $request->Notas,
@@ -29,7 +28,7 @@ class UpdateTransformer
             'paisShape' => $request->paisShape,
             'prospecto' => $request->prospecto,
             'puestoContacto' => $request->puestoContacto,
-            'suspendido' => $request->suspendido,
+            'suspendido' => 0,
             'telefono' => $request->telefono,
             'telefonoTransportadora' => $request->telefonoTransportadora,
             'tipoDeEnvio' => $request->tipoDeEnvio,
