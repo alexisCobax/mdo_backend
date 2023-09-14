@@ -2,15 +2,22 @@
 
 namespace App\Transformers\Carrito;
 
+use App\Models\Cliente;
 use App\Helpers\CalcHelper;
 use App\Models\Carritodetalle;
 use App\Helpers\CalcEnvioHelper;
+use Illuminate\Support\Facades\Auth;
 use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract
 {
     public function transform($id)
     {
+
+        $user = Auth::user();
+
+        $cliente = Cliente::where('usuario', $user['id'])->first();
+
         $detalle = Carritodetalle::where('carrito', $id)->get();
 
         $response = $detalle->map(function ($detalle) {
@@ -55,6 +62,9 @@ class FindAllTransformer extends TransformerAbstract
         'subtotal'=> $subTotal == 0 ? '0.00' : $subTotal, 
         'totalConEnvio'=> $totalConEnvio == 0 ? '0.00' : $totalConEnvio, 
         'totalEnvio' => $totalEnvio == 0 ? '0.00' : $totalEnvio,
-        'detalles' => $response->toArray()];
+        'detalles' => $response->toArray(),
+        'cantidadUnidades' => $cantidades,
+        'montoMaximoDePago' => $cliente->montoMaximoDePago
+    ];
     }
 }
