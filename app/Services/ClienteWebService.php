@@ -92,12 +92,7 @@ class ClienteWebService
             $usuario->update($dataUsuario);
         }
 
-        // $transformer = new UpdateTransformer();
-        // $dataCliente = $transformer->transform($request, $user->id);
-
-        $dataCliente = [];
-
-            // Lista de campos que se pueden actualizar
+        if ($cliente) {
             $camposActualizables = [
                 'nombre', 'Notas', 'WhatsApp', 'checkboxNotificarUsuario',
                 'ciudad', 'clave', 'codigoPostal', 'contacto', 'contactoApellido',
@@ -107,18 +102,10 @@ class ClienteWebService
                 'telefonoTransportadora', 'tipoDeEnvio', 'transportadora',
                 'usuario', 'vendedor', 'web', 'notification'
             ];
+            $dataCliente = $request->only($camposActualizables);
 
-            // Recorre los campos y agrega solo los que están presentes en la solicitud
-            foreach ($camposActualizables as $campo) {
-                if ($request->has($campo)) {
-                    $dataCliente[$campo] = $request->input($campo);
-                }
-            }
-
-            // Realiza el update solo con los campos presentes en $dataCliente
             $cliente->update($dataCliente);
-
-        // $cliente->update($dataCliente);
+        }
 
         $response = [
             $cliente->get(),
