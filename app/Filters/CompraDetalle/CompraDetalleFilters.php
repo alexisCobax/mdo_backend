@@ -15,12 +15,15 @@ class CompraDetalleFilters
 
         // Obtén los parámetros del filtro
         $deposito = $request->input('deposito');
+        $compra = $request->input('compra');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
         // Aplica los filtros si se proporcionan
         $query->enDeposito($deposito);
+
+        $query->compra($compra);
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
