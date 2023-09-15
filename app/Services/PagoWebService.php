@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\CalcTotalHelper;
 use App\Helpers\CarritoHelper;
 use App\Models\Carritodetalle;
 use App\Models\Pedido;
@@ -24,7 +25,7 @@ class PagoWebService
 
         $productosCarrito = Carritodetalle::where('carrito', $carrito['id'])->get();
 
-        $pago = $this->creditCard($productosCarrito->sum('precio'), $request->token);
+        $pago = $this->creditCard($productosCarrito, $request->token);
 
         $pagoResponse = $pago->getContent();
         $pago = json_decode($pagoResponse);
@@ -44,7 +45,7 @@ class PagoWebService
             /* genero y envio la proforma**/
             $this->sendProforma($pedido);
 
-            return response()->json('El pedido fue generado de forma exitosa', Response::HTTP_OK);
+            return response()->json(["status" => 200, "mensaje" => "El pedido fue generado de forma exitosa"], Response::HTTP_OK);
         }
 
         return response()->json(['error' => $pago], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -134,8 +135,21 @@ class PagoWebService
         return $pdf->stream();
     }
 
-    public function creditCard($amount, $token)
+    public function creditCard($carritoDetalle, $token)
     {
+
+        $totalPorProducto = $carritoDetalle->map(function ($item) {
+            return $item->precio * $item->cantidad;
+        });
+
+        $subtotal = $totalPorProducto->sum();
+
+        $cantidades = $carritoDetalle->pluck('cantidad');
+        $cantidad = $cantidades->sum();
+        $descuentos = '0.00';
+
+        $calculo = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
+
         try {
 
             $ch = curl_init();
@@ -143,7 +157,7 @@ class PagoWebService
             curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $amount . ',"currency":"usd","source":"' . $token . '"}');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $calculo['total'] . ',"currency":"usd","source":"' . $token . '"}');
 
             $headers = [];
             $headers[] = 'Accept: application/json';

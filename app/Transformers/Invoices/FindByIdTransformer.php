@@ -24,7 +24,7 @@ class FindByIdTransformer extends TransformerAbstract
 
             $producto = Producto::where('id',$id['itemNumber'])->first();
             $productoDescripcion = $producto->descripcion.' '.optional($producto->colores)->nombre.' '.$producto->tamano.' '.optional($producto->materiales)->nombre;die;
-            echo "asd ".$productoDescripcion;die;
+
             $detalle[] = [
                 'id' => $id['id'],
                 'qordered' => $id['qordered'],
