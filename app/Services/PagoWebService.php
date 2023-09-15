@@ -157,7 +157,7 @@ class PagoWebService
             curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $calculo['total'] . ',"currency":"usd","source":"' . $token . '"}');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . number_format($calculo['total'],2,"","") . ',"currency":"usd","source":"' . $token . '"}');
 
             $headers = [];
             $headers[] = 'Accept: application/json';
