@@ -763,7 +763,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/web/cliente', [ClienteWebController::class, 'show']);
 
     /* Pagos **/
-    Route::post('/web/pagar', [PagoWebController::class, 'create']);
+    Route::post('/web/pagar/carrito', [PagoWebController::class, 'create']);
 
     /** Producto **/
     Route::get('/web/producto/{id}', [ProductoController::class, 'show']);
