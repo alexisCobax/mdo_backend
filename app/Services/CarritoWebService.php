@@ -115,7 +115,9 @@ class CarritoWebService
     public function procesar(Request $request)
     {
 
-        $carritoDetalle = Carritodetalle::where('carrito', $request->carrito)->get();
+        $carrito = CarritoHelper::getCarrito();
+
+        $carritoDetalle = Carritodetalle::where('carrito', $carrito['id'])->get();
         $total = 0;
         foreach ($carritoDetalle as $cd) {
 
@@ -129,7 +131,7 @@ class CarritoWebService
             $total += $cd['precio'];
         }
 
-        $carrito = Carrito::find($request->carrito)->first();
+        $carrito = Carrito::find($carrito['id'])->first();
 
         $cotizacion = new Cotizacion;
         $cotizacion->fecha = $carrito->fecha;
