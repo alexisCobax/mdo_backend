@@ -114,32 +114,32 @@ class CarritoWebService
 
     public function procesar(Request $request)
     {
+        $total = 0;
 
         $carrito = CarritoHelper::getCarrito();
 
         $carritoDetalle = Carritodetalle::where('carrito', $carrito['id'])->get();
-        $total = 0;
-        foreach ($carritoDetalle as $cd) {
-
-            $cotizacion = new Cotizaciondetalle;
-            $cotizacion->cotizacion = $cotizacion->id;
-            $cotizacion->producto = $cd['producto'];
-            $cotizacion->precio = $cd['precio'];
-            $cotizacion->cantidad = $cd['cantidad'];
-            $cotizacion->save();
-
-            $total += $cd['precio'];
-        }
 
         $carrito = Carrito::find($carrito['id'])->first();
 
         $cotizacion = new Cotizacion;
         $cotizacion->fecha = $carrito->fecha;
         $cotizacion->cliente = $carrito->cliente;
-        $cotizacion->total = $total;
+        $cotizacion->total = $carritoDetalle->pluck('precio')->sum();
         $cotizacion->estado = $carrito->estado;
         $cotizacion->descuento = '0.00';
         $cotizacion->save();
+
+        $idCotizacion = $cotizacion->id;
+        foreach ($carritoDetalle as $cd) {
+
+            $cotizacion = new Cotizaciondetalle;
+            $cotizacion->cotizacion = $idCotizacion;
+            $cotizacion->producto = $cd['producto'];
+            $cotizacion->precio = $cd['precio'];
+            $cotizacion->cantidad = $cd['cantidad'];
+            $cotizacion->save();
+        }
 
         if (!$cotizacion) {
             return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
