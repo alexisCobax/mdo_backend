@@ -52,7 +52,7 @@ class CompraService
         $compra->numeroLote = $request->numeroLote;
         $compra->observaciones = $request->observaciones;
         $compra->pagado = $request->pagado;
-        $compra->enDeposito = $request->enDeposito;
+        $compra->enDeposito = 0;
         $compra->save();
         $compraId = $compra->id;
 
@@ -63,7 +63,7 @@ class CompraService
                 $compraDetalle->producto = $p['producto'];
                 $compraDetalle->cantidad = $p['cantidad'];
                 $compraDetalle->precioUnitario = $p['precioUnitario'];
-                $compraDetalle->enDeposito = $p['enDeposito'];
+                $compraDetalle->enDeposito = 0;
                 $compraDetalle->save();
             }
         }

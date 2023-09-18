@@ -42,7 +42,7 @@ class PagoWebService
             /* Guardo Transaccion**/
             $this->saveTransaction($carrito['cliente'], json_encode($pedido), $pago->status, $pagoResponse);
 
-            /* genero y envio la proforma**/
+            /* genero y envio el recibo**/
             $this->sendProforma($pedido);
 
             return response()->json(["status" => 200, "mensaje" => "El pedido fue generado de forma exitosa"], Response::HTTP_OK);
@@ -124,13 +124,13 @@ class PagoWebService
         $producto->save();
     }
 
-    public function sendProforma($pedido)
+    public function sendRecibo($pedido)
     {
         $pedidoReponse = Pedido::where('id', $pedido->id)->first();
 
         $tranformer = new FindByIdTransformer();
-        $proforma = $tranformer->transform($pedidoReponse);
-        $pdf = Pdf::loadView('pdf.proforma', ['proforma' => $proforma]);
+        $recibo = $tranformer->transform($pedidoReponse);
+        $pdf = Pdf::loadView('pdf.recibo', ['recibo' => $recibo]);
 
         return $pdf->stream();
     }
