@@ -10,6 +10,7 @@ use App\Models\Cotizaciondetalle;
 use App\Transformers\Carrito\FindAllTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CarritoWebService
 {
@@ -22,7 +23,7 @@ class CarritoWebService
     {
         $carrito = CarritoHelper::getCarrito();
 
-        if ($carrito) {
+        if ($carrito['id']) {
             return $this->findCarritoDetalle($carrito['id']);
         } else {
             $data = [
