@@ -18,7 +18,11 @@ class CarritoHelper
             ->first();
 
         if (!$carrito) {
-            return response()->json(['error' => 'Carrito inexistente'], Response::HTTP_NOT_FOUND);
+            return [
+                'id' => "",
+                'cliente' => $cliente->id,
+                'usuario' => $user['id'],
+            ];
         }
 
         return [
