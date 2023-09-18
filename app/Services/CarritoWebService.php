@@ -141,6 +141,8 @@ class CarritoWebService
             $cotizacion->save();
         }
 
+        $carrito->update(['estado' => 1]);
+
         if (!$cotizacion) {
             return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
         }
