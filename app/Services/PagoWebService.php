@@ -43,7 +43,7 @@ class PagoWebService
             $this->saveTransaction($carrito['cliente'], json_encode($pedido), $pago->status, $pagoResponse);
 
             /* genero y envio el recibo**/
-            $this->sendProforma($pedido);
+            //$this->sendProforma($pedido);
 
             return response()->json(["status" => 200, "mensaje" => "El pedido fue generado de forma exitosa"], Response::HTTP_OK);
         }
