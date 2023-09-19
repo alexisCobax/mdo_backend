@@ -44,9 +44,12 @@ class ProductosFilters
         $query->stockRange($stockDesde, $stockHasta);
         $query->destacado($destacado);
 
+
         // Realiza la paginación de la consulta
-        $data = $query->orderBy('id', 'desc')
-              ->paginate($perPage, ['*'], 'page', $page);
+        $data = $query->where('precio', '>', 0)
+            ->where('stock', '>', 0)
+            ->orderBy('id', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
         $transformer = new FindAllTransformer();
