@@ -135,12 +135,12 @@ class CarritoWebdetalleService
         $carritodetalle->refresh();
 
         $response = [
-            "id" => $carritodetalle->id,
-            "carrito" => $carritodetalle->carrito,
-            "producto" => $carritodetalle->producto,
-            "precio" => $carritodetalle->precio,
-            "cantidad" => $carritodetalle->cantidad,
-            "total" => $carritodetalle->precio * $carritodetalle->cantidad
+            'id' => $carritodetalle->id,
+            'carrito' => $carritodetalle->carrito,
+            'producto' => $carritodetalle->producto,
+            'precio' => $carritodetalle->precio,
+            'cantidad' => $carritodetalle->cantidad,
+            'total' => $carritodetalle->precio * $carritodetalle->cantidad,
         ];
 
         return response()->json($response, Response::HTTP_OK);

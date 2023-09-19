@@ -2,23 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\Pedido;
+use App\Helpers\CalcTotalHelper;
+use App\Helpers\CarritoHelper;
 use App\Models\Carrito;
+use App\Models\Carritodetalle;
+use App\Models\Pedido;
+use App\Models\Pedidodetalle;
 use App\Models\Producto;
 use App\Models\Transaccion;
-use Illuminate\Http\Request;
-use App\Models\Pedidodetalle;
-use Illuminate\Http\Response;
-use App\Helpers\CarritoHelper;
-use App\Models\Carritodetalle;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Helpers\CalcTotalHelper;
 use App\Transformers\Pdf\FindByIdTransformer;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
 class PagoWebService
 {
-
     public function create(Request $request)
     {
 
@@ -51,7 +50,7 @@ class PagoWebService
             /* genero y envio el recibo**/
             //$this->sendProforma($pedido);
 
-            return response()->json(["status" => 200, "mensaje" => "El pedido fue generado de forma exitosa"], Response::HTTP_OK);
+            return response()->json(['status' => 200, 'mensaje' => 'El pedido fue generado de forma exitosa'], Response::HTTP_OK);
         }
 
         return response()->json(['error' => $pago], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -155,7 +154,7 @@ class PagoWebService
         $descuentos = '0.00';
 
         $calculo = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
-        $calculo = number_format($calculo['total'], 2, "", "");
+        $calculo = number_format($calculo['total'], 2, '', '');
 
         try {
 

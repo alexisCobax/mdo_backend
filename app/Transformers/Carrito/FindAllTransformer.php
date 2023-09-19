@@ -2,11 +2,10 @@
 
 namespace App\Transformers\Carrito;
 
-use App\Models\Cliente;
 use App\Helpers\CalcHelper;
-use App\Models\Carritodetalle;
-use App\Helpers\CalcEnvioHelper;
 use App\Helpers\CalcTotalHelper;
+use App\Models\Carritodetalle;
+use App\Models\Cliente;
 use Illuminate\Support\Facades\Auth;
 use League\Fractal\TransformerAbstract;
 
@@ -47,22 +46,22 @@ class FindAllTransformer extends TransformerAbstract
             return $detalleCarrito;
         });
 
-        $subTotal = $response->sum('subTotal'); 
+        $subTotal = $response->sum('subTotal');
         $cantidades = $response->sum('cantidad');
         $descuentos = '0.00';
-        
-        $calculo = CalcTotalHelper::calcular($subTotal,$cantidades,$descuentos);
+
+        $calculo = CalcTotalHelper::calcular($subTotal, $cantidades, $descuentos);
 
         return [
-        'carrito' => $id, 
+        'carrito' => $id,
         'total' => $calculo['total'] == 0 ? '0.00' : $calculo['total'],
-        'descuentos'=> $calculo['descuentos'] == 0 ? '0.00' : $calculo['descuentos'], 
-        'subtotal'=> $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'], 
-        'totalConEnvio'=> $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'], 
+        'descuentos'=> $calculo['descuentos'] == 0 ? '0.00' : $calculo['descuentos'],
+        'subtotal'=> $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'],
+        'totalConEnvio'=> $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'],
         'totalEnvio' => $calculo['totalEnvio'] == 0 ? '0.00' : $calculo['totalEnvio'],
         'detalles' => $response->toArray(),
         'cantidadUnidades' => $cantidades,
-        'montoMaximoDePago' => $cliente->montoMaximoDePago
+        'montoMaximoDePago' => $cliente->montoMaximoDePago,
     ];
     }
 }

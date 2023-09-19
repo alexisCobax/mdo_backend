@@ -2,15 +2,13 @@
 
 namespace App\Services;
 
+use App\Helpers\PaginateHelper;
 use App\Models\Cliente;
 use App\Models\Usuario;
+use App\Transformers\Cliente\CreateWebTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\Auth;
-use App\Transformers\Cliente\CreateTransformer;
-use App\Transformers\Cliente\CreateWebTransformer;
-use App\Transformers\Cliente\UpdateTransformer;
 
 class ClienteWebService
 {
@@ -102,7 +100,7 @@ class ClienteWebService
                 'primeraCompra', 'cantidadDeCompras', 'idAgile', 'montoMaximoDePago', 'WhatsApp',
                 'Notas', 'tipoDeEnvio', 'nombreEnvio', 'regionEnvio', 'ciudadEnvio',
                 'fechaAlta', 'ipAlta', 'ultimoLogin', 'ipUltimoLogin', 'prospecto',
-                'contactoApellido', 'IdActiveCampaign', 'IdActiveCampaignContact', 'notification'
+                'contactoApellido', 'IdActiveCampaign', 'IdActiveCampaignContact', 'notification',
             ];
             $dataCliente = $request->only($camposActualizables);
 

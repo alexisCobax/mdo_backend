@@ -54,7 +54,7 @@ class Compra extends Model
 
     public function scopeEnDeposito($query, $estado)
     {
-        if ($estado=='0' or $estado==1) {
+        if ($estado == '0' or $estado == 1) {
             return $query->where('enDeposito', $estado);
         }
 
