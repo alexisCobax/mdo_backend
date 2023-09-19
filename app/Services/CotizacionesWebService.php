@@ -31,7 +31,7 @@ class CotizacionesWebService
             $page = $request->input('pagina', env('PAGE'));
             $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-            $data = Cotizacion::where('cliente', $cliente->id)->paginate($perPage, ['*'], 'page', $page);
+            $data = Cotizacion::where('cliente', $cliente->id)->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
             $response = [
                 'status' => Response::HTTP_OK,

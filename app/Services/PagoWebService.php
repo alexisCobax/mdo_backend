@@ -2,17 +2,18 @@
 
 namespace App\Services;
 
-use App\Helpers\CalcTotalHelper;
-use App\Helpers\CarritoHelper;
-use App\Models\Carritodetalle;
 use App\Models\Pedido;
-use App\Models\Pedidodetalle;
+use App\Models\Carrito;
 use App\Models\Producto;
 use App\Models\Transaccion;
-use App\Transformers\Pdf\FindByIdTransformer;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Models\Pedidodetalle;
 use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Carritodetalle;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Helpers\CalcTotalHelper;
+use App\Transformers\Pdf\FindByIdTransformer;
 use Illuminate\Validation\ValidationException;
 
 class PagoWebService
@@ -38,6 +39,11 @@ class PagoWebService
 
             /* Guardo detalle de pedidos **/
             $this->saveDetallePedido($productosCarrito, $pedido);
+
+            /* Elimino carrito **/
+            $carritoUpdate = Carrito::find($carrito['id']);
+            $carritoUpdate->estado = 1;
+            $carritoUpdate->save();
 
             /* Guardo Transaccion**/
             $this->saveTransaction($carrito['cliente'], json_encode($pedido), $pago->status, $pagoResponse);
