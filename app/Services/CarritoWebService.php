@@ -118,6 +118,10 @@ class CarritoWebService
     {
         $carritoHelper = CarritoHelper::getCarrito();
 
+        if(!$carritoHelper['id']){
+            return response()->json(['error' => 'El carro de compras no existe'], Response::HTTP_NOT_FOUND); 
+        }
+
         $carritoDetalle = Carritodetalle::where('carrito', $carritoHelper['id'])->get();
 
         $total = $carritoDetalle->map(function ($detalle) {
@@ -127,7 +131,7 @@ class CarritoWebService
         $carrito = Carrito::find($carritoHelper['id'])->first();
 
         $cotizacion = new Cotizacion;
-        $cotizacion->fecha = $carrito->fecha;
+        $cotizacion->fecha = NOW();
         $cotizacion->cliente = $carritoHelper['cliente'];
         $cotizacion->total = $total;
         $cotizacion->estado = $carrito->estado;
