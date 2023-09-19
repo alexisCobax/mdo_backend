@@ -2,15 +2,16 @@
 
 namespace App\Services;
 
-use App\Helpers\CarritoHelper;
+use Error;
 use App\Models\Carrito;
-use App\Models\Carritodetalle;
 use App\Models\Cotizacion;
-use App\Models\Cotizaciondetalle;
-use App\Transformers\Carrito\FindAllTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Carritodetalle;
+use App\Models\Cotizaciondetalle;
 use Illuminate\Support\Facades\Auth;
+use App\Transformers\Carrito\FindAllTransformer;
 
 class CarritoWebService
 {
@@ -115,34 +116,38 @@ class CarritoWebService
 
     public function procesar(Request $request)
     {
-        $total = 0;
+        $carritoHelper = CarritoHelper::getCarrito();
 
-        $carrito = CarritoHelper::getCarrito();
+        $carritoDetalle = Carritodetalle::where('carrito', $carritoHelper['id'])->get();
 
-        $carritoDetalle = Carritodetalle::where('carrito', $carrito['id'])->get();
-
-        $carrito = Carrito::find($carrito['id'])->first();
+        $carrito = Carrito::find($carritoHelper['id'])->first();
 
         $cotizacion = new Cotizacion;
         $cotizacion->fecha = $carrito->fecha;
-        $cotizacion->cliente = $carrito->cliente;
+        $cotizacion->cliente = $carritoHelper['cliente'];
         $cotizacion->total = $carritoDetalle->pluck('precio')->sum();
         $cotizacion->estado = $carrito->estado;
         $cotizacion->descuento = '0.00';
-        $cotizacion->save();
+        try{
+            $cotizacion->save();
+        }catch(Error $e){
+            echo $e->getMessage();die;
+        }
+        
 
         $idCotizacion = $cotizacion->id;
+
         foreach ($carritoDetalle as $cd) {
 
-            $cotizacion = new Cotizaciondetalle;
-            $cotizacion->cotizacion = $idCotizacion;
-            $cotizacion->producto = $cd['producto'];
-            $cotizacion->precio = $cd['precio'];
-            $cotizacion->cantidad = $cd['cantidad'];
-            $cotizacion->save();
+            $cotizacionDetalle = new Cotizaciondetalle;
+            $cotizacionDetalle->cotizacion = $idCotizacion;
+            $cotizacionDetalle->producto = $cd['producto'];
+            $cotizacionDetalle->precio = $cd['precio'];
+            $cotizacionDetalle->cantidad = $cd['cantidad'];
+            $cotizacionDetalle->save();
         }
 
-        $carrito->update(['estado' => 1]);
+        //$carrito->update(['estado' => 1]);
 
         if (!$cotizacion) {
             return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
