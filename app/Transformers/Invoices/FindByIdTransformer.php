@@ -16,14 +16,14 @@ class FindByIdTransformer extends TransformerAbstract
 
         // $cliente = Cliente::where('id',$invoice->cliente)->first();
 
-        
         $detalle = [];
         // $datosEnvio = [];
 
         foreach ($invoiceDetalle as $id) {
 
-            $producto = Producto::where('id',$id['itemNumber'])->first();
-            $productoDescripcion = $producto->descripcion.' '.optional($producto->colores)->nombre.' '.$producto->tamano.' '.optional($producto->materiales)->nombre;die;
+            $producto = Producto::where('id', $id['itemNumber'])->first();
+            $productoDescripcion = $producto->descripcion . ' ' . optional($producto->colores)->nombre . ' ' . $producto->tamano . ' ' . optional($producto->materiales)->nombre;
+            die;
 
             $detalle[] = [
                 'id' => $id['id'],
@@ -38,14 +38,13 @@ class FindByIdTransformer extends TransformerAbstract
             ];
         }
 
-            // $datosEnvio = [
-            //     'nombre' => $cliente->nombre,
-            //     'direccion' => $cliente->direccion,
-            //     'ciudad' => $cliente->ciudad,
-            //     'pais' => $cliente->pais,
-            //     'telefono' => $cliente->telefono
-            // ];
-
+        // $datosEnvio = [
+        //     'nombre' => $cliente->nombre,
+        //     'direccion' => $cliente->direccion,
+        //     'ciudad' => $cliente->ciudad,
+        //     'pais' => $cliente->pais,
+        //     'telefono' => $cliente->telefono
+        // ];
 
         return [
             'id' => $invoice->id,
@@ -81,7 +80,7 @@ class FindByIdTransformer extends TransformerAbstract
             'subTotal' => $invoice->subTotal,
             'DescuentoPorPromociones' => $invoice->DescuentoPorPromociones,
             'IdActiveCampaign' => $invoice->IdActiveCampaign,
-            'detalle' => $detalle
+            'detalle' => $detalle,
             // 'datosEnvio' => $datosEnvio
         ];
 

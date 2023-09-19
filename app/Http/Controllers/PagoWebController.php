@@ -25,5 +25,4 @@ class PagoWebController extends Controller
     {
         return $this->service->create($request);
     }
-
 }

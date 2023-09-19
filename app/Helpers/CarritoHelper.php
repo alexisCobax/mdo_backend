@@ -5,7 +5,6 @@ namespace App\Helpers;
 use App\Models\Carrito;
 use App\Models\Cliente;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Response;
 
 class CarritoHelper
 {
@@ -19,7 +18,7 @@ class CarritoHelper
 
         if (!$carrito) {
             return [
-                'id' => "",
+                'id' => '',
                 'cliente' => $cliente->id,
                 'usuario' => $user['id'],
             ];

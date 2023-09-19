@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use App\Models\Cliente;
-use Illuminate\Http\Request;
-use App\Services\BannerService;
 use App\Services\ActiveCampaignService;
+use Exception;
 
 class ActiveCampaignController extends Controller
 {
-    private $ApiToken = "c7efcf1f232e6e487613cf97ff21e13d2b02db40a6c2fc88dcf349d0c9da59b833a6053c";
-    private $url = "https://cobax1694091376.api-us1.com/api/3/";
+    private $ApiToken = 'c7efcf1f232e6e487613cf97ff21e13d2b02db40a6c2fc88dcf349d0c9da59b833a6053c';
+    private $url = 'https://cobax1694091376.api-us1.com/api/3/';
 
     private $service;
 
@@ -20,15 +18,14 @@ class ActiveCampaignController extends Controller
         $this->service = $ActiveCampaignService;
     }
 
-
     // Subir un ciente al eCommerce - esto lo ejecuto cuando el cliente cambia de prospecto a cliente (endpoint generar nuevo cliente)
     public function SubirCuenta() // objeto cliente con todos sus datos
     {
         $objCliente = Cliente::find(1);
 
-        $resultadoFuncion = "";
-        $respuesta = "";
-        $resultado = "";
+        $resultadoFuncion = '';
+        $respuesta = '';
+        $resultado = '';
 
         // if ($objCliente->IdActiveCampaign !== 0) {
         //     return "";
@@ -38,7 +35,7 @@ class ActiveCampaignController extends Controller
 
         //si no esta en la db local el active campaign
         if ($objCliente->IdActiveCampaign === 0) {
-            $respuesta = $this->Consulta("ecomCustomers?filters[email]=" . $objCliente->Email);
+            $respuesta = $this->Consulta('ecomCustomers?filters[email]=' . $objCliente->Email);
 
             dd($respuesta);
             $resultadoFuncion = $respuesta;
@@ -50,11 +47,11 @@ class ActiveCampaignController extends Controller
                 $objDatosCliente->guardar($objCliente); //update
 
                 if ($resultado->ecomCustomers[0]->externalid !== $objCliente->Id) { // si el external id no es igual al id de la db lo update
-                    $this->Modificacion("ecomCustomers/" . $objCliente->IdActiveCampaign, '{"ecomCustomer":{"externalid":"' . $objCliente->Id . '"}}');
+                    $this->Modificacion('ecomCustomers/' . $objCliente->IdActiveCampaign, '{"ecomCustomer":{"externalid":"' . $objCliente->Id . '"}}');
                 }
             } else {// sino lo doy de alta
                 $postData = '{"ecomCustomer": {"connectionid": "2", "externalid": "' . $objCliente->Id . '", "email": "' . $objCliente->Email . '", "acceptsMarketing": "1"}}';
-                $respuesta = $this->Alta("ecomCustomers/", $postData);
+                $respuesta = $this->Alta('ecomCustomers/', $postData);
                 $resultadoFuncion = $respuesta;
 
                 try {
@@ -65,7 +62,7 @@ class ActiveCampaignController extends Controller
                     $resultadoFuncion .= $ex->getMessage();
                 }
             }
-        } 
+        }
 
         return $resultadoFuncion;
     }
@@ -73,35 +70,35 @@ class ActiveCampaignController extends Controller
     // este genera el contacto FUERA DEL ECOMMERCE - esto se ejecuta cuando alguien se registra como prospecto
     public function SubirContacto($objCliente)
     {
-        $resultadoFuncion = "";
-        $resultado = "";
+        $resultadoFuncion = '';
+        $resultado = '';
         $objDatosCliente = new Cliente();
 
         $postData = '{"contact": {"email": "' . $objCliente->Email . '", "firstName": "' . $objCliente->Contacto . '", "lastName": "' . $objCliente->ContactoApellido . '", "phone": "' . $objCliente->Telefono . '", "fieldValues": [{"field": "17", "value": "' . $objCliente->Pais . '"}]}}';
-        $respuesta = "";
+        $respuesta = '';
 
         try {
             if ($objCliente->IdActiveCampaignContact === 0) {
-                $respuesta = $this->Consulta("contacts?email=" . $objCliente->Email);
+                $respuesta = $this->Consulta('contacts?email=' . $objCliente->Email);
                 $resultado = json_decode($respuesta);
 
                 if (count($resultado->contacts) > 0) {
                     $objCliente->IdActiveCampaignContact = $resultado->contacts[0]->id;
-                    $respuesta = $this->Modificacion("contacts/" . $objCliente->IdActiveCampaign . "/", $postData);
+                    $respuesta = $this->Modificacion('contacts/' . $objCliente->IdActiveCampaign . '/', $postData);
                 } else {
-                    $respuesta = $this->Alta("contacts/", $postData);
+                    $respuesta = $this->Alta('contacts/', $postData);
                     $resultado = json_decode($respuesta);
                     $objCliente->IdActiveCampaignContact = $resultado->contacts[0]->id;
                 }
             } else {
-                $respuesta = $this->Modificacion("contacts/" . $objCliente->IdActiveCampaign . "/", $postData);
+                $respuesta = $this->Modificacion('contacts/' . $objCliente->IdActiveCampaign . '/', $postData);
                 $objCliente->IdActiveCampaignContact = $objCliente->IdActiveCampaign;
             }
         } catch (Exception $ex) {
         }
 
         $objDatosCliente->guardar($objCliente);
-        $resultadoFuncion = $this->NuevaEtiqueta($objCliente, 61); //prospecto 
+        $resultadoFuncion = $this->NuevaEtiqueta($objCliente, 61); //prospecto
 
         return $resultadoFuncion;
     }
@@ -109,21 +106,21 @@ class ActiveCampaignController extends Controller
     //genero nueva etiqueta prospecto
     public function NuevaEtiqueta($objCliente, $idEtiqueta)
     {
-        $resultadoFuncion = "";
+        $resultadoFuncion = '';
 
         if ($objCliente->IdActiveCampaignContact === 0) {
-            return "ERROR etiqueta sin id";
+            return 'ERROR etiqueta sin id';
         }
 
         $objDatosCliente = new Cliente();
         $postData = '{"contactTag": {"contact": "' . $objCliente->IdActiveCampaignContact . '", "tag": "' . $idEtiqueta . '"}}';
-        $respuesta = "";
+        $respuesta = '';
 
         try {
-            $respuesta = $this->Alta("contactTags/", $postData);
-            $resultadoFuncion = "etiqueta OK";
+            $respuesta = $this->Alta('contactTags/', $postData);
+            $resultadoFuncion = 'etiqueta OK';
         } catch (Exception $ex) {
-            $resultadoFuncion = "etiqueta ERROR" . $postData;
+            $resultadoFuncion = 'etiqueta ERROR' . $postData;
         }
 
         return $resultadoFuncion;
@@ -132,18 +129,18 @@ class ActiveCampaignController extends Controller
     //cuando genero el invoice ejecuto este funcion
     public function SubirPedido($objInvoice)
     {
-        $resp = "";
+        $resp = '';
 
         if ($objInvoice->IdActiveCampaign !== 0) {
-            return "cargado con anterioridad";
+            return 'cargado con anterioridad';
         }
 
-        $postData = "";
+        $postData = '';
 
         try {
             $cn = new mysqli();
             $cm = new mysqli_stmt();
-            $SQL = "";
+            $SQL = '';
             $objClientes = new Cliente();
             $objDetalleInvoice = new InvoiceDetalle();
             $objDatosInvoice = new invoice();
@@ -151,17 +148,18 @@ class ActiveCampaignController extends Controller
             $objDatosPedidoDetalleNN = new pedidoDetalleNN();
             $objClientes->buscarPorId($objInvoice->oCliente);
 
-            if ($objInvoice->oCliente->Email === "doralice.gonzalez@gmail.com" || $objInvoice->oCliente->Email === "clientes@mayoristasdeopticas.com") {
+            if ($objInvoice->oCliente->Email === 'doralice.gonzalez@gmail.com' || $objInvoice->oCliente->Email === 'clientes@mayoristasdeopticas.com') {
                 $objInvoice->oCliente->IdActiveCampaign = -1;
                 $objClientes->guardar($objInvoice->oCliente);
 
                 $cn->connect();
                 $cm->init($cn);
-                $SQL = "UPDATE invoice SET  IdActiveCampaign=?,  WHERE id=?";
+                $SQL = 'UPDATE invoice SET  IdActiveCampaign=?,  WHERE id=?';
                 $cm->prepare($SQL);
-                $cm->bind_param("ii", $objInvoice->Id, -1);
+                $cm->bind_param('ii', $objInvoice->Id, -1);
                 $cm->execute();
-                return "Email Incorrecto";
+
+                return 'Email Incorrecto';
                 exit();
             }
 
@@ -173,27 +171,27 @@ class ActiveCampaignController extends Controller
 
             foreach ($objDatosPedidoDetalle->listarDetalleDS($objInvoice->oPedido)->tables[0]->rows as $dr) {
                 $postData .= '{';
-                $postData .= '"externalid": "' . $dr->item("idProducto") . '",';
-                $postData .= '"name": "' . str_replace(['"', "\t", "\x14"], '', $dr->item("nombreProducto")) . '",';
-                $postData .= '"price": ' . intval($dr->item("precio") * 100) . ',';
-                $postData .= '"quantity": ' . $dr->item("cantidad") . ',';
-                $postData .= '"category": "' . $dr->item("nombreCategoria") . '",';
-                $postData .= '"sku": "' . $dr->item("codigo") . '",';
-                $postData .= '"description": "' . str_replace(['"', "\t", "\x14"], '', $dr->item("descripcion")) . '",';
-                $postData .= '"imageUrl": "https://mayoristasdeopticas.net/productos/' . $dr->item("imagenPrincipal") . '.jpg",';
-                $postData .= '"productUrl": "https://mayoristasdeopticas.net/producto.aspx?id=' . $dr->item("idProducto") . '"';
+                $postData .= '"externalid": "' . $dr->item('idProducto') . '",';
+                $postData .= '"name": "' . str_replace(['"', "\t", "\x14"], '', $dr->item('nombreProducto')) . '",';
+                $postData .= '"price": ' . intval($dr->item('precio') * 100) . ',';
+                $postData .= '"quantity": ' . $dr->item('cantidad') . ',';
+                $postData .= '"category": "' . $dr->item('nombreCategoria') . '",';
+                $postData .= '"sku": "' . $dr->item('codigo') . '",';
+                $postData .= '"description": "' . str_replace(['"', "\t", "\x14"], '', $dr->item('descripcion')) . '",';
+                $postData .= '"imageUrl": "https://mayoristasdeopticas.net/productos/' . $dr->item('imagenPrincipal') . '.jpg",';
+                $postData .= '"productUrl": "https://mayoristasdeopticas.net/producto.aspx?id=' . $dr->item('idProducto') . '"';
                 $postData .= '},';
             }
 
             foreach ($objDatosPedidoDetalleNN->listarDetalleDS($objInvoice->oPedido)->tables[0]->rows as $dr) {
                 $postData .= '{';
                 $postData .= '"externalid": "0",';
-                $postData .= '"name": "' . str_replace(['"', "\t", "\x14"], '', $dr->item("descripcion")) . '",';
-                $postData .= '"price": ' . intval($dr->item("precio") * 100) . ',';
-                $postData .= '"quantity": ' . $dr->item("cantidad") . ',';
+                $postData .= '"name": "' . str_replace(['"', "\t", "\x14"], '', $dr->item('descripcion')) . '",';
+                $postData .= '"price": ' . intval($dr->item('precio') * 100) . ',';
+                $postData .= '"quantity": ' . $dr->item('cantidad') . ',';
                 $postData .= '"category": "0",';
                 $postData .= '"sku": "",';
-                $postData .= '"description": "' . str_replace(['"', "\t", "\x14"], '', $dr->item("descripcion")) . '",';
+                $postData .= '"description": "' . str_replace(['"', "\t", "\x14"], '', $dr->item('descripcion')) . '",';
                 $postData .= '"imageUrl": "https://mayoristasdeopticas.net/productos/0.jpg",';
                 $postData .= '"productUrl": "https://mayoristasdeopticas.net/producto.aspx?id=0"';
                 $postData .= '},';
@@ -221,21 +219,21 @@ class ActiveCampaignController extends Controller
             $postData .= '"orderNumber": "' . $objInvoice->Id . '",';
             $postData .= '"connectionid": "2",';
             $postData .= '"customerid": "' . $objInvoice->oCliente->IdActiveCampaign . '"}}';
-            $respuesta = $this->Alta("ecomOrders/", $postData);
-            $resp = "RESPUESTA:" . $respuesta;
+            $respuesta = $this->Alta('ecomOrders/', $postData);
+            $resp = 'RESPUESTA:' . $respuesta;
             $resultado = json_decode($respuesta);
             $objInvoice->IdActiveCampaign = $resultado->ecomOrder->id;
 
             $cn = new mysqli();
             $cn->connect();
             $cm = new mysqli_stmt();
-            $SQL = "UPDATE invoice SET  IdActiveCampaign=?,  WHERE id=?";
+            $SQL = 'UPDATE invoice SET  IdActiveCampaign=?,  WHERE id=?';
             $cm->init($cn);
             $cm->prepare($SQL);
-            $cm->bind_param("ii", $objInvoice->Id, $objInvoice->IdActiveCampaign);
+            $cm->bind_param('ii', $objInvoice->Id, $objInvoice->IdActiveCampaign);
             $cm->execute();
         } catch (Exception $ex) {
-            $resp .= " error:" . $ex->getMessage() . " MENSAJE ENVIADO: " . $postData;
+            $resp .= ' error:' . $ex->getMessage() . ' MENSAJE ENVIADO: ' . $postData;
         }
 
         return $resp;
@@ -244,32 +242,33 @@ class ActiveCampaignController extends Controller
     //esto se ejecuta cuanmdo genero cotizacion - endpoint carrito a cotizacion
     public function SubirCotizacion($objCotizacion)
     {
-        $resp = "";
+        $resp = '';
 
         if ($objCotizacion->IdActiveCampaign !== 0) {
-            return "cargado con anterioridad";
+            return 'cargado con anterioridad';
         }
 
         try {
             $cn = new mysqli();
             $cm = new mysqli_stmt();
-            $SQL = "";
+            $SQL = '';
             $objClientes = new Cliente();
             $objDatosInvoice = new invoice();
             $objCotizacionDetalle = new cotizacionDetalle();
             $objClientes->buscarPorId($objCotizacion->oCliente);
 
-            if ($objCotizacion->oCliente->Email === "doralice.gonzalez@gmail.com" || $objCotizacion->oCliente->Email === "clientes@mayoristasdeopticas.com") {
+            if ($objCotizacion->oCliente->Email === 'doralice.gonzalez@gmail.com' || $objCotizacion->oCliente->Email === 'clientes@mayoristasdeopticas.com') {
                 $objCotizacion->oCliente->IdActiveCampaign = -1;
                 $objClientes->guardar($objCotizacion->oCliente);
 
                 $cn->connect();
                 $cm->init($cn);
-                $SQL = "UPDATE cotizacion SET  IdActiveCampaign=?,  WHERE id=?";
+                $SQL = 'UPDATE cotizacion SET  IdActiveCampaign=?,  WHERE id=?';
                 $cm->prepare($SQL);
-                $cm->bind_param("ii", $objCotizacion->Id, -1);
+                $cm->bind_param('ii', $objCotizacion->Id, -1);
                 $cm->execute();
-                return "Email Incorrecto";
+
+                return 'Email Incorrecto';
                 exit();
             }
 
@@ -281,15 +280,15 @@ class ActiveCampaignController extends Controller
 
             foreach ($objCotizacionDetalle->listarDetalleDS($objCotizacion)->tables[0]->rows as $dr) {
                 $postData .= '{';
-                $postData .= '"externalid": "' . $dr->item("idProducto") . '",';
-                $postData .= '"name": "' . str_replace(['"', "\t", "\x14"], '', $dr->item("nombreProducto")) . '",';
-                $postData .= '"price": ' . intval($dr->item("precio") * 100) . ',';
-                $postData .= '"quantity": ' . $dr->item("cantidad") . ',';
-                $postData .= '"category": "' . $dr->item("nombreCategoria") . '",';
-                $postData .= '"sku": "' . $dr->item("codigo") . '",';
-                $postData .= '"description": "' . str_replace(['"', "\t", "\x14"], '', $dr->item("descripcion")) . '",';
-                $postData .= '"imageUrl": "https://mayoristasdeopticas.net/productos/' . $dr->item("imagenPrincipal") . '.jpg",';
-                $postData .= '"productUrl": "https://mayoristasdeopticas.net/producto.aspx?id=' . $dr->item("idProducto") . '"';
+                $postData .= '"externalid": "' . $dr->item('idProducto') . '",';
+                $postData .= '"name": "' . str_replace(['"', "\t", "\x14"], '', $dr->item('nombreProducto')) . '",';
+                $postData .= '"price": ' . intval($dr->item('precio') * 100) . ',';
+                $postData .= '"quantity": ' . $dr->item('cantidad') . ',';
+                $postData .= '"category": "' . $dr->item('nombreCategoria') . '",';
+                $postData .= '"sku": "' . $dr->item('codigo') . '",';
+                $postData .= '"description": "' . str_replace(['"', "\t", "\x14"], '', $dr->item('descripcion')) . '",';
+                $postData .= '"imageUrl": "https://mayoristasdeopticas.net/productos/' . $dr->item('imagenPrincipal') . '.jpg",';
+                $postData .= '"productUrl": "https://mayoristasdeopticas.net/producto.aspx?id=' . $dr->item('idProducto') . '"';
                 $postData .= '},';
             }
 
@@ -317,15 +316,15 @@ class ActiveCampaignController extends Controller
             $postData .= '"connectionid": "2",';
             $postData .= '"customerid": "' . $objCotizacion->oCliente->IdActiveCampaign . '"}}';
 
-            $respuesta = $this->Alta("ecomOrders/", $postData);
+            $respuesta = $this->Alta('ecomOrders/', $postData);
             $resultado = json_decode($respuesta);
             $objCotizacion->IdActiveCampaign = $resultado->ecomOrder->id;
 
             $cn->connect();
             $cm->init($cn);
-            $SQL = "UPDATE cotizacion SET  IdActiveCampaign=?,  WHERE id=?";
+            $SQL = 'UPDATE cotizacion SET  IdActiveCampaign=?,  WHERE id=?';
             $cm->prepare($SQL);
-            $cm->bind_param("ii", $objCotizacion->Id, $objCotizacion->IdActiveCampaign);
+            $cm->bind_param('ii', $objCotizacion->Id, $objCotizacion->IdActiveCampaign);
             $cm->execute();
         } catch (Exception $ex) {
             $resp .= $ex->getMessage();
@@ -343,17 +342,16 @@ class ActiveCampaignController extends Controller
             $curl = curl_init();
 
             // Set cURL options in an array
-            curl_setopt_array($curl, array(
+            curl_setopt_array($curl, [
                 CURLOPT_URL => $this->url . $strUrl,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => $strMensaje,
-                CURLOPT_HTTPHEADER => array(
+                CURLOPT_HTTPHEADER => [
                     'Api-Token: ' . $this->ApiToken,
-                    'Cookie: PHPSESSID=df45b062daf77f2f705cff843c3f6531; cmp226508783=bda45332837f3e7d1741fb81c284196b; em_acp_globalauth_cookie=6cb85ff2-8a98-4418-a5e8-9dd7f1d611d8'
-                )
-            ));
-
+                    'Cookie: PHPSESSID=df45b062daf77f2f705cff843c3f6531; cmp226508783=bda45332837f3e7d1741fb81c284196b; em_acp_globalauth_cookie=6cb85ff2-8a98-4418-a5e8-9dd7f1d611d8',
+                ],
+            ]);
 
             $response = curl_exec($curl);
             if (curl_errno($curl)) {
@@ -367,14 +365,14 @@ class ActiveCampaignController extends Controller
         }
     }
 
-     // este funcion es el helper de curl
+    // este funcion es el helper de curl
     public function Consulta($strUrl)
     {
         try {
 
             $curl = curl_init();
 
-            curl_setopt_array($curl, array(
+            curl_setopt_array($curl, [
                 CURLOPT_URL => $this->url . $strUrl,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -383,11 +381,11 @@ class ActiveCampaignController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'GET',
-                CURLOPT_HTTPHEADER => array(
+                CURLOPT_HTTPHEADER => [
                     'Api-Token: ' . $this->ApiToken,
-                    'Cookie: PHPSESSID=df45b062daf77f2f705cff843c3f6531; cmp226508783=bda45332837f3e7d1741fb81c284196b; em_acp_globalauth_cookie=6cb85ff2-8a98-4418-a5e8-9dd7f1d611d8'
-                ),
-            ));
+                    'Cookie: PHPSESSID=df45b062daf77f2f705cff843c3f6531; cmp226508783=bda45332837f3e7d1741fb81c284196b; em_acp_globalauth_cookie=6cb85ff2-8a98-4418-a5e8-9dd7f1d611d8',
+                ],
+            ]);
 
             $response = curl_exec($curl);
             if (curl_errno($curl)) {
@@ -401,7 +399,7 @@ class ActiveCampaignController extends Controller
         }
     }
 
-     // este funcion es el helper de curl
+    // este funcion es el helper de curl
     public function Modificacion($strUrl, $strMensaje)
     {
         try {
@@ -410,17 +408,16 @@ class ActiveCampaignController extends Controller
             $curl = curl_init();
 
             // Set cURL options in an array
-            curl_setopt_array($curl, array(
+            curl_setopt_array($curl, [
                 CURLOPT_URL => $this->url . $strUrl,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_CUSTOMREQUEST => 'PUT',
                 CURLOPT_POSTFIELDS => $strMensaje,
-                CURLOPT_HTTPHEADER => array(
+                CURLOPT_HTTPHEADER => [
                     'Api-Token: ' . $this->ApiToken,
-                    'Cookie: PHPSESSID=df45b062daf77f2f705cff843c3f6531; cmp226508783=bda45332837f3e7d1741fb81c284196b; em_acp_globalauth_cookie=6cb85ff2-8a98-4418-a5e8-9dd7f1d611d8'
-                )
-            ));
-
+                    'Cookie: PHPSESSID=df45b062daf77f2f705cff843c3f6531; cmp226508783=bda45332837f3e7d1741fb81c284196b; em_acp_globalauth_cookie=6cb85ff2-8a98-4418-a5e8-9dd7f1d611d8',
+                ],
+            ]);
 
             $response = curl_exec($curl);
             if (curl_errno($curl)) {
@@ -433,5 +430,4 @@ class ActiveCampaignController extends Controller
             return $ex->getMessage();
         }
     }
-
 }

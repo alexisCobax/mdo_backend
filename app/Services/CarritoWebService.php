@@ -2,16 +2,15 @@
 
 namespace App\Services;
 
-use Error;
+use App\Helpers\CarritoHelper;
 use App\Models\Carrito;
+use App\Models\Carritodetalle;
 use App\Models\Cotizacion;
+use App\Models\Cotizaciondetalle;
+use App\Transformers\Carrito\FindAllTransformer;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\CarritoHelper;
-use App\Models\Carritodetalle;
-use App\Models\Cotizaciondetalle;
-use Illuminate\Support\Facades\Auth;
-use App\Transformers\Carrito\FindAllTransformer;
 
 class CarritoWebService
 {
@@ -118,8 +117,8 @@ class CarritoWebService
     {
         $carritoHelper = CarritoHelper::getCarrito();
 
-        if(!$carritoHelper['id']){
-            return response()->json(['error' => 'El carro de compras no existe'], Response::HTTP_NOT_FOUND); 
+        if (!$carritoHelper['id']) {
+            return response()->json(['error' => 'El carro de compras no existe'], Response::HTTP_NOT_FOUND);
         }
 
         $carritoDetalle = Carritodetalle::where('carrito', $carritoHelper['id'])->get();
@@ -142,7 +141,6 @@ class CarritoWebService
             echo $e->getMessage();
             die;
         }
-
 
         $idCotizacion = $cotizacion->id;
 
