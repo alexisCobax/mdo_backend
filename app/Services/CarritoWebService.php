@@ -120,12 +120,16 @@ class CarritoWebService
 
         $carritoDetalle = Carritodetalle::where('carrito', $carritoHelper['id'])->get();
 
+        $total = $carritoDetalle->map(function ($detalle) {
+            return $detalle->precio * $detalle->cantidad;
+        })->sum();
+
         $carrito = Carrito::find($carritoHelper['id'])->first();
 
         $cotizacion = new Cotizacion;
         $cotizacion->fecha = $carrito->fecha;
         $cotizacion->cliente = $carritoHelper['cliente'];
-        $cotizacion->total = $carritoDetalle->pluck('precio')->sum();
+        $cotizacion->total = $total;
         $cotizacion->estado = $carrito->estado;
         $cotizacion->descuento = '0.00';
         try{
