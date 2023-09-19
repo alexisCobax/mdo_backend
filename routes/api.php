@@ -770,11 +770,11 @@ Route::middleware('auth:sanctum')->group(function () {
     /* Pagos **/
     Route::post('/web/pagar/carrito', [PagoWebController::class, 'create']);
 
-    /** Producto **/
-    Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
-    Route::get('/web/producto', [ProductoWebController::class, 'index']);
-
 });
+
+/** Producto ESTO DEBE IR SON TOKEN**/
+Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
+Route::get('/web/producto', [ProductoWebController::class, 'index']);
 
 /* Login Routes Not Auth **/
 
