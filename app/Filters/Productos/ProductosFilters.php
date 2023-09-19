@@ -2,8 +2,9 @@
 
 namespace App\Filters\Productos;
 
-use App\Transformers\Productos\FindAllTransformer;
+use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
+use App\Transformers\Productos\FindAllTransformer;
 
 class ProductosFilters
 {
@@ -37,13 +38,20 @@ class ProductosFilters
         $query->nombre($nombre);
         $query->suspendido($suspendido);
         $query->tipo($tipo);
-        $query->marca($marca);
         $query->material($material);
         $query->color($color);
         $query->precioRange($precioDesde, $precioHasta);
         $query->stockRange($stockDesde, $stockHasta);
         $query->destacado($destacado);
 
+        if ($marca) {
+            if (is_numeric($marca)) {
+                $query->marca($marca);
+            } else {
+                $marcas = Marcaproducto::where('nombre', 'LIKE', '%' . $marca . '%')->pluck('id')->toArray();
+                $query->whereIn('marca', $marcas);
+            }
+        }
 
         // Realiza la paginación de la consulta
         $data = $query->where('precio', '>', 0)
