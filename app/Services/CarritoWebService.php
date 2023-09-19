@@ -132,12 +132,13 @@ class CarritoWebService
         $cotizacion->total = $total;
         $cotizacion->estado = $carrito->estado;
         $cotizacion->descuento = '0.00';
-        try{
+        try {
             $cotizacion->save();
-        }catch(Error $e){
-            echo $e->getMessage();die;
+        } catch (Error $e) {
+            echo $e->getMessage();
+            die;
         }
-        
+
 
         $idCotizacion = $cotizacion->id;
 
@@ -151,7 +152,9 @@ class CarritoWebService
             $cotizacionDetalle->save();
         }
 
-        $carrito->update(['estado' => 1]);
+        $carritoUpdate = Carrito::find($carritoHelper['id']);
+        $carritoUpdate->estado = 1;
+        $carritoUpdate->save();
 
         if (!$cotizacion) {
             return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
