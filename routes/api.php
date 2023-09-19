@@ -292,7 +292,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/deposito', [DepositoController::class, 'create']);
     Route::put('/deposito/{id}', [DepositoController::class, 'update']);
     Route::delete('/deposito/{id}', [DepositoController::class, 'delete']);
-    Route::post('api/deposito/ingreso',function(Request $request){
+    Route::post('/deposito/ingreso',function(Request $request){
         dd($request->all());
     });
 

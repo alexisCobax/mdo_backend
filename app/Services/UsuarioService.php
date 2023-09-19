@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Filters\Usuarios\UsuariosFilters;
 
 class UsuarioService
 {
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Usuario::class);
+            $data = UsuariosFilters::getPaginateUsuarios($request, Usuario::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {

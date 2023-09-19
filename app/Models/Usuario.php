@@ -53,4 +53,13 @@ class Usuario extends Authenticatable
         'token',
         'token_exp',
     ];
+
+    public function scopePerfil($query, $perfil)
+    {
+        if ($perfil == 1) {
+            return $query->where('permisos', 1); //usuarios
+        } 
+
+        return $query;
+    }
 }
