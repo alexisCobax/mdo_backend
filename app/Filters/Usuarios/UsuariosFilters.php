@@ -21,7 +21,7 @@ class UsuariosFilters
 
         // Aplica los filtros si se proporcionan
         $query->perfil($perfil);
- 
+
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
         ->paginate($perPage, ['*'], 'page', $page);

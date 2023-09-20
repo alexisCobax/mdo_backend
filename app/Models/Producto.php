@@ -319,13 +319,13 @@ class Producto extends Model
         return $query;
     }
 
-    public function scopeNuevosProductos($query,$estado)
+    public function scopeNuevosProductos($query, $estado)
     {
-        if($estado=='nuevo'){
-        return $query->where('stock', '>', 0)
-            ->where('precio', '>', 0)
-            ->orderBy('ultimoIngresoDeMercaderia', 'desc')
-            ->take(3);
+        if ($estado == 'nuevo') {
+            return $query->where('stock', '>', 0)
+                ->where('precio', '>', 0)
+                ->orderBy('ultimoIngresoDeMercaderia', 'desc')
+                ->take(3);
         }
     }
 

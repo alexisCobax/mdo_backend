@@ -58,7 +58,7 @@ class Usuario extends Authenticatable
     {
         if ($perfil == 1) {
             return $query->where('permisos', 1); //usuarios
-        } 
+        }
 
         return $query;
     }

@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Filters\Usuarios\UsuariosFilters;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Filters\Usuarios\UsuariosFilters;
 
 class UsuarioService
 {
