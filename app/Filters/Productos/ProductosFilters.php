@@ -80,7 +80,6 @@ class ProductosFilters
 
             $data = Producto::where('descripcion', 'LIKE', "%$buscador%")
                 ->orWhere('tamano', 'LIKE', "%$buscador%")
-                // ->orWhere('talle', 'LIKE', "%$buscador%")
                 ->orWhere('nombre', 'LIKE', "%$buscador%")
                 ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
                     $query->where('nombre', 'LIKE', "%$buscador%");
