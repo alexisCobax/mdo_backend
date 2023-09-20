@@ -3,12 +3,12 @@
 namespace App\Transformers\Productos;
 
 use App\Enums\EstadosProductosEnums;
-use App\Models\Producto;
+
 use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract
 {
-    public function transform(Producto $producto)
+    public function transform($producto)
     {
         $arrayEnum = EstadosProductosEnums::toArray();
 
