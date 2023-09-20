@@ -318,4 +318,24 @@ class Producto extends Model
 
         return $query;
     }
+
+    public function scopeNuevosProductos($query,$estado)
+    {
+        if($estado=='nuevo'){
+        return $query->where('stock', '>', 0)
+            ->where('precio', '>', 0)
+            ->orderBy('ultimoIngresoDeMercaderia', 'desc')
+            ->take(3);
+        }
+    }
+
+    public function scopeMarcaBuscador()
+    {
+        return $this->belongsTo(Marcaproducto::class, 'marca');
+    }
+
+    public function scopeColorBuscador()
+    {
+        return $this->belongsTo(Color::class, 'color');
+    }
 }
