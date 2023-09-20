@@ -2,10 +2,10 @@
 
 namespace App\Filters\Productos;
 
-use App\Models\Producto;
 use App\Models\Marcaproducto;
-use Illuminate\Http\Response;
+use App\Models\Producto;
 use App\Transformers\Productos\FindAllTransformer;
+use Illuminate\Http\Response;
 
 class ProductosFilters
 {
@@ -76,20 +76,20 @@ class ProductosFilters
         /*
         * filtro completo para buscador general
         */
-        if($buscador){
+        if ($buscador) {
 
             $data = Producto::where('descripcion', 'LIKE', "%$buscador%")
-            ->orWhere('tamano', 'LIKE', "%$buscador%")
-            // ->orWhere('talle', 'LIKE', "%$buscador%")
-            ->orWhere('nombre', 'LIKE', "%$buscador%")
-            ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
-                $query->where('nombre', 'LIKE', "%$buscador%");
-            })
-            ->orWhereHas('colorBuscador', function ($query) use ($buscador) {
-                $query->where('nombre', 'LIKE', "%$buscador%");
-            })
-            ->orderBy('id', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
+                ->orWhere('tamano', 'LIKE', "%$buscador%")
+                // ->orWhere('talle', 'LIKE', "%$buscador%")
+                ->orWhere('nombre', 'LIKE', "%$buscador%")
+                ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
+                    $query->where('nombre', 'LIKE', "%$buscador%");
+                })
+                ->orWhereHas('colorBuscador', function ($query) use ($buscador) {
+                    $query->where('nombre', 'LIKE', "%$buscador%");
+                })
+                ->orderBy('id', 'desc')
+                ->paginate($perPage, ['*'], 'page', $page);
 
             // Crea una instancia del transformer
             $transformer = new FindAllTransformer();
@@ -99,31 +99,19 @@ class ProductosFilters
                 return $transformer->transform($producto);
             });
 
-                    // Crea la respuesta personalizada
-        $response = [
-            'status' => Response::HTTP_OK,
-            'total' => $data->total(),
-            'cantidad_por_pagina' => $data->perPage(),
-            'pagina' => $data->currentPage(),
-            'cantidad_total' => $data->total(),
-            'results' => $productosTransformados,
-        ];
+            // Crea la respuesta personalizada
+            $response = [
+                'status' => Response::HTTP_OK,
+                'total' => $data->total(),
+                'cantidad_por_pagina' => $data->perPage(),
+                'pagina' => $data->currentPage(),
+                'cantidad_total' => $data->total(),
+                'results' => $productosTransformados,
+            ];
 
-        // Devuelve la respuesta
-        return response()->json($response);
-
-            // // Crea la respuesta personalizada
-            // $response = [
-            //     'status' => Response::HTTP_OK,
-            //     'results' => $productosTransformados,
-            // ];
-
-            // // Devuelve la respuesta
-            // return response()->json($response);
-
+            // Devuelve la respuesta
+            return response()->json($response);
         }
-
-
 
         if ($marca) {
             if (is_numeric($marca)) {

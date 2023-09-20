@@ -2,7 +2,6 @@
 
 namespace App\Transformers\Usuarios;
 
-use App\Helpers\DateHelper;
 use App\Models\Usuario;
 use League\Fractal\TransformerAbstract;
 
@@ -14,7 +13,7 @@ class FindAllTransformer extends TransformerAbstract
             'id' => $usuario->id,
             'nombre' => $usuario->nombre,
             'perfil' => 'Usuario',
-            'estado' => $usuario->suspendido
+            'estado' => $usuario->suspendido,
         ];
 
         return $compra;

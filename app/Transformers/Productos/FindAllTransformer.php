@@ -3,7 +3,6 @@
 namespace App\Transformers\Productos;
 
 use App\Enums\EstadosProductosEnums;
-
 use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract
