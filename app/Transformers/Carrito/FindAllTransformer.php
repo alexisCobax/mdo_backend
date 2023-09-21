@@ -28,7 +28,7 @@ class FindAllTransformer extends TransformerAbstract
                 'id' => optional($detalle->productos)->id,
                 'nombre' => optional($detalle->productos)->nombre,
                 'marcaNombre' => optional(optional($detalle->productos)->marcas)->nombre,
-                'precio' => $subTotal,
+                'precio' => '11111'.$subTotal,
                 'imagen' => optional($detalle->productos)->imagenPrincipal,
                 'color' => optional(optional($detalle->productos)->colores)->nombre,
                 'tamano' => optional($detalle->productos)->tamano,
