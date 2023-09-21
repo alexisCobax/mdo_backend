@@ -40,7 +40,7 @@ class FindAllTransformer extends TransformerAbstract
                 'producto' => $producto,
                 'precio' => $subTotal,
                 'cantidad' => $detalle->cantidad,
-                'subTotal' => $subTotal * $detalle->cantidad,
+                'subTotal' => 11111111,
             ];
 
             return $detalleCarrito;
@@ -56,7 +56,7 @@ class FindAllTransformer extends TransformerAbstract
         'carrito' => $id,
         'total' => $calculo['total'] == 0 ? '0.00' : $calculo['total'],
         'descuentos'=> $calculo['descuentos'] == 0 ? '0.00' : $calculo['descuentos'],
-        'subtotal'=> $subTotal == 0 ? '0.00' : $subTotal,
+        'subtotal'=> $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'],
         'totalConEnvio'=> $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'],
         'totalEnvio' => $calculo['totalEnvio'] == 0 ? '0.00' : $calculo['totalEnvio'],
         'detalles' => $response->toArray(),
