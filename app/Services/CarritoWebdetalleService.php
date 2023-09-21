@@ -134,7 +134,7 @@ class CarritoWebdetalleService
             'producto' => $carritodetalle->producto,
             'precio' => $carritodetalle->precio,
             'cantidad' => $request->cantidad,
-            'total' => $carritodetalle->precio * $request->cantidad,
+            'total' => $carritodetalle->precio,
         ];
 
         return response()->json($response, Response::HTTP_OK);
