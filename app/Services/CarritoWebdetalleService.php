@@ -61,19 +61,23 @@ class CarritoWebdetalleService
         $productoExistente = Carritodetalle::where('carrito', $carrito['id'])
             ->where('producto', $request->producto)->first();
 
-        $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
-
         if ($productoExistente) {
 
             $stock = StockHelper::get($request->cantidad, $request->producto);
             $stock = $stock->getContent();
             $stock = json_decode($stock, true);
 
+            $cantidad = $stock['cantidad'];
+
+            if ($stock['status']) {
+                $cantidad = $productoExistente->cantidad + $request->cantidad;
+            }
+
             $detalle = [
                 'carrito' => $carrito['id'],
                 'producto' => $request->producto,
-                'precio' => $precio * $stock['cantidad'],
-                'cantidad' => $stock['cantidad'],
+                'precio' => $productoExistente->precio * $cantidad,
+                'cantidad' => $cantidad,
             ];
 
             $carritodetalle = Carritodetalle::find($productoExistente->id);
@@ -81,6 +85,8 @@ class CarritoWebdetalleService
             $carritodetalle->update($detalle);
             $carritodetalle->refresh();
         } else {
+
+            $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
 
             $stock = StockHelper::get($request->cantidad, $request->producto);
             $stock = $stock->getContent();
@@ -121,7 +127,7 @@ class CarritoWebdetalleService
         $payload = [
             'carrito' => $carrito['id'],
             'producto' => $request->id,
-            'precio' => $precio*$request->cantidad,
+            'precio' => $precio,
             'cantidad' => $request->cantidad,
         ];
 
@@ -133,8 +139,8 @@ class CarritoWebdetalleService
             'carrito' => $carritodetalle->carrito,
             'producto' => $carritodetalle->producto,
             'precio' => $carritodetalle->precio,
-            'cantidad' => $request->cantidad,
-            'total' => $carritodetalle->precio,
+            'cantidad' => $carritodetalle->cantidad,
+            'total' => $carritodetalle->precio * $carritodetalle->cantidad,
         ];
 
         return response()->json($response, Response::HTTP_OK);
