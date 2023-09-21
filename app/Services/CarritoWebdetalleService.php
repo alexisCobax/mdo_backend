@@ -124,11 +124,15 @@ class CarritoWebdetalleService
             return response()->json(['error' => 'Carrito detalle not found'], Response::HTTP_NOT_FOUND);
         }
 
+        $stock = StockHelper::get($request->cantidad, $request->producto);
+        $stock = $stock->getContent();
+        $stock = json_decode($stock, true);
+
         $payload = [
             'carrito' => $carrito['id'],
             'producto' => $request->id,
             'precio' => $precio,
-            'cantidad' => $request->cantidad,
+            'cantidad' => $stock['cantidad'],
         ];
 
         $carritodetalle->update($payload);
