@@ -772,7 +772,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-/** Producto ESTO DEBE IR SIN TOKEN**/
+/** Producto **/
 Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
 Route::get('/web/producto', [ProductoWebController::class, 'index']);
 
