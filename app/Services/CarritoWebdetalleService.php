@@ -53,7 +53,6 @@ class CarritoWebdetalleService
 
     public function create(Request $request)
     {
-
         $carrito = CarritoHelper::getCarrito();
 
         $producto = Producto::where('id', $request->producto)->first();
@@ -77,7 +76,7 @@ class CarritoWebdetalleService
                 'carrito' => $carrito['id'],
                 'producto' => $request->producto,
                 'precio' => $productoExistente->precio * $cantidad,
-                'cantidad' => $cantidad,
+                'cantidad' => $cantidad
             ];
 
             $carritodetalle = Carritodetalle::find($productoExistente->id);
@@ -96,7 +95,7 @@ class CarritoWebdetalleService
                 'carrito' => $carrito['id'],
                 'producto' => $request->producto,
                 'precio' => $precio * $stock['cantidad'],
-                'cantidad' => $stock['cantidad'],
+                'cantidad' => $stock['cantidad']
             ];
 
             $carritodetalle = Carritodetalle::create($detalle);
@@ -105,6 +104,9 @@ class CarritoWebdetalleService
         if (!$carritodetalle) {
             return response()->json(['error' => 'Failed to create Carritodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        $carritodetalle->stockStatus = $stock['status'];
+        $carritodetalle->stockMaximo = $stock['cantidad'];
 
         return response()->json($carritodetalle, Response::HTTP_OK);
     }
@@ -132,7 +134,7 @@ class CarritoWebdetalleService
             'carrito' => $carrito['id'],
             'producto' => $request->id,
             'precio' => $precio,
-            'cantidad' => $stock['cantidad'],
+            'cantidad' => $stock['cantidad']
         ];
 
         $carritodetalle->update($payload);
@@ -145,6 +147,8 @@ class CarritoWebdetalleService
             'precio' => $carritodetalle->precio,
             'cantidad' => $carritodetalle->cantidad,
             'total' => $carritodetalle->precio * $carritodetalle->cantidad,
+            'stockStatus' => $stock['status'],
+            'stockMaximo' => $stock['cantidad']
         ];
 
         return response()->json($response, Response::HTTP_OK);
