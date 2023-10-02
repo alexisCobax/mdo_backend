@@ -229,7 +229,7 @@ class ProductoService
             ->orderBy('id', 'DESC')
             ->limit(4)
             ->get();
-
+ 
         if (!$producto) {
             return response()->json(['error' => 'Related product not found'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
