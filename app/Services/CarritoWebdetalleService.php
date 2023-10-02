@@ -53,57 +53,51 @@ class CarritoWebdetalleService
 
     public function create(Request $request)
     {
-        $carrito = CarritoHelper::getCarrito();
-
         $producto = Producto::where('id', $request->producto)->first();
 
-        $productoExistente = Carritodetalle::where('carrito', $carrito['id'])
+        $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
+
+        $carrito = CarritoHelper::getCarrito();
+
+        $carritodetalle = CarritoDetalle::where('carrito', $carrito['id'])
             ->where('producto', $request->producto)->first();
 
-        if ($productoExistente) {
+        $stock = StockHelper::get($request->cantidad, $request->producto);
+        $stock = $stock->getContent();
+        $stock = json_decode($stock, true);
 
-            $stock = StockHelper::get($request->cantidad, $request->producto);
-            $stock = $stock->getContent();
-            $stock = json_decode($stock, true);
+        if ($stock['status']) {
 
-            $cantidad = $stock['cantidad'];
+            $cantidad = $carritodetalle->cantidad + $request->cantidad;
+        }
 
-            if ($stock['status']) {
-                $cantidad = $productoExistente->cantidad + $request->cantidad;
-            }
+        $cantidad = $stock['cantidad'];
 
-            $detalle = [
+        if ($carritodetalle) {
+
+            $payload = [
                 'carrito' => $carrito['id'],
                 'producto' => $request->producto,
-                'precio' => $productoExistente->precio * $cantidad,
-                'cantidad' => $cantidad
+                'precio' => $precio * $cantidad,
+                'cantidad' => $cantidad,
+
             ];
 
-            $carritodetalle = Carritodetalle::find($productoExistente->id);
-
-            $carritodetalle->update($detalle);
+            $carritodetalle->update($payload);
             $carritodetalle->refresh();
-        } else {
-
-            $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
-
-            $stock = StockHelper::get($request->cantidad, $request->producto);
-            $stock = $stock->getContent();
-            $stock = json_decode($stock, true);
-
-            $detalle = [
-                'carrito' => $carrito['id'],
-                'producto' => $request->producto,
-                'precio' => $precio * $stock['cantidad'],
-                'cantidad' => $stock['cantidad']
-            ];
-
-            $carritodetalle = Carritodetalle::create($detalle);
+            return response()->json($carritodetalle, Response::HTTP_OK);
         }
+        $payload = [
+            'carrito' => $carrito['id'],
+            'producto' => $request->producto,
+            'precio' => $precio * $stock['cantidad'],
+            'cantidad' => $cantidad,
+        ];
 
-        if (!$carritodetalle) {
-            return response()->json(['error' => 'Failed to create Carritodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $carritodetalle = Carritodetalle::create($payload);
+        return response()->json($carritodetalle, Response::HTTP_OK);
+
+        // $carrito = CarritoHelper::getCarrito();
 
         $carritodetalle->stockStatus = $stock['status'];
         $carritodetalle->stockMaximo = $stock['cantidad'];
