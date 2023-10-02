@@ -50,6 +50,18 @@ class ReciboController extends Controller
     }
 
     /**
+     * Creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\ReciboService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function createOnly(Request $request)
+    {
+        return $this->service->createOnly($request);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

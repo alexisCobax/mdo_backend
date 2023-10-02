@@ -631,6 +631,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/recibo', [ReciboController::class, 'index']);
     Route::get('/recibo/{id}', [ReciboController::class, 'show']);
     Route::post('/recibo', [ReciboController::class, 'create']);
+    Route::post('/recibo/manual', [ReciboController::class, 'createOnly']);
     Route::put('/recibo/{id}', [ReciboController::class, 'update']);
     Route::delete('/recibo/{id}', [ReciboController::class, 'delete']);
 

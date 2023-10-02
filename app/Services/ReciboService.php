@@ -39,6 +39,29 @@ class ReciboService
         return response()->json($recibo, Response::HTTP_OK);
     }
 
+    public function createOnly(Request $request)
+    {
+
+        $payload = [
+            'cliente' => $request->cliente,
+            'fecha' => NOW(),
+            'formaDePago' => $request->formaDePago,
+            'total' => $request->total,
+            'anulado' => 0,
+            'observaciones' => $request->observaciones,
+            'pedido' => 0,
+            'garantia' => 0
+        ];
+
+        $recibo = Recibo::create($payload);
+
+        if (!$recibo) {
+            return response()->json(['error' => 'Failed to create Recibo'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($recibo, Response::HTTP_OK);
+    }
+
     public function update(Request $request)
     {
         $recibo = Recibo::find($request->id);
