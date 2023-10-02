@@ -41,6 +41,7 @@ class ProductosFilters
         $query->nombre($nombre);
         $query->suspendido($suspendido);
         $query->tipo($tipo);
+        $query->marca($marca);
         $query->material($material);
         $query->color($color);
         $query->precioRange($precioDesde, $precioHasta);
