@@ -581,7 +581,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/producto/stock/{id}', [ProductoController::class, 'stock']);
     Route::post('/producto', [ProductoController::class, 'create']);
     Route::put('/producto/{id}', [ProductoController::class, 'update']);
-    Route::post('/producto/related', [ProductoController::class, 'related']);
+    // Route::post('/producto/related', [ProductoController::class, 'related']);
 
     /* Productogenero Routes **/
 
@@ -775,6 +775,7 @@ Route::middleware('auth:sanctum')->group(function () {
 /** Producto ESTO DEBE IR SIN TOKEN**/
 Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
 Route::get('/web/producto', [ProductoWebController::class, 'index']);
+Route::post('/producto/related', [ProductoController::class, 'related']);
 
 /* Login Routes Not Auth **/
 
