@@ -22,6 +22,7 @@ class ProductosFilters
         $suspendido = $request->input('suspendido');
         $tipo = $request->input('tipo');
         $marca = $request->input('marca');
+        $idMarca = $request->input('idmarca');
         $material = $request->input('material');
         $color = $request->input('color');
         $precioDesde = $request->input('precioDesde');
@@ -41,7 +42,8 @@ class ProductosFilters
         $query->nombre($nombre);
         $query->suspendido($suspendido);
         $query->tipo($tipo);
-        $query->marca($marca);
+        //$query->marca($marca);
+        $query->idMarca($idMarca);
         $query->material($material);
         $query->color($color);
         $query->precioRange($precioDesde, $precioHasta);
@@ -89,7 +91,7 @@ class ProductosFilters
                     $query->where('nombre', 'LIKE', "%$buscador%");
                 })
                 ->orderBy('id', 'desc')
-                ->paginate($perPage, ['*'], 'page', $page);
+                ->paginate($perPage, ['*'], 'page', $page)->toSql();
 
             // Crea una instancia del transformer
             $transformer = new FindAllTransformer();

@@ -27,7 +27,7 @@ class ClienteWebService
     {
         $user = Auth::user();
 
-        $data = Cliente::where('usuario', $user->id)->first();
+        $data = Cliente::with('usuarios')->where('usuario', $user->id)->first();
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
@@ -82,6 +82,16 @@ class ClienteWebService
             $dataUsuario = [
                 'id' => $usuario->id,
                 'nombre' => $request->usuario,
+                'permisos' => 1,
+                'suspendido' => 0,
+            ];
+
+            $usuario->update($dataUsuario);
+        }
+
+        if ($request->clave) {
+            $dataUsuario = [
+                'id' => $usuario->id,
                 'clave' => $request->clave,
                 'permisos' => 1,
                 'suspendido' => 0,
