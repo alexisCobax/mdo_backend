@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 // use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Recibo;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\InvoiceService;
 use App\Services\ProformaService;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 
 class PdfController extends Controller
 {
@@ -29,16 +30,17 @@ class PdfController extends Controller
         return $this->invoice->findById($request);
     }
 
-    public function recibo()
+    public function recibo(Request $request)
     {
 
-        $data = ['nombre'=>'alexis'];
-        $pdf = Pdf::loadView('pdf.recibo', $data);
+        $recibo = Recibo::where('pedido',$request->id)->first();
 
-        $dom_pdf = $pdf->getDomPDF();
+        $pdf = Pdf::loadView('pdf.recibo', ["recibo"=>$recibo]);
+
+        //$dom_pdf = $pdf->getDomPDF();
 
         return $pdf->stream();
 
-        return $pdf->download('factura.pdf');
+        //return $pdf->download('factura.pdf');
     }
 }

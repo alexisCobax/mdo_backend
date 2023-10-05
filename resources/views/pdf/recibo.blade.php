@@ -1,3 +1,7 @@
+@php
+    use App\Helpers\DateHelper;
+@endphp
+
 <!DOCTYPE html>
 <html>
 
@@ -37,23 +41,23 @@
         <table>
             <tr>
                 <td style="text-align:left;">
-                    <div style="background-color:rgb(243, 243, 243); width:80%; text-align:center;"><strong>Recibo Nº: 8050</strong></div>
+                    <div style="background-color:rgb(243, 243, 243); width:80%; text-align:center;"><strong>Recibo Nº: {{ $recibo->id }}</strong></div>
                 </td>
                 <td>
                     <img class="logo" src="{{ public_path('mayorista.png') }}" alt="">
                 </td>
                 <td style="text-align:right;">
-                    12-Jun-2023
+                    {{ DateHelper::ToDateCustom($recibo->fecha) }}
                 </td>
             </tr>
         </table>
         <table>
             <tr>
                 <td style="text-align:left;">
-                    Cliente: Diagnostics and Eye Health Center (8818)
+                    Cliente: {{ optional($recibo->clientes)->nombre }}
                 </td>
                 <td style="text-align:right;">
-                    Forma de pago: Transferencia Bancaria
+                    Forma de pago: {{ optional($recibo->formasPagos)->nombre }}
                 </td>
             </tr>
         </table>
@@ -61,13 +65,13 @@
             <tr>
                 <td style="text-align:left;">
                     Observaciones:
-                    ORIG.DIAGNOSTIC CENTRAL AVENUE SOUTHDALE PLACA, JM, JAMAICA
+                    {{$recibo->observaciones}}
                 </td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: right;">
                     Total
-                    U$S 1.048,00
+                    U$S {{$recibo->total}}
                 </td>
             </tr>
 

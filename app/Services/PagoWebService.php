@@ -2,18 +2,19 @@
 
 namespace App\Services;
 
-use App\Helpers\CalcTotalHelper;
-use App\Helpers\CarritoHelper;
-use App\Models\Carrito;
-use App\Models\Carritodetalle;
 use App\Models\Pedido;
-use App\Models\Pedidodetalle;
+use App\Models\Recibo;
+use App\Models\Carrito;
 use App\Models\Producto;
 use App\Models\Transaccion;
-use App\Transformers\Pdf\FindByIdTransformer;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Models\Pedidodetalle;
 use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Carritodetalle;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Helpers\CalcTotalHelper;
+use App\Transformers\Pdf\FindByIdTransformer;
 use Illuminate\Validation\ValidationException;
 
 class PagoWebService
@@ -49,6 +50,8 @@ class PagoWebService
 
             /* genero y envio el recibo**/
             //$this->sendProforma($pedido);
+
+            return $this->showRecibo($pedido);
 
             return response()->json(['status' => 200, 'mensaje' => 'El pedido fue generado de forma exitosa'], Response::HTTP_OK);
         }
@@ -138,6 +141,16 @@ class PagoWebService
         $pdf = Pdf::loadView('pdf.recibo', ['recibo' => $recibo]);
 
         return $pdf->stream();
+    }
+
+    public function showRecibo($pedido){
+
+        $recibo = Recibo::where('pedido',$pedido)->first();
+
+        $pdf = Pdf::loadView('pdf.recibo', ["recibo"=>$recibo]);
+
+        return $pdf->stream();
+
     }
 
     public function creditCard($carritoDetalle, $token)
