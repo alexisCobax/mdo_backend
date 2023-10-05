@@ -266,6 +266,15 @@ class Producto extends Model
         return $query;
     }
 
+    public function scopeIdMarca($query, $idMarca)
+    {
+        if ($idMarca) {
+            return $query->where('marca', '=', $idMarca);
+        }
+
+        return $query;
+    }
+
     public function scopeMaterial($query, $material)
     {
         if ($material) {

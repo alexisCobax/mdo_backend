@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -126,4 +127,9 @@ class Cliente extends Model
         'IdActiveCampaignContact',
         'notification',
     ];
+
+    public function usuarios()
+    {
+        return $this->belongsTo(Usuario::class, 'usuario');
+    }
 }
