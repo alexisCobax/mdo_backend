@@ -2,21 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\Carrito;
-use App\Models\Carritodetalle;
-use App\Models\Cliente;
-use App\Models\Cotizacion;
-use App\Models\Cotizaciondetalle;
-use App\Models\Invoice;
-use App\Models\Invoicedetalle;
 use App\Models\Pedido;
+use App\Models\Carrito;
+use App\Models\Cliente;
+use App\Models\Invoice;
+use App\Models\Cotizacion;
+use Illuminate\Http\Request;
 use App\Models\Pedidodetalle;
-use App\Transformers\Invoices\CreateDetalleTransformer;
+use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Carritodetalle;
+use App\Models\Invoicedetalle;
+use App\Models\Cotizaciondetalle;
+use Illuminate\Support\Facades\Auth;
 use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
+use App\Transformers\Invoices\CreateDetalleTransformer;
 
 class CotizacionesWebService
 {
@@ -31,7 +32,7 @@ class CotizacionesWebService
             $page = $request->input('pagina', env('PAGE'));
             $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-            $data = Cotizacion::where('cliente', $cliente->id)->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+            $data = Cotizacion::where('cliente', $cliente->id)->where('estado',0)->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
             $response = [
                 'status' => Response::HTTP_OK,
@@ -113,21 +114,29 @@ class CotizacionesWebService
 
     public function procesar(Request $request)
     {
-        $cotizacion = Cotizacion::find($request->cotizacion)->first();
 
-        $carrito = new Carrito;
-        $carrito->fecha = $cotizacion->fecha;
+        $cotizacion = Cotizacion::where('id',$request->cotizacion)->first();
+
+        $carritoExistente = CarritoHelper::getCarrito();
+
+        $carrito = Carrito::where('id', $carritoExistente['id'])->first();
+        $carrito->fecha = NOW();
         $carrito->cliente = $cotizacion->cliente;
         $carrito->estado = 0;
         $carrito->vendedor = 1;
         $carrito->save();
+
+        if (Carritodetalle::where('carrito', '=', $carritoExistente['id'])->exists()) {
+
+            Carritodetalle::where('carrito', '=', $carritoExistente['id'])->delete();
+        }
 
         $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->get();
 
         foreach ($cotizacionDetalle as $cd) {
 
             $carritoDetalle = new Carritodetalle;
-            $carritoDetalle->carrito = $carrito->id;
+            $carritoDetalle->carrito = $carritoExistente['id'];
             $carritoDetalle->producto = $cd['producto'];
             $carritoDetalle->precio = $cd['precio'];
             $carritoDetalle->cantidad = $cd['cantidad'];
@@ -136,6 +145,15 @@ class CotizacionesWebService
 
         if (!$carrito) {
             return response()->json(['error' => 'Carrito not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            if ($cotizacion) {
+                $cotizacion->estado = 1;
+                $cotizacion->save();
+            }
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
 
         return response()->json(['data' => $carrito], Response::HTTP_OK);
