@@ -31,7 +31,7 @@ class CotizacionesWebService
             $page = $request->input('pagina', env('PAGE'));
             $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-            $data = Cotizacion::where('cliente', $cliente->id)->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+            $data = Cotizacion::where('cliente', $cliente->id)->where('estado',0)->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
             $response = [
                 'status' => Response::HTTP_OK,
@@ -113,7 +113,10 @@ class CotizacionesWebService
 
     public function procesar(Request $request)
     {
+
         $cotizacion = Cotizacion::find($request->cotizacion)->first();
+
+        Carrito::where('cliente', $cotizacion->cliente)->update(['estado' => 1]);
 
         $carrito = new Carrito;
         $carrito->fecha = $cotizacion->fecha;
@@ -137,6 +140,8 @@ class CotizacionesWebService
         if (!$carrito) {
             return response()->json(['error' => 'Carrito not found'], Response::HTTP_NOT_FOUND);
         }
+
+        Cotizacion::find($request->cotizacion)->update(['estado' => 1]);
 
         return response()->json(['data' => $carrito], Response::HTTP_OK);
     }

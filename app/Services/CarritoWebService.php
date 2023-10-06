@@ -113,7 +113,7 @@ class CarritoWebService
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
 
-    public function procesar(Request $request)
+    public function procesar()
     {
         $carritoHelper = CarritoHelper::getCarrito();
 
@@ -124,7 +124,7 @@ class CarritoWebService
         $carritoDetalle = Carritodetalle::where('carrito', $carritoHelper['id'])->get();
 
         $total = $carritoDetalle->map(function ($detalle) {
-            return $detalle->precio * $detalle->cantidad;
+            return $detalle->precio;
         })->sum();
 
         $carrito = Carrito::find($carritoHelper['id'])->first();
