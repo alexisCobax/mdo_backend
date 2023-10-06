@@ -17,6 +17,7 @@ use App\Transformers\Invoices\FindByIdTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class CotizacionesWebService
 {
@@ -31,7 +32,7 @@ class CotizacionesWebService
             $page = $request->input('pagina', env('PAGE'));
             $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-            $data = Cotizacion::where('cliente', $cliente->id)->where('estado',0)->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+            $data = Cotizacion::where('cliente', $cliente->id)->where('estado',0)->orderBy('id', 'desc')->selectRaw('*, DATE_FORMAT(fecha, "%d-%b-%Y") as formatted_fecha')->paginate($perPage, ['*'], 'page', $page);
 
             $response = [
                 'status' => Response::HTTP_OK,
