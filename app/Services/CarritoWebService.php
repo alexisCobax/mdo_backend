@@ -115,7 +115,10 @@ class CarritoWebService
 
     public function procesar()
     {
+
         $carritoHelper = CarritoHelper::getCarrito();
+
+        Cotizacion::where('cliente', $carritoHelper['cliente'])->update(['estado' => 1]);
 
         if (!$carritoHelper['id']) {
             return response()->json(['error' => 'El carro de compras no existe'], Response::HTTP_NOT_FOUND);
@@ -133,7 +136,7 @@ class CarritoWebService
         $cotizacion->fecha = NOW();
         $cotizacion->cliente = $carritoHelper['cliente'];
         $cotizacion->total = $total;
-        $cotizacion->estado = $carrito->estado;
+        $cotizacion->estado = 0;
         $cotizacion->descuento = '0.00';
         try {
             $cotizacion->save();
