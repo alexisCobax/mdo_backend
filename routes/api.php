@@ -801,7 +801,7 @@ Route::get('/pdf/proforma/{id}', [PdfController::class, 'proforma']);
 
 Route::get('/pdf/invoice/{id}', [PdfController::class, 'invoice']);
 
-Route::get('/pdf/recibo', [PdfController::class, 'recibo']);
+Route::get('/pdf/recibo/{id}', [PdfController::class, 'recibo']);
 
 Route::post('/payment/payeezy', [PayeezyController::class, 'processPayeezyPayment']);
 
