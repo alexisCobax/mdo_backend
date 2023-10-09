@@ -23,18 +23,18 @@ class FindByIdTransformer extends TransformerAbstract
 
             $producto = Producto::where('id', $id['itemNumber'])->first();
             $productoDescripcion = $producto->descripcion . ' ' . optional($producto->colores)->nombre . ' ' . $producto->tamano . ' ' . optional($producto->materiales)->nombre;
-            die;
-
+            $total = $id['listPrice']*$id['qordered'];
             $detalle[] = [
                 'id' => $id['id'],
                 'qordered' => $id['qordered'],
                 'qshipped' => $id['qshipped'],
                 'qborder' => $id['qborder'],
                 'itemNumber' => $id['itemNumber'],
-                'Descripcion' => $id['Descripcion'],
-                'listPrice' => $id['listPrice'],
+                'Descripcion' => $productoDescripcion,
+                'listPrice' => number_format($id['listPrice'], 2, '.', ''),
                 'netPrice' => $id['netPrice'],
                 'invoice' => $id['invoice'],
+                'total' => number_format($total, 2, '.', '')
             ];
         }
 
