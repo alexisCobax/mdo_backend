@@ -17,7 +17,6 @@
         #tabla-contenedor td {
             text-align: center;
             padding: 10px;
-            /* border: 1px solid black; */
         }
 
         .logo {
@@ -26,9 +25,8 @@
         }
 
         body {
-    margin: 6cm 1cm 5cm;
-}
-
+            margin: 6cm 1cm 5cm;
+        }
     </style>
 </head>
 
@@ -37,7 +35,8 @@
         <table>
             <tr>
                 <td style="text-align:left;">
-                    <div style="background-color:rgb(243, 243, 243); width:80%; text-align:center;"><strong>Recibo Nº: 8050</strong></div>
+                    <div style="background-color:rgb(243, 243, 243); width:80%; text-align:center;"><strong>Recibo Nº:
+                            {{ $recibo['numero'] }}</strong></div>
                 </td>
                 <td>
                     <img class="logo" src="{{ public_path('mayorista.png') }}" alt="">
@@ -50,10 +49,10 @@
         <table>
             <tr>
                 <td style="text-align:left;">
-                    Cliente: Diagnostics and Eye Health Center (8818)
+                    Cliente: {{ $recibo['cliente'] }}
                 </td>
                 <td style="text-align:right;">
-                    Forma de pago: Transferencia Bancaria
+                    Forma de pago: {{ $recibo['formaPago'] }}
                 </td>
             </tr>
         </table>
@@ -61,13 +60,13 @@
             <tr>
                 <td style="text-align:left;">
                     Observaciones:
-                    ORIG.DIAGNOSTIC CENTRAL AVENUE SOUTHDALE PLACA, JM, JAMAICA
+                    {{ $recibo['observaciones'] }}
                 </td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: right;">
                     Total
-                    U$S 1.048,00
+                    U$S {{ $recibo['total'] }}
                 </td>
             </tr>
 

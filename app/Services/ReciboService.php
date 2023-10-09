@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Helpers\DateHelper;
 use App\Helpers\PaginateHelper;
 use App\Models\Recibo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReciboService
 {
@@ -22,7 +24,24 @@ class ReciboService
 
     public function findById(Request $request)
     {
-        $data = Recibo::find($request->id);
+        $recibo = Recibo::where('pedido', $request->id)->first();
+
+        $data = [
+            'recibo' => [
+                "numero" => $recibo->id,
+                "cliente" => optional($recibo->clientes)->nombre,
+                "fecha" => DateHelper::ToDateCustom($recibo->fecha),
+                "total" => $recibo->total,
+                "observaciones" => $recibo->observaciones,
+                "formaPago" => optional($recibo->formasPago)->nombre
+            ]
+        ];
+
+        $pdf = Pdf::loadView('pdf.recibo', $data);
+
+        $pdf->getDomPDF();
+
+        return $pdf->stream();
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
@@ -43,14 +62,14 @@ class ReciboService
     {
 
         $recibo = [
-            "cliente"=>$request->cliente,
-            "formaDePago"=>$request->formaDePago,
-            "total"=>$request->total,
-            "observaciones"=>$request->observaciones,
-            "pedido"=>0,
-            "garantia"=>0,
-            "anulado"=>0,
-            "fecha"=>NOW()
+            "cliente" => $request->cliente,
+            "formaDePago" => $request->formaDePago,
+            "total" => $request->total,
+            "observaciones" => $request->observaciones,
+            "pedido" => 0,
+            "garantia" => 0,
+            "anulado" => 0,
+            "fecha" => NOW()
         ];
 
         $recibo = Recibo::create($recibo);

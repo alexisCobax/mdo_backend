@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\Formadepago;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -47,4 +48,14 @@ class Recibo extends Model
         'pedido',
         'garantia',
     ];
+
+    public function clientes()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente');
+    }
+
+    public function formasPago()
+    {
+        return $this->belongsTo(Formadepago::class, 'formaDePago');
+    }
 }

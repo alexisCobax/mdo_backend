@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\CalcTotalHelper;
 use App\Helpers\CarritoHelper;
+use App\Helpers\LogHelper;
 use App\Models\Carrito;
 use App\Models\Carritodetalle;
 use App\Models\Pedido;
@@ -157,7 +158,6 @@ class PagoWebService
         $calculo = number_format($calculo['total'], 2, '', '');
 
         try {
-
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
@@ -175,18 +175,16 @@ class PagoWebService
 
             $response = curl_exec($ch);
 
-            $response = json_decode($response);
+            $responseClover = json_decode($response);
 
             if (curl_errno($ch)) {
-                echo 'Error:' . curl_error($ch);
+                LogHelper::get(curl_error($ch));
             }
             curl_close($ch);
-
-            return response()->json($response, Response::HTTP_OK);
-        } catch (ValidationException $e) {
-            return response()->json(['error' => $e->errors()], Response::HTTP_BAD_REQUEST);
+            return response()->json($responseClover, Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            LogHelper::get($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
