@@ -497,8 +497,8 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         ),
         'Fruitcake\\Cors\\' => 
         array (
-            0 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
-            1 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
+            0 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
+            1 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
         ),
         'FontLib\\' => 
         array (
@@ -657,9 +657,11 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         'App\\Filters\\Compras\\ComprasFilters' => __DIR__ . '/../..' . '/app/Filters/Compras/ComprasFilters.php',
         'App\\Filters\\Cotizaciones\\CotizacionesFilters' => __DIR__ . '/../..' . '/app/Filters/Cotizaciones/CotizacionesFilters.php',
         'App\\Filters\\Invoices\\InvoicesFilters' => __DIR__ . '/../..' . '/app/Filters/Invoices/InvoicesFilters.php',
+        'App\\Filters\\Marcas\\MarcasFilters' => __DIR__ . '/../..' . '/app/Filters/Marcas/MarcasFilters.php',
         'App\\Filters\\Pedidos\\PedidosFilters' => __DIR__ . '/../..' . '/app/Filters/Pedidos/PedidosFilters.php',
         'App\\Filters\\Productos\\ProductosFilters' => __DIR__ . '/../..' . '/app/Filters/Productos/ProductosFilters.php',
         'App\\Filters\\Usuarios\\UsuariosFilters' => __DIR__ . '/../..' . '/app/Filters/Usuarios/UsuariosFilters.php',
+        'App\\Helpers\\CalcCuponHelper' => __DIR__ . '/../..' . '/app/Helpers/CalcCuponHelper.php',
         'App\\Helpers\\CalcEnvioHelper' => __DIR__ . '/../..' . '/app/Helpers/CalcEnvioHelper.php',
         'App\\Helpers\\CalcHelper' => __DIR__ . '/../..' . '/app/Helpers/CalcHelper.php',
         'App\\Helpers\\CalcTotalHelper' => __DIR__ . '/../..' . '/app/Helpers/CalcTotalHelper.php',
@@ -668,6 +670,7 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         'App\\Helpers\\ExcelHelper' => __DIR__ . '/../..' . '/app/Helpers/ExcelHelper.php',
         'App\\Helpers\\ImagesHelper' => __DIR__ . '/../..' . '/app/Helpers/ImagesHelper.php',
         'App\\Helpers\\JsonToCsvHelper' => __DIR__ . '/../..' . '/app/Helpers/JsonToCsvHelper.php',
+        'App\\Helpers\\LogHelper' => __DIR__ . '/../..' . '/app/Helpers/LogHelper.php',
         'App\\Helpers\\NumbersToLetters' => __DIR__ . '/../..' . '/app/Helpers/NumbersToLetters.php',
         'App\\Helpers\\PaginateHelper' => __DIR__ . '/../..' . '/app/Helpers/PaginateHelper.php',
         'App\\Helpers\\StockHelper' => __DIR__ . '/../..' . '/app/Helpers/StockHelper.php',
@@ -968,6 +971,7 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         'App\\Transformers\\Invoices\\CreateTransformer' => __DIR__ . '/../..' . '/app/Transformers/Invoices/CreateTransformer.php',
         'App\\Transformers\\Invoices\\FindAllTransformer' => __DIR__ . '/../..' . '/app/Transformers/Invoices/FindAllTransformer.php',
         'App\\Transformers\\Invoices\\FindByIdTransformer' => __DIR__ . '/../..' . '/app/Transformers/Invoices/FindByIdTransformer.php',
+        'App\\Transformers\\Marcas\\FindAllTransformer' => __DIR__ . '/../..' . '/app/Transformers/Marcas/FindAllTransformer.php',
         'App\\Transformers\\Pdf\\FindByIdTransformer' => __DIR__ . '/../..' . '/app/Transformers/Pdf/FindByIdTransformer.php',
         'App\\Transformers\\PedidoCotizacion\\CreateTransformer' => __DIR__ . '/../..' . '/app/Transformers/PedidoCotizacion/CreateTransformer.php',
         'App\\Transformers\\Pedidos\\CreateTransformer' => __DIR__ . '/../..' . '/app/Transformers/Pedidos/CreateTransformer.php',

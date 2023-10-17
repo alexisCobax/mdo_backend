@@ -2,11 +2,16 @@
 
 namespace App\Services;
 
-use App\Helpers\CalcHelper;
-use App\Models\Marcaproducto;
+use App\Models\Carrito;
 use App\Models\Producto;
-use App\Models\Promocioncomprandoxgratisz;
+use App\Helpers\CalcHelper;
 use Illuminate\Http\Request;
+use App\Models\Marcaproducto;
+use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Cupondescuento;
+use App\Helpers\CalcCuponHelper;
+use App\Models\Promocioncomprandoxgratisz;
 
 class DescuentosService
 {
@@ -37,7 +42,7 @@ class DescuentosService
         return response()->json($productosAgrupados);
     }
 
-    private function calcularPrecioMenor($detalleProductos)
+    public function calcularPrecioMenor($detalleProductos)
     {
         $precioMenor = PHP_FLOAT_MAX;
 
@@ -55,7 +60,7 @@ class DescuentosService
         return $precioMenor;
     }
 
-    private function calcularCantidadBonificada($idMarca, $cantidad)
+    public function calcularCantidadBonificada($idMarca, $cantidad)
     {
         $promocion = Promocioncomprandoxgratisz::where('idMarca', $idMarca)->where('activa', 1)->first();
         if (!$promocion) {
@@ -66,5 +71,34 @@ class DescuentosService
         $cantidadTotalBonificada = floor($cantidad / $promocion->Cantidad) * $cantidadBonificada;
 
         return $cantidadTotalBonificada;
+    }
+
+    public function discount($cupon, $total, $descuento)
+    {
+        return CalcCuponHelper::calcularDescuento($cupon, $total, $descuento);
+    }
+
+    public function add($request)
+    {
+
+        $carrito = CarritoHelper::getCarrito();
+
+        $cupon = Cupondescuento::where('nombre', $request->cupon)->first();
+
+        if (!$cupon) {
+
+            return response()->json(['mensaje' => 'El cupón no existe'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+
+            $carrito = Carrito::where('id', $carrito['id'])->first();
+            $carrito->cupon = $cupon->id;
+            $carrito->save();
+
+            return response()->json(['cupon' => $cupon->id], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener los cupones'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
