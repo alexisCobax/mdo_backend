@@ -24,4 +24,28 @@ class DescuentosController extends Controller
     {
         return $this->service->findAll($request);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\DescuentosService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request)
+    {
+        return $this->service->discount($request->cupon, $request->total, $request->descuento);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\DescuentosService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function add(Request $request)
+    {
+        return $this->service->add($request);
+    }
 }
