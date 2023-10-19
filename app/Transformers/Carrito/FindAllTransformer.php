@@ -60,10 +60,16 @@ class FindAllTransformer extends TransformerAbstract
 
         $descuento = $descuentosService->discount($carrito->cupon, $calculo['total'], $calculo['descuentos']);
 
+        $total = $calculo['total'];
+
+        if($descuento){
+            $total = $calculo['total']-$descuento;
+        }
+        
         return [
             'carrito' => $id,
-            'total' => $calculo['total'] == 0 ? '0.00' : $calculo['total'],
-            'descuentos' => $descuento == 0 ? '0.00' : $descuento,
+            'total' => $total == 0 ? '0.00' : number_format($total,2),
+            'descuentos' => $descuento == 0 ? '0.00' : number_format($descuento,2),
             'subtotal' => $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'],
             'totalConEnvio' => $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'],
             'totalEnvio' => $calculo['totalEnvio'] == 0 ? '0.00' : $calculo['totalEnvio'],
