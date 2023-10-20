@@ -48,4 +48,16 @@ class DescuentosController extends Controller
     {
         return $this->service->add($request);
     }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\DescuentosService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        return $this->service->create($request);
+    }
 }
