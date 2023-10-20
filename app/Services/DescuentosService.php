@@ -101,4 +101,43 @@ class DescuentosService
             return response()->json(['error' => 'Ocurrió un error al obtener los cupones'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function create(Request $request, Producto $producto)
+    {
+
+        $modificacion = $request->input('modificacion');
+
+        switch ($modificacion) {
+            case 'monto_fijo':
+                $datos = $request->only(['marca', 'tipo', 'categoria', 'color', 'grupo', 'destacado', 'estuche', 'stock_desde', 'stock_hasta', 'precio_desde', 'precio_hasta', 'suspendido']);
+                break;
+
+            case 'aumento_fijo':
+                $datos = $request->only(['aumento_fijo', 'estuche', 'suspendido']);
+                break;
+
+            case 'aumento_porcentual':
+                $datos = $request->only(['aumento_porcentual', 'estuche', 'suspendido']);
+                break;
+
+            case 'costo':
+                $datos = $request->only(['costo', 'estuche', 'suspendido']);
+                break;
+
+            case 'estuche':
+                $datos = $request->only(['estuche', 'suspendido']);
+                break;
+
+            case 'suspendido':
+                $datos = $request->only(['suspendido']);
+                break;
+
+            default:
+                return response()->json(['mensaje' => 'Tipo de modificación no válido'], 400);
+        }
+
+        //$producto->update($datos);
+
+        return response()->json(['data' => $datos, 'mensaje' => 'Producto actualizado con éxito']);
+    }
 }
