@@ -300,6 +300,7 @@ Route::middleware('auth:sanctum')->group(function () {
     /* Descuentos **/
 
     Route::post('/descuentos', [DescuentosController::class, 'index']);
+    Route::post('/descuentos/generales', [DescuentosController::class, 'create']);
 
     /* Empleado Routes **/
 
