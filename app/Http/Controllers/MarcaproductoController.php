@@ -26,6 +26,17 @@ class MarcaproductoController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\MarcaproductoService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function vista(Request $request)
+    {
+        return $this->service->vista($request);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request $request

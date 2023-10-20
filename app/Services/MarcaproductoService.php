@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\VistaMarcas;
 use Illuminate\Http\Request;
 use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
@@ -14,6 +15,17 @@ class MarcaproductoService
     {
         try {
             $data = MarcasFilters::getPaginateMarcas(Marcaproducto::class);
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function vista(Request $request)
+    {
+        try {
+            $data = VistaMarcas::all(); 
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
