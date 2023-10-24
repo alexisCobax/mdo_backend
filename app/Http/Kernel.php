@@ -24,6 +24,7 @@ class Kernel extends HttpKernel
         //\App\Http\Middleware\Cors::class,
         \Fruitcake\Cors\HandleCors::class,
         \App\Http\Middleware\HandleExpiredToken::class,
+        \App\Http\Middleware\SetUtf8Charset::class,
     ];
 
     /**

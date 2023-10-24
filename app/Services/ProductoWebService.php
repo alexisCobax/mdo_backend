@@ -19,7 +19,8 @@ class ProductoWebService
         try {
             $data = ProductosFilters::getPaginateProducts($request, Producto::class);
 
-            return response()->json(['data' => $data], Response::HTTP_OK);
+            return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
