@@ -19,7 +19,7 @@ class FindAllTransformer extends TransformerAbstract
             'categoria' => $producto->categoria,
             'categoriaNombre' => optional($producto->categorias)->nombre,
             'precio' => $producto->precioPromocional == 0 ? number_format($producto->precio, 2) : number_format($producto->precioPromocional, 2),
-            'precioLista' => $producto->precio,
+            'precioLista' => number_format($producto->precio, 2),
             'stock' => $producto->stock,
             'destacado' => $producto->destacado,
             'marca' => optional($producto->marcas)->id,
