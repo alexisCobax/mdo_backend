@@ -766,7 +766,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/web/carritodetalle/{id}', [CarritodetalleWebController::class, 'delete']);
 
     /* Cliente **/
-    Route::post('/web/cliente', [ClienteWebController::class, 'create']);
+
     Route::put('/web/cliente', [ClienteWebController::class, 'update']);
     Route::get('/web/cliente', [ClienteWebController::class, 'show']);
 
@@ -778,6 +778,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/web/descuento/add', [DescuentosController::class, 'add']);
 
 });
+
+Route::post('/web/cliente', [ClienteWebController::class, 'create']);
 
 /* Producto ESTO DEBE IR SIN TOKEN**/
 Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
