@@ -857,6 +857,7 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         'App\\Models\\Transaccion' => __DIR__ . '/../..' . '/app/Models/Transaccion.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\Usuario' => __DIR__ . '/../..' . '/app/Models/Usuario.php',
+        'App\\Models\\VistaMarcas' => __DIR__ . '/../..' . '/app/Models/VistaMarcas.php',
         'App\\Models\\Zipcode' => __DIR__ . '/../..' . '/app/Models/Zipcode.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

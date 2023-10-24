@@ -219,6 +219,7 @@ return array(
     'App\\Models\\Transaccion' => $baseDir . '/app/Models/Transaccion.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\Usuario' => $baseDir . '/app/Models/Usuario.php',
+    'App\\Models\\VistaMarcas' => $baseDir . '/app/Models/VistaMarcas.php',
     'App\\Models\\Zipcode' => $baseDir . '/app/Models/Zipcode.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
