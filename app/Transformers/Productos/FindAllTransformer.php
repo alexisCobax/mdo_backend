@@ -24,7 +24,7 @@ class FindAllTransformer extends TransformerAbstract
             'destacado' => $producto->destacado,
             'marca' => optional($producto->marcas)->id,
             'nombreMarca' => optional($producto->marcas)->nombre,
-            'precioPromocional' => $producto->precioPromocional,
+            'precioPromocional' => number_format($producto->precioPromocional, 2),
             'estado' => $producto->suspendido == $arrayEnum[EstadosProductosEnums::SUSPENDIDO] ? EstadosProductosEnums::SUSPENDIDO : EstadosProductosEnums::PUBLICADO,
         ];
     }
