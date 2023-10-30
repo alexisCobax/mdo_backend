@@ -32,6 +32,7 @@ class ProductosFilters
         $destacado = $request->input('destacado');
         $estado = $request->input('estado');
         $buscador = $request->input('buscador');
+        $grupo = $request->input('grupo');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
@@ -49,6 +50,7 @@ class ProductosFilters
         $query->precioRange($precioDesde, $precioHasta);
         $query->stockRange($stockDesde, $stockHasta);
         $query->destacado($destacado);
+        $query->grupo($grupo);
 
         /*
         * filtro completo para productos nuevos
