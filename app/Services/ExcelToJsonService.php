@@ -424,6 +424,16 @@ class ExcelToJsonService
         $response = $jsonResponse->getData(true);
         $results = $response['results'];
 
+        $result = array_map(function($item) {
+            return [
+                "codigo" => $item["codigo"],
+                "nombre" => $item["nombre"],
+                "categoria" => $item["categoriaNombre"],
+                "marca" => $item['nombreMarca'],
+                "precio" => $item['precioLista']
+            ];
+        }, $results);
+
         // Nombre del archivo CSV que se descargará
         $filename = 'productos.csv';
 
