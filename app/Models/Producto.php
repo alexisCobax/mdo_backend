@@ -293,6 +293,15 @@ class Producto extends Model
         return $query;
     }
 
+    public function scopeGrupo($query, $grupo)
+    {
+        if ($grupo) {
+            return $query->where('grupo', '=', $grupo);
+        }
+
+        return $query;
+    }
+
     public function scopePrecioRange($query, $precioDesde, $precioHasta)
     {
         if ($precioDesde !== null && $precioHasta !== null) {
