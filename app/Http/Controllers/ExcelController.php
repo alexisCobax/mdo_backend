@@ -20,4 +20,11 @@ class ExcelController extends Controller
         return $this->service->procesar($request);
 
     }
+
+    public function GenerarProductosCsv(Request $request)
+    {
+
+        return $this->service->generarProductos($request);
+
+    }
 }

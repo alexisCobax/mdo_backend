@@ -2,20 +2,21 @@
 
 namespace App\Services;
 
-use App\Helpers\ExcelHelper;
 use App\Models\Color;
-use App\Models\Fotoproducto;
-use App\Models\Marcaproducto;
-use App\Models\Materialproducto;
+use PHPExcel_IOFactory;
 use App\Models\Producto;
-use App\Models\Tipoproducto;
 use App\Models\TmpImagenes;
+use App\Helpers\ExcelHelper;
+use App\Models\Fotoproducto;
+use App\Models\Tipoproducto;
 use App\Models\TmpProductos;
 use Illuminate\Http\Request;
+use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
+use App\Models\Materialproducto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use PHPExcel_IOFactory;
+use App\Filters\Productos\ProductosFilters;
 
 class ExcelToJsonService
 {
@@ -409,5 +410,39 @@ class ExcelToJsonService
                 return $nuevo_tipo->id;
             }
         }
+    }
+
+    /**
+     * generar.
+     *
+     * @return void
+     */
+    public function generarProductos($request)
+    {
+
+        $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
+        $response = $jsonResponse->getData(true);
+        $results = $response['results'];
+
+        // Nombre del archivo CSV que se descargará
+        $filename = 'productos.csv';
+
+        // Inicializar la salida de datos en formato CSV
+        $output = fopen('php://output', 'w');
+
+        // Establecer las cabeceras HTTP para indicar que es un archivo CSV
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // Recorrer los datos y escribirlos en el archivo CSV
+        foreach ($results as $row) {
+            fputcsv($output, $row);
+        }
+
+        // Cerrar el archivo CSV
+        fclose($output);
+
+        // Finalizar el script
+        exit();
     }
 }
