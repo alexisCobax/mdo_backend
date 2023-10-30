@@ -422,9 +422,9 @@ class ExcelToJsonService
 
         $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
         $response = $jsonResponse->getData(true);
-        $results = $response['results'];
+        $result = $response['results'];
 
-        $result = array_map(function($item) {
+        $results = array_map(function($item) {
             return [
                 "codigo" => $item["codigo"],
                 "nombre" => $item["nombre"],
@@ -432,7 +432,7 @@ class ExcelToJsonService
                 "marca" => $item['nombreMarca'],
                 "precio" => $item['precioLista']
             ];
-        }, $results);
+        }, $result);
 
         // Nombre del archivo CSV que se descargará
         $filename = 'productos.csv';
