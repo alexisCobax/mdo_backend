@@ -777,7 +777,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/web/descuento', [DescuentosController::class, 'show']);
     Route::post('/web/descuento/add', [DescuentosController::class, 'add']);
 
+
+
 });
+
+
 
 Route::post('/web/cliente', [ClienteWebController::class, 'create']);
 
@@ -787,6 +791,7 @@ Route::get('/web/producto', [ProductoWebController::class, 'index']);
 Route::post('/producto/related', [ProductoController::class, 'related']);
 Route::get('/web/marcaproducto', [MarcaproductoController::class, 'index']);
 Route::get('/web/vistamarca', [MarcaproductoController::class, 'vista']);
+Route::get('/web/generar-productos-csv', [ExcelController::class, 'GenerarProductosCsv']);
 
 /* Login Routes Not Auth **/
 
