@@ -94,12 +94,12 @@ class DescuentosService
 
             $carrito = Carrito::where('id', $carrito['id'])->first();
             if ($carrito->cupon) {
-                return response()->json(['cupon' => $cupon->id, 'status' => 200], Response::HTTP_OK);
+                return response()->json(['cupon' => $cupon->id, 'status' => 404], Response::HTTP_OK);
             } else {
                 $carrito->cupon = $cupon->id;
                 $carrito->save();
             }
-            return response()->json(['cupon' => $cupon->id, 'status' => 404], Response::HTTP_NOT_FOUND);
+            return response()->json(['cupon' => $cupon->id, 'status' => 200], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los cupones'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
