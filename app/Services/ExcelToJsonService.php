@@ -430,7 +430,7 @@ class ExcelToJsonService
                 "nombre" => $item["nombre"],
                 "categoria" => $item["categoriaNombre"],
                 "marca" => $item['nombreMarca'],
-                "precio" => $item['precioLista']
+                "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2)
             ];
         }, $result);
 
