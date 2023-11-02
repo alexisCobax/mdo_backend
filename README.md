@@ -71,3 +71,11 @@ ISO 8601
 
 composer sniff 
 composer lint
+
+## fixear PHPExcel
+
+en el archivo vendor/phpoffice/phpexcel/Classes/PHPExcel/Shared/OLE.php linea 288 agregar:
+
+continue 2;
+
+sino da error por la version de php

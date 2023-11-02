@@ -776,6 +776,7 @@ class ComposerStaticInitd26ead32f5dc98db24b1388e82ef5133
         'App\\Http\\Middleware\\JWTMiddleWare' => __DIR__ . '/../..' . '/app/Http/Middleware/JWTMiddleWare.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
+        'App\\Http\\Middleware\\SetUtf8Charset' => __DIR__ . '/../..' . '/app/Http/Middleware/SetUtf8Charset.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
