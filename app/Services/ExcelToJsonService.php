@@ -3,10 +3,9 @@
 namespace App\Services;
 
 use Drawing;
+use Alignment;
 use App\Models\Color;
 use PHPExcel_IOFactory;
-use PHPExcel_Worksheet_Drawing;
-use PHPExcel_Worksheet_MemoryDrawing;
 use App\Models\Producto;
 use App\Models\TmpImagenes;
 use App\Helpers\ExcelHelper;
@@ -16,11 +15,14 @@ use App\Models\TmpProductos;
 use Illuminate\Http\Request;
 use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
+use PHPExcel_Worksheet_Drawing;
 use App\Models\Materialproducto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use PHPExcel_Worksheet_MemoryDrawing;
 use Maatwebsite\Excel\Classes\PHPExcel;
 use App\Filters\Productos\ProductosFilters;
+use PHPExcel_Style_Alignment;
 
 class ExcelToJsonService
 {
@@ -425,124 +427,99 @@ class ExcelToJsonService
     {
 
         $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
-$response = $jsonResponse->getData(true);
-$result = $response['results'];
+        $response = $jsonResponse->getData(true);
+        $result = $response['results'];
+        dd($result);
+        $results = array_map(function ($item) {
+            return [
+                "codigo" => $item["codigo"],
+                "nombre" => $item["nombre"],
+                "categoria" => $item["categoriaNombre"],
+                "marca" => $item['nombreMarca'],
+                "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
+                "imagen" => storage_path('app/public/images/'.$item['imagenPrincipal'].'.jpg')
+            ];
+        }, $result);
 
-$results = array_map(function ($item) {
-    return [
-        "codigo" => $item["codigo"],
-        "nombre" => $item["nombre"],
-        "categoria" => $item["categoriaNombre"],
-        "marca" => $item['nombreMarca'],
-        "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
-        "imagen" => storage_path('app/public/images/45073.jpg')
-    ];
-}, $result);
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+        $sheet = $objPHPExcel->getActiveSheet();
 
-$objPHPExcel = new PHPExcel();
-$objPHPExcel->setActiveSheetIndex(0);
-$sheet = $objPHPExcel->getActiveSheet();
+        $sheet->setCellValue('A1', 'Codigo');
+        $sheet->setCellValue('B1', 'Nombre');
+        $sheet->setCellValue('C1', 'Categoria');
+        $sheet->setCellValue('D1', 'Marca');
+        $sheet->setCellValue('E1', 'Precio');
+        $sheet->setCellValue('F1', 'Imagen');
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(60);
+        $sheet->getColumnDimension('C')->setWidth(50);
+        $sheet->getColumnDimension('D')->setWidth(60);
+        $sheet->getColumnDimension('F')->setWidth(50);
 
-$sheet->setCellValue('A1', 'Codigo');
-$sheet->setCellValue('B1', 'Nombre');
-$sheet->setCellValue('C1', 'Categoria');
-$sheet->setCellValue('D1', 'Marca');
-$sheet->setCellValue('E1', 'Precio');
-$sheet->setCellValue('F1', 'Imagen');
-$row = 2;
+        $row = 2;
 
-foreach ($results as $item) {
-    $sheet->setCellValue('A' . $row, $item['codigo']);
-    $sheet->setCellValue('B' . $row, $item['nombre']);
-    $sheet->setCellValue('C' . $row, $item['categoria']);
-    $sheet->setCellValue('D' . $row, $item['marca']);
-    $sheet->setCellValue('E' . $row, $item['precio']);
+        foreach ($results as $item) {
+            $sheet->setCellValue('A' . $row, $item['codigo']);
+            $styleA1 = $sheet->getStyle('A1');
+            $styleA1->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $styleA = $sheet->getStyle('A' . $row);
+            $styleA->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-    if (file_exists($item['imagen'])) {
-        $drawing = new PHPExcel_Worksheet_MemoryDrawing();
-        $drawing->setName('Imagen');
-        $drawing->setDescription('Imagen');
-        $drawing->setImageResource(imagecreatefromjpeg($item['imagen']));
-        $drawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
-        $drawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
-        $drawing->setCoordinates('F' . $row);
-        $drawing->setHeight(200);
-        $drawing->setWidth(200);
-        $drawing->setWorksheet($sheet);
-    }
+            $sheet->setCellValue('B' . $row, $item['nombre']);
+            $styleB1 = $sheet->getStyle('B1');
+            $styleB1->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $styleB = $sheet->getStyle('B' . $row);
+            $styleB->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
 
-    $row++;
-}
+            $sheet->setCellValue('C' . $row, $item['categoria']);
+            $styleC1 = $sheet->getStyle('C1');
+            $styleC1->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $styleC = $sheet->getStyle('C' . $row);
+            $styleC->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
 
-$filename = 'datos_con_imagenes.xls';
+            $sheet->setCellValue('D' . $row, $item['marca']);
+            $styleD1 = $sheet->getStyle('D1');
+            $styleD1->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $styleD = $sheet->getStyle('D' . $row);
+            $styleD->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
 
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            $sheet->setCellValue('E' . $row, $item['precio']);
+            $sheet->getRowDimension($row)->setRowHeight(60);
+            $styleE1 = $sheet->getStyle('E1');
+            $styleE1->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $styleE = $sheet->getStyle('E' . $row);
+            $styleE->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-header('Content-Type: application/vnd.ms-excel');
-header('Content-Disposition: attachment; filename="' . $filename . '"');
-header('Cache-Control: max-age=0');
+            if (file_exists($item['imagen'])) {
+                $drawing = new PHPExcel_Worksheet_MemoryDrawing();
+                $drawing->setName('Imagen');
+                $drawing->setDescription('Imagen');
+                $drawing->setImageResource(imagecreatefromjpeg($item['imagen']));
+                $drawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+                $drawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+                $drawing->setCoordinates('F' . $row);
+                $sheet->getRowDimension($row)->setRowHeight(100);
+                $drawing->setHeight(200);
+                $drawing->setWidth(200);
+                $drawing->setWorksheet($sheet);
+                $styleE1 = $sheet->getStyle('F1');
+                $styleE1->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            }
 
-$objWriter->save('php://output');
+            $row++;
+        }
 
-exit();
+        $filename = 'datos_con_imagenes.xls';
 
-        // $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
-        // $response = $jsonResponse->getData(true);
-        // $result = $response['results'];
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 
-        // $results = array_map(function ($item) {
-        //     return [
-        //         "codigo" => $item["codigo"],
-        //         "nombre" => $item["nombre"],
-        //         "categoria" => $item["categoriaNombre"],
-        //         "marca" => $item['nombreMarca'],
-        //         "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
-        //         "imagen" => public_path('images/45071.jpg')
-        //     ];
-        // }, $result);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
 
+        $objWriter->save('php://output');
 
-        // $objPHPExcel = new PHPExcel();
-
-        // $objPHPExcel->setActiveSheetIndex(0);
-        // $sheet = $objPHPExcel->getActiveSheet();
-
-        // $sheet->setCellValue('A1', 'Codigo');
-        // $sheet->setCellValue('B1', 'Nombre');
-        // $sheet->setCellValue('C1', 'Categoria');
-        // $sheet->setCellValue('D1', 'Marca');
-        // $sheet->setCellValue('E1', 'Precio');
-        // $sheet->setCellValue('F1', 'Imagen');
-        // $row = 2;
-
-        // foreach ($results as $item) {
-        //     $sheet->setCellValue('A' . $row, $item['codigo']);
-        //     $sheet->setCellValue('B' . $row, $item['nombre']);
-        //     $sheet->setCellValue('C' . $row, $item['categoria']);
-        //     $sheet->setCellValue('D' . $row, $item['marca']);
-        //     $sheet->setCellValue('E' . $row, $item['precio']);
-        //     $sheet->setCellValue('F' . $row, public_path('images/45071.jpg'));
-
-        //     if (file_exists($item['imagen'])) {
-        //         $objDrawing = new PHPExcel_Worksheet_Drawing();
-        //         $objDrawing->setPath($item['imagen']);
-        //         $objDrawing->setCoordinates('F' . $row);
-        //         $objDrawing->setWorksheet($sheet);
-        //     }
-
-        //     $row++;
-        // }
-
-        // $filename = 'datos_con_imagenes.xls';
-
-        // $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-
-        // header('Content-Type: application/vnd.ms-excel');
-        // header('Content-Disposition: attachment; filename="' . $filename . '"');
-        // header('Cache-Control: max-age=0');
-
-        // $objWriter->save('php://output');
-
-        // exit();
+        exit();
     }
 }
