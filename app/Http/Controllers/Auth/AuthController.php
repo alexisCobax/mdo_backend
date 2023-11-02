@@ -164,5 +164,6 @@ class AuthController extends Controller
         unset($user->apellido);
 
         return response()->json(['user' => $user], 200);
+
     }
 }
