@@ -432,15 +432,13 @@ class ExcelToJsonService
 
         $results = array_map(function ($item) {
 
-           echo 'app/public/images/'.$item['imagenPrincipal'];die;
-
             return [
                 "codigo" => $item["codigo"],
                 "nombre" => $item["nombre"],
                 "categoria" => $item["categoriaNombre"],
                 "marca" => $item['nombreMarca'],
                 "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
-                "imagen" => storage_path('app/public/images/'.$item['imagenPrincipal'].'.jpg')
+                "imagen" => storage_path('app/public/images/'.$item['imagenPrincipal'])
             ];
         }, $result);
 
