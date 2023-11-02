@@ -431,6 +431,9 @@ class ExcelToJsonService
         $result = $response['results'];
 
         $results = array_map(function ($item) {
+
+           echo 'app/public/images/'.$item['imagenPrincipal'].'.jpg';die;
+
             return [
                 "codigo" => $item["codigo"],
                 "nombre" => $item["nombre"],
