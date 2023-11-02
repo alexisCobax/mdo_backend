@@ -429,7 +429,7 @@ class ExcelToJsonService
         $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
         $response = $jsonResponse->getData(true);
         $result = $response['results'];
-        dd($result);
+
         $results = array_map(function ($item) {
             return [
                 "codigo" => $item["codigo"],
