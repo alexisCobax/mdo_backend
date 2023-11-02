@@ -511,7 +511,7 @@ class ExcelToJsonService
             $row++;
         }
 
-        $filename = 'datos_con_imagenes.xls';
+        $filename = 'productos.xls';
 
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 
