@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use Drawing;
 use App\Models\Color;
 use PHPExcel_IOFactory;
+use PHPExcel_Worksheet_Drawing;
+use PHPExcel_Worksheet_MemoryDrawing;
 use App\Models\Producto;
 use App\Models\TmpImagenes;
 use App\Helpers\ExcelHelper;
@@ -16,6 +19,7 @@ use Illuminate\Http\Response;
 use App\Models\Materialproducto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Classes\PHPExcel;
 use App\Filters\Productos\ProductosFilters;
 
 class ExcelToJsonService
@@ -421,38 +425,124 @@ class ExcelToJsonService
     {
 
         $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
-        $response = $jsonResponse->getData(true);
-        $result = $response['results'];
+$response = $jsonResponse->getData(true);
+$result = $response['results'];
 
-        $results = array_map(function($item) {
-            return [
-                "codigo" => $item["codigo"],
-                "nombre" => $item["nombre"],
-                "categoria" => $item["categoriaNombre"],
-                "marca" => $item['nombreMarca'],
-                "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2)
-            ];
-        }, $result);
+$results = array_map(function ($item) {
+    return [
+        "codigo" => $item["codigo"],
+        "nombre" => $item["nombre"],
+        "categoria" => $item["categoriaNombre"],
+        "marca" => $item['nombreMarca'],
+        "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
+        "imagen" => storage_path('app/public/images/45073.jpg')
+    ];
+}, $result);
 
-        // Nombre del archivo CSV que se descargará
-        $filename = 'productos.csv';
+$objPHPExcel = new PHPExcel();
+$objPHPExcel->setActiveSheetIndex(0);
+$sheet = $objPHPExcel->getActiveSheet();
 
-        // Inicializar la salida de datos en formato CSV
-        $output = fopen('php://output', 'w');
+$sheet->setCellValue('A1', 'Codigo');
+$sheet->setCellValue('B1', 'Nombre');
+$sheet->setCellValue('C1', 'Categoria');
+$sheet->setCellValue('D1', 'Marca');
+$sheet->setCellValue('E1', 'Precio');
+$sheet->setCellValue('F1', 'Imagen');
+$row = 2;
 
-        // Establecer las cabeceras HTTP para indicar que es un archivo CSV
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+foreach ($results as $item) {
+    $sheet->setCellValue('A' . $row, $item['codigo']);
+    $sheet->setCellValue('B' . $row, $item['nombre']);
+    $sheet->setCellValue('C' . $row, $item['categoria']);
+    $sheet->setCellValue('D' . $row, $item['marca']);
+    $sheet->setCellValue('E' . $row, $item['precio']);
 
-        // Recorrer los datos y escribirlos en el archivo CSV
-        foreach ($results as $row) {
-            fputcsv($output, $row);
-        }
+    if (file_exists($item['imagen'])) {
+        $drawing = new PHPExcel_Worksheet_MemoryDrawing();
+        $drawing->setName('Imagen');
+        $drawing->setDescription('Imagen');
+        $drawing->setImageResource(imagecreatefromjpeg($item['imagen']));
+        $drawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+        $drawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+        $drawing->setCoordinates('F' . $row);
+        $drawing->setHeight(200);
+        $drawing->setWidth(200);
+        $drawing->setWorksheet($sheet);
+    }
 
-        // Cerrar el archivo CSV
-        fclose($output);
+    $row++;
+}
 
-        // Finalizar el script
-        exit();
+$filename = 'datos_con_imagenes.xls';
+
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+
+header('Content-Type: application/vnd.ms-excel');
+header('Content-Disposition: attachment; filename="' . $filename . '"');
+header('Cache-Control: max-age=0');
+
+$objWriter->save('php://output');
+
+exit();
+
+        // $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
+        // $response = $jsonResponse->getData(true);
+        // $result = $response['results'];
+
+        // $results = array_map(function ($item) {
+        //     return [
+        //         "codigo" => $item["codigo"],
+        //         "nombre" => $item["nombre"],
+        //         "categoria" => $item["categoriaNombre"],
+        //         "marca" => $item['nombreMarca'],
+        //         "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
+        //         "imagen" => public_path('images/45071.jpg')
+        //     ];
+        // }, $result);
+
+
+        // $objPHPExcel = new PHPExcel();
+
+        // $objPHPExcel->setActiveSheetIndex(0);
+        // $sheet = $objPHPExcel->getActiveSheet();
+
+        // $sheet->setCellValue('A1', 'Codigo');
+        // $sheet->setCellValue('B1', 'Nombre');
+        // $sheet->setCellValue('C1', 'Categoria');
+        // $sheet->setCellValue('D1', 'Marca');
+        // $sheet->setCellValue('E1', 'Precio');
+        // $sheet->setCellValue('F1', 'Imagen');
+        // $row = 2;
+
+        // foreach ($results as $item) {
+        //     $sheet->setCellValue('A' . $row, $item['codigo']);
+        //     $sheet->setCellValue('B' . $row, $item['nombre']);
+        //     $sheet->setCellValue('C' . $row, $item['categoria']);
+        //     $sheet->setCellValue('D' . $row, $item['marca']);
+        //     $sheet->setCellValue('E' . $row, $item['precio']);
+        //     $sheet->setCellValue('F' . $row, public_path('images/45071.jpg'));
+
+        //     if (file_exists($item['imagen'])) {
+        //         $objDrawing = new PHPExcel_Worksheet_Drawing();
+        //         $objDrawing->setPath($item['imagen']);
+        //         $objDrawing->setCoordinates('F' . $row);
+        //         $objDrawing->setWorksheet($sheet);
+        //     }
+
+        //     $row++;
+        // }
+
+        // $filename = 'datos_con_imagenes.xls';
+
+        // $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+
+        // header('Content-Type: application/vnd.ms-excel');
+        // header('Content-Disposition: attachment; filename="' . $filename . '"');
+        // header('Cache-Control: max-age=0');
+
+        // $objWriter->save('php://output');
+
+        // exit();
     }
 }
