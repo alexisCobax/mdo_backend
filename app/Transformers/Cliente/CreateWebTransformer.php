@@ -4,7 +4,7 @@ namespace App\Transformers\Cliente;
 
 class CreateWebTransformer
 {
-    public static function transform($request, $usuarioId)
+    public static function transform($request, $usuarioId, $id)
     {
 
         $cliente = [
@@ -38,6 +38,7 @@ class CreateWebTransformer
             'vendedor' => $request->vendedor,
             'web' => $request->web,
             'notification' => $request->notification,
+            'IdActiveCampaignContact'=>$id
         ];
 
         return $cliente;

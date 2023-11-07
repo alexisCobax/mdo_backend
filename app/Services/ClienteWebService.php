@@ -58,8 +58,31 @@ class ClienteWebService
             return response()->json(['error' => 'Failed to create Usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        $payload =  [
+            "contact" => [
+                "email" => $request->email,
+                "firstName" => $request->nombre,
+                "lastName" => $request->nombre,
+                "phone" => $request->telefono,
+                "fieldValues" => [
+                    [
+                        "field" => "17",
+                        "value" => "9"
+                    ]
+                ]
+            ]
+        ];
+
+        $postData = json_encode($payload);
+
+        $activeCampaign = new ActiveCampaignService;
+
+        $response =  $activeCampaign->post('https://cobax1694091376.api-us1.com/api/3/contacts', $postData);
+        $response = json_decode($response, true);
+
         $transformer = new CreateWebTransformer();
-        $cliente = $transformer->transform($request, $usuario->id);
+        $cliente = $transformer->transform($request, $usuario->id, $response['contact']['id']);
+
 
         $cliente = Cliente::create($cliente);
 
