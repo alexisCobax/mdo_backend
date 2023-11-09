@@ -29,6 +29,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PagoWebController;
 use App\Http\Controllers\PayeezyController;
 use App\Http\Controllers\PortadaController;
+use App\Http\Controllers\PreciosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
 use App\Http\Controllers\Cliente2Controller;
@@ -739,6 +740,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('me', [AuthController::class, 'me']);
 
+    /**Variantes de precios **/
+
+    Route::post('/precios/manejador', [PreciosController::class, 'create']);
+
     /*
      *
      * WEB Routes
@@ -776,8 +781,6 @@ Route::middleware('auth:sanctum')->group(function () {
     /** Descuentos **/
     Route::post('/web/descuento', [DescuentosController::class, 'show']);
     Route::post('/web/descuento/add', [DescuentosController::class, 'add']);
-
-
 
 });
 
