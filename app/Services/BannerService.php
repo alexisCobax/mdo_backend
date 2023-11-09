@@ -29,14 +29,20 @@ class BannerService
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $tipobanner)
     {
+
+        if(!$request->tipo){
+            return response()->json("Tipo es obligatorio", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $tipo = $tipobanner->where('palabraClave',$request->tipo)->first();
 
         $imagenOriginal = $request->file('imagen');
         $pathOriginal = $imagenOriginal->store('public/');
 
         $imagen = Image::make(storage_path("app/$pathOriginal"))
-            ->resize(300, 200)
+            ->resize($tipo->ancho, $tipo->alto)
             ->save(storage_path("app/public/banners/" . date('YmdHis') . ".jpg"));
 
         Storage::delete($pathOriginal);
