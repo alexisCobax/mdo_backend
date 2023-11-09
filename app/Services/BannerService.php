@@ -47,6 +47,16 @@ class BannerService
 
         Storage::delete($pathOriginal);
 
+        $banner = new Banner;
+        $banner->tipoUbicacion = $tipo->id;
+        $banner->codigo = '';
+        $banner->suspendido = 0;
+        $banner->orden = $request->orden;
+        $banner->tipoArchivo = 'JPG';
+        $banner->link = $request->link;
+        $banner->nombre = $request->nombre;
+        $banner->save();
+
         if (!$imagen) {
             return response()->json(['error' => 'Failed to create Banner'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
