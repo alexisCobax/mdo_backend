@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\BannerService;
+use App\Models\Tipobanner;
 use Illuminate\Http\Request;
+use App\Services\BannerService;
 
 class BannerController extends Controller
 {
@@ -44,9 +45,9 @@ class BannerController extends Controller
      * @param  use App\Services\BannerService $service
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Request $request, Tipobanner $tipobanner)
     {
-        return $this->service->create($request);
+        return $this->service->create($request, $tipobanner);
     }
 
     /**
