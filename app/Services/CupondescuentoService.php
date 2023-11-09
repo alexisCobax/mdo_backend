@@ -29,8 +29,23 @@ class CupondescuentoService
 
     public function create(Request $request)
     {
-        $data = $request->all();
-        $cupondescuento = Cupondescuento::create($data);
+        
+        $nombre = strtoupper($request->nombre);
+        $nombre = str_replace(' ', '', $nombre);
+
+        $payload = [
+            "nombre"=> $nombre,
+            "descripcion"=> $request->descripcion,
+            "descuentoFijo"=> $request->descuentoFijo,
+            "descuentoPorcentual"=> $request->descuentoPorcentual,
+            "marca"=> $request->marca,
+            "combinable"=> $request->combinable,
+            "inicio"=> $request->inicio,
+            "vencimiento"=> $request->vencimiento,
+            "stock"=> $request->stock,
+            "suspendido"=> $request->suspendido
+        ];
+        $cupondescuento = Cupondescuento::create($payload);
 
         if (!$cupondescuento) {
             return response()->json(['error' => 'Failed to create Cupondescuento'], Response::HTTP_INTERNAL_SERVER_ERROR);
