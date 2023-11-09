@@ -6,6 +6,8 @@ use App\Helpers\PaginateHelper;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class BannerService
 {
@@ -16,7 +18,7 @@ class BannerService
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Ocurrió un error al obtener las imagenes'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -29,14 +31,21 @@ class BannerService
 
     public function create(Request $request)
     {
-        $data = $request->all();
-        $banner = Banner::create($data);
 
-        if (!$banner) {
+        $imagenOriginal = $request->file('imagen');
+        $pathOriginal = $imagenOriginal->store('public/');
+
+        $imagen = Image::make(storage_path("app/$pathOriginal"))
+            ->resize(300, 200)
+            ->save(storage_path("app/public/banners/" . date('YmdHis') . ".jpg"));
+
+        Storage::delete($pathOriginal);
+
+        if (!$imagen) {
             return response()->json(['error' => 'Failed to create Banner'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json($banner, Response::HTTP_OK);
+        return response()->json("Imagen generada correctamente", Response::HTTP_OK);
     }
 
     public function update(Request $request)
