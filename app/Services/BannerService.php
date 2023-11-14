@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Intervention\Image\Facades\Image;
+use App\Filters\Banners\BannersFilters;
 use Illuminate\Support\Facades\Storage;
 
 class BannerService
@@ -14,11 +14,11 @@ class BannerService
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Banner::class);
+            $data = BannersFilters::getPaginateBanners($request, Banner::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ocurrió un error al obtener las imagenes'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Ocurrió un error al obtener los sliders'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -36,7 +36,7 @@ class BannerService
             return response()->json("Tipo es obligatorio", Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $tipo = $tipobanner->where('palabraClave',$request->tipo)->first();
+        $tipo = $tipobanner->find($request->tipo)->first();
 
         $imagenOriginal = $request->file('imagen');
         $pathOriginal = $imagenOriginal->store('public/');
@@ -48,7 +48,7 @@ class BannerService
         Storage::delete($pathOriginal);
 
         $banner = new Banner;
-        $banner->tipoUbicacion = $tipo->id;
+        $banner->tipoUbicacion = $request->tipo;
         $banner->codigo = '';
         $banner->suspendido = 0;
         $banner->orden = $request->orden;
