@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use App\Models\Tipobanner;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -46,4 +47,9 @@ class Banner extends Model
         'texto1',
         'texto2',
     ];
+
+    public function Ubicaciones()
+    {
+        return $this->belongsTo(Tipobanner::class, 'tipoUbicacion');
+    }
 }
