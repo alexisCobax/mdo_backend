@@ -2,19 +2,20 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
 use App\Models\Cliente;
 use App\Models\Usuario;
-use App\Transformers\Cliente\CreateTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
+use App\Filters\Clientes\ClientesFilters;
+use App\Transformers\Cliente\CreateTransformer;
 
 class ClienteService
 {
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Cliente::class);
+            $data = ClientesFilters::getPaginateClientes($request, Cliente::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {

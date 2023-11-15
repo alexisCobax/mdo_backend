@@ -132,4 +132,16 @@ class Cliente extends Model
     {
         return $this->belongsTo(Usuario::class, 'usuario');
     }
+
+    //Filtros
+
+    public function scopeId($query, $id)
+    {
+            return $query->where('id', $id);
+    }
+
+    public function scopeNombre($query, $nombre)
+    {
+        return $query->where('nombre', 'like', '%' . $nombre . '%');
+    }
 }
