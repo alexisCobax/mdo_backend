@@ -96,21 +96,6 @@ class ProductosFilters
                 ->orderBy('id', 'desc')
                 ->paginate($perPage, ['*'], 'page', $page);
 
-            // $data = Producto::where(function ($query) use ($buscador) {
-            //     $query->where('descripcion', 'LIKE', "%$buscador%")
-            //           ->orWhere('tamano', 'LIKE', "%$buscador%")
-            //           ->orWhere('nombre', 'LIKE', "%$buscador%")
-            //           ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
-            //               $query->where('nombre', 'LIKE', "%$buscador%");
-            //           })
-            //           ->orWhereHas('colorBuscador', function ($query) use ($buscador) {
-            //               $query->where('nombre', 'LIKE', "%$buscador%");
-            //           });
-            // })
-            // ->where('categoria', $categoria) 
-            // ->orderBy('id', 'desc')
-            // ->paginate($perPage, ['*'], 'page', $page);
-
             // Crea una instancia del transformer
             $transformer = new FindAllTransformer();
 

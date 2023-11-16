@@ -105,7 +105,7 @@ class DescuentosService
         }
     }
 
-    public function create(Request $request, Producto $producto)
+    public function create(Request $request)
     {
 
         $modificacion = $request->input('modificacion');
