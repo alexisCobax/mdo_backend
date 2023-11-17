@@ -40,9 +40,11 @@ class ClientesFilters
             return $transformer->transform($clientes);
         });
 
+        $status = $clientesTransformados->count() ? Response::HTTP_OK : Response::HTTP_NOT_FOUND;
+
         // Crea la respuesta personalizada
         $response = [
-            'status' => Response::HTTP_OK,
+            'status' => $status,
             'total' => $data->total(),
             'cantidad_por_pagina' => $data->perPage(),
             'pagina' => $data->currentPage(),
