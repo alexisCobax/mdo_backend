@@ -2,10 +2,11 @@
 
 namespace App\Filters\Productos;
 
-use App\Models\Marcaproducto;
 use App\Models\Producto;
-use App\Transformers\Productos\FindAllTransformer;
+use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use App\Transformers\Productos\FindAllTransformer;
 
 class ProductosFilters
 {
@@ -93,7 +94,7 @@ class ProductosFilters
                 ->orWhereHas('colorBuscador', function ($query) use ($buscador) {
                     $query->where('nombre', 'LIKE', "%$buscador%");
                 })
-                ->where('categoria', $categoria) 
+                ->where('categoria', $categoria)
                 ->orderBy('id', 'desc')
                 ->paginate($perPage, ['*'], 'page', $page);
 
@@ -128,18 +129,21 @@ class ProductosFilters
             }
         }
 
-        // if($nombreMarca){
+        if ($nombreMarca) {
+            $resultado = DB::table('producto as p')
+                ->select('p.nombre', 'mp.nombre as nombre_marca')
+                ->join('marcaproducto as mp', 'p.marca', '=', 'mp.id')
+                ->where('mp.nombre', 'LIKE', '%' . $nombreMarca . '%')
+                ->get();
 
-        //     $productos = Producto::select('producto.*')
-        //     ->join('marcaproducto as mp', 'producto.marca', '=', 'mp.id')
-        //     ->where('mp.nombre', 'LIKE', '%frames%')
-        //     ->get();
+            $response = [
+                'status' => Response::HTTP_OK,
+                'results' => $resultado,
+            ];
 
-        //     // $productos = Producto::whereHas('marcaproducto', function ($query) use ($nombreMarca) {
-        //     //     $query->where('nombre', 'like', '%' . $nombreMarca . '%');
-        //     // })->get();
-        //     dd($productos);
-        // }
+            return response()->json($response);
+        }
+
 
         //Realiza la paginación de la consulta
         $data = $query->where('precio', '>', 0)
