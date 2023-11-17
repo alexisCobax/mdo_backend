@@ -22,6 +22,7 @@ class ProductosFilters
         $suspendido = $request->input('suspendido');
         $tipo = $request->input('tipo');
         $marca = $request->input('marca');
+        $nombreMarca = $request->input('nombreMarca');
         $idMarca = $request->input('idmarca');
         $material = $request->input('material');
         $color = $request->input('color');
@@ -126,6 +127,19 @@ class ProductosFilters
                 $query->whereIn('marca', $marcas);
             }
         }
+
+        // if($nombreMarca){
+
+        //     $productos = Producto::select('producto.*')
+        //     ->join('marcaproducto as mp', 'producto.marca', '=', 'mp.id')
+        //     ->where('mp.nombre', 'LIKE', '%frames%')
+        //     ->get();
+
+        //     // $productos = Producto::whereHas('marcaproducto', function ($query) use ($nombreMarca) {
+        //     //     $query->where('nombre', 'like', '%' . $nombreMarca . '%');
+        //     // })->get();
+        //     dd($productos);
+        // }
 
         //Realiza la paginación de la consulta
         $data = $query->where('precio', '>', 0)
