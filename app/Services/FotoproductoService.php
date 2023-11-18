@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
-use App\Models\Fotoproducto;
 use App\Models\Producto;
+use App\Models\Fotoproducto;
 use Illuminate\Http\Request;
+use App\Helpers\ImagesHelper;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class FotoproductoService
 {
@@ -32,6 +34,34 @@ class FotoproductoService
     public function create(Request $request)
     {
         switch (strtolower($request->action)) {
+            case 'insertar':
+                if ($request->images) {
+
+                    $uploader = new ImagesHelper();
+                    $imagenes = $uploader->uploadMultipleImages($request, 'images');
+
+                    foreach ($imagenes as $img) {
+
+                        $imagen = new Fotoproducto();
+                        $imagen->idProducto = $request->id;
+                        $imagen->orden = 0;
+                        $imagen->save();
+
+                        $currentPath = 'public/' . $img;
+                        $newPath = 'public/images/' . $imagen->id . '.' . env('EXTENSION_IMAGEN_PRODUCTO');
+
+                        if (Storage::exists($currentPath)) {
+                            Storage::move($currentPath, $newPath);
+                        }
+                    }
+
+                    $producto = Producto::find($request->id);
+                    $producto->imagenPrincipal = $imagen->id;
+                    $producto->save();
+                }
+
+                return response()->json($producto, Response::HTTP_OK);
+                break;
             case 'principal':
                 try {
                     $producto = Producto::find($request->idProducto);
