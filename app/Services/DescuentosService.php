@@ -30,12 +30,12 @@ class DescuentosService
             $precioMenor = $this->calcularPrecioMenor($detalleProductos);
             $cantidadBonificada = $this->calcularCantidadBonificada($idMarca, $cantidad);
             $marca = Marcaproducto::find($idMarca);
-
+            $precio = $precioMenor * $cantidadBonificada;
             return [
                 'id' => $idMarca,
                 'nombre' => $marca->nombre,
                 'cantidad' => $cantidadBonificada,
-                'precio' => $precioMenor * $cantidadBonificada,
+                'precio' => number_format($precio, 2),
             ];
         })->values();
 

@@ -37,7 +37,11 @@ class InvoiceService
 
         $pdf = Pdf::loadView('pdf.invoice', ['invoice' => $invoiceTransformer]);
 
-        return $pdf->stream();
+        $pdf->getDomPDF();
+        
+        return $pdf->download();
+        
+        // return $pdf->stream();
     }
 
     public function create(Request $request)
