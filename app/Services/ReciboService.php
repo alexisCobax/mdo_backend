@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
-use App\Helpers\DateHelper;
-use App\Helpers\PaginateHelper;
 use App\Models\Recibo;
+use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Filters\Recibos\RecibosFilters;
 
 class ReciboService
 {
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Recibo::class);
+            $data = RecibosFilters::getPaginateRecibo($request, Recibo::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -24,7 +24,13 @@ class ReciboService
 
     public function findById(Request $request)
     {
-        $recibo = Recibo::where('pedido', $request->id)->first();
+        if($request->recibo){
+
+            $recibo = Recibo::where('id', $request->recibo)->first();
+        }else{
+            $recibo = Recibo::where('pedido', $request->id)->first();
+        }
+        
 
         $data = [
             'recibo' => [
@@ -40,10 +46,14 @@ class ReciboService
         $pdf = Pdf::loadView('pdf.recibo', $data);
 
         $pdf->getDomPDF();
+        
+        return $pdf->download();
+        
+        // $pdf->getDomPDF();
 
-        return $pdf->stream();
+        // return $pdf->stream();
 
-        return response()->json(['data' => $data], Response::HTTP_OK);
+        // return response()->json(['data' => $data], Response::HTTP_OK);
     }
 
     public function create(Request $request)

@@ -23,7 +23,7 @@ class FindAllTransformer extends TransformerAbstract
             'nombreFormaDePago' => optional($pedido->formaDePagos)->nombre,
             'observaciones' => $pedido->observaciones,
             'invoice' => $pedido->invoice,
-            'total' => $pedido->total,
+            'total' => number_format($pedido->total, 2),
             'descuentoPorcentual' => $pedido->descuentoPorcentual,
             'descuentoNeto' => $pedido->descuentoNeto,
             'totalEnvio' => $pedido->totalEnvio,

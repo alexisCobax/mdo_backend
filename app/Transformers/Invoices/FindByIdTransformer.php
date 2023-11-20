@@ -22,7 +22,11 @@ class FindByIdTransformer extends TransformerAbstract
         foreach ($invoiceDetalle as $id) {
 
             $producto = Producto::where('id', $id['itemNumber'])->first();
-            $productoDescripcion = $producto->descripcion . ' ' . optional($producto->colores)->nombre . ' ' . $producto->tamano . ' ' . optional($producto->materiales)->nombre;
+            if(isset($producto->descripcion)){
+                $productoDescripcion = $producto->descripcion . ' ' . optional($producto->colores)->nombre . ' ' . $producto->tamano . ' ' . optional($producto->materiales)->nombre;
+            }else{
+                $productoDescripcion = '';
+            }
             $total = $id['listPrice']*$id['qordered'];
             $detalle[] = [
                 'id' => $id['id'],
