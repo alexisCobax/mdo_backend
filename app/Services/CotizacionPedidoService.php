@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Models\Cotizacion;
 use App\Models\Cotizaciondetalle;
 use App\Models\Pedido;
+use App\Models\Pedidodetalle;
 use App\Transformers\CotizacionPedido\CreateCotizacionTransformer;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -28,20 +30,33 @@ class CotizacionPedidoService
         $cotizacionTransformer = new CreateCotizacionTransformer();
         $cotizacionData = $cotizacionTransformer->transform($cotizacion);
 
-        // $pedido = Pedido::create($cotizacionData);
+        try {
 
-        $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->first();
+            $pedido = Pedido::create($cotizacionData);
+        } catch (Error $e) {
 
-        $foo = [
-            'cotizacion'=>$cotizacionDetalle->cotizacion,
-            'producto'=>$cotizacionDetalle->producto,
-            'precio'=>$cotizacionDetalle->precio,
-            'cantidad'=>$cotizacionDetalle->cantidad,
-        ];
+            return response()->json("error", $e->getMessage());
+        }
+        $cotizacionDetalles = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->get();
 
-        dd($foo);
+        $detalles = $cotizacionDetalles->map(function ($detalle) use ($pedido) {
+            return [
+                'pedido' => $pedido->id,
+                'producto' => $detalle->producto,
+                'precio' => $detalle->precio,
+                'cantidad' => $detalle->cantidad,
+                'costo' => $detalle->precio * $detalle->cantidad
+            ];
+        });
 
-        //return response()->json($pedido, Response::HTTP_OK);
+        try {
+            PedidoDetalle::insert($detalles->toArray());
+        } catch (Error $e) {
+
+            return response()->json("error", $e->getMessage());
+        }
+
+        return response()->json($pedido, Response::HTTP_OK);
     }
 
     public function update(Request $request)
