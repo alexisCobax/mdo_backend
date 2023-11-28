@@ -36,6 +36,7 @@ class DescuentosService
                 'nombre' => $marca->nombre,
                 'cantidad' => $cantidadBonificada,
                 'precio' => number_format($precio, 2),
+                'precioSinFormato' => $precio
             ];
         })->values();
 
