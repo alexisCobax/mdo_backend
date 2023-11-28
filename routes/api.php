@@ -827,4 +827,3 @@ Route::post('/payment/clover', [CloverController::class, 'processCloverPayment']
 Route::post('/subir-cuenta', [ActiveCampaignController::class, 'subirCuenta']);
 
 Route::post('/subir-contacto', [ActiveCampaignController::class, 'subirContacto']);
-

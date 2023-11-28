@@ -37,11 +37,11 @@ class InvoiceService
 
         $pdf = Pdf::loadView('pdf.invoice', ['invoice' => $invoiceTransformer]);
 
-        $pdf->getDomPDF();
-        
-        return $pdf->download();
-        
-        // return $pdf->stream();
+        if (!$invoice) {
+            return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($invoiceTransformer, Response::HTTP_OK);
     }
 
     public function create(Request $request)

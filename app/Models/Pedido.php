@@ -78,6 +78,7 @@ class Pedido extends Model
         'invoice',
         'total',
         'descuentoPorcentual',
+        'descuentoPromociones',
         'descuentoNeto',
         'totalEnvio',
         'recibo',

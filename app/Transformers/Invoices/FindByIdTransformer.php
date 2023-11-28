@@ -71,7 +71,7 @@ class FindByIdTransformer extends TransformerAbstract
             'shipVia' => $invoice->shipVia,
             'FOB' => $invoice->FOB,
             'Terms' => $invoice->Terms,
-            'fechaOrden' => $invoice->fechaOrden,
+            'fechaOrden' => date('Y-m-d',strtotime($invoice->fechaOrden)),
             'salesPerson' => $invoice->salesPerson,
             'orden' => $invoice->orden,
             'peso' => $invoice->peso,

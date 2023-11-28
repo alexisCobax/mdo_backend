@@ -54,6 +54,9 @@ class PedidoService
                     'cantidad' => $dt['cantidad'],
                     'costo' => '00.00',
                     'envio' => '00.00',
+        /*** 
+         * tax y taxEnvio dejar siempre en 0.00 para futuras actualizaciones
+         ***/
                     'tax' => '00.00',
                     'taxEnvio' => '00.00',
                 ];
