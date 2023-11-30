@@ -581,6 +581,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/producto', [ProductoController::class, 'index']);
     Route::get('/producto/{id}', [ProductoController::class, 'show']);
+    Route::get('/producto/codigo/{codigo}', [ProductoController::class, 'showCodigo']);
     Route::get('/producto/stock/{id}', [ProductoController::class, 'stock']);
     Route::post('/producto', [ProductoController::class, 'create']);
     Route::put('/producto/{id}', [ProductoController::class, 'update']);

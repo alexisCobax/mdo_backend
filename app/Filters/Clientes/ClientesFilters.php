@@ -16,6 +16,7 @@ class ClientesFilters
         // Obtén los parámetros del filtro
         $id = $request->input('id');
         $nombre = $request->input('nombre');
+        $email = $request->input('email');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
@@ -26,6 +27,9 @@ class ClientesFilters
         }
         if ($nombre) {
             $query->nombre($nombre);
+        }
+        if ($email) {
+            $query->email($email);
         }
 
         // Realiza la paginación de la consulta

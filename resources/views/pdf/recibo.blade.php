@@ -69,7 +69,21 @@
                     U$S {{ $recibo['total'] }}
                 </td>
             </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="text-align: justify;">
+                    <h4>Deposito en concepto de seña</h4>
+                    "El comprador deberá abonar el saldo de su compra dentro de los 30 (treinta) 
+                    días a contar desde la fecha sin necesidad de ningún requerimiento. En el caso 
+                    de que el COMPRADOR no abonara el saldo de precio dentro del plazo establecido 
+                    incurrirá en mora de pleno derecho por el mero vencimiento del plazo pactado y 
+                    automáticamente, sin necesidad de requerimiento alguno, el vendedor queda facultado
+                     para dar por rescindido sin más tramite y de pleno derecho el contrato, sin necesidad 
+                     de intervención judicial alguna, quedando a su exclusivo beneficio la suma percibida como seña."
 
+                </td>
+            </tr>
         </table>
     </div>
 </body>
