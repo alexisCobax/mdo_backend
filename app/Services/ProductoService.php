@@ -47,7 +47,36 @@ class ProductoService
     public function findById(Request $request)
     {
         try {
+
             $data = collect([Producto::find($request->id)]);
+
+            if ($data[0]) {
+
+                $transformer = new FindByIdTransformer();
+
+                $productosTransformados = $data->map(function ($producto) use ($transformer) {
+                    return $transformer->transform($producto);
+                });
+
+                $response = [
+                    'status' => Response::HTTP_OK,
+                    'message' => $productosTransformados,
+                ];
+
+                return response()->json(['data' => $response], Response::HTTP_OK);
+            } else {
+                return response()->json(['data' => null], Response::HTTP_NOT_FOUND);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener el productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function findByCodigo(Request $request)
+    {
+        try {
+
+            $data = collect([Producto::where('codigo', $request->codigo)->first()]);
 
             if ($data[0]) {
 

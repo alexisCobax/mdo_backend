@@ -2,6 +2,7 @@
 
 namespace App\Transformers\Cotizacion;
 
+use App\Helpers\DateHelper;
 use App\Models\Cotizacion;
 use League\Fractal\TransformerAbstract;
 
@@ -11,7 +12,7 @@ class FindAllTransformer extends TransformerAbstract
     {
         return [
             'id' => $cotizacion->id,
-            'fecha' => $cotizacion->fecha,
+            'fecha' => DateHelper::ToDateCustom($cotizacion->fecha),
             'cliente' => $cotizacion->cliente,
             'clienteNombre' => optional($cotizacion->clientes)->nombre,
             'total' => number_format($cotizacion->total,2),

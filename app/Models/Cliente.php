@@ -144,4 +144,9 @@ class Cliente extends Model
     {
         return $query->where('nombre', 'like', '%' . $nombre . '%');
     }
+
+    public function scopeEmail($query, $email)
+    {
+        return $query->where('email', 'like', '%' . $email . '%');
+    }
 }
