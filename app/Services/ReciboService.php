@@ -77,7 +77,7 @@ class ReciboService
             "total" => $request->total,
             "observaciones" => $request->observaciones,
             "pedido" => 0,
-            "garantia" => 0,
+            "garantia" => $request->garantia ? 1 : 0,
             "anulado" => 0,
             "fecha" => NOW()
         ];
