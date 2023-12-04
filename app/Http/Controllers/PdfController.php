@@ -31,7 +31,7 @@ class PdfController extends Controller
 
     public function invoice(Request $request)
     {
-        return $this->invoice->findById($request);
+        return $this->invoice->findByIdPdf($request);
     }
 
     public function recibo(Request $request)

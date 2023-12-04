@@ -25,8 +25,7 @@ class PedidoService
     }
 
     public function findById(Request $request)
-    {
-        {
+    { 
             try {
                 $transformer = new FindByIdTransformer($request);
                 $transformer = $transformer->transform();
@@ -35,7 +34,7 @@ class PedidoService
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Ocurrió un error al obtener el pedido', $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        }
+        
     }
 
     public function create(Request $request)
@@ -54,9 +53,9 @@ class PedidoService
                     'cantidad' => $dt['cantidad'],
                     'costo' => '00.00',
                     'envio' => '00.00',
-        /*** 
-         * tax y taxEnvio dejar siempre en 0.00 para futuras actualizaciones
-         ***/
+                    /*** 
+                     * tax y taxEnvio dejar siempre en 0.00 para futuras actualizaciones
+                     ***/
                     'tax' => '00.00',
                     'taxEnvio' => '00.00',
                 ];
@@ -93,6 +92,24 @@ class PedidoService
         return response()->json($pedido, Response::HTTP_OK);
     }
 
+    public function createNuevo(Request $request)
+    {
+
+        $pedidoTransformer = [
+            'fecha' => NOW()
+        ];
+
+        $pedido = Pedido::create($pedidoTransformer);
+
+        return response()->json(['id' => $pedido->id], Response::HTTP_OK);
+
+        if (!$pedido) {
+            return response()->json(['error' => 'Failed to create Pedido'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($pedido, Response::HTTP_OK);
+    }
+
     public function update(Request $request)
     {
         $pedido = Pedido::find($request->id);
@@ -101,10 +118,36 @@ class PedidoService
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $transformer = app(CreateTransformer::class);
+        $transformer = new CreateTransformer;
         $pedidoTransformer = $transformer->transform($request);
 
-        $pedido->update($pedidoTransformer);
+        $pedido->cliente = $request->cliente;
+        $pedido->origen = $request->origen;
+        $pedido->vendedor = $request->vendedor;
+        $pedido->etapa = $request->etapa;
+        $pedido->observaciones = $request->observaciones;
+        $pedido->descuentoNeto = $request->descuentoNeto;
+        $pedido->descuentoPorcentual = $request->descuentoPorPorcentaje;
+        $pedido->descuentoPromociones = $request->descuentoPorPromocionesOff;
+        $pedido->totalEnvio = $request->totalEnvio;
+        $pedido->total = $request->total;
+        $pedido->transportadoraNombre = $request->transportadoraNombre;
+        $pedido->transportadoraTelefono = $request->transportadoraTelefono;
+        $pedido->codigoSeguimiento = $request->codigoSeguimiento;
+        $pedido->idTransportadora = $request->idTransportadora;
+        $pedido->tipoDeEnvio = $request->tipoDeEnvio;
+        $pedido->nombreEnvio = $request->envioNombre;
+        $pedido->paisEnvio = $request->envioPais;
+        $pedido->regionEnvio = $request->envioRegion;
+        $pedido->ciudadEnvio = $request->envioCiudad;
+        $pedido->domicilioEnvio = $request->envioDomicilio;
+        $pedido->cpEnvio = $request->envioCp;
+        $pedido->fecha = NOW();
+        $pedido->estado = 1;
+        $pedido->formaDePago = 1;
+
+        $pedido->save();
+
 
         if ($request->detalle) {
             $detalle = collect($request->detalle)->map(function ($dt) use ($pedido) {
@@ -113,10 +156,10 @@ class PedidoService
                     'producto' => $dt['producto'],
                     'precio' => $dt['precio'],
                     'cantidad' => $dt['cantidad'],
-                    'costo' => $dt['costo'],
-                    'envio' => $dt['envio'],
-                    'tax' => $dt['tax'],
-                    'taxEnvio' => $dt['taxEnvio'],
+                    'costo' => '0',
+                    'envio' => '0',
+                    'tax' => '0',
+                    'taxEnvio' => '0',
                 ];
             });
 

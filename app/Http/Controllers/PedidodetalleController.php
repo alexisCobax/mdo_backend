@@ -37,6 +37,18 @@ class PedidodetalleController extends Controller
         return $this->service->findById($request);
     }
 
+        /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\PedidodetalleService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function showDetalle(Request $request)
+    {
+        return $this->service->findByPedidoId($request);
+    }
+
     /**
      * Creating a new resource.
      *

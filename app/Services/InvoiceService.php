@@ -35,7 +35,26 @@ class InvoiceService
         $tranformer = new FindByIdTransformer();
         $invoiceTransformer = $tranformer->transform($invoice, $request);
 
+        if (!$invoice) {
+            return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($invoiceTransformer, Response::HTTP_OK);
+    }
+
+    public function findByIdPdf(Request $request)
+    {
+
+        $invoice = Invoice::find($request->id);
+
+        $tranformer = new FindByIdTransformer();
+        $invoiceTransformer = $tranformer->transform($invoice, $request);
+
         $pdf = Pdf::loadView('pdf.invoice', ['invoice' => $invoiceTransformer]);
+
+        $pdf->getDomPDF();
+
+        return $pdf->stream();
 
         if (!$invoice) {
             return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);

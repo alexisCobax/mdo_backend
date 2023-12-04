@@ -49,6 +49,18 @@ class PedidoController extends Controller
         return $this->service->create($request);
     }
 
+        /**
+     * Creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\PedidoService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function createNuevo(Request $request)
+    {
+        return $this->service->createNuevo($request);
+    }
+
     /**
      * Update the specified resource in storage.
      *
