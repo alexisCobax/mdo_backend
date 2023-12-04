@@ -510,6 +510,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pedido', [PedidoController::class, 'index']);
     Route::get('/pedido/{id}', [PedidoController::class, 'show']);
     Route::post('/pedido', [PedidoController::class, 'create']);
+    Route::post('/pedido/nuevo', [PedidoController::class, 'createNuevo']);
     Route::put('/pedido/{id}', [PedidoController::class, 'update']);
     Route::delete('/pedido/{id}', [PedidoController::class, 'delete']);
 
@@ -533,9 +534,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/pedidodetalle', [PedidodetalleController::class, 'index']);
     Route::get('/pedidodetalle/{id}', [PedidodetalleController::class, 'show']);
+    Route::get('/pedidodetalle/pedido/{id}', [PedidodetalleController::class, 'showDetalle']);
     Route::post('/pedidodetalle', [PedidodetalleController::class, 'create']);
     Route::put('/pedidodetalle/{id}', [PedidodetalleController::class, 'update']);
     Route::delete('/pedidodetalle/{id}', [PedidodetalleController::class, 'delete']);
+    Route::delete('/pedidodetalle/producto/{id}', [PedidodetalleController::class, 'deleteProducto']);
 
     /* Pedidodetallenn Routes **/
 
