@@ -84,7 +84,7 @@ class FindByIdTransformer extends TransformerAbstract
             'nombreFormaDePago' => optional($pedido->formaDePagos)->nombre,
             'observaciones' => $pedido->observaciones,
             'invoice' => $pedido->invoice,
-            'total' => number_format($pedido->total, 2),
+            'total' => $pedido->total,
             'descuentoPorcentual' => $pedido->DescuentoPorcentual,
             'descuentoNeto' => $pedido->DescuentoNeto,
             'descuentoPromociones' => $pedido->DescuentoPromociones,
