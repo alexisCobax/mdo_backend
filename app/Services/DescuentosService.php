@@ -22,23 +22,23 @@ class DescuentosService
         if (!isset($json['detalle']) || !is_array($json['detalle'])) {
             return response()->json(['error' => 'JSON malformado'], 400);
         }
-
         $productosAgrupados = collect($json['detalle'])->groupBy(function ($detalleProducto) {
             return Producto::findOrFail($detalleProducto['producto'])->marca;
         })->map(function ($detalleProductos, $idMarca) {
             $cantidad = $detalleProductos->sum('cantidad');
             $precioMenor = $this->calcularPrecioMenor($detalleProductos);
             $cantidadBonificada = $this->calcularCantidadBonificada($idMarca, $cantidad);
-            $marca = Marcaproducto::find($idMarca);
-            $precio = $precioMenor * $cantidadBonificada;
+            $precio = $precioMenor * $cantidadBonificada['cantidadBonificada'];
             return [
-                'id' => $idMarca,
-                'nombre' => $marca->nombre,
-                'cantidad' => $cantidadBonificada,
-                'precio' => number_format($precio, 2),
-                'precioSinFormato' => $precio
+                'id' => 0,
+                'idPedido' => 0,
+                'idPromocion' => $cantidadBonificada['idPromocion'],
+                'descripcion' => $cantidadBonificada['nombrePromocion'],
+                'montoDescuento' => $precio,
+                'idTipoPromocion' => 1
             ];
         })->values();
+
 
         return response()->json($productosAgrupados);
     }
@@ -71,7 +71,13 @@ class DescuentosService
 
         $cantidadTotalBonificada = floor($cantidad / $promocion->Cantidad) * $cantidadBonificada;
 
-        return $cantidadTotalBonificada;
+        return [
+            'idPromocion' => $promocion->id,
+            'nombrePromocion' => $promocion->nombre,
+            'cantidadBonificada' => $cantidadTotalBonificada
+        ];
+
+        //return $cantidadTotalBonificada;
     }
 
     public function discount($cupon, $total, $descuento)
