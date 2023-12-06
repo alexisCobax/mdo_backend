@@ -112,6 +112,7 @@ class PedidoService
 
     public function update(Request $request)
     {
+        echo 1;die;
         $pedido = Pedido::find($request->id);
 
         if (!$pedido) {
@@ -128,7 +129,7 @@ class PedidoService
         $pedido->observaciones = $request->observaciones;
         $pedido->descuentoNeto = $request->descuentoNeto;
         $pedido->descuentoPorcentual = $request->descuentoPorPorcentaje;
-        $pedido->descuentoPromociones = $request->descuentoPorPromocionesOff;
+        $pedido->descuentoPromociones = $request->descuentoPorPromociones;
         $pedido->totalEnvio = $request->totalEnvio;
         $pedido->total = $request->total;
         $pedido->transportadoraNombre = $request->transportadoraNombre;
