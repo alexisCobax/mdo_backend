@@ -4,10 +4,13 @@ namespace App\Services;
 
 use App\Filters\Pedidos\PedidosFilters;
 use App\Models\Pedido;
+use App\Models\Pedidodescuentospromocion;
 use App\Models\Pedidodetalle;
 use App\Models\Pedidodetallenn;
 use App\Transformers\Pedidos\CreateTransformer;
 use App\Transformers\Pedidos\FindByIdTransformer;
+use Error;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -25,20 +28,20 @@ class PedidoService
     }
 
     public function findById(Request $request)
-    { 
-            try {
-                $transformer = new FindByIdTransformer($request);
-                $transformer = $transformer->transform();
+    {
+        try {
+            $transformer = new FindByIdTransformer($request);
+            $transformer = $transformer->transform();
 
-                return response()->json(['data' => $transformer], Response::HTTP_OK);
-            } catch (\Exception $e) {
-                return response()->json(['error' => 'Ocurrió un error al obtener el pedido', $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        
+            return response()->json(['data' => $transformer], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener el pedido', $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function create(Request $request)
     {
+
         $transformer = new CreateTransformer();
         $pedidoTransformer = $transformer->transform($request);
 
@@ -60,8 +63,11 @@ class PedidoService
                     'taxEnvio' => '00.00',
                 ];
             });
-
-            Pedidodetalle::insert($detalle->toArray());
+            try {
+                Pedidodetalle::insert($detalle->toArray());
+            } catch (Error $e) {
+                return response()->json($e->getMessage());
+            }
         }
 
         if ($request->detalleNN) {
@@ -73,8 +79,32 @@ class PedidoService
                     'cantidad' => $dtNN['cantidad'],
                 ];
             });
+            try {
+                Pedidodetallenn::insert($detalleNN->toArray());
+            } catch (Error $e) {
+                return response()->json($e->getMessage());
+            }
+        }
 
-            Pedidodetallenn::insert($detalleNN->toArray());
+        //echo $request->descuentosPromocion;die;
+
+        if ($request->descuentosPromocion) {
+
+            $descuentosPromo = collect($request->descuentosPromocion)->map(function ($descPro) use ($pedido) {
+                return [
+                    "idPedido" => $pedido->id,
+                    "idPromocion" => $descPro['idPromocion'],
+                    "descripcion" => $descPro['descripcion'],
+                    "montoDescuento" => $descPro['montoDescuento'],
+                    "idTipoPromocion" => $descPro['idTipoPromocion']
+                ];
+            });
+
+            try {
+                Pedidodescuentospromocion::insert($descuentosPromo->toArray());
+            } catch (Error $e) {
+                return response()->json($e->getMessage());
+            }
         }
 
         // $totalDetalle = Pedidodetalle::where('pedido', $pedido->id)->sum('precio');
@@ -112,9 +142,8 @@ class PedidoService
 
     public function update(Request $request)
     {
-        echo 1;die;
         $pedido = Pedido::find($request->id);
-
+        
         if (!$pedido) {
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
@@ -149,7 +178,6 @@ class PedidoService
 
         $pedido->save();
 
-
         if ($request->detalle) {
             $detalle = collect($request->detalle)->map(function ($dt) use ($pedido) {
                 return [
@@ -180,6 +208,27 @@ class PedidoService
 
             Pedidodetallenn::where('pedido', $pedido->id)->delete();
             Pedidodetallenn::insert($detalleNN->toArray());
+        }
+
+        if ($request->descuentosPorPromocion) {
+
+            $descuentosPromo = collect($request->descuentosPorPromocion)->map(function ($descPro) use ($pedido) {
+                return [
+                    "idPedido" => $pedido->id,
+                    "idPromocion" => $descPro['idPromocion'],
+                    "descripcion" => $descPro['descripcion'],
+                    "montoDescuento" => $descPro['montoDescuento'],
+                    "idTipoPromocion" => $descPro['idTipoPromocion']
+                ];
+            });
+
+            try {
+                //Pedidodetallenn::where('pedido', $pedido->id)->delete();
+                //Pedidodetallenn::insert($detalleNN->toArray());
+                Pedidodescuentospromocion::insert($descuentosPromo->toArray());
+            } catch (Error $e) {
+                return response()->json($e->getMessage());
+            }
         }
 
         return response()->json($pedido, Response::HTTP_OK);
