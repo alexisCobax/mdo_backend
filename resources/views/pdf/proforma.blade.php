@@ -14,7 +14,7 @@
                     <td class="fob">FOB : Miami</td>
                 </tr>
             </table>
-            <br />
+            <br /><br />
             <table class="table-info">
                 <tr>
                     <td>
@@ -70,14 +70,24 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Dirección:</strong>
+                                        <strong>Dirección:</strong> {{$proforma['cliente']['direccion']}}
                                     </td>
                                 </tr>
-                                <tr>
+                                {{-- <tr>
                                     <td>
                                         {{$proforma['cliente']['direccion']}}
                                     </td>
+                                </tr> --}}
+                                <tr>
+                                    <td>
+                                        <strong>Email:</strong> {{$proforma['cliente']['email']}}
+                                    </td>
                                 </tr>
+                                {{-- <tr>
+                                    <td>
+                                        {{$proforma['cliente']['email']}}
+                                    </td>
+                                </tr> --}}
                             </table>
                         </div>
                     </td>

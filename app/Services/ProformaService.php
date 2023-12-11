@@ -22,13 +22,13 @@ class ProformaService
         $proforma = $tranformer->transform($pedido);
         $pdf = Pdf::loadView('pdf.proforma', ['proforma'=>$proforma]);
 
-        $pdf->getDomPDF();
+        //$pdf->getDomPDF();
         
         return $pdf->download();
         
         //$dom_pdf = $pdf->getDomPDF();
 
-        //return $pdf->stream();
+        return $pdf->stream();
 
         //return $pdf->download('proforma.pdf');
 

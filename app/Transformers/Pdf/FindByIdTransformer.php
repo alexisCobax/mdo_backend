@@ -38,13 +38,14 @@ class FindByIdTransformer extends TransformerAbstract
                 'telefono' => '513 9177 / 305 424 8199',
                 'numero_pedido' => $pedido->id,
                 'fecha_pedido' => DateHelper::ToDateCustom($pedido->fecha),
-                'email' => 'fashionglassesrd@gmail.com',
+                'email' => 'ventas@mayoristasdeopticas.com',
             ],
             'cliente' => [
                 'nombre' => optional($pedido->clientes)->nombre,
                 'numero' => optional($pedido->clientes)->id,
                 'telefono' => optional($pedido->clientes)->telefono,
                 'direccion' => optional($pedido->clientes)->direccion,
+                'email' => optional($pedido->clientes)->email
             ],
             'detalle' => $pedidoDetalle,
         ];
