@@ -86,7 +86,7 @@
                                     <strong>Factura N°:</strong>
                                 </td>
                                 <td>
-                                    {{$invoice['detalle'][0]['id']}}
+                                    {{$invoice['id']}}
                                 </td>
                             </tr>
                             <tr>

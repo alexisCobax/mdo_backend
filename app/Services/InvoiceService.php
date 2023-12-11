@@ -86,6 +86,9 @@ class InvoiceService
             return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        $pedido->invoice = $invoice->id;
+        $pedido->save();
+
         return response()->json($invoice, Response::HTTP_OK);
     }
 
