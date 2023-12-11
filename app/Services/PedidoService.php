@@ -172,7 +172,7 @@ class PedidoService
         $pedido->ciudadEnvio = $request->envioCiudad;
         $pedido->domicilioEnvio = $request->envioDomicilio;
         $pedido->cpEnvio = $request->envioCp;
-        $pedido->fecha = NOW();
+        //$pedido->fecha = NOW();
         $pedido->estado = 1;
         $pedido->formaDePago = 1;
 
