@@ -2,6 +2,7 @@
 
 namespace App\Transformers\Invoices;
 
+use App\Helpers\DateHelper;
 use App\Models\Invoice;
 use League\Fractal\TransformerAbstract;
 
@@ -11,7 +12,7 @@ class FindAllTransformer extends TransformerAbstract
     {
         return [
             'id' => $invoice->id,
-            'fecha' => $invoice->fecha,
+            'fecha' => DateHelper::ToDateCustom($invoice->fecha),
             'cliente' => $invoice->cliente,
             'clienteNombre' => optional($invoice->clientes)->nombre,
             'total' => $invoice->total,

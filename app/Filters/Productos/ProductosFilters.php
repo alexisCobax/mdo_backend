@@ -6,6 +6,7 @@ use App\Models\Producto;
 use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use App\Enums\EstadosProductosEnums;
 use App\Transformers\Productos\FindAllTransformer;
 
 class ProductosFilters
@@ -130,18 +131,49 @@ class ProductosFilters
         }
 
         if ($nombreMarca) {
+
+            $paginaActual = request('pagina', 1);
+            $cantidadPorPagina = request('cantidad_por_pagina', 10);
+
             $resultado = DB::table('producto as p')
-                ->select('p.nombre', 'mp.nombre as nombre_marca')
+                ->select('p.*', 'mp.id as id_marca', 'mp.nombre as nombre_marca', 'c.nombre as nombre_color')
                 ->join('marcaproducto as mp', 'p.marca', '=', 'mp.id')
+                ->join('color as c', 'p.color', '=', 'c.id')
                 ->where('mp.nombre', 'LIKE', '%' . $nombreMarca . '%')
-                ->get();
+                ->paginate($cantidadPorPagina, ['*'], 'pagina', $paginaActual);
+
+            $transformer = new FindAllTransformer();
+
+            $productosTransformados = $resultado->map(function ($producto) use ($transformer) {
+                $arrayEnum = EstadosProductosEnums::toArray();
+
+                return [
+                    'id' => $producto->id,
+                    'imagenPrincipal' => $producto->imagenPrincipal . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
+                    'nombre' => $producto->nombre,
+                    'codigo' => $producto->codigo,
+                    'categoria' => $producto->categoria,
+                    //'categoriaNombre' => optional($producto->categorias)->nombre,
+                    'precio' => $producto->precioPromocional == 0 ? number_format($producto->precio, 2) : number_format($producto->precioPromocional, 2),
+                    'precioLista' => number_format($producto->precio, 2),
+                    'stock' => $producto->stock,
+                    'destacado' => $producto->destacado,
+                    'marca' => $producto->id_marca,
+                    'nombreMarca' => $producto->nombre_marca,
+                    'colorNombre' => $producto->nombre_color,
+                    'precioPromocional' => number_format($producto->precioPromocional, 2),
+                    'estado' => $producto->suspendido == $arrayEnum[EstadosProductosEnums::SUSPENDIDO] ? EstadosProductosEnums::SUSPENDIDO : EstadosProductosEnums::PUBLICADO,
+                ];
+            });
 
             $response = [
                 'status' => Response::HTTP_OK,
-                'results' => $resultado,
+                'total' => $resultado->total(),
+                'cantidad_por_pagina' => $resultado->perPage(),
+                'pagina' => $resultado->currentPage(),
+                'cantidad_total' => $resultado->total(),
+                'results' => $productosTransformados,
             ];
-
-            return response()->json($response);
         }
 
 
