@@ -46,9 +46,9 @@ class CuentaCorrienteService
             ->orderBy('cliente', 'asc')
             ->orderBy('numero', 'asc')
             ->orderBy('comprobante', 'desc')
-            ->toSql();
-            echo $resultados;die;
-            //->paginate($perPage, ['*'], 'page', $page);
+            //->toSql();
+            //echo $resultados;die;
+            ->paginate($perPage, ['*'], 'page', $page);
 
         $total = Recibo::where('anulado', 0)
             ->where('fecha', '>=', $fechaInicio)
