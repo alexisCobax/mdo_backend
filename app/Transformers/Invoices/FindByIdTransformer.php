@@ -88,11 +88,13 @@ class FindByIdTransformer extends TransformerAbstract
             'detalle' => $detalle,
             'preciosTotales' => [
                 "descuentoNeto" => $invoice->DescuentoNeto,
+                "totalDescuentoPorcentual" => $invoice->subTotal*$invoice->DescuentoPorcentual/100,
                 "descuentoPorcentual" => $invoice->DescuentoPorcentual,
+                "subtotalConDescuento" => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones,
                 "subtotal" => $invoice->subTotal,
                 "totalEnvio" => $invoice->TotalEnvio,
                 'descuentoPorPromociones' => $invoice->DescuentoPorPromociones,
-                'total' => $invoice->subTotal + $invoice->TotalEnvio
+                'total' => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones+$invoice->TotalEnvio
             ]
 
             // 'datosEnvio' => $datosEnvio

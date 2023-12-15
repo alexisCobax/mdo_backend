@@ -236,10 +236,10 @@
                     <tr>
                         <td colspan="3">&nbsp;</td>
                         <td style="text-align:right;">
-                            Desc 0%
+                            Desc {{$invoice['preciosTotales']['descuentoPorcentual']}}%
                         </td>
                         <td style="text-align:right;">
-                            {{$invoice['preciosTotales']['descuentoPorcentual']}}
+                            {{$invoice['preciosTotales']['totalDescuentoPorcentual']}}
                         </td>
                     </tr>
                     <tr>
@@ -257,7 +257,7 @@
                             <strong>Subtotal</strong>
                         </td>
                         <td style="text-align:right;">
-                            <strong>U$S {{$invoice['preciosTotales']['subtotal']}}</strong>
+                            <strong>U$S {{$invoice['preciosTotales']['subtotalConDescuento']}}</strong>
                         </td>
                     </tr>
                     <tr>
