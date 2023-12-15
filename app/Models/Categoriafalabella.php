@@ -25,13 +25,6 @@ class Categoriafalabella extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'CategoryId' => 'int',
-        'AttributeSetId' => 'int',
-        'PadreCategoryId' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'Name',

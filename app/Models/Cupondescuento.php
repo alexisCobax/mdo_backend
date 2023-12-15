@@ -34,22 +34,6 @@ class Cupondescuento extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'descuentoFijo' => 'float',
-        'descuentoPorcentual' => 'float',
-        'marca' => 'int',
-        'producto' => 'int',
-        'cantidadMinima' => 'int',
-        'montoMinimo' => 'float',
-        'vencimiento' => 'datetime',
-        'stock' => 'int',
-        'suspendido' => 'bool',
-        'cantidadUtilizados' => 'int',
-        'inicio' => 'datetime',
-        'combinable' => 'bool',
-    ];
-
     protected $fillable = [
         'id',
         'nombre',

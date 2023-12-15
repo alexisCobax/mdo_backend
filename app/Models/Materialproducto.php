@@ -20,10 +20,6 @@ class Materialproducto extends Model
     protected $table = 'materialproducto';
     public $timestamps = false;
 
-    protected $casts = [
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'suspendido',

@@ -25,14 +25,6 @@ class Movimientoproducto extends Model
     protected $table = 'movimientoproductos';
     public $timestamps = false;
 
-    protected $casts = [
-        'fecha' => 'datetime',
-        'origen' => 'int',
-        'destino' => 'int',
-        'cantidad' => 'int',
-        'idProducto' => 'int',
-    ];
-
     protected $fillable = [
         'fecha',
         'origen',

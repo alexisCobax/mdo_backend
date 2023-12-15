@@ -38,6 +38,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'listPrice' => number_format($id['listPrice'], 2, '.', ''),
                 'netPrice' => $id['netPrice'],
                 'invoice' => $id['invoice'],
+                'codigo' => $producto->codigo,
                 'total' => number_format($total, 2, '.', '')
             ];
         }
@@ -85,6 +86,15 @@ class FindByIdTransformer extends TransformerAbstract
             'DescuentoPorPromociones' => $invoice->DescuentoPorPromociones,
             'IdActiveCampaign' => $invoice->IdActiveCampaign,
             'detalle' => $detalle,
+            'preciosTotales' => [
+                "descuentoNeto" => $invoice->DescuentoNeto,
+                "descuentoPorcentual" => $invoice->DescuentoPorcentual,
+                "subtotal" => $invoice->subTotal,
+                "totalEnvio" => $invoice->TotalEnvio,
+                'descuentoPorPromociones' => $invoice->DescuentoPorPromociones,
+                'total' => $invoice->subTotal + $invoice->TotalEnvio
+            ]
+
             // 'datosEnvio' => $datosEnvio
         ];
 

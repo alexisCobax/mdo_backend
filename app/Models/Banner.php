@@ -29,12 +29,6 @@ class Banner extends Model
     protected $table = 'banners';
     public $timestamps = false;
 
-    protected $casts = [
-        'tipoUbicacion' => 'int',
-        'suspendido' => 'bool',
-        'orden' => 'int',
-    ];
-
     protected $fillable = [
         'tipoUbicacion',
         'codigo',

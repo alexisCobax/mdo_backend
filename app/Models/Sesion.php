@@ -21,11 +21,6 @@ class Sesion extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'usuario' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'session',

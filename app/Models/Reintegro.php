@@ -25,14 +25,6 @@ class Reintegro extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'cliente' => 'int',
-        'fecha' => 'datetime',
-        'total' => 'float',
-        'anulado' => 'bool',
-    ];
-
     protected $fillable = [
         'id',
         'cliente',

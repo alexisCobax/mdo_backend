@@ -197,21 +197,21 @@
                     <table class="table table-condensed table-hover">
                         <thead>
                             <tr>
-                                <th>Cantidad</th>
-                                <th>UPC</th>
-                                <th>Descripción/Color/Tamaño/Material</th>
-                                <th>Valor</th>
-                                <th>Total</th>
+                                <th style="text-align: center;">Cantidad</th>
+                                <th style="text-align: center;">UPC</th>
+                                <th style="text-align: center;">Descripción/Color/Tamaño/Material</th>
+                                <th style="text-align: center;">Valor</th>
+                                <th style="text-align: center;">Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ( $invoice['detalle'] as $d)
                             <tr>
-                                <td>{{$d['qborder']}}</td>
-                                <td class="align-center">872016157159</td>
-                                <td>{{$d['Descripcion']}}</td>
-                                <td>{{$d['listPrice']}}</td>
-                                <td>{{$d['total']}}</td>
+                                <td style="text-align: center;">{{$d['qborder']}}</td>
+                                <td style="text-align: center;">{{$d['codigo']}}</td>
+                                <td style="text-align: center;">{{$d['Descripcion']}}</td>
+                                <td style="text-align: center;">{{$d['listPrice']}}</td>
+                                <td style="text-align: center;">{{$d['total']}}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -230,7 +230,7 @@
                             Descuento por Promociones:
                         </td>
                         <td style="text-align:right;">
-                            0
+                            {{$invoice['preciosTotales']['descuentoPorPromociones']}}
                         </td>
                     </tr>
                     <tr>
@@ -239,7 +239,7 @@
                             Desc 0%
                         </td>
                         <td style="text-align:right;">
-                            0
+                            {{$invoice['preciosTotales']['descuentoPorcentual']}}
                         </td>
                     </tr>
                     <tr>
@@ -248,7 +248,7 @@
                             Descuento neto:
                         </td>
                         <td style="text-align:right;">
-                            0
+                            {{$invoice['preciosTotales']['descuentoNeto']}}
                         </td>
                     </tr>
                     <tr>
@@ -257,7 +257,7 @@
                             <strong>Subtotal</strong>
                         </td>
                         <td style="text-align:right;">
-                            <strong>U$S 1.033,4</strong>
+                            <strong>U$S {{$invoice['preciosTotales']['subtotal']}}</strong>
                         </td>
                     </tr>
                     <tr>
@@ -266,7 +266,7 @@
                             Envio y Manejo:
                         </td>
                         <td style="text-align:right;">
-                            14,53
+                            {{!empty($invoice['preciosTotales']['totalEnvio']) ? $invoice['preciosTotales']['totalEnvio'] : '0.00'}}
                         </td>
                     </tr>
                     <tr>
@@ -275,7 +275,7 @@
                             <strong>Total</strong>
                         </td>
                         <td style="text-align:right;">
-                            <strong>U$S 1.048,00</strong>
+                            <strong>U$S {{$invoice['preciosTotales']['total']}}</strong>
                         </td>
                     </tr>
 

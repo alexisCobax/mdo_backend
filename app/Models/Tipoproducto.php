@@ -21,11 +21,6 @@ class Tipoproducto extends Model
     protected $table = 'tipoproducto';
     public $timestamps = false;
 
-    protected $casts = [
-        'CantidadMinima' => 'int',
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'CantidadMinima',

@@ -20,10 +20,6 @@ class Categoriaproducto extends Model
     protected $table = 'categoriaproducto';
     public $timestamps = false;
 
-    protected $casts = [
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'suspendido',

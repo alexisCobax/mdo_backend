@@ -23,13 +23,6 @@ class Portada extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'visible' => 'bool',
-        'marca' => 'int',
-        'posicion' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'nombre',

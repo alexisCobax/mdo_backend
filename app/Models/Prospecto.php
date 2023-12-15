@@ -38,11 +38,6 @@ class Prospecto extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'fecha' => 'datetime',
-    ];
-
     protected $fillable = [
         'id',
         'nombre',

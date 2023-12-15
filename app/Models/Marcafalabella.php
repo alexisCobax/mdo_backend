@@ -23,11 +23,6 @@ class Marcafalabella extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'BrandId' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'name',

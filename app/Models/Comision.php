@@ -20,10 +20,6 @@ class Comision extends Model
     protected $table = 'comision';
     public $timestamps = false;
 
-    protected $casts = [
-        'porcentaje' => 'int',
-    ];
-
     protected $fillable = [
         'nombre',
         'porcentaje',

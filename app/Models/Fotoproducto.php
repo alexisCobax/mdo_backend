@@ -20,11 +20,6 @@ class Fotoproducto extends Model
     protected $table = 'fotoproducto';
     public $timestamps = false;
 
-    protected $casts = [
-        'idProducto' => 'int',
-        'orden' => 'int',
-    ];
-
     protected $fillable = [
         'idProducto',
         'orden',

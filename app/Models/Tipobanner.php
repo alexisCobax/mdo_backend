@@ -24,11 +24,6 @@ class Tipobanner extends Model
     protected $table = 'tipobanners';
     public $timestamps = false;
 
-    protected $casts = [
-        'alto' => 'int',
-        'ancho' => 'int',
-    ];
-
     protected $fillable = [
         'palabraClave',
         'nombre',

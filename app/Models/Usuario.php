@@ -33,12 +33,6 @@ class Usuario extends Authenticatable
     protected $table = 'usuario';
     public $timestamps = false;
 
-    protected $casts = [
-        'permisos' => 'int',
-        'suspendido' => 'bool',
-        'token_exp' => 'datetime',
-    ];
-
     protected $hidden = [
         'token',
     ];

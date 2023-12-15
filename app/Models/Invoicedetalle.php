@@ -26,15 +26,6 @@ class Invoicedetalle extends Model
     protected $table = 'invoicedetalle';
     public $timestamps = false;
 
-    protected $casts = [
-        'qordered' => 'int',
-        'qshipped' => 'int',
-        'qborder' => 'int',
-        'listPrice' => 'float',
-        'netPrice' => 'float',
-        'invoice' => 'int',
-    ];
-
     protected $fillable = [
         'qordered',
         'qshipped',

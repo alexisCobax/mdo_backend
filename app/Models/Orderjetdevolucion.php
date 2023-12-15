@@ -34,12 +34,6 @@ class Orderjetdevolucion extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'agree_to_return_charge' => 'bool',
-        'refund_without_return' => 'bool',
-    ];
-
     protected $fillable = [
         'id',
         'enlace',

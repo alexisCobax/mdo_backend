@@ -45,26 +45,6 @@ class Invoice extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'fecha' => 'datetime',
-        'cliente' => 'int',
-        'total' => 'float',
-        'formaDePago' => 'int',
-        'estado' => 'int',
-        'anulada' => 'bool',
-        'fechaOrden' => 'datetime',
-        'orden' => 'int',
-        'peso' => 'float',
-        'cantidad' => 'int',
-        'DescuentoNeto' => 'float',
-        'DescuentoPorcentual' => 'float',
-        'TotalEnvio' => 'float',
-        'subTotal' => 'float',
-        'DescuentoPorPromociones' => 'float',
-        'IdActiveCampaign' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'fecha',

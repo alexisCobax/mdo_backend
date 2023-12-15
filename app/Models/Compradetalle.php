@@ -24,15 +24,6 @@ class Compradetalle extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'compra' => 'int',
-        'producto' => 'int',
-        'cantidad' => 'int',
-        'precioUnitario' => 'float',
-        'enDeposito' => 'bool',
-    ];
-
     protected $fillable = [
         'id',
         'compra',

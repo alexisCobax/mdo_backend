@@ -31,16 +31,6 @@ class Orderjetdevoluciondetalle extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'idOrdenDevolucion' => 'int',
-        'return_quantity' => 'int',
-        'amount_principal' => 'float',
-        'amoun_tax' => 'float',
-        'amount_shipping_cost' => 'float',
-        'amount_shipping_tax' => 'float',
-    ];
-
     protected $fillable = [
         'id',
         'idOrdenDevolucion',

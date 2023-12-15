@@ -23,14 +23,6 @@ class Pedidocupon extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'cupon' => 'int',
-        'pedido' => 'int',
-        'monto' => 'float',
-        'cotizacion' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'cupon',

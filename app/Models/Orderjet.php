@@ -35,15 +35,6 @@ class Orderjet extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'idPedido' => 'int',
-        'fecha' => 'datetime',
-        'response_shipment_date' => 'datetime',
-        'expected_delivery_date' => 'datetime',
-        'carrier_pick_up_date' => 'datetime',
-    ];
-
     protected $fillable = [
         'id',
         'merchant_order_id',

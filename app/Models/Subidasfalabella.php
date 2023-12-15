@@ -26,12 +26,6 @@ class Subidasfalabella extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'fecha' => 'datetime',
-        'idProducto' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'fecha',

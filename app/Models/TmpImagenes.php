@@ -16,8 +16,6 @@ class TmpImagenes extends Model
     protected $table = 'tmp_imagenes';
     public $timestamps = false;
 
-    protected $casts = [];
-
     protected $fillable = [
         'imagen',
         'nombre',

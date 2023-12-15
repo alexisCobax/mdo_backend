@@ -23,11 +23,6 @@ class Jet extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'vencimiento' => 'datetime',
-    ];
-
     protected $hidden = [
         'token',
     ];

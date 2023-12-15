@@ -27,15 +27,6 @@ class Carrito extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'fecha' => 'datetime',
-        'cliente' => 'int',
-        'estado' => 'int',
-        'vendedor' => 'int',
-        'formaDePago' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'fecha',

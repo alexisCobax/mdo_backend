@@ -21,11 +21,6 @@ class Compradetallenn extends Model
     protected $table = 'compradetallenn';
     public $timestamps = false;
 
-    protected $casts = [
-        'precio' => 'float',
-        'idCompra' => 'int',
-    ];
-
     protected $fillable = [
         'descripcion',
         'precio',

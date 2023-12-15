@@ -20,10 +20,6 @@ class Tamanoproducto extends Model
     protected $table = 'tamanoproducto';
     public $timestamps = false;
 
-    protected $casts = [
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'suspendido',

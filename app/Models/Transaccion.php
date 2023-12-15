@@ -25,13 +25,6 @@ class Transaccion extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'fecha' => 'datetime',
-        'cliente' => 'int',
-        'pedido' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'fecha',

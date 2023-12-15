@@ -16,10 +16,6 @@ class TmpProductos extends Model
     protected $table = 'tmp_productos';
     public $timestamps = false;
 
-    protected $casts = [
-        'SKU' => 'int',
-    ];
-
     protected $fillable = [
         'SKU',
         'marca',
