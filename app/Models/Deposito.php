@@ -21,11 +21,6 @@ class Deposito extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'suspendido',

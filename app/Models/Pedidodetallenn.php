@@ -22,12 +22,6 @@ class Pedidodetallenn extends Model
     protected $table = 'pedidodetallenn';
     public $timestamps = false;
 
-    protected $casts = [
-        'precio' => 'float',
-        'pedido' => 'int',
-        'cantidad' => 'int',
-    ];
-
     protected $fillable = [
         'descripcion',
         'precio',

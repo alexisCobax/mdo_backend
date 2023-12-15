@@ -26,13 +26,6 @@ class Empleado extends Model
     protected $table = 'empleado';
     public $timestamps = false;
 
-    protected $casts = [
-        'puesto' => 'int',
-        'suspendido' => 'bool',
-        'usuario' => 'int',
-        'ciudad' => 'int',
-    ];
-
     protected $fillable = [
         'nombre',
         'puesto',

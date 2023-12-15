@@ -32,11 +32,6 @@ class Proveedor extends Model
     protected $table = 'proveedor';
     public $timestamps = false;
 
-    protected $casts = [
-        'ciudad' => 'int',
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'direccion',

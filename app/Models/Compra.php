@@ -27,15 +27,6 @@ class Compra extends Model
     protected $table = 'compra';
     public $timestamps = false;
 
-    protected $casts = [
-        'proveedor' => 'int',
-        'fechaDeIngreso' => 'datetime',
-        'fechaDePago' => 'datetime',
-        'precio' => 'float',
-        'pagado' => 'bool',
-        'enDeposito' => 'bool',
-    ];
-
     protected $fillable = [
         'proveedor',
         'fechaDeIngreso',

@@ -24,14 +24,6 @@ class Pedidodescuentospromocion extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'idPedido' => 'int',
-        'idPromocion' => 'int',
-        'montoDescuento' => 'float',
-        'idTipoPromocion' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'idPedido',

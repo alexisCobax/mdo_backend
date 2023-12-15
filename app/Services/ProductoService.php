@@ -48,13 +48,13 @@ class ProductoService
     {
         try {
 
-            $data = collect([Producto::find($request->id)]);
+            $productos = Producto::where('id',$request->id)->get();
 
-            if ($data[0]) {
+            if ($productos) {
 
                 $transformer = new FindByIdTransformer();
 
-                $productosTransformados = $data->map(function ($producto) use ($transformer) {
+                $productosTransformados = $productos->map(function ($producto) use ($transformer) {
                     return $transformer->transform($producto);
                 });
 

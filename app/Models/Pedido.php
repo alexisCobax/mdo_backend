@@ -48,26 +48,6 @@ class Pedido extends Model
     protected $table = 'pedido';
     public $timestamps = false;
 
-    protected $casts = [
-        'fecha' => 'datetime',
-        'cliente' => 'int',
-        'estado' => 'int',
-        'vendedor' => 'int',
-        'formaDePago' => 'int',
-        'invoice' => 'int',
-        'total' => 'float',
-        'descuentoPorcentual' => 'float',
-        'descuentoNeto' => 'float',
-        'totalEnvio' => 'float',
-        'recibo' => 'int',
-        'origen' => 'int',
-        'etapa' => 'int',
-        'tipoDeEnvio' => 'int',
-        'IdActiveCampaign' => 'int',
-        'idTransportadora' => 'int',
-        'MailSeguimientoEnviado' => 'bool',
-    ];
-
     protected $fillable = [
         'fecha',
         'cliente',

@@ -24,14 +24,6 @@ class Promocioncomprandoxgratisz extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'idMarca' => 'int',
-        'Cantidad' => 'int',
-        'CantidadBonificada' => 'int',
-        'activa' => 'bool',
-    ];
-
     protected $fillable = [
         'id',
         'nombre',

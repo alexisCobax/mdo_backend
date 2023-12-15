@@ -22,13 +22,6 @@ class Carritodetalle extends Model
     protected $table = 'carritodetalle';
     public $timestamps = false;
 
-    protected $casts = [
-        'carrito' => 'int',
-        'producto' => 'int',
-        'precio' => 'float',
-        'cantidad' => 'int',
-    ];
-
     protected $fillable = [
         'carrito',
         'producto',

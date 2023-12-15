@@ -27,17 +27,6 @@ class Pedidodetalle extends Model
     protected $table = 'pedidodetalle';
     public $timestamps = false;
 
-    protected $casts = [
-        'pedido' => 'int',
-        'producto' => 'int',
-        'precio' => 'float',
-        'cantidad' => 'int',
-        'costo' => 'float',
-        'envio' => 'float',
-        'tax' => 'float',
-        'taxEnvio' => 'float',
-    ];
-
     protected $fillable = [
         'pedido',
         'producto',

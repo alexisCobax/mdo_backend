@@ -64,23 +64,6 @@ class Cliente extends Model
     protected $table = 'cliente';
     public $timestamps = false;
 
-    protected $casts = [
-        'usuario' => 'int',
-        'suspendido' => 'bool',
-        'vendedor' => 'int',
-        'VIP' => 'bool',
-        'ctacte' => 'float',
-        'primeraCompra' => 'datetime',
-        'cantidadDeCompras' => 'int',
-        'montoMaximoDePago' => 'float',
-        'tipoDeEnvio' => 'int',
-        'fechaAlta' => 'datetime',
-        'ultimoLogin' => 'datetime',
-        'prospecto' => 'bool',
-        'IdActiveCampaign' => 'int',
-        'IdActiveCampaignContact' => 'int',
-    ];
-
     protected $fillable = [
         'nombre',
         'direccion',

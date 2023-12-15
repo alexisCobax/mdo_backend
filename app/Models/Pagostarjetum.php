@@ -22,12 +22,7 @@ class Pagostarjetum extends Model
     protected $table = 'pagostarjeta';
     public $incrementing = true;
     public $timestamps = false;
-
-    protected $casts = [
-        'id' => 'int',
-        'idPedido' => 'int',
-    ];
-
+    
     protected $fillable = [
         'id',
         'idPedido',

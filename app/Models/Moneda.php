@@ -22,11 +22,6 @@ class Moneda extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'Cotizacion' => 'float',
-    ];
-
     protected $fillable = [
         'id',
         'NombreMoneda',

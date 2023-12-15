@@ -27,12 +27,6 @@ class Clientecontacto extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'fechaNacimiento' => 'datetime',
-        'idCliente' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'nombre',

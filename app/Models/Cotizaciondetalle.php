@@ -23,14 +23,6 @@ class Cotizaciondetalle extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'cotizacion' => 'int',
-        'producto' => 'int',
-        'precio' => 'float',
-        'cantidad' => 'int',
-    ];
-
     protected $fillable = [
         'id',
         'cotizacion',

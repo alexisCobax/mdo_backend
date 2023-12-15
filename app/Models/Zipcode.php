@@ -22,11 +22,6 @@ class Zipcode extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'precio' => 'float',
-    ];
-
     protected $fillable = [
         'id',
         'zip',

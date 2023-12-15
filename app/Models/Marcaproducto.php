@@ -24,13 +24,6 @@ class Marcaproducto extends Model
     protected $table = 'marcaproducto';
     public $timestamps = false;
 
-    protected $casts = [
-        'propia' => 'bool',
-        'VIP' => 'bool',
-        'MostrarEnWeb' => 'bool',
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'propia',

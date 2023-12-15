@@ -27,17 +27,6 @@ class Cotizacion extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'fecha' => 'datetime',
-        'cliente' => 'int',
-        'total' => 'float',
-        'estado' => 'int',
-        'IdActiveCampaign' => 'int',
-        'descuento' => 'float',
-        'subTotal' => 'float',
-    ];
-
     protected $fillable = [
         'id',
         'fecha',

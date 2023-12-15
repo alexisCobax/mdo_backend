@@ -25,13 +25,6 @@ class Paypal extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $casts = [
-        'id' => 'int',
-        'idPedido' => 'int',
-        'estado' => 'int',
-        'idCotizacion' => 'int',
-    ];
-
     protected $hidden = [
         'token',
     ];

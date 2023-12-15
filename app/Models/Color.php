@@ -20,10 +20,6 @@ class Color extends Model
     protected $table = 'color';
     public $timestamps = false;
 
-    protected $casts = [
-        'suspendido' => 'bool',
-    ];
-
     protected $fillable = [
         'nombre',
         'suspendido',
