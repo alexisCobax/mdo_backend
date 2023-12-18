@@ -57,7 +57,7 @@ class ClienteService
         }
 
         $transformer = new CreateTransformer();
-        $cliente = $transformer->transform($request, 1);
+        $cliente = $transformer->transform($request, $usuario->id);
 
         $cliente = Cliente::create($cliente);
 
