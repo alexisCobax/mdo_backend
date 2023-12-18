@@ -172,32 +172,36 @@ class ProductosFilters
                 'cantidad_total' => $resultado->total(),
                 'results' => $productosTransformados,
             ];
+        }else{
+            
+                    //Realiza la paginación de la consulta
+        $data = $query->where('precio', '>', 0)
+        ->where('stock', '>', 0)
+        ->orderBy('id', 'desc')
+        ->paginate($perPage, ['*'], 'page', $page);
+
+    // Crea una instancia del transformer
+    $transformer = new FindAllTransformer();
+
+    // Transforma cada producto individualmente
+    $productosTransformados = $data->map(function ($producto) use ($transformer) {
+        return $transformer->transform($producto);
+    });
+
+    //Crea la respuesta personalizada
+    $response = [
+        'status' => Response::HTTP_OK,
+        'total' => $data->total(),
+        'cantidad_por_pagina' => $data->perPage(),
+        'pagina' => $data->currentPage(),
+        'cantidad_total' => $data->total(),
+        'results' => $productosTransformados,
+    ];
+    
         }
 
 
-        // //Realiza la paginación de la consulta
-        // $data = $query->where('precio', '>', 0)
-        //     ->where('stock', '>', 0)
-        //     ->orderBy('id', 'desc')
-        //     ->paginate($perPage, ['*'], 'page', $page);
 
-        // // Crea una instancia del transformer
-        // $transformer = new FindAllTransformer();
-
-        // // Transforma cada producto individualmente
-        // $productosTransformados = $data->map(function ($producto) use ($transformer) {
-        //     return $transformer->transform($producto);
-        // });
-
-        // Crea la respuesta personalizada
-        // $response = [
-        //     'status' => Response::HTTP_OK,
-        //     'total' => $data->total(),
-        //     'cantidad_por_pagina' => $data->perPage(),
-        //     'pagina' => $data->currentPage(),
-        //     'cantidad_total' => $data->total(),
-        //     'results' => $productosTransformados,
-        // ];
 
         // Devuelve la respuesta
         return response()->json($response);
