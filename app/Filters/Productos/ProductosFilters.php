@@ -78,7 +78,7 @@ class ProductosFilters
             ];
 
             // Devuelve la respuesta
-            return response()->json($response);
+            return response()->json($response, Response::HTTP_OK, [], JSON_UNESCAPED_UNICODE);
         }
 
         /*
