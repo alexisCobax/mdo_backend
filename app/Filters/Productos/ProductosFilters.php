@@ -74,11 +74,11 @@ class ProductosFilters
             // Crea la respuesta personalizada
             $response = [
                 'status' => Response::HTTP_OK,
-                'results' => utf8_encode($productosTransformados),
+                'results' => $productosTransformados,
             ];
 
             // Devuelve la respuesta
-            return response()->json($response, Response::HTTP_OK, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($response);
         }
 
         /*
