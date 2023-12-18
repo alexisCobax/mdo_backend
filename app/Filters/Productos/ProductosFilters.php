@@ -74,7 +74,7 @@ class ProductosFilters
             // Crea la respuesta personalizada
             $response = [
                 'status' => Response::HTTP_OK,
-                'results' => $productosTransformados,
+                'results' => utf8_encode($productosTransformados),
             ];
 
             // Devuelve la respuesta
