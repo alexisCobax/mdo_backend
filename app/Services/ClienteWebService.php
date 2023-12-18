@@ -83,6 +83,7 @@ class ClienteWebService
         $transformer = new CreateWebTransformer();
         $cliente = $transformer->transform($request, $usuario->id, $response['contact']['id']);
 
+        //dd($cliente);
 
         $cliente = Cliente::create($cliente);
 
