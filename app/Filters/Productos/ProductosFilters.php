@@ -142,9 +142,7 @@ class ProductosFilters
                 ->where('mp.nombre', 'LIKE', '%' . $nombreMarca . '%')
                 ->paginate($cantidadPorPagina, ['*'], 'pagina', $paginaActual);
 
-            $transformer = new FindAllTransformer();
-
-            $productosTransformados = $resultado->map(function ($producto) use ($transformer) {
+            $productosTransformados = $resultado->map(function ($producto) {
                 $arrayEnum = EstadosProductosEnums::toArray();
 
                 return [
@@ -177,29 +175,29 @@ class ProductosFilters
         }
 
 
-        //Realiza la paginación de la consulta
-        $data = $query->where('precio', '>', 0)
-            ->where('stock', '>', 0)
-            ->orderBy('id', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
+        // //Realiza la paginación de la consulta
+        // $data = $query->where('precio', '>', 0)
+        //     ->where('stock', '>', 0)
+        //     ->orderBy('id', 'desc')
+        //     ->paginate($perPage, ['*'], 'page', $page);
 
-        // Crea una instancia del transformer
-        $transformer = new FindAllTransformer();
+        // // Crea una instancia del transformer
+        // $transformer = new FindAllTransformer();
 
-        // Transforma cada producto individualmente
-        $productosTransformados = $data->map(function ($producto) use ($transformer) {
-            return $transformer->transform($producto);
-        });
+        // // Transforma cada producto individualmente
+        // $productosTransformados = $data->map(function ($producto) use ($transformer) {
+        //     return $transformer->transform($producto);
+        // });
 
         // Crea la respuesta personalizada
-        $response = [
-            'status' => Response::HTTP_OK,
-            'total' => $data->total(),
-            'cantidad_por_pagina' => $data->perPage(),
-            'pagina' => $data->currentPage(),
-            'cantidad_total' => $data->total(),
-            'results' => $productosTransformados,
-        ];
+        // $response = [
+        //     'status' => Response::HTTP_OK,
+        //     'total' => $data->total(),
+        //     'cantidad_por_pagina' => $data->perPage(),
+        //     'pagina' => $data->currentPage(),
+        //     'cantidad_total' => $data->total(),
+        //     'results' => $productosTransformados,
+        // ];
 
         // Devuelve la respuesta
         return response()->json($response);
