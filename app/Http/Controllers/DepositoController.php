@@ -49,6 +49,18 @@ class DepositoController extends Controller
         return $this->service->create($request);
     }
 
+     /**
+     * Creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\DepositoService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function ingreso(Request $request)
+    {
+        return $this->service->ingreso($request);
+    }
+
     /**
      * Update the specified resource in storage.
      *

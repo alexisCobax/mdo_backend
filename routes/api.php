@@ -294,9 +294,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/deposito', [DepositoController::class, 'create']);
     Route::put('/deposito/{id}', [DepositoController::class, 'update']);
     Route::delete('/deposito/{id}', [DepositoController::class, 'delete']);
-    Route::post('/deposito/ingreso', function (Request $request) {
-        dd($request->all());
-    });
+    Route::post('/deposito/ingreso', [DepositoController::class, 'ingreso']);
 
     /* Descuentos **/
 

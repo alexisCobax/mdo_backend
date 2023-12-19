@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
 use App\Models\Deposito;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
+use App\Models\Compradetalle;
 
 class DepositoService
 {
@@ -38,6 +40,35 @@ class DepositoService
 
         return response()->json($deposito, Response::HTTP_OK);
     }
+
+    public function ingreso(Request $request)
+    {
+        $datosCompra = $request->all();
+        $productos = $datosCompra['productos'];
+        $productoIds = array_column($productos, 'producto');
+
+        $productosModel = Producto::whereIn('id', $productoIds)->get();
+        //dd($productos);
+        foreach ($productos as $productoData) {
+            // $producto = $productosModel->where('id', $productoData['producto'])->first();
+
+            // if ($producto) {
+            //     $nuevaCantidad = $producto->stock + $productoData['cantidad'];
+            //     $producto->update([
+            //         'stock' => $nuevaCantidad,
+            //         'costo' => $productoData['precioUnitario'],
+            //         'ultimoIngresoDeMercaderia' => now()->toDateString(),
+            //     ]);
+            // }
+            echo $productoData['producto']."<br/>";
+
+            // Compradetalle::where('producto', $productoData['producto'])
+            //     ->update(['enDeposito' => '1']);
+        }
+
+        return response()->json(['mensaje' => 'Ingreso procesado con éxito']);
+    }
+
 
     public function update(Request $request)
     {
