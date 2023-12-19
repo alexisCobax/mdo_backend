@@ -169,7 +169,7 @@ class Producto extends Model
     public function scopeCodigo($query, $codigo)
     {
         if ($codigo) {
-            return $query->where('id', $codigo);
+            return $query->where('codigo', $codigo);
         }
 
         return $query;
@@ -180,17 +180,23 @@ class Producto extends Model
         if ($categoria) {
             return $query->where('categoria', $categoria);
         }
-
-        return $query;
     }
 
     public function scopeNombre($query, $nombre)
     {
         if ($nombre) {
-            return $query->where('nombre', 'LIKE', '%' . $nombre . '%');
+            return $query->whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombre) . '%']);
         }
 
-        return $query;
+    }
+
+    public function scopeNombreMarca($query, $nombreMarca)
+    {
+        if ($nombreMarca) {
+            $marca = Marcaproducto::whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombreMarca) . '%'])->first();
+            return $query->where('marca', '=', $marca->id);
+        }
+
     }
 
     public function scopeSuspendido($query, $suspendido)
@@ -199,7 +205,6 @@ class Producto extends Model
             return $query->where('suspendido', '=', $suspendido);
         }
 
-        return $query;
     }
 
     public function scopeTipo($query, $tipo)
@@ -208,16 +213,6 @@ class Producto extends Model
             return $query->where('tipo', '=', $tipo);
         }
 
-        return $query;
-    }
-
-    public function scopeMarca($query, $marca)
-    {
-        if ($marca) {
-            return $query->where('marca', '=', $marca);
-        }
-
-        return $query;
     }
 
     public function scopeIdMarca($query, $idMarca)
@@ -226,7 +221,6 @@ class Producto extends Model
             return $query->where('marca', '=', $idMarca);
         }
 
-        return $query;
     }
 
     public function scopeMaterial($query, $material)
@@ -235,7 +229,6 @@ class Producto extends Model
             return $query->where('material', '=', $material);
         }
 
-        return $query;
     }
 
     public function scopeColor($query, $color)
@@ -244,7 +237,6 @@ class Producto extends Model
             return $query->where('color', '=', $color);
         }
 
-        return $query;
     }
 
     public function scopeGrupo($query, $grupo)
@@ -253,7 +245,6 @@ class Producto extends Model
             return $query->where('grupo', '=', $grupo);
         }
 
-        return $query;
     }
 
     public function scopePrecioRange($query, $precioDesde, $precioHasta)
@@ -266,7 +257,6 @@ class Producto extends Model
             return $query->where('precio', '<=', $precioHasta);
         }
 
-        return $query;
     }
 
     public function scopeStockRange($query, $stockDesde, $stockHasta)
@@ -279,7 +269,6 @@ class Producto extends Model
             return $query->where('stock', '<=', $stockHasta);
         }
 
-        return $query;
     }
 
     public function scopeDestacado($query, $destacado)
@@ -288,7 +277,6 @@ class Producto extends Model
             return $query->where('destacado', '=', $destacado);
         }
 
-        return $query;
     }
 
     public function scopeNuevosProductos($query, $estado)
