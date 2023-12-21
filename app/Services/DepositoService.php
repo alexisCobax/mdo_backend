@@ -46,52 +46,40 @@ class DepositoService
     {
         $datosCompra = $request->all();
         $productos = $datosCompra['productos'];
-
-        $i = 0;
-
+        
+        $cantidadProductosNoDeposito = 0;
+        
         foreach ($productos as $productoData) {
-
-            $producto = Producto::where('id', $productoData['productoId'])->first();
-
-            $detalle = Compradetalle::where('id', $productoData['producto']);
-
-            if ($productoData['isChecked'] == 1 or $productoData['isChecked'] == true) {
-
-                if ($producto) {
-                    if ($detalle->where('enDeposito', 0)->first()) {
-                        $nuevaCantidad = $producto->stock + $productoData['cantidad'];
-                        $producto->update([
-                            'stock' => $nuevaCantidad,
-                            'costo' => $productoData['precioUnitario'],
-                            'ultimoIngresoDeMercaderia' => now()->toDateString(),
-                        ]);
-                    }
+            $producto = Producto::find($productoData['productoId']);
+        
+            if ($producto) {
+                $nuevaCantidad = $producto->stock;
+        
+                if ($productoData['isChecked']) {
+                    $nuevaCantidad += $productoData['cantidad'];
+                } else {
+                    $nuevaCantidad -= $productoData['cantidad'];
+                    $cantidadProductosNoDeposito++;
                 }
-            } else {
-                if ($producto) {
-                    $nuevaCantidad = $producto->stock - $productoData['cantidad'];
-                    $producto->update([
-                        'stock' => $nuevaCantidad,
-                        'costo' => $productoData['precioUnitario'],
-                        'ultimoIngresoDeMercaderia' => now()->toDateString(),
-                    ]);
-                }
-                $i++;
+        
+                $producto->update([
+                    'stock' => $nuevaCantidad,
+                    'costo' => $productoData['precioUnitario'],
+                    'ultimoIngresoDeMercaderia' => now()->toDateString(),
+                ]);
+        
+                Compradetalle::where('id', $productoData['producto'])->update([
+                    'enDeposito' => $productoData['isChecked']
+                ]);
             }
-            $detalle->update(['enDeposito' => $productoData['isChecked']]);
         }
-
-        $compra = Compra::where('id', $datosCompra['compra'])->first();
-
-        if ($i == 0) {
-
-            $compra->enDeposito = 1;
-        } else {
-            $compra->enDeposito = 0;
-        }
+        
+        $compra = Compra::find($datosCompra['compra']);
+        $compra->enDeposito = ($cantidadProductosNoDeposito === 0) ? 1 : 0;
         $compra->save();
-
+        
         return response()->json(['mensaje' => 'Ingreso procesado con éxito']);
+        
     }
 
 
