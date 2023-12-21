@@ -2,14 +2,17 @@
 
 namespace App\Services;
 
-use App\Filters\Cotizaciones\CotizacionesFilters;
-use App\Helpers\CalcHelper;
-use App\Models\Cotizacion;
-use App\Models\Cotizaciondetalle;
+use App\Models\Invoice;
 use App\Models\Producto;
-use App\Transformers\Cotizacion\FindByIdTransformer;
+use App\Models\Cotizacion;
+use App\Helpers\CalcHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Cotizaciondetalle;
+use App\Filters\Cotizaciones\CotizacionesFilters;
+use App\Helpers\DateHelper;
+use App\Transformers\Cotizacion\FindByIdTransformer;
 
 class CotizacionService
 {
@@ -146,5 +149,56 @@ class CotizacionService
         $cotizacion->delete();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+
+    public function findByIdPdf(Request $request)
+    {
+        $cotizacion = Cotizacion::where('id',$request->id)->first();
+
+        // $cotizacion = [
+        //     "cotizacion" => $cotizacion->id,
+        //     "fecha" => $cotizacion->fecha,
+        //     "cliente" => $cotizacion->cliente,
+        //     "nombreCliente" => optional($cotizacion->clientes)->nombre,
+        //     "subTotal" => $cotizacion->subTotal,
+        //     "total" => $cotizacion->total,
+        //     "descuento" => $cotizacion->descuento
+        // ];
+        
+        // $detalle = Cotizaciondetalle::where('cotizacion', $request->id)->get()->map(function ($item) {
+        //     return [
+        //         'id' => $item->id,
+                
+        //     ];
+        // });
+
+        $cotizacion = [
+            "cotizacion" => $cotizacion->id,
+            "fecha" => DateHelper::ToDateCustom($cotizacion->fecha),
+            "cliente" => $cotizacion->cliente,
+            "nombreCliente" => optional($cotizacion->clientes)->nombre,
+            "subTotal" => $cotizacion->subTotal,
+            "total" => $cotizacion->total,
+            "descuento" => $cotizacion->descuento
+        ];
+        
+        $detalles = Cotizaciondetalle::where('cotizacion', $request->id)->get()->unique('id')->map(function ($detalle) {
+            return [
+                'id' => $detalle->id,
+                'cotizacion' => $detalle->cotizacion,
+                'productoNombre' => optional($detalle->productos)->nombre,
+                'precio' => $detalle->precio,
+                'cantidad' => $detalle->cantidad
+            ];
+        })->values(); 
+        
+        $cotizacion['detalles'] = $detalles->all();
+
+        $pdf = Pdf::loadView('pdf.cotizacion', ['cotizacion' => $cotizacion]);
+
+        $pdf->getDomPDF();
+
+        return $pdf->stream();
+
     }
 }

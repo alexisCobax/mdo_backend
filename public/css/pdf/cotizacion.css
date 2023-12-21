@@ -1,0 +1,111 @@
+@page {
+    margin: 0cm 0cm;
+    font-family: Arial;
+    font-size: 14px;
+}
+
+body {
+    margin: 11cm 1cm 5cm;
+}
+
+header {
+    position: fixed;
+    top: 30px;
+}
+
+footer {
+    position: fixed;
+    bottom: -70px;
+    height: 200px;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.invoice-wrapper {
+    width: 100%;
+    margin: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    vertical-align: top;
+}
+
+.row {
+    display: block;
+    clear: both;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.table-hover thead tr {
+    background: #ffffff;
+}
+
+.table-hover tbody tr:nth-child(even) {
+    background: #ffffff;
+}
+
+address {
+    font-style: normal;
+}
+
+.tax {
+    text-align: left;
+}
+
+.title {
+    text-align: left;
+    font-weight: bold;
+}
+
+.fob {
+    text-align: right;
+    padding-right: 40px;
+}
+
+small {
+    position: fixed;
+    bottom: 150px;
+}
+
+.table-info {
+    border-collapse: collapse;
+    padding: 0;
+}
+
+.table-info tr,
+td {
+    padding: 0px 0px 0px 0px;
+}
+
+.table-de {
+    width: 300px;
+}
+
+.table-cliente {
+    margin-left: 10px;
+    width: 300px;
+}
+
+.container-table-cliente {
+    margin-left: 10px;
+}
+
+.align-center{
+    text-align:center;
+}

@@ -2,12 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Compra;
 use App\Models\Deposito;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use App\Models\Compradetalle;
 use Illuminate\Http\Response;
 use App\Helpers\PaginateHelper;
-use App\Models\Compradetalle;
 
 class DepositoService
 {
@@ -45,26 +46,50 @@ class DepositoService
     {
         $datosCompra = $request->all();
         $productos = $datosCompra['productos'];
-        $productoIds = array_column($productos, 'producto');
 
-        $productosModel = Producto::whereIn('id', $productoIds)->get();
-        //dd($productos);
+        $i = 0;
+
         foreach ($productos as $productoData) {
-            // $producto = $productosModel->where('id', $productoData['producto'])->first();
 
-            // if ($producto) {
-            //     $nuevaCantidad = $producto->stock + $productoData['cantidad'];
-            //     $producto->update([
-            //         'stock' => $nuevaCantidad,
-            //         'costo' => $productoData['precioUnitario'],
-            //         'ultimoIngresoDeMercaderia' => now()->toDateString(),
-            //     ]);
-            // }
-            echo $productoData['producto']."<br/>";
+            $producto = Producto::where('id', $productoData['productoId'])->first();
 
-            // Compradetalle::where('producto', $productoData['producto'])
-            //     ->update(['enDeposito' => '1']);
+            $detalle = Compradetalle::where('id', $productoData['producto']);
+
+            if ($productoData['isChecked'] == 1 or $productoData['isChecked'] == true) {
+
+                if ($producto) {
+                    if ($detalle->where('enDeposito', 0)->first()) {
+                        $nuevaCantidad = $producto->stock + $productoData['cantidad'];
+                        $producto->update([
+                            'stock' => $nuevaCantidad,
+                            'costo' => $productoData['precioUnitario'],
+                            'ultimoIngresoDeMercaderia' => now()->toDateString(),
+                        ]);
+                    }
+                }
+            } else {
+                if ($producto) {
+                    $nuevaCantidad = $producto->stock - $productoData['cantidad'];
+                    $producto->update([
+                        'stock' => $nuevaCantidad,
+                        'costo' => $productoData['precioUnitario'],
+                        'ultimoIngresoDeMercaderia' => now()->toDateString(),
+                    ]);
+                }
+                $i++;
+            }
+            $detalle->update(['enDeposito' => $productoData['isChecked']]);
         }
+
+        $compra = Compra::where('id', $datosCompra['compra'])->first();
+
+        if ($i == 0) {
+
+            $compra->enDeposito = 1;
+        } else {
+            $compra->enDeposito = 0;
+        }
+        $compra->save();
 
         return response()->json(['mensaje' => 'Ingreso procesado con éxito']);
     }
