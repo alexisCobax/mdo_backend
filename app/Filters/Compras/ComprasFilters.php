@@ -15,12 +15,17 @@ class ComprasFilters
 
         // Obtén los parámetros del filtro
         $deposito = $request->input('deposito');
+        $proveedor = $request->input('nombreProveedor');
+        $desde = $request->input('desde');
+        $hasta = $request->input('hasta');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
         // Aplica los filtros si se proporcionan
         $query->enDeposito($deposito);
+        $query->proveedor($proveedor);
+        $query->desdeHasta($desde,$hasta);
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
