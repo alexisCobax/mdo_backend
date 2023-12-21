@@ -822,6 +822,8 @@ Route::get('/pdf/invoice/{id}', [PdfController::class, 'invoice']);
 
 Route::get('/pdf/recibo/{id}', [PdfController::class, 'recibo']);
 
+Route::get('/pdf/cotizacion/{id}', [PdfController::class, 'cotizacion']);
+
 Route::post('/payment/payeezy', [PayeezyController::class, 'processPayeezyPayment']);
 
 Route::post('/payment/clover', [CloverController::class, 'processCloverPayment']);
