@@ -13,7 +13,7 @@ class FindAllTransformer extends TransformerAbstract
 
         return [
             'id' => $producto->id,
-            'imagenPrincipal' => $producto->imagenPrincipal . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
+            'imagenPrincipal' => $producto->imagenPrincipal . '.jpg',
             'nombre' => utf8_encode($producto->nombre),
             'codigo' => $producto->codigo,
             'categoria' => $producto->categoria,

@@ -53,7 +53,7 @@ class AuthWebController extends Controller
 
             $user = Usuario::create([
                 'nombre' => $request->nombre,
-                'permisos' => 1,
+                'permisos' => 2,
                 'clave' => Hash::make($request->clave),
                 'suspendido' => 0,
             ]);
@@ -104,6 +104,12 @@ class AuthWebController extends Controller
             }
 
             $user = Usuario::where('nombre', $request->nombre)->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuario inexistente.',
+                ], Response::HTTP_NOT_FOUND);
+            }
 
             return response()->json([
                 'token' => $user->createToken('API TOKEN')->plainTextToken,
@@ -135,7 +141,11 @@ class AuthWebController extends Controller
     public function logout()
     {
         try {
-            auth()->user()->tokens()->delete();
+            //auth()->user()->tokens()->delete();
+
+            if (auth()->check()) {
+                auth()->user()->tokens()->delete();
+            }
 
             return [
                 'message' => 'user logged out',
@@ -153,18 +163,10 @@ class AuthWebController extends Controller
     {
 
         $user = Auth::user();
+        unset($user->clave);
+        unset($user->token_exp);
+        unset($user->apellido);
 
         return response()->json(['user' => $user], 200);
-    }
-
-    public function change(Request $request)
-    {
-        $user = Auth::user();
-
-        $usuario = Usuario::find($user->id);
-        $usuario->clave = bcrypt($request->clave);
-        $usuario->save();
-
-        return response()->json(['message' => 'La actualizacion se realizo de forma exitosa', 'user' => $usuario], 200);
     }
 }

@@ -109,7 +109,8 @@ use App\Http\Controllers\PromocioncomprandoxgratiszController;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
+
 
     /* Banner Routes **/
 
@@ -738,13 +739,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /* Login Routes **/
 
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('register', [AuthController::class, 'register']);
     Route::post('me', [AuthController::class, 'me']);
 
     /**Variantes de precios **/
 
     Route::post('/precios/manejador', [PreciosController::class, 'create']);
+});
+
+Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
 
     /*
      *
@@ -784,23 +786,33 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/web/descuento', [DescuentosController::class, 'show']);
     Route::post('/web/descuento/add', [DescuentosController::class, 'add']);
 
+
+
+    Route::post('/web/cliente', [ClienteWebController::class, 'create']);
+
+
+
+    /* Producto ESTO DEBE IR SIN TOKEN**/
+    Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
+    Route::get('/web/producto', [ProductoWebController::class, 'index']);
+    Route::post('/producto/related', [ProductoController::class, 'related']);
+    Route::get('/web/marcaproducto', [MarcaproductoController::class, 'index']);
+    Route::get('/web/vistamarca', [MarcaproductoController::class, 'vista']);
+    Route::get('/web/generar-productos-csv', [ExcelController::class, 'GenerarProductosCsv']);
+
+    Route::post('/web/me', [AuthWebController::class, 'me']);
 });
 
+    /* Login Routes Not Auth **/
+    Route::post('/web/login', [AuthWebController::class, 'login']);
+    Route::post('/web/logout', [AuthWebController::class, 'logout']);
+    Route::post('/web/register', [AuthWebController::class, 'register']);
+
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('register', [AuthController::class, 'register']);
 
 
-Route::post('/web/cliente', [ClienteWebController::class, 'create']);
-
-/* Producto ESTO DEBE IR SIN TOKEN**/
-Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
-Route::get('/web/producto', [ProductoWebController::class, 'index']);
-Route::post('/producto/related', [ProductoController::class, 'related']);
-Route::get('/web/marcaproducto', [MarcaproductoController::class, 'index']);
-Route::get('/web/vistamarca', [MarcaproductoController::class, 'vista']);
-Route::get('/web/generar-productos-csv', [ExcelController::class, 'GenerarProductosCsv']);
-
-/* Login Routes Not Auth **/
-
-Route::post('login', [AuthController::class, 'login']);
 
 /* Categorias Routes Not Auth **/
 

@@ -27,7 +27,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'color' => optional($d->productos->colores)->id,
                 'precio' => $d->precio,
                 'total' => $precio,
-                'imagen' => env('URL_IMAGENES_PRODUCTOS') . optional($d->productos)->imagenPrincipal . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
+                'imagen' => env('URL_IMAGENES_PRODUCTOS') . optional($d->productos)->imagenPrincipal . '.jpg',
             ];
         }
 
