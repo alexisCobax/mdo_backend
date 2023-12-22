@@ -169,7 +169,7 @@ class Producto extends Model
     public function scopeCodigo($query, $codigo)
     {
         if ($codigo) {
-            return $query->where('codigo', $codigo);
+            return $query->where('codigo', $codigo)->orWhere('id', $codigo);
         }
 
         return $query;

@@ -78,6 +78,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+
         try {
             $validateUser = Validator::make(
                 $request->all(),
@@ -111,14 +112,19 @@ class AuthController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            return response()->json([
-                'token' => $user->createToken('API TOKEN')->plainTextToken,
-                'user' => [
-                    'nombre' => $user->nombre,
-                    'permiso' => $user->permisos,
-                ],
+            if ($user->permisos == 1) {
 
-            ], Response::HTTP_OK);
+                return response()->json([
+                    'token' => $user->createToken('API TOKEN')->plainTextToken,
+                    'user' => [
+                        'nombre' => $user->nombre,
+                        'permiso' => $user->permisos,
+                    ],
+
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json(['error' => 'Unauthorized'], Response::HTTP_FORBIDDEN);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -141,7 +147,11 @@ class AuthController extends Controller
     public function logout()
     {
         try {
-            auth()->user()->tokens()->delete();
+            //auth()->user()->tokens()->delete();
+
+            if (auth()->check()) {
+                auth()->user()->tokens()->delete();
+            }
 
             return [
                 'message' => 'user logged out',
@@ -164,6 +174,5 @@ class AuthController extends Controller
         unset($user->apellido);
 
         return response()->json(['user' => $user], 200);
-
     }
 }

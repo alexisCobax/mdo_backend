@@ -48,7 +48,7 @@ class FotoproductoService
                         $imagen->save();
 
                         $currentPath = 'public/' . $img;
-                        $newPath = 'public/images/' . $imagen->id . '.' . env('EXTENSION_IMAGEN_PRODUCTO');
+                        $newPath = 'public/images/' . $imagen->id . '.jpg';
 
                         if (Storage::exists($currentPath)) {
                             Storage::move($currentPath, $newPath);
@@ -82,7 +82,7 @@ class FotoproductoService
                 try {
                     $producto = FotoProducto::find($request->idImagen);
                     if ($producto) {
-                        File::delete(storage_path('app/public/images/' . $request->idImagen . '.' . env('EXTENSION_IMAGEN_PRODUCTO')), true);
+                        File::delete(storage_path('app/public/images/' . $request->idImagen . '.jpg'), true);
                         $producto->delete();
 
                         return response()->json($producto, Response::HTTP_OK);

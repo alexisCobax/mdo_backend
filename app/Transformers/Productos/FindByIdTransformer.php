@@ -18,7 +18,7 @@ class FindByIdTransformer extends TransformerAbstract
             foreach ($producto->fotos as $foto) {
                 $imagenes[] = [
                     'id' => $foto->id,
-                    'url' => env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
+                    'url' => env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg',
                     'orden' => $foto->orden,
                 ];
             }
@@ -56,7 +56,7 @@ class FindByIdTransformer extends TransformerAbstract
             'posicion' => $producto->posicion,
             'stockRoto' => $producto->stockRoto,
             'genero' => $producto->genero,
-            'imagenPrincipal' => $producto->imagenPrincipal . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
+            'imagenPrincipal' => $producto->imagenPrincipal . '.jpg',
             //'imagenesSecundarias' => optional($producto->fotos)->orden . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
             'UPCreal' => $producto->UPCreal,
             'mdoNet' => $producto->mdoNet,

@@ -122,7 +122,7 @@ class ProductoService
                 $imagen->save();
 
                 $currentPath = 'public/' . $img;
-                $newPath = 'public/images/' . $imagen->id . '.' . env('EXTENSION_IMAGEN_PRODUCTO');
+                $newPath = 'public/images/' . $imagen->id . '.jpg';
 
                 if (Storage::exists($currentPath)) {
                     Storage::move($currentPath, $newPath);
@@ -220,7 +220,7 @@ class ProductoService
                 $imagen->save();
 
                 $currentPath = 'public/' . $img;
-                $newPath = 'public/images/' . $imagen->id . '.' . env('EXTENSION_IMAGEN_PRODUCTO');
+                $newPath = 'public/images/' . $imagen->id . '.jpg';
 
                 if (Storage::exists($currentPath)) {
                     Storage::move($currentPath, $newPath);
