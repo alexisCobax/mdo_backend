@@ -46,7 +46,7 @@ class ClienteService
         $usuario = [
             'nombre' => $request->usuario,
             'clave' => $request->clave,
-            'permisos' => 1,
+            'permisos' => 2,
             'suspendido' => 0,
         ];
 
