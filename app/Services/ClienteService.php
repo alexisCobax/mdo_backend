@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\PaginateHelper;
 use App\Filters\Clientes\ClientesFilters;
+use Illuminate\Support\Facades\Hash;
 use App\Transformers\Cliente\CreateTransformer;
 
 class ClienteService
@@ -45,7 +46,7 @@ class ClienteService
 
         $usuario = [
             'nombre' => $request->usuario,
-            'clave' => $request->clave,
+            'clave' => Hash::make($request->clave),
             'permisos' => 2,
             'suspendido' => 0,
         ];
