@@ -12,12 +12,14 @@ class CarritoHelper
     public static function getCarrito()
     {
         $user = Auth::user();
-        dd($user['id']);
+
         if($user){
         $cliente = Cliente::where('usuario', $user['id'])->first();
         }else{
             return response()->json(['error' => 'No existe cliente logueado'], Response::HTTP_NOT_FOUND);
         }
+
+        if($cliente->id){
         $carrito = Carrito::where('cliente', $cliente->id)
             ->where('estado', 0)
             ->first();
@@ -35,5 +37,8 @@ class CarritoHelper
             'cliente' => $cliente->id,
             'usuario' => $user['id'],
         ];
+    }else{
+        return response()->json(['error' => 'El usuario no tiene asignado un cliente'], Response::HTTP_NOT_FOUND);
+    }
     }
 }
