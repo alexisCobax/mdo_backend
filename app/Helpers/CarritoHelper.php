@@ -19,7 +19,7 @@ class CarritoHelper
             return response()->json(['error' => 'No existe cliente logueado'], Response::HTTP_NOT_FOUND);
         }
 
-        if($cliente->id){
+        if(!isset($cliente->id)){
         $carrito = Carrito::where('cliente', $cliente->id)
             ->where('estado', 0)
             ->first();
