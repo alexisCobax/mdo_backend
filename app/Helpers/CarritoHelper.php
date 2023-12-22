@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Carrito;
 use App\Models\Cliente;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class CarritoHelper
@@ -11,7 +12,12 @@ class CarritoHelper
     public static function getCarrito()
     {
         $user = Auth::user();
+
+        if($user){
         $cliente = Cliente::where('usuario', $user['id'])->first();
+        }else{
+            return response()->json(['error' => 'No existe cliente logueado'], Response::HTTP_NOT_FOUND);
+        }
         $carrito = Carrito::where('cliente', $cliente->id)
             ->where('estado', 0)
             ->first();
