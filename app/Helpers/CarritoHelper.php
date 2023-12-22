@@ -12,7 +12,7 @@ class CarritoHelper
     public static function getCarrito()
     {
         $user = Auth::user();
-
+        dd($user);
         if($user){
         $cliente = Cliente::where('usuario', $user['id'])->first();
         }else{
