@@ -790,7 +790,8 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
 
     Route::post('/web/cliente', [ClienteWebController::class, 'create']);
 
-
+    Route::post('/web/me', [AuthWebController::class, 'me']);
+});
 
     /* Producto ESTO DEBE IR SIN TOKEN**/
     Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
@@ -799,9 +800,6 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     Route::get('/web/marcaproducto', [MarcaproductoController::class, 'index']);
     Route::get('/web/vistamarca', [MarcaproductoController::class, 'vista']);
     Route::get('/web/generar-productos-csv', [ExcelController::class, 'GenerarProductosCsv']);
-
-    Route::post('/web/me', [AuthWebController::class, 'me']);
-});
 
     /* Login Routes Not Auth **/
     Route::post('/web/login', [AuthWebController::class, 'login']);
