@@ -86,11 +86,12 @@ class ClienteService
         $cliente = Cliente::findOrFail($request->id);
         $usuario = Usuario::findOrFail($cliente->usuario);
 
+        
         if ($request->clave) {
             $dataUsuario = [
                 'id' => $usuario->id,
                 'nombre' => $request->nombreUsuario,
-                'clave' => $request->clave,
+                'clave' => Hash::make($request->clave),
                 'permisos' => 2,
                 'suspendido' => 0,
             ];
