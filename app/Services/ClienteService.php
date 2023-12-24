@@ -24,9 +24,21 @@ class ClienteService
         }
     }
 
+    // public function findById(Request $request)
+    // {
+    //     $data = Cliente::find($request->id);
+
+    //     return response()->json(['data' => $data], Response::HTTP_OK);
+    // }
+
     public function findById(Request $request)
     {
-        $data = Cliente::find($request->id);
+        $cliente = Cliente::with('usuarios')->find($request->id);
+
+        $nombreUsuario = $cliente->usuarios->nombre;
+
+        $data = $cliente->toArray();
+        $data['nombreUsuario'] = $nombreUsuario;
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
@@ -74,13 +86,22 @@ class ClienteService
         $cliente = Cliente::findOrFail($request->id);
         $usuario = Usuario::findOrFail($cliente->usuario);
 
-        $dataUsuario = [
-            'id' => $usuario->id,
-            'nombre' => $request->usuario,
-            'clave' => $request->clave,
-            'permisos' => 1,
-            'suspendido' => 0,
-        ];
+        if ($request->clave) {
+            $dataUsuario = [
+                'id' => $usuario->id,
+                'nombre' => $request->nombreUsuario,
+                'clave' => $request->clave,
+                'permisos' => 2,
+                'suspendido' => 0,
+            ];
+        } else {
+            $dataUsuario = [
+                'id' => $usuario->id,
+                'nombre' => $request->nombreUsuario,
+                'permisos' => 2,
+                'suspendido' => 0,
+            ];
+        }
 
         $usuario->update($dataUsuario);
 
