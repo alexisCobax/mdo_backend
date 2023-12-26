@@ -62,6 +62,7 @@ class ProductosFilters
 
             $query->NuevosProductos($estado);
 
+            $query->where('stock','>',0);
             $data = $query->get();
             // Crea una instancia del transformer
             $transformer = new FindAllTransformer();
@@ -96,6 +97,7 @@ class ProductosFilters
                     $query->where('nombre', 'LIKE', "%$buscador%");
                 })
                 ->where('categoria', $categoria)
+                ->where('stock','>',0)
                 ->orderBy('id', 'desc')
                 ->paginate($perPage, ['*'], 'page', $page);
 
