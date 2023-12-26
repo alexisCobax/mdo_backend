@@ -143,7 +143,7 @@ class PedidoService
     public function update(Request $request)
     {
         $pedido = Pedido::find($request->id);
-        
+
         if (!$pedido) {
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
@@ -236,13 +236,26 @@ class PedidoService
 
     public function delete(Request $request)
     {
+        try {
+            Pedidodetalle::where('pedido', $request->id)->delete();
+        } catch (Error $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
+        }
+
+        try {
+            $pedidoDetallenn = PedidoDetallenn::where('pedido', $request->id)->delete();
+        } catch (Error $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
+        }
+
         $pedido = Pedido::find($request->id);
+        $pedido->estado = 4;
 
         if (!$pedido) {
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $pedido->delete();
+        $pedido->save();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
