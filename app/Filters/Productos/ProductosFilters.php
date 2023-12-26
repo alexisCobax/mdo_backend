@@ -121,6 +121,7 @@ class ProductosFilters
             return response()->json($response);
         }
 
+        $query->where('stock','>',0);
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
