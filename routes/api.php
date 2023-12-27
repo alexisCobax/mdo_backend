@@ -841,3 +841,5 @@ Route::post('/payment/clover', [CloverController::class, 'processCloverPayment']
 Route::post('/subir-cuenta', [ActiveCampaignController::class, 'subirCuenta']);
 
 Route::post('/subir-contacto', [ActiveCampaignController::class, 'subirContacto']);
+
+Route::get('/web/pais', [PaisController::class, 'index']);

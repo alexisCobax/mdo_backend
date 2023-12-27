@@ -24,6 +24,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+
         try {
             //Validated
             $validateUser = Validator::make(
