@@ -75,13 +75,16 @@ class ClienteWebService
 
         $postData = json_encode($payload);
 
-        $activeCampaign = new ActiveCampaignService;
+        // $activeCampaign = new ActiveCampaignService;
 
-        $response =  $activeCampaign->post('https://cobax1694091376.api-us1.com/api/3/contacts', $postData);
-        $response = json_decode($response, true);
+        // $response =  $activeCampaign->post('https://cobax1694091376.api-us1.com/api/3/contacts', $postData);
+        // $response = json_decode($response, true);
+
+        // $transformer = new CreateWebTransformer();
+        // $cliente = $transformer->transform($request, $usuario->id, $response['contact']['id']);
 
         $transformer = new CreateWebTransformer();
-        $cliente = $transformer->transform($request, $usuario->id, $response['contact']['id']);
+        $cliente = $transformer->transform($request, $usuario->id);
 
         //dd($cliente);
 
