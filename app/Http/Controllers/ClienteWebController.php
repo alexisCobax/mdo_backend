@@ -45,7 +45,7 @@ class ClienteWebController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
-    {
+    { 
         return $this->service->create($request);
     }
 

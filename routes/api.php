@@ -27,6 +27,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EstucheController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PagoWebController;
+use App\Http\Controllers\PaisWebController;
 use App\Http\Controllers\PayeezyController;
 use App\Http\Controllers\PortadaController;
 use App\Http\Controllers\PreciosController;
@@ -786,10 +787,6 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     Route::post('/web/descuento', [DescuentosController::class, 'show']);
     Route::post('/web/descuento/add', [DescuentosController::class, 'add']);
 
-
-
-    Route::post('/web/cliente', [ClienteWebController::class, 'create']);
-
     Route::post('/web/me', [AuthWebController::class, 'me']);
 });
 
@@ -842,4 +839,6 @@ Route::post('/subir-cuenta', [ActiveCampaignController::class, 'subirCuenta']);
 
 Route::post('/subir-contacto', [ActiveCampaignController::class, 'subirContacto']);
 
-Route::get('/web/pais', [PaisController::class, 'index']);
+Route::get('/web/pais', [PaisWebController::class, 'index']);
+
+Route::post('/web/cliente', [ClienteWebController::class, 'create']);
