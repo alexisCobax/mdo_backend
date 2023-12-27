@@ -45,7 +45,7 @@ class ClienteWebService
         if ($existeUsuario != 0) {
             return response()->json(['error' => 'Usuario existente', 'status' => 203], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
         }
-
+        echo $request->email;die;
         $usuario = [
             'nombre' => $request->email,
             'clave' => $request->clave ? Hash::make($request->clave) : str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
