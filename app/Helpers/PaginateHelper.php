@@ -18,7 +18,7 @@ class PaginateHelper
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-        $data = $model::orderBy('id', 'desc')
+        $data = $model::orderBy('id', 'asc')
         ->paginate($perPage, ['*'], 'page', $page);
 
         $response = [
