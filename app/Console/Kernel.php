@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         GenerateService::class,
         GenerateDocumentation::class,
+        \App\Console\Commands\EncryptClavesUsuarios::class, 
     ];
 
     /**
