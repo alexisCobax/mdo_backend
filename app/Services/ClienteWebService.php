@@ -9,6 +9,7 @@ use App\Transformers\Cliente\CreateWebTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ClienteWebService
 {
@@ -46,9 +47,9 @@ class ClienteWebService
         }
 
         $usuario = [
-            'nombre' => $request->usuario,
-            'clave' => $request->clave,
-            'permisos' => 1,
+            'nombre' => $request->email,
+            'clave' => $request->clave ? Hash::make($request->clave) : str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
+            'permisos' => 2,
             'suspendido' => 0,
         ];
 
