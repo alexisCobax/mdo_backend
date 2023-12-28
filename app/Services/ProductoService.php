@@ -91,7 +91,7 @@ class ProductoService
                     'message' => $productosTransformados,
                 ];
 
-                return response()->json(['data' => $response], Response::HTTP_OK);
+                return response()->json(['data' => $response, 'status' => 200], Response::HTTP_OK);
             } else {
                 return response()->json(['data' => null, 'status' => 201], Response::HTTP_NOT_FOUND);
             }
