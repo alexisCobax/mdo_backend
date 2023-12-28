@@ -16,6 +16,7 @@ class ProductoService
 {
     public function findAll(Request $request)
     {
+        echo 1;die;
         try {
             $data = ProductosFilters::getPaginateProducts($request, Producto::class);
 
