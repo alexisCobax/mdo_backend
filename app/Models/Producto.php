@@ -187,7 +187,6 @@ class Producto extends Model
         if ($nombre) {
             return $query->whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombre) . '%']);
         }
-
     }
 
     public function scopeNombreMarca($query, $nombreMarca)
@@ -196,7 +195,6 @@ class Producto extends Model
             $marca = Marcaproducto::whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombreMarca) . '%'])->first();
             return $query->where('marca', '=', $marca->id);
         }
-
     }
 
     public function scopeSuspendido($query, $suspendido)
@@ -204,7 +202,6 @@ class Producto extends Model
         if ($suspendido) {
             return $query->where('suspendido', '=', $suspendido);
         }
-
     }
 
     public function scopeTipo($query, $tipo)
@@ -212,7 +209,6 @@ class Producto extends Model
         if ($tipo) {
             return $query->where('tipo', '=', $tipo);
         }
-
     }
 
     public function scopeIdMarca($query, $idMarca)
@@ -220,7 +216,24 @@ class Producto extends Model
         if ($idMarca) {
             return $query->where('marca', '=', $idMarca);
         }
+    }
 
+    public function scopeBuscador($query, $buscador)
+    {
+        if ($buscador) {
+            return $query->where(function ($query) use ($buscador) {
+                $query->where('descripcion', 'LIKE', "%$buscador%")
+                    ->orWhere('tamano', 'LIKE', "%$buscador%")
+                    ->orWhere('nombre', 'LIKE', "%$buscador%")
+                    ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
+                        $query->where('nombre', 'LIKE', "%$buscador%");
+                    })
+                    ->orWhereHas('colorBuscador', function ($query) use ($buscador) {
+                        $query->where('nombre', 'LIKE', "%$buscador%");
+                    });
+            })
+                ->where('stock', '>', 0);
+        }
     }
 
     public function scopeMaterial($query, $material)
@@ -228,7 +241,6 @@ class Producto extends Model
         if ($material) {
             return $query->where('material', '=', $material);
         }
-
     }
 
     public function scopeColor($query, $color)
@@ -236,7 +248,6 @@ class Producto extends Model
         if ($color) {
             return $query->where('color', '=', $color);
         }
-
     }
 
     public function scopeGrupo($query, $grupo)
@@ -244,7 +255,6 @@ class Producto extends Model
         if ($grupo) {
             return $query->where('grupo', '=', $grupo);
         }
-
     }
 
     public function scopePrecioRange($query, $precioDesde, $precioHasta)
@@ -256,7 +266,6 @@ class Producto extends Model
         } elseif ($precioHasta !== null) {
             return $query->where('precio', '<=', $precioHasta);
         }
-
     }
 
     public function scopeStockRange($query, $stockDesde, $stockHasta)
@@ -268,7 +277,6 @@ class Producto extends Model
         } elseif ($stockHasta !== null) {
             return $query->where('stock', '<=', $stockHasta);
         }
-
     }
 
     public function scopeDestacado($query, $destacado)
@@ -276,7 +284,6 @@ class Producto extends Model
         if ($destacado) {
             return $query->where('destacado', '=', $destacado);
         }
-
     }
 
     public function scopeNuevosProductos($query, $estado)

@@ -37,8 +37,8 @@ class ProductosFilters
         $buscador = $request->input('buscador');
         $grupo = $request->input('grupo');
 
-        // Inicializa la consulta utilizando el modelo
-        $query = $model::query();
+            // Inicializa la consulta utilizando el modelo
+            $query = $model::query();
 
         // Aplica los filtros si se proporcionan
         $query->codigo($codigo);
@@ -54,76 +54,78 @@ class ProductosFilters
         $query->color($color);
         $query->destacado($destacado);
         $query->grupo($grupo);
+        $query->buscador($buscador);
+        $query->NuevosProductos($estado);
 
         // /*
         // * filtro completo para productos nuevos
         // */
-        if ($estado == 'nuevo') {
+        // if ($estado == 'nuevo') {
 
-            $query->NuevosProductos($estado);
+        //     $query->NuevosProductos($estado);
 
-            $query->where('stock','>',0);
-            $data = $query->get();
-            // Crea una instancia del transformer
-            $transformer = new FindAllTransformer();
+        //     $query->where('stock', '>', 0);
+        //     $data = $query->get();
+        //     // Crea una instancia del transformer
+        //     $transformer = new FindAllTransformer();
 
-            // Transforma cada producto individualmente
-            $productosTransformados = $data->map(function ($producto) use ($transformer) {
-                return $transformer->transform($producto);
-            });
+        //     // Transforma cada producto individualmente
+        //     $productosTransformados = $data->map(function ($producto) use ($transformer) {
+        //         return $transformer->transform($producto);
+        //     });
 
-            // Crea la respuesta personalizada
-            $response = [
-                'status' => Response::HTTP_OK,
-                'results' => $productosTransformados,
-            ];
+        //     // Crea la respuesta personalizada
+        //     $response = [
+        //         'status' => Response::HTTP_OK,
+        //         'results' => $productosTransformados,
+        //     ];
 
-            // Devuelve la respuesta
-            return response()->json($response);
-        }
+        //     // Devuelve la respuesta
+        //     return response()->json($response);
+        // }
 
         // /*
         // * filtro completo para buscador general
         // */
-        if ($buscador) {
+        // if ($buscador) {
 
-            $data = Producto::where('descripcion', 'LIKE', "%$buscador%")
-                ->orWhere('tamano', 'LIKE', "%$buscador%")
-                ->orWhere('nombre', 'LIKE', "%$buscador%")
-                ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
-                    $query->where('nombre', 'LIKE', "%$buscador%");
-                })
-                ->orWhereHas('colorBuscador', function ($query) use ($buscador) {
-                    $query->where('nombre', 'LIKE', "%$buscador%");
-                })
-                ->where('categoria', $categoria)
-                ->where('stock','>',0)
-                ->orderBy('id', 'desc')
-                ->paginate($perPage, ['*'], 'page', $page);
+        //     $data = Producto::where('descripcion', 'LIKE', "%$buscador%")
+        //         ->orWhere('tamano', 'LIKE', "%$buscador%")
+        //         ->orWhere('nombre', 'LIKE', "%$buscador%")
+        //         ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
+        //             $query->where('nombre', 'LIKE', "%$buscador%");
+        //         })
+        //         ->orWhereHas('colorBuscador', function ($query) use ($buscador) {
+        //             $query->where('nombre', 'LIKE', "%$buscador%");
+        //         })
+        //         ->where('categoria', $categoria)
+        //         ->where('stock', '>', 0)
+        //         ->orderBy('id', 'desc')
+        //         ->paginate($perPage, ['*'], 'page', $page);
 
-            // Crea una instancia del transformer
-            $transformer = new FindAllTransformer();
+        //     // Crea una instancia del transformer
+        //     $transformer = new FindAllTransformer();
 
-            // Transforma cada producto individualmente
-            $productosTransformados = $data->map(function ($producto) use ($transformer) {
-                return $transformer->transform($producto);
-            });
+        //     // Transforma cada producto individualmente
+        //     $productosTransformados = $data->map(function ($producto) use ($transformer) {
+        //         return $transformer->transform($producto);
+        //     });
 
-            // Crea la respuesta personalizada
-            $response = [
-                'status' => Response::HTTP_OK,
-                'total' => $data->total(),
-                'cantidad_por_pagina' => $data->perPage(),
-                'pagina' => $data->currentPage(),
-                'cantidad_total' => $data->total(),
-                'results' => $productosTransformados,
-            ];
+        //     // Crea la respuesta personalizada
+        //     $response = [
+        //         'status' => Response::HTTP_OK,
+        //         'total' => $data->total(),
+        //         'cantidad_por_pagina' => $data->perPage(),
+        //         'pagina' => $data->currentPage(),
+        //         'cantidad_total' => $data->total(),
+        //         'results' => $productosTransformados,
+        //     ];
 
-            // Devuelve la respuesta
-            return response()->json($response);
-        }
+        //     // Devuelve la respuesta
+        //     return response()->json($response);
+        // }
 
-        $query->where('stock','>',0);
+        $query->where('stock', '>', 0);
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
