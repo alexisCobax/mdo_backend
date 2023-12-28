@@ -16,7 +16,6 @@ class ProductoService
 {
     public function findAll(Request $request)
     {
-        echo 1;die;
         try {
             $data = ProductosFilters::getPaginateProducts($request, Producto::class);
 
@@ -75,6 +74,7 @@ class ProductoService
 
     public function findByCodigo(Request $request)
     {
+        echo 88;die;
         try {
 
             $data = collect([Producto::where('codigo', $request->codigo)->first()]);
