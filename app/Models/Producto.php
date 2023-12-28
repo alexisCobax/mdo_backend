@@ -291,6 +291,7 @@ class Producto extends Model
         if ($estado == 'nuevo') {
             return $query->where('stock', '>', 0)
                 ->where('precio', '>', 0)
+                ->where('stock', '>', 0)
                 ->orderBy('ultimoIngresoDeMercaderia', 'desc')
                 ->take(3);
         }
