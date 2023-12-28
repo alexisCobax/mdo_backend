@@ -74,7 +74,6 @@ class ProductoService
 
     public function findByCodigo(Request $request)
     {
-        echo 88;die;
         try {
 
             $data = collect([Producto::where('codigo', $request->codigo)->first()]);
