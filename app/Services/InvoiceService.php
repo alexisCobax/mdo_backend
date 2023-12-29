@@ -11,6 +11,7 @@ use App\Transformers\Invoices\CreateDetalleTransformer;
 use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -44,7 +45,7 @@ class InvoiceService
 
     public function findByIdPdf(Request $request)
     {
-
+        try{
         $invoice = Invoice::find($request->id);
 
         $tranformer = new FindByIdTransformer();
@@ -55,6 +56,9 @@ class InvoiceService
         $pdf->getDomPDF();
 
         return $pdf->stream();
+        }catch(Error $e){
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         if (!$invoice) {
             return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);

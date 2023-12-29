@@ -208,7 +208,7 @@
                             @foreach ( $invoice['detalle'] as $d)
                             <tr>
                                 <td style="text-align: center;">{{$d['qborder']}}</td>
-                                <td style="text-align: center;">{{$d['codigo']}}</td>
+                                <td style="text-align: center;">{{$d['itemNumber']}}</td>
                                 <td style="text-align: center;">{{$d['Descripcion']}}</td>
                                 <td style="text-align: center;">{{$d['listPrice']}}</td>
                                 <td style="text-align: center;">{{$d['total']}}</td>
