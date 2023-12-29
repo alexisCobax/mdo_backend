@@ -14,7 +14,7 @@ class FindByIdTransformer extends TransformerAbstract
         $pedidoDetalle = [];
         $detalle = Pedidodetalle::where('pedido', $pedido->id)->get();
 
-        $cliente = Cliente::where('id',$pedido->cliente)->first();
+        $cliente = Cliente::where('id', $pedido->cliente)->first();
 
         foreach ($detalle as $d) {
 
@@ -28,14 +28,13 @@ class FindByIdTransformer extends TransformerAbstract
                 'producto' => $d->productos->id,
                 'nombreColor' => optional($d->productos->colores)->nombre,
                 'color' => optional($d->productos->colores)->id,
-                'precio' => number_format($d->precio,2),
-                'total' => number_format($precio,2),
+                'precio' => number_format($d->precio, 2),
+                'total' => number_format($precio, 2),
                 'imagen' => env('URL_IMAGENES_PRODUCTOS') . optional($d->productos)->imagenPrincipal . '.jpg',
             ];
         }
 
-        $descuentoPorcentual = $pedido->total * $pedido->DescuentoPorcentual/100;
-        //$descuentoPorcentual = $pedido->total - $descuentoPorcentual;
+        $descuentoPorcentual = $pedido->total * $pedido->DescuentoPorcentual / 100;
 
         return [
             'tienda' => [
@@ -55,16 +54,16 @@ class FindByIdTransformer extends TransformerAbstract
             ],
             'detalle' => $pedidoDetalle,
             'pedido' => [
-                'subTotal' =>  number_format($pedido->total,2),
-                'descuentoPorcentual' =>  number_format($pedido->DescuentoPorcentual,2),
-                'descuentoPorcentualTotal' =>  number_format($descuentoPorcentual,2),
-                'descuentoPromociones' =>  number_format($pedido->DescuentoPromociones,2),
-                'descuentoNeto' =>  number_format($pedido->DescuentoNeto,2),
-                'total' =>  number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto,2),
-                'totalEnvio' =>  number_format($pedido->TotalEnvio,2),
-                'subTotalConEnvio' =>  number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto+$pedido->TotalEnvio,2),
-                'creditoDisponible' =>  number_format($cliente->ctacte,2),
-                'totalAabonar' => number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto+$pedido->TotalEnvio+$pedido->TotalEnvio-$cliente->ctacte,2)
+                'subTotal' =>  number_format($pedido->total, 2),
+                'descuentoPorcentual' =>  number_format($pedido->DescuentoPorcentual, 2),
+                'descuentoPorcentualTotal' =>  number_format($descuentoPorcentual, 2),
+                'descuentoPromociones' =>  number_format($pedido->DescuentoPromociones, 2),
+                'descuentoNeto' =>  number_format($pedido->DescuentoNeto, 2),
+                'total' =>  number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto, 2),
+                'totalEnvio' =>  number_format($pedido->TotalEnvio, 2),
+                'subTotalConEnvio' =>  number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto + $pedido->TotalEnvio, 2),
+                'creditoDisponible' =>  number_format($cliente->ctacte, 2),
+                'totalAabonar' => number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto + $pedido->TotalEnvio + $pedido->TotalEnvio - $cliente->ctacte, 2)
             ]
         ];
     }
