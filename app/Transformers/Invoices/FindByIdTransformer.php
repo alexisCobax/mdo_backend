@@ -34,11 +34,11 @@ class FindByIdTransformer extends TransformerAbstract
                 'qshipped' => $id['qshipped'],
                 'qborder' => $id['qborder'],
                 'itemNumber' => $id['itemNumber'],
-                'Descripcion' => $productoDescripcion,
+                'Descripcion' => $id['Descripcion'],
                 'listPrice' => number_format($id['listPrice'], 2, '.', ''),
                 'netPrice' => $id['netPrice'],
                 'invoice' => $id['invoice'],
-                'codigo' => $producto->codigo,
+                //'codigo' => isset($producto->codigo) ? $producto->codigo : '',
                 'total' => number_format($total, 2, '.', '')
             ];
         }
