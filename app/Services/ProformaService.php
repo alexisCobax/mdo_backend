@@ -20,11 +20,12 @@ class ProformaService
 
         $tranformer = new FindByIdTransformer();
         $proforma = $tranformer->transform($pedido);
+
         $pdf = Pdf::loadView('pdf.proforma', ['proforma'=>$proforma]);
 
-        //$pdf->getDomPDF();
+        $pdf->getDomPDF();
         
-        return $pdf->download();
+        //return $pdf->download();
         
         //$dom_pdf = $pdf->getDomPDF();
 

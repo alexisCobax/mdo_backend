@@ -2,6 +2,25 @@
 
 <head>
     <link rel="stylesheet" href="{{ public_path('css/pdf/proforma.css') }}" />
+    <style>
+        .containers {
+            width: 300px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .labels {
+            text-align: left;
+        }
+
+        .numbers {
+            text-align: right;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,27 +42,27 @@
                             <table class="table-de">
                                 <tr>
                                     <td>
-                                        {{$proforma['tienda']['direccion']}}
+                                        {{ $proforma['tienda']['direccion'] }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Phone:</strong> {{$proforma['tienda']['telefono']}}
+                                        <strong>Phone:</strong> {{ $proforma['tienda']['telefono'] }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Nº pedido:</strong> {{$proforma['tienda']['numero_pedido']}}
+                                        <strong>Nº pedido:</strong> {{ $proforma['tienda']['numero_pedido'] }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Fecha de pedido:</strong> {{$proforma['tienda']['fecha_pedido']}}
+                                        <strong>Fecha de pedido:</strong> {{ $proforma['tienda']['fecha_pedido'] }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>e-Mail:</strong> f{{$proforma['tienda']['email']}}
+                                        <strong>e-Mail:</strong> f{{ $proforma['tienda']['email'] }}
                                     </td>
                                 </tr>
                             </table>
@@ -55,22 +74,22 @@
                             <table class="table-cliente">
                                 <tr>
                                     <td>
-                                        {{$proforma['cliente']['nombre']}}
+                                        {{ $proforma['cliente']['nombre'] }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Nº de Cliente:</strong> {{$proforma['cliente']['numero']}}
+                                        <strong>Nº de Cliente:</strong> {{ $proforma['cliente']['numero'] }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Tel:</strong> {{$proforma['cliente']['telefono']}}
+                                        <strong>Tel:</strong> {{ $proforma['cliente']['telefono'] }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong>Dirección:</strong> {{$proforma['cliente']['direccion']}}
+                                        <strong>Dirección:</strong> {{ $proforma['cliente']['direccion'] }}
                                     </td>
                                 </tr>
                                 {{-- <tr>
@@ -80,7 +99,7 @@
                                 </tr> --}}
                                 <tr>
                                     <td>
-                                        <strong>Email:</strong> {{$proforma['cliente']['email']}}
+                                        <strong>Email:</strong> {{ $proforma['cliente']['email'] }}
                                     </td>
                                 </tr>
                                 {{-- <tr>
@@ -122,22 +141,109 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($proforma['detalle'] as $p)
-                            <tr>
-                                <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
-                                        style="width:90px; height: 70px;" alt=""/></td>
-                                <td class="align-center" style="padding-top:20px;">{{$p['cantidad']}}</td>
-                                <td class="align-center" style="padding-top:20px;">{{$p['codigo']}}</td>
-                                <td class="align-left" style="padding-top:20px;">{{$p['nombreProducto']}}</td>
-                                <td class="align-left" style="padding-top:20px;">{{$p['nombreColor']}}</td>
-                                <td class="align-center" style="padding-top:20px;">{{$p['precio']}}</td>
-                                <td class="align-center" style="padding-top:20px;">{{$p['total']}}</td>
-                            </tr>
+                            @foreach ($proforma['detalle'] as $p)
+                                <tr>
+                                    <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
+                                            style="width:90px; height: 70px;" alt="" /></td>
+                                    <td class="align-center" style="padding-top:20px;">{{ $p['cantidad'] }}</td>
+                                    <td class="align-center" style="padding-top:20px;">{{ $p['codigo'] }}</td>
+                                    <td class="align-left" style="padding-top:20px;">{{ $p['nombreProducto'] }}</td>
+                                    <td class="align-left" style="padding-top:20px;">{{ $p['nombreColor'] }}</td>
+                                    <td class="align-center" style="padding-top:20px;">{{ $p['precio'] }}</td>
+                                    <td class="align-center" style="padding-top:20px;">{{ $p['total'] }}</td>
+                                </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr style="border-top: 1px solid black;">
+                                <td>Cantidad:</td>
+                                <td style="text-align:center;">
+                                    10&nbsp;
+                                </td>
+                                <td colspan="3";></td>
+                                <td style="text-align:right;" colspan="2";>
+                                    <strong>U$S {{ $proforma['pedido']['subTotal'] }}</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <!-- /.col -->
+<br/>
+                <table style="width: 700px;">
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            Descuento por Promociones:
+                        </td>
+                        <td style="text-align:right;">
+                            {{ $proforma['pedido']['descuentoPromociones'] }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            Desc {{ $proforma['pedido']['descuentoPorcentual'] }}%
+                        </td>
+                        <td style="text-align:right;">
+                            {{ $proforma['pedido']['descuentoPorcentualTotal'] }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            Descuento neto:
+                        </td>
+                        <td style="text-align:right;">
+                            {{ $proforma['pedido']['descuentoNeto'] }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            <strong>Subtotal 1</strong>
+                        </td>
+                        <td style="text-align:right;">
+                            <strong>U$S {{ $proforma['pedido']['total'] }}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            Envio y Manejo:
+                        </td>
+                        <td style="text-align:right;">
+                            {{ $proforma['pedido']['totalEnvio'] }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            <strong>Subtotal con envio 2</strong>
+                        </td>
+                        <td style="text-align:right;">
+                            <strong>U$S {{ $proforma['pedido']['subTotalConEnvio'] }}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            Credito disponible:
+                        </td>
+                        <td style="text-align:right;">
+                            {{ $proforma['pedido']['creditoDisponible'] }}
+                        </td>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            <strong>Total a abonar</strong>
+                        </td>
+                        <td style="text-align:right;">
+                            <strong>U$S {{ $proforma['pedido']['totalAabonar'] }}</strong>
+                        </td>
+                    </tr>
+
+                </table>
 
             </div>
             <br><br><br>
