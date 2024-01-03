@@ -155,43 +155,36 @@ class CotizacionService
     {
         $cotizacion = Cotizacion::where('id',$request->id)->first();
 
-        // $cotizacion = [
-        //     "cotizacion" => $cotizacion->id,
-        //     "fecha" => $cotizacion->fecha,
-        //     "cliente" => $cotizacion->cliente,
-        //     "nombreCliente" => optional($cotizacion->clientes)->nombre,
-        //     "subTotal" => $cotizacion->subTotal,
-        //     "total" => $cotizacion->total,
-        //     "descuento" => $cotizacion->descuento
-        // ];
         
-        // $detalle = Cotizaciondetalle::where('cotizacion', $request->id)->get()->map(function ($item) {
-        //     return [
-        //         'id' => $item->id,
-                
-        //     ];
-        // });
+        $detalles = Cotizaciondetalle::where('cotizacion', $request->id)->get()->unique('id')->map(function ($detalle) {
+            return [
+                'id' => $detalle->id,
+                'cotizacion' => $detalle->cotizacion,
+                'productoId' => optional($detalle->productos)->id,
+                'productoNombre' => optional($detalle->productos)->nombre,
+                'productoCodigo' => optional($detalle->productos)->codigo,
+                'precio' => $detalle->precio,
+                'cantidad' => $detalle->cantidad,
+                'subtotal' => number_format($detalle->precio*$detalle->cantidad,2)
+            ];
+        })->values(); 
 
         $cotizacion = [
             "cotizacion" => $cotizacion->id,
             "fecha" => DateHelper::ToDateCustom($cotizacion->fecha),
             "cliente" => $cotizacion->cliente,
             "nombreCliente" => optional($cotizacion->clientes)->nombre,
+            "idCliente" => optional($cotizacion->clientes)->id,
+            "telefonoCliente" => optional($cotizacion->clientes)->telefono,
+            "direccionCliente" => optional($cotizacion->clientes)->direccion,
+            "emailCliente" => optional($cotizacion->clientes)->email,
             "subTotal" => $cotizacion->subTotal,
             "total" => $cotizacion->total,
-            "descuento" => $cotizacion->descuento
+            "descuento" => $cotizacion->descuento,
+            "cantidad" => $detalles->sum('cantidad'),
+            "total" => number_format($detalles->sum('subtotal'),2)
         ];
-        
-        $detalles = Cotizaciondetalle::where('cotizacion', $request->id)->get()->unique('id')->map(function ($detalle) {
-            return [
-                'id' => $detalle->id,
-                'cotizacion' => $detalle->cotizacion,
-                'productoNombre' => optional($detalle->productos)->nombre,
-                'precio' => $detalle->precio,
-                'cantidad' => $detalle->cantidad
-            ];
-        })->values(); 
-        
+
         $cotizacion['detalles'] = $detalles->all();
 
         $pdf = Pdf::loadView('pdf.cotizacion', ['cotizacion' => $cotizacion]);
