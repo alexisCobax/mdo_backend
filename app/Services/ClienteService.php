@@ -33,6 +33,7 @@ class ClienteService
 
     public function findById(Request $request)
     {
+
         $cliente = Cliente::with('usuarios')->find($request->id);
 
         $nombreUsuario = $cliente->usuarios->nombre;
