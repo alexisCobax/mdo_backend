@@ -16,10 +16,12 @@ class FindByIdTransformer extends TransformerAbstract
 
         $cliente = Cliente::where('id', $pedido->cliente)->first();
 
+        $cantidadTotal = 0;
+
         foreach ($detalle as $d) {
 
             $precio = $d->precio * $d->cantidad;
-
+            $cantidadTotal += $d->cantidad;
             $pedidoDetalle[] = [
                 'cantidad' => $d->cantidad,
                 'codigo' => $d->id,
@@ -62,7 +64,8 @@ class FindByIdTransformer extends TransformerAbstract
                 'totalEnvio' =>  number_format($pedido->TotalEnvio, 2),
                 'subTotalConEnvio' =>  number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto + $pedido->TotalEnvio, 2),
                 'creditoDisponible' =>  number_format($cliente->ctacte, 2),
-                'totalAabonar' => number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto + $pedido->TotalEnvio + $pedido->TotalEnvio - $cliente->ctacte, 2)
+                'totalAabonar' => number_format($pedido->total - $descuentoPorcentual - $pedido->DescuentoPromociones - $pedido->DescuentoNeto + $pedido->TotalEnvio + $pedido->TotalEnvio - $cliente->ctacte, 2),
+                'cantidad' => $cantidadTotal
             ]
         ];
     }

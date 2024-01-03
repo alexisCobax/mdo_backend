@@ -158,7 +158,7 @@
                             <tr style="border-top: 1px solid black;">
                                 <td>Cantidad:</td>
                                 <td style="text-align:center;">
-                                    10&nbsp;
+                                    {{ $proforma['pedido']['cantidad'] }}&nbsp;
                                 </td>
                                 <td colspan="3";></td>
                                 <td style="text-align:right;" colspan="2";>
