@@ -143,7 +143,7 @@
                         <tbody>
                             @foreach ($proforma['detalle'] as $p)
                                 <tr>
-                                    <td><img src="https://mayoristasdeopticas.net/productos/480.jpg"
+                                    <td><img src="{{ env('URL_IMAGENES_PRODUCTOS') }}/{{ $p['producto'] }}.jpg"
                                             style="width:90px; height: 70px;" alt="" /></td>
                                     <td class="align-center" style="padding-top:20px;">{{ $p['cantidad'] }}</td>
                                     <td class="align-center" style="padding-top:20px;">{{ $p['codigo'] }}</td>
@@ -201,7 +201,7 @@
                     <tr>
                         <td colspan="3">&nbsp;</td>
                         <td style="text-align:right;">
-                            <strong>Subtotal 1</strong>
+                            <strong>Subtotal</strong>
                         </td>
                         <td style="text-align:right;">
                             <strong>U$S {{ $proforma['pedido']['total'] }}</strong>
@@ -219,7 +219,7 @@
                     <tr>
                         <td colspan="3">&nbsp;</td>
                         <td style="text-align:right;">
-                            <strong>Subtotal con envio 2</strong>
+                            <strong>Subtotal con envio</strong>
                         </td>
                         <td style="text-align:right;">
                             <strong>U$S {{ $proforma['pedido']['subTotalConEnvio'] }}</strong>

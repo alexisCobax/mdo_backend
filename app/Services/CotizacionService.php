@@ -121,7 +121,7 @@ class CotizacionService
                 $cotizacionDetalle->producto = $p['idProducto'];
             }
 
-            $cotizacionDetalle->precio = $precio * $p['cantidad'];
+            $cotizacionDetalle->precio = $precio;
             $cotizacionDetalle->cantidad = $p['cantidad'];
             $cotizacionDetalle->save();
 

@@ -21,12 +21,11 @@ class FindByIdTransformer extends TransformerAbstract
             $precio = $d->precio * $d->cantidad;
 
             $pedidoDetalle[] = [
-                'imagen' => '',
                 'cantidad' => $d->cantidad,
                 'codigo' => $d->id,
                 'nombreProducto' => optional($d->productos)->nombre,
                 'producto' => $d->productos->id,
-                'nombreColor' => optional($d->productos->colores)->nombre,
+                'nombreColor' => $d->productos->color,
                 'color' => optional($d->productos->colores)->id,
                 'precio' => number_format($d->precio, 2),
                 'total' => number_format($precio, 2),
