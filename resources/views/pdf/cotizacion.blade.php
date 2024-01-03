@@ -1,35 +1,24 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="{{ public_path('css/pdf/cotizacion.css') }}" />
+    <link rel="stylesheet" href="{{ public_path('css/pdf/proforma.css') }}" />
     <style>
-        .header-table {
-            width: 700px;
+        .containers {
+            width: 300px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-
-        .logo {
-            width: 310px;
-            height: 100px;
+        .labels {
+            text-align: left;
         }
 
-        .left-table {
-            border: 2px solid rgb(0, 0, 0);
-            width: 350px;
-        }
-
-        .td-left-table {
-            width: 350px;
-        }
-
-
-        .right-table {
-            border: 2px solid rgb(0, 0, 0);
-            width: 340px;
-        }
-
-        .td-rigth-table {
-            width: 350px;
+        .numbers {
+            text-align: right;
         }
     </style>
 </head>
@@ -37,63 +26,90 @@
 <body>
     <header>
         <div class="invoice-wrapper">
-            <table class="header-table">
+            <table class="table">
+                <tr>
+                    <td class="tax">TAX ID 46-0725157</td>
+                    <td class="title">COTIZACIÓN</td>
+                    <td class="fob">FOB : Miami</td>
+                </tr>
+            </table>
+            <br /><br />
+            <table class="table-info">
                 <tr>
                     <td>
-                        <table style="border: 2px solid black;">
-                            <tr>
-                                <td>
-                                    MDO INC
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    2618 NW 112th AVENUE.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    MIAMI, FL 33172
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Phone: 305 513 9177 / 305 424 8199
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    TAX ID # 46-0725157
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="">
+                            <strong>De:</strong>
+                            <table class="table-de">
+                                <tr>
+                                    <td>
+                                        MDO INC
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        2618 NW 112th AVENUE. MIAMI, FL 33172
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Phone: 305 513 9177 / 305 424 8199
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </td>
                     <td>
-                        <table>
-                            <tr>
-                                <td>
-                                    <img class="logo" src="{{ public_path('mayorista.png') }}" alt="">
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td>
-                        <table>
-                            <tr>
-                                <td>
-                                    Fecha:
-                                </td>
-                                <td>
-                                    {{ $cotizacion['fecha'] }}
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="container-table-cliente">
+                            &nbsp;&nbsp;&nbsp;<strong>Cliente:</strong>
+                            <table class="table-cliente">
+                                <tr>
+                                    <td>
+                                        {{$cotizacion['nombreCliente']}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Nº de Cliente:</strong> {{$cotizacion['idCliente']}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Tel:</strong> {{$cotizacion['telefonoCliente']}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Dirección:</strong> {{$cotizacion['direccionCliente']}}
+                                    </td>
+                                </tr>
+                                {{-- <tr>
+                                    <td>
+                                        {{$proforma['cliente']['direccion']}}
+                                    </td>
+                                </tr> --}}
+                                <tr>
+                                    <td>
+                                        <strong>Email:</strong> {{$cotizacion['emailCliente']}}
+                                    </td>
+                                </tr>
+                                {{-- <tr>
+                                    <td>
+                                        {{$proforma['cliente']['email']}}
+                                    </td>
+                                </tr> --}}
+                            </table>
+                        </div>
                     </td>
                 </tr>
             </table>
         </div>
     </header>
     <footer>
+        ATENCIÓN: Por favor nota que el costo de envío NO fue cotizado aún. Si no
+        tienes un transportista que retire tu carga en nuestro depósito en Miami, por
+        favor contáctanos por WhatsApp al +1-786-800-0990 para ayudarte a cotizarlo
+        a fin de que puedas realizar un solo pago y así ahorrarte cualquier cargo extra
+        de tu banco o Western Union.
     </footer>
     <main>
         <div class="invoice-wrapper">
@@ -102,63 +118,64 @@
                     <table class="table table-condensed table-hover">
                         <thead>
                             <tr>
-                                <th style="text-align: center;">Cotizacion</th>
+                                <th style="text-align: center;">ID</th>
+                                <th style="text-align: center;">Codigo</th>
                                 <th style="text-align: center;">Producto</th>
-                                <th style="text-align: center;">Precio</th>
+                                <th style="text-align: center;">Precio Unit</th>
                                 <th style="text-align: center;">Cantidad</th>
+                                <th style="text-align: center;">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody>
 
                             @foreach ($cotizacion['detalles'] as $d)
                                 <tr>
-                                    <td style="text-align: center;">{{ $d['cotizacion'] }}</td>
+                                    <td style="text-align: center;">{{ $d['productoId'] }}</td>
+                                    <td style="text-align: center;">{{ $d['productoCodigo'] }}</td>
                                     <td style="text-align: center;">{{ $d['productoNombre'] }}</td>
                                     <td style="text-align: center;">{{ $d['precio'] }}</td>
                                     <td style="text-align: center;">{{ $d['cantidad'] }}</td>
+                                    <td style="text-align: center;">{{ $d['subtotal'] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr style="border-top: 2px solid black;">
+                                <td colspan="4"></td>
+                                <td style="text-align:center;">
+                                    &nbsp;{{ $cotizacion['cantidad'] }}&nbsp;
+                                </td>
+                                <td colspan="1";></td>
+                            </tr>
+                        </tfoot>
                     </table>
-
                 </div>
                 <!-- /.col -->
+                <br />
+                <table style="width: 700px;">
+                    <tr>
+                        {{-- <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            <strong>Total</strong>
+                        </td> --}}
+                        <td style="text-align:right;">
+                            <strong> Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;U$S {{ $cotizacion['total'] }}</strong>
+                        </td>
+                    </tr>
+
+                </table>
 
             </div>
             <br><br><br>
-            <div>
-                <table class="header-table">
-                    <tr>
-                        <td colspan="3">&nbsp;</td>
-                        <td style="text-align:right;">
-                            Descuento:
-                        </td>
-                        <td style="text-align:right;">
-                            {{ $cotizacion['descuento'] }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">&nbsp;</td>
-                        <td style="text-align:right;">
-                            <strong>Subtotal</strong>
-                        </td>
-                        <td style="text-align:right;">
-                            <strong>U$S {{ $cotizacion['subTotal'] }}</strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">&nbsp;</td>
-                        <td style="text-align:right;">
-                            <strong>Total</strong>
-                        </td>
-                        <td style="text-align:right;">
-                            <strong>U$S {{ $cotizacion['total'] }}</strong>
-                        </td>
-                    </tr>
-                </table>
+            <div style="margin: auto; width: 100%;">
+                <small style="width: 90%; text-align:center;">Precios y Disponibilidad pueden variar sin previo aviso.<br/>
+                    Los paños adicionales a los estuches no se garantizan en ningún caso.<br/>
+                    Cualquier paño que acompañe un estuche es considerado una cortesía extra</small>
             </div>
         </div>
+
         </div>
+
     </main>
 
 
