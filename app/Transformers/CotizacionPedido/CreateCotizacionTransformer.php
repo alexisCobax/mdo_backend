@@ -8,7 +8,7 @@ class CreateCotizacionTransformer
     {
 
         $cliente = [
-            'fecha'=>$cotizacion->fecha,
+            'fecha'=>date('Y-m-d'),
             'cliente'=>$cotizacion->cliente,
             'estado'=>$cotizacion->estado,
             'vendedor'=>1,
