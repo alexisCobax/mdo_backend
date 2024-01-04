@@ -25,8 +25,7 @@ class CotizacionPedidoService
 
     public function create(Request $request)
     {
-        $cotizacion = Cotizacion::find($request->cotizacion)->first();
-
+        $cotizacion = Cotizacion::where('id',$request->cotizacion)->first();
         $cotizacionTransformer = new CreateCotizacionTransformer();
         $cotizacionData = $cotizacionTransformer->transform($cotizacion);
 

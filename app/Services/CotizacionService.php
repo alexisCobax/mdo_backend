@@ -57,17 +57,17 @@ class CotizacionService
     {
         $cotizacion = new Cotizacion();
 
-        if (!$cotizacion) {
-            return response()->json(['error' => 'Failed to create Cotizacion'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        $cotizacion->fecha = NOW();
+        $cotizacion->fecha = date('Y-m-d');
         $cotizacion->cliente = $request->cliente;
         $cotizacion->estado = 1;
         $cotizacion->save();
         $cotizacionId = $cotizacion->id;
 
-        $total = 0;
+        if (!$cotizacion) {
+            return response()->json(['error' => 'Failed to create Cotizacion'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $totalCotizacion = 0;
 
         foreach ($request->productos as $p) {
 
@@ -77,15 +77,15 @@ class CotizacionService
             $cotizacionDetalle = new Cotizaciondetalle();
             $cotizacionDetalle->cotizacion = $cotizacionId;
             $cotizacionDetalle->producto = $p['idProducto'];
-            $cotizacionDetalle->precio = $total;
+            $cotizacionDetalle->precio = $precio;
             $cotizacionDetalle->cantidad = $p['cantidad'];
             $cotizacionDetalle->save();
 
-            $total += $p['precio'];
+            $totalCotizacion += $total;
         }
 
         $cotizacion = Cotizacion::find($cotizacion->id);
-        $cotizacion->total = $total;
+        $cotizacion->total = $totalCotizacion;
         $cotizacion->save();
 
         return response()->json($cotizacion, Response::HTTP_OK);
