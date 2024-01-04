@@ -88,7 +88,7 @@ class ClienteService
         $usuario = Usuario::findOrFail($cliente->usuario);
 
         
-        if ($request->clave) {
+        if ($request->clave && $request->clave!=0 ) {
             $dataUsuario = [
                 'id' => $usuario->id,
                 'nombre' => $request->nombreUsuario,
