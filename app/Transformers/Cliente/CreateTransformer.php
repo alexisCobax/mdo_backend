@@ -38,6 +38,7 @@ class CreateTransformer
             'vendedor' => $request->vendedor,
             'web' => $request->web,
             'notification' => $request->notification,
+            'ciudadEnvio' => $request->ciudadEnvio
         ];
 
         return $cliente;
