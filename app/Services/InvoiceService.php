@@ -16,6 +16,7 @@ use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\PedidoService;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceService
 {
@@ -134,13 +135,11 @@ class InvoiceService
             $invoice->save();
 
             Invoicedetalle::where('invoice', $pedido->invoice)->delete();
-            //return response()->json($pedido->invoice, Response::HTTP_OK);
         } catch (Error $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
 
         // Crear invoice
-        //$pedido = Pedido::find($request->pedido);
 
         $cantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
             ->selectRaw('pedido, SUM(cantidad) as suma_cantidad')
@@ -154,21 +153,27 @@ class InvoiceService
         }catch(Error $e){
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
-        
 
-        $detalle = Pedidodetalle::where('pedido', $request->id)->get();
+        $pedidosDetalle = Pedidodetalle::where('pedido', $request->id)
+        ->select('cantidad', 'precio', 'producto')
+        ->get();
+
+        $pedidosDetalleNn = PedidodetalleNn::where('pedido', $request->id)
+        ->select('id', 'cantidad', 'precio', 'descripcion')
+        ->get();
+
+        $resultadoFinal = $pedidosDetalle->merge($pedidosDetalleNn);
 
         $invoiceDetalle = new CreateDetalleTransformer();
-        $invoiceTransformado = $invoiceDetalle->transform($detalle, $invoice->id);
-
+        $invoiceTransformado = $invoiceDetalle->transform($resultadoFinal, $invoice->id);
         $invoiceDetalle = Invoicedetalle::insert($invoiceTransformado);
+
+        //$invoiceDetalle = Invoicedetalle::insert($invoiceTransformado);
 
         if (!$invoice) {
             return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // $pedido->invoice = $invoice->id;
-        // $pedido->save();
 
         return response()->json($invoice, Response::HTTP_OK);
     }
