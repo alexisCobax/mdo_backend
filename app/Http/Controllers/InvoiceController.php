@@ -49,6 +49,18 @@ class InvoiceController extends Controller
         return $this->service->create($request);
     }
 
+        /**
+     * Creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\InvoiceService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function regenerate(Request $request)
+    {
+        return $this->service->regenerate($request);
+    }
+
     /**
      * Update the specified resource in storage.
      *

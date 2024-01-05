@@ -38,7 +38,6 @@ class FindByIdTransformer extends TransformerAbstract
                 'listPrice' => number_format($id['listPrice'], 2, '.', ''),
                 'netPrice' => $id['netPrice'],
                 'invoice' => $id['invoice'],
-                //'codigo' => isset($producto->codigo) ? $producto->codigo : '',
                 'total' => number_format($total, 2, '.', '')
             ];
         }

@@ -143,7 +143,7 @@ class PedidoService
     public function update(Request $request)
     {
         $pedido = Pedido::find($request->id);
-
+        
         if (!$pedido) {
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
