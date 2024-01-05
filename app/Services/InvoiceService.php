@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Invoicedetalle;
 use App\Models\Pedido;
 use App\Models\Pedidodetalle;
+use App\Models\Pedidodetallenn;
 use App\Transformers\Invoices\CreateDetalleTransformer;
 use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
@@ -14,6 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Services\PedidoService;
 
 class InvoiceService
 {
@@ -45,18 +47,18 @@ class InvoiceService
 
     public function findByIdPdf(Request $request)
     {
-        try{
-        $invoice = Invoice::find($request->id);
+        try {
+            $invoice = Invoice::find($request->id);
 
-        $tranformer = new FindByIdTransformer();
-        $invoiceTransformer = $tranformer->transform($invoice, $request);
+            $tranformer = new FindByIdTransformer();
+            $invoiceTransformer = $tranformer->transform($invoice, $request);
 
-        $pdf = Pdf::loadView('pdf.invoice', ['invoice' => $invoiceTransformer]);
+            $pdf = Pdf::loadView('pdf.invoice', ['invoice' => $invoiceTransformer]);
 
-        $pdf->getDomPDF();
+            $pdf->getDomPDF();
 
-        return $pdf->stream();
-        }catch(Error $e){
+            return $pdf->stream();
+        } catch (Error $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -80,10 +82,18 @@ class InvoiceService
         $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
         $invoice = Invoice::create($invoiceData);
 
-        $detalle = Pedidodetalle::where('pedido', $request->pedido)->get();
+        $pedidosDetalle = Pedidodetalle::where('pedido', $request->pedido)
+        ->select('cantidad', 'precio', 'producto')
+        ->get();
+
+        $pedidosDetalleNn = PedidodetalleNn::where('pedido', $request->pedido)
+        ->select('id', 'cantidad', 'precio', 'descripcion')
+        ->get();
+
+        $resultadoFinal = $pedidosDetalle->merge($pedidosDetalleNn);
 
         $invoiceDetalle = new CreateDetalleTransformer();
-        $invoiceTransformado = $invoiceDetalle->transform($detalle, $invoice->id);
+        $invoiceTransformado = $invoiceDetalle->transform($resultadoFinal, $invoice->id);
         $invoiceDetalle = Invoicedetalle::insert($invoiceTransformado);
 
         if (!$invoice) {
@@ -92,6 +102,73 @@ class InvoiceService
 
         $pedido->invoice = $invoice->id;
         $pedido->save();
+
+        return response()->json($invoice, Response::HTTP_OK);
+    }
+
+    public function regenerate(Request $request)
+    {
+        // Actualizo datos de pedido
+        try {
+
+            $actualizarPedido = new PedidoService;
+            $actualizarPedido->update($request);
+            
+        } catch (Error $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+
+        // Borro invoice e invoiceDetalle
+        $pedido = Pedido::where('id', $request->id)->first();
+
+        try {
+            $invoice = Invoice::findOrFail($pedido->invoice);
+            $fillableAttributes = $invoice->getFillable();
+
+            foreach ($fillableAttributes as $attribute) {
+                if ($attribute !== 'id') {
+                    $invoice->{$attribute} = null;
+                }
+            }
+
+            $invoice->save();
+
+            Invoicedetalle::where('invoice', $pedido->invoice)->delete();
+            //return response()->json($pedido->invoice, Response::HTTP_OK);
+        } catch (Error $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+
+        // Crear invoice
+        //$pedido = Pedido::find($request->pedido);
+
+        $cantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
+            ->selectRaw('pedido, SUM(cantidad) as suma_cantidad')
+            ->get();
+
+        $invoiceData = new CreateTransformer();
+        $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
+
+        try{
+            Invoice::where('id', $pedido->invoice)->update($invoiceData);
+        }catch(Error $e){
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+        
+
+        $detalle = Pedidodetalle::where('pedido', $request->id)->get();
+
+        $invoiceDetalle = new CreateDetalleTransformer();
+        $invoiceTransformado = $invoiceDetalle->transform($detalle, $invoice->id);
+
+        $invoiceDetalle = Invoicedetalle::insert($invoiceTransformado);
+
+        if (!$invoice) {
+            return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // $pedido->invoice = $invoice->id;
+        // $pedido->save();
 
         return response()->json($invoice, Response::HTTP_OK);
     }

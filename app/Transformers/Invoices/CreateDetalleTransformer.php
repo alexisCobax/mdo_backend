@@ -6,25 +6,33 @@ use League\Fractal\TransformerAbstract;
 
 class CreateDetalleTransformer extends TransformerAbstract
 {
-    private $id = 0;
 
     public function transform($detalle, $id)
     {
-        $this->id = $id;
 
-        $response = $detalle->map(function ($detalle) {
+        $response = $detalle->map(function ($detalle) use ($id){
 
-            $descripcion = optional($detalle->productos)->nombre . ' | ' . optional($detalle->productos->marcas)->nombre . ' | ' . optional($detalle->productos->colores)->nombre;
+            if($detalle->producto){
+                $descripcion = optional($detalle->productos)->nombre . ' | ' . optional($detalle->productos->marcas)->nombre . ' | ' . optional($detalle->productos->colores)->nombre;
+            }else{
+                $descripcion = $detalle->descripcion;
+            }
+
+            if($detalle->producto){
+                $itemNumber = optional($detalle->productos)->codigo;
+            }else{
+                $itemNumber = 'NN';
+            }
 
             return [
                 'qordered' => $detalle->cantidad,
                 'qshipped' => $detalle->cantidad,
                 'qborder' => $detalle->cantidad,
-                'itemNumber' => $detalle->pedido,
+                'itemNumber' => $itemNumber,
                 'Descripcion' => $descripcion,
                 'listPrice' => $detalle->precio,
                 'netPrice' => $detalle->precio,
-                'invoice' => $this->id,
+                'invoice' => $id,
             ];
         })->toArray();
 

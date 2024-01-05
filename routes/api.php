@@ -390,6 +390,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     Route::get('/invoice', [InvoiceController::class, 'index']);
     Route::get('/invoice/{id}', [InvoiceController::class, 'show']);
     Route::post('/invoice', [InvoiceController::class, 'create']);
+    Route::put('/invoice/regenerar/{id}', [InvoiceController::class, 'regenerate']);
     Route::put('/invoice/{id}', [InvoiceController::class, 'update']);
     Route::delete('/invoice/{id}', [InvoiceController::class, 'delete']);
 
