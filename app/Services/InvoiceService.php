@@ -84,12 +84,12 @@ class InvoiceService
         $invoice = Invoice::create($invoiceData);
 
         $pedidosDetalle = Pedidodetalle::where('pedido', $request->pedido)
-        ->select('cantidad', 'precio', 'producto')
-        ->get();
+            ->select('cantidad', 'precio', 'producto')
+            ->get();
 
         $pedidosDetalleNn = PedidodetalleNn::where('pedido', $request->pedido)
-        ->select('id', 'cantidad', 'precio', 'descripcion')
-        ->get();
+            ->select('id', 'cantidad', 'precio', 'descripcion')
+            ->get();
 
         $resultadoFinal = $pedidosDetalle->merge($pedidosDetalleNn);
 
@@ -114,7 +114,6 @@ class InvoiceService
 
             $actualizarPedido = new PedidoService;
             $actualizarPedido->update($request);
-            
         } catch (Error $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
@@ -148,27 +147,47 @@ class InvoiceService
         $invoiceData = new CreateTransformer();
         $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
 
-        try{
+        try {
             Invoice::where('id', $pedido->invoice)->update($invoiceData);
-        }catch(Error $e){
+        } catch (Error $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
 
-        $pedidosDetalle = Pedidodetalle::where('pedido', $request->id)
-        ->select('cantidad', 'precio', 'producto')
-        ->get();
+        $query = "
+        INSERT INTO invoicedetalle (id, qordered, qshipped, qborder, itemNumber, descripcion, listPrice, netPrice, invoice)
+        SELECT
+            NULL as id,
+            pedidodetalle.cantidad as qordered,
+            pedidodetalle.cantidad as qshipped,
+            pedidodetalle.cantidad as qborder,
+            codigo as itemNumber,
+            producto.nombre as descripcion,
+            pedidodetalle.precio as listPrice,
+            pedidodetalle.precio as netPrice,
+            {$invoice->id} as invoice
+        FROM pedidodetalle
+        LEFT JOIN producto ON producto.id = pedidodetalle.producto
+        WHERE pedidodetalle.pedido = {$request->id}
+        UNION
+        SELECT  
+            NULL as id,
+            pedidodetallenn.cantidad as qordered,
+            pedidodetallenn.cantidad as qshipped,
+            pedidodetallenn.cantidad as qborder,
+            'NN' as itemNumber,
+            pedidodetallenn.descripcion as descripcion,
+            pedidodetallenn.precio as listPrice,
+            pedidodetallenn.precio as netPrice,
+            {$invoice->id} as invoice
+        FROM pedidodetallenn
+        WHERE pedidodetallenn.pedido = {$request->id}
+    ";
 
-        $pedidosDetalleNn = PedidodetalleNn::where('pedido', $request->id)
-        ->select('id', 'cantidad', 'precio', 'descripcion')
-        ->get();
-
-        $resultadoFinal = $pedidosDetalle->merge($pedidosDetalleNn);
-
-        $invoiceDetalle = new CreateDetalleTransformer();
-        $invoiceTransformado = $invoiceDetalle->transform($resultadoFinal, $invoice->id);
-        $invoiceDetalle = Invoicedetalle::insert($invoiceTransformado);
-
-        //$invoiceDetalle = Invoicedetalle::insert($invoiceTransformado);
+        try {
+            DB::insert($query);
+        } catch (Error $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         if (!$invoice) {
             return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);

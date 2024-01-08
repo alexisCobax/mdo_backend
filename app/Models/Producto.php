@@ -182,7 +182,7 @@ class Producto extends Model
         }
     }
 
-    public function scopeNombre($query, $nombre)
+    public function scopeNombre($query, $nombre)// aca agregar cambio por codigo
     {
         if ($nombre) {
             return $query->whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombre) . '%']);
@@ -225,6 +225,7 @@ class Producto extends Model
                 $query->where('descripcion', 'LIKE', "%$buscador%")
                     ->orWhere('tamano', 'LIKE', "%$buscador%")
                     ->orWhere('nombre', 'LIKE', "%$buscador%")
+                    ->orWhere('codigo', 'LIKE', "%$buscador%")
                     ->orWhereHas('marcaBuscador', function ($query) use ($buscador) {
                         $query->where('nombre', 'LIKE', "%$buscador%");
                     })
