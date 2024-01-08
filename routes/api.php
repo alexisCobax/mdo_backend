@@ -803,6 +803,7 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     Route::post('/web/login', [AuthWebController::class, 'login']);
     Route::post('/web/logout', [AuthWebController::class, 'logout']);
     Route::post('/web/register', [AuthWebController::class, 'register']);
+    Route::post('/web/rescue', [AuthWebController::class, 'rescue']);
 
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
