@@ -6,6 +6,7 @@ use App\Exceptions\TokenExpiredException;
 use App\Exceptions\TokenInvalidException;
 use App\Exceptions\TokenNotParsedException;
 use App\Http\Controllers\Controller;
+use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Usuario;
 use Exception;
@@ -109,6 +110,14 @@ class AuthWebController extends Controller
                     'status' => false,
                     'message' => 'Usuario inexistente.',
                 ], Response::HTTP_NOT_FOUND);
+            }
+
+            $client = Cliente::where('usuario',$user->id)->first();
+            if($client->prospecto==1){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Prospecto, debe pedir autorizacion.',
+                ], Response::HTTP_UNAUTHORIZED);
             }
 
             return response()->json([

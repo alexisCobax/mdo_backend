@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\TokenExpiredException;
-use App\Exceptions\TokenInvalidException;
-use App\Exceptions\TokenNotParsedException;
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Usuario;
 use Exception;
+use App\Models\User;
+use App\Models\Cliente;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Exceptions\TokenExpiredException;
+use App\Exceptions\TokenInvalidException;
 use Illuminate\Support\Facades\Validator;
+use App\Exceptions\TokenNotParsedException;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -111,6 +112,14 @@ class AuthController extends Controller
                     'status' => false,
                     'message' => 'Usuario inexistente.',
                 ], Response::HTTP_NOT_FOUND);
+            }
+
+            $client = Cliente::where('usuario',$user->id)->first();
+            if($client->prospecto==1){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Prospecto, debe pedir autorizacion.',
+                ], Response::HTTP_UNAUTHORIZED);
             }
 
             if ($user->permisos == 1) {
