@@ -112,8 +112,8 @@ class AuthWebController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $client = Cliente::where('usuario',$user->id)->first();
-            if($client->prospecto==1){
+            $client = Cliente::where('usuario', $user->id)->first();
+            if ($client->prospecto == 1) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Prospecto, debe pedir autorizacion.',
@@ -170,6 +170,57 @@ class AuthWebController extends Controller
 
     public function me()
     {
+
+        $user = Auth::user();
+        unset($user->clave);
+        unset($user->token_exp);
+        unset($user->apellido);
+
+        return response()->json(['user' => $user], 200);
+    }
+
+    public function rescue(Request $request)
+    {
+
+        $cliente = Cliente::where('email', $request->email)->first();
+        if (!$cliente) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Cliente inexistente.',
+            ], Response::HTTP_NOT_FOUND);
+        } else {
+            $user = Usuario::where('id', $cliente->usuario)->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cliente sin usuario.',
+                ], Response::HTTP_NOT_FOUND);
+            } else {
+                if ($request->token == '$2a$12$273kc01bpP4ZOL.4XE/6jeGOGtg397AVboF.WXxKG2Qk0EQA0H9Xm') {
+                    $user->clave = Hash::make($request->clave);
+                    $user->save();
+
+                    return response()->json([
+                        'status' => 200,
+                        'usuario' => $user->nombre,
+                    ], Response::HTTP_OK);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Token invalido.',
+                    ], Response::HTTP_UNAUTHORIZED);
+                }
+            }
+
+            return response()->json([
+                'user' => [
+                    'nombre' => $user->nombre,
+                    'permiso' => $user->permisos,
+                ],
+
+            ], Response::HTTP_OK);
+        }
+
 
         $user = Auth::user();
         unset($user->clave);
