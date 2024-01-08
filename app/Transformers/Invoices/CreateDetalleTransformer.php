@@ -46,7 +46,7 @@ class CreateDetalleTransformer extends TransformerAbstract
         //         'invoice' => $id,
         //     ];
         // })->toArray();
-    });
+    })->toArray();
         return $response;
     }
 }
