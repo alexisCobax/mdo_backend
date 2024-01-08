@@ -115,12 +115,12 @@ class AuthController extends Controller
             }
 
             $client = Cliente::where('usuario',$user->id)->first();
-            // if($client->prospecto==1){
-            //     return response()->json([
-            //         'status' => false,
-            //         'message' => 'Prospecto, debe pedir autorizacion.',
-            //     ], Response::HTTP_UNAUTHORIZED);
-            // }
+            if(is_object($client) && $client->prospecto == 1){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Prospecto, debe pedir autorizacion.',
+                ], Response::HTTP_UNAUTHORIZED);
+            }
 
             if ($user->permisos == 1) {
 

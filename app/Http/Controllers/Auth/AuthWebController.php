@@ -113,7 +113,7 @@ class AuthWebController extends Controller
             }
 
             $client = Cliente::where('usuario', $user->id)->first();
-            if ($client->prospecto == 1) {
+            if(is_object($client) && $client->prospecto == 1){
                 return response()->json([
                     'status' => false,
                     'message' => 'Prospecto, debe pedir autorizacion.',
