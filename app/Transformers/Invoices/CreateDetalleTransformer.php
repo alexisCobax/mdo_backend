@@ -24,7 +24,7 @@ class CreateDetalleTransformer extends TransformerAbstract
                 $itemNumber = 'NN';
             }
 
-            $response[] = [
+            return [
                 'qordered' => $detalle->cantidad,
                 'qshipped' => $detalle->cantidad,
                 'qborder' => $detalle->cantidad,
@@ -34,19 +34,8 @@ class CreateDetalleTransformer extends TransformerAbstract
                 'netPrice' => $detalle->precio,
                 'invoice' => $id,
             ];
+        })->toArray();
 
-        //     return [
-        //         'qordered' => $detalle->cantidad,
-        //         'qshipped' => $detalle->cantidad,
-        //         'qborder' => $detalle->cantidad,
-        //         'itemNumber' => $itemNumber,
-        //         'Descripcion' => $descripcion,
-        //         'listPrice' => $detalle->precio,
-        //         'netPrice' => $detalle->precio,
-        //         'invoice' => $id,
-        //     ];
-        // })->toArray();
-    })->toArray();
         return $response;
     }
 }
