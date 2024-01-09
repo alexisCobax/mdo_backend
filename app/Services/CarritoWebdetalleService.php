@@ -145,7 +145,7 @@ class CarritoWebdetalleService
             $payload = [
                 'carrito' => $carrito,
                 'producto' => $request->producto,
-                'precio' => $precio * $producto->stock,
+                'precio' => $precio,
                 'cantidad' => $producto->stock,
                 'status' => $status,
                 'stock' => $stock,
@@ -154,7 +154,7 @@ class CarritoWebdetalleService
             $payload = [
                 'carrito' => $carrito,
                 'producto' => $request->producto,
-                'precio' => $precio * $request->cantidad,
+                'precio' => $precio,
                 'cantidad' => $request->cantidad,
                 'status' => $status,
                 'stock' => $stock,

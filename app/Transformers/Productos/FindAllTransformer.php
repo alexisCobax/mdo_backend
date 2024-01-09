@@ -10,7 +10,7 @@ class FindAllTransformer extends TransformerAbstract
     public function transform($producto)
     {
         $arrayEnum = EstadosProductosEnums::toArray();
-
+        
         return [
             'id' => $producto->id,
             'imagenPrincipal' => $producto->imagenPrincipal . '.jpg',

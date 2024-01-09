@@ -2,19 +2,20 @@
 
 namespace App\Services;
 
-use App\Helpers\CalcTotalHelper;
-use App\Helpers\CarritoHelper;
-use App\Helpers\LogHelper;
-use App\Models\Carrito;
-use App\Models\Carritodetalle;
 use App\Models\Pedido;
-use App\Models\Pedidodetalle;
+use App\Models\Recibo;
+use App\Models\Carrito;
 use App\Models\Producto;
+use App\Helpers\LogHelper;
 use App\Models\Transaccion;
-use App\Transformers\Pdf\FindByIdTransformer;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Models\Pedidodetalle;
 use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Carritodetalle;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Helpers\CalcTotalHelper;
+use App\Transformers\Pdf\FindByIdTransformer;
 use Illuminate\Validation\ValidationException;
 
 class PagoWebService
@@ -48,6 +49,25 @@ class PagoWebService
             /* Guardo Transaccion**/
             $this->saveTransaction($carrito['cliente'], json_encode($pedido), $pago->status, $pagoResponse);
 
+            //GENERAR RECIBO
+
+            $recibo = [
+                "cliente" => $carrito['cliente'],
+                "formaDePago" => 2,
+                "total" => $pago->amount / 100,
+                "observaciones" => "Pago realizado a traves de la plataforma de clover",
+                "pedido" => $pedido->id,
+                "garantia" => 0,
+                "anulado" => 0,
+                "fecha" => NOW()
+            ];
+
+            $recibo = Recibo::create($recibo);
+
+            if (!$recibo) {
+                return response()->json(['error' => 'Failed to create Recibo'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
             /* genero y envio el recibo**/
             //$this->sendProforma($pedido);
 
@@ -62,7 +82,7 @@ class PagoWebService
         $pedido = new Pedido;
         $pedido->fecha = NOW();
         $pedido->cliente = $cliente;
-        $pedido->estado = 4;
+        $pedido->estado = 2;
         $pedido->vendedor = 1;
         $pedido->formaDePago = 2;
         $pedido->invoice = 0;
@@ -90,21 +110,27 @@ class PagoWebService
 
     public function saveDetallePedido($productosCarrito, $pedido)
     {
-        $cantidad = '';
+        $cantidad = 0;
         $controlStock = false;
+        $totalPedido = 0;
         foreach ($productosCarrito as $pc) {
             $controlStock = true;
-            $producto = Producto::find($pc['producto']);
+            $producto = Producto::where('id', $pc['producto'])->first();
 
-            if ($pc['cantidad'] > $producto['stock']) {
+            if ($pc['cantidad'] >= $producto['stock']) {
                 $cantidad = $producto['stock'];
-            } elseif ($pc['cantidad'] < $producto['stock']) {
+            } else {
                 $cantidad = $pc['cantidad'];
-            } elseif ($producto['stock'] == 0) {
+            }
+
+            if ($cantidad <= 0) {
                 $controlStock = false;
             }
 
             if ($controlStock) {
+
+                $totalPedido += $pc['precio'] * $cantidad;
+
                 $pedidoDetalle = new Pedidodetalle;
                 $pedidoDetalle->pedido = $pedido->id;
                 $pedidoDetalle->producto = $pc['producto'];
@@ -119,6 +145,8 @@ class PagoWebService
                 $this->updateStock($pc['producto'], $cantidad);
             }
         }
+        $pedido->total = $totalPedido;
+        $pedido->save();
     }
 
     public function updateStock($producto, $cantidad)
@@ -160,14 +188,16 @@ class PagoWebService
         try {
             $ch = curl_init();
 
-            curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
+            // curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
+            curl_setopt($ch, CURLOPT_URL, 'https://scl.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $calculo . ',"currency":"usd","source":"' . $token . '"}');
 
             $headers = [];
             $headers[] = 'Accept: application/json';
-            $headers[] = 'Authorization: Bearer 859c0171-ee8b-7c4b-7a07-3a02288fbc03';
+            //$headers[] = 'Authorization: Bearer 859c0171-ee8b-7c4b-7a07-3a02288fbc03';
+            $headers[] = 'Authorization: Bearer 557ccda4-98cb-5aa7-5ea5-39ad96096908';
             $headers[] = 'idempotency-key ' . $this->gen_uuid();
             $headers[] = 'Content-Type: application/json';
 
