@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Filters\Clientes;
+namespace App\Filters\Prospectos;
 
-use App\Transformers\Cliente\FindAllTransformer;
+use App\Transformers\Prospecto\FindAllTransformer;
 use Illuminate\Http\Response;
 
-class ClientesFilters
+class ProspectosFilters
 {
-    public static function getPaginateClientes($request, $model)
+    public static function getPaginateProspectos($request, $model)
     {
         // Obtén los parámetros de la solicitud
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
-
+        
         // Obtén los parámetros del filtro
         $id = $request->input('id');
         $nombre = $request->input('nombre');
@@ -20,7 +20,7 @@ class ClientesFilters
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
-        $query = $model::where('prospecto', 0);
+        $query = $model::where('prospecto', 1);
         // Aplica los filtros si se proporcionan
         if ($id) {
             if($id!='undefined'){
@@ -36,7 +36,8 @@ class ClientesFilters
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
+        //echo $data;die;
+        ->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
         $transformer = new FindAllTransformer();

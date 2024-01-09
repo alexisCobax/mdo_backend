@@ -3,16 +3,17 @@
 namespace App\Services;
 
 use App\Helpers\PaginateHelper;
-use App\Models\Prospecto;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Filters\Prospectos\ProspectosFilters;
 
 class ProspectoService
 {
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Prospecto::class);
+            $data = ProspectosFilters::getPaginateProspectos($request, Cliente::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -22,7 +23,7 @@ class ProspectoService
 
     public function findById(Request $request)
     {
-        $data = Prospecto::find($request->id);
+        $data = Cliente::find($request->id);
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
@@ -30,7 +31,7 @@ class ProspectoService
     public function create(Request $request)
     {
         $data = $request->all();
-        $prospecto = Prospecto::create($data);
+        $prospecto = Cliente::create($data);
 
         if (!$prospecto) {
             return response()->json(['error' => 'Failed to create Prospecto'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -41,7 +42,7 @@ class ProspectoService
 
     public function update(Request $request)
     {
-        $prospecto = Prospecto::find($request->id);
+        $prospecto = Cliente::find($request->id);
 
         if (!$prospecto) {
             return response()->json(['error' => 'Prospecto not found'], Response::HTTP_NOT_FOUND);
@@ -55,7 +56,7 @@ class ProspectoService
 
     public function delete(Request $request)
     {
-        $prospecto = Prospecto::find($request->id);
+        $prospecto = Cliente::find($request->id);
 
         if (!$prospecto) {
             return response()->json(['error' => 'Prospecto not found'], Response::HTTP_NOT_FOUND);

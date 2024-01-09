@@ -13,6 +13,8 @@ use App\Models\Cotizaciondetalle;
 use App\Filters\Cotizaciones\CotizacionesFilters;
 use App\Helpers\DateHelper;
 use App\Transformers\Cotizacion\FindByIdTransformer;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EnvioCotizacionMail;
 
 class CotizacionService
 {
@@ -88,6 +90,21 @@ class CotizacionService
         $cotizacion->total = $totalCotizacion;
         $cotizacion->save();
 
+        /** genero invoice PDF **/
+
+        /** Envio por email PDF**/
+
+//         $cuerpo = ''; 
+// $emailMdo = env('MAIL_COTIZACION_MDO');
+// $destinatarios = [
+//     $emailMdo,
+//     'mgarralda@cobax.com.ar'
+// ];
+
+// $rutaArchivoZip = asset('storage/pdfCotizaciones/cotizacion2522.pdf');
+
+// Mail::to($destinatarios)->send(new EnvioCotizacionMail($cuerpo, $rutaArchivoZip));
+
         return response()->json($cotizacion, Response::HTTP_OK);
     }
 
@@ -155,7 +172,6 @@ class CotizacionService
     {
         $cotizacion = Cotizacion::where('id',$request->id)->first();
 
-        
         $detalles = Cotizaciondetalle::where('cotizacion', $request->id)->get()->unique('id')->map(function ($detalle) {
             return [
                 'id' => $detalle->id,
@@ -192,6 +208,5 @@ class CotizacionService
         $pdf->getDomPDF();
 
         return $pdf->stream();
-
     }
 }
