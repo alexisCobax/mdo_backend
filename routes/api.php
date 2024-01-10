@@ -846,18 +846,3 @@ Route::post('/subir-contacto', [ActiveCampaignController::class, 'subirContacto'
 Route::get('/web/pais', [PaisWebController::class, 'index']);
 
 Route::post('/web/cliente', [ClienteWebController::class, 'create']);
-
-// Route::post('/test/email',function(){
-
-// $cuerpo = ''; 
-// $emailMdo = env('MAIL_COTIZACION_MDO');
-// $destinatarios = [
-//     $emailMdo,
-//     'mgarralda@cobax.com.ar'
-// ];
-
-// $rutaArchivoZip = asset('storage/pdfCotizaciones/cotizacion2522.pdf');
-
-// Mail::to($destinatarios)->send(new EnvioCotizacionMail($cuerpo, $rutaArchivoZip));
-
-// });
