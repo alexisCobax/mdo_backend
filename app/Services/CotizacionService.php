@@ -6,15 +6,16 @@ use App\Models\Invoice;
 use App\Models\Producto;
 use App\Models\Cotizacion;
 use App\Helpers\CalcHelper;
+use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\Cotizaciondetalle;
-use App\Filters\Cotizaciones\CotizacionesFilters;
-use App\Helpers\DateHelper;
-use App\Transformers\Cotizacion\FindByIdTransformer;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\EnvioCotizacionMail;
+use App\Models\Cotizaciondetalle;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use App\Filters\Cotizaciones\CotizacionesFilters;
+use App\Transformers\Cotizacion\FindByIdTransformer;
 
 class CotizacionService
 {
@@ -63,7 +64,6 @@ class CotizacionService
         $cotizacion->cliente = $request->cliente;
         $cotizacion->estado = 1;
         $cotizacion->save();
-        $cotizacionId = $cotizacion->id;
 
         if (!$cotizacion) {
             return response()->json(['error' => 'Failed to create Cotizacion'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -77,7 +77,7 @@ class CotizacionService
             $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
             $total = $precio * $p['cantidad'];
             $cotizacionDetalle = new Cotizaciondetalle();
-            $cotizacionDetalle->cotizacion = $cotizacionId;
+            $cotizacionDetalle->cotizacion = $cotizacion->id;
             $cotizacionDetalle->producto = $p['idProducto'];
             $cotizacionDetalle->precio = $precio;
             $cotizacionDetalle->cantidad = $p['cantidad'];
@@ -91,19 +91,19 @@ class CotizacionService
         $cotizacion->save();
 
         /** genero invoice PDF **/
+        $this->generarCotizacionMailPdf($cotizacion->id);
 
         /** Envio por email PDF**/
+        $cuerpo = '';
+        $emailMdo = env('MAIL_COTIZACION_MDO');
+        $destinatarios = [
+            $emailMdo,
+            'mgarralda@cobax.com.ar'
+        ];
 
-//         $cuerpo = ''; 
-// $emailMdo = env('MAIL_COTIZACION_MDO');
-// $destinatarios = [
-//     $emailMdo,
-//     'mgarralda@cobax.com.ar'
-// ];
+        $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
 
-// $rutaArchivoZip = asset('storage/pdfCotizaciones/cotizacion2522.pdf');
-
-// Mail::to($destinatarios)->send(new EnvioCotizacionMail($cuerpo, $rutaArchivoZip));
+        Mail::to($destinatarios)->send(new EnvioCotizacionMail($cuerpo, $rutaArchivoZip));
 
         return response()->json($cotizacion, Response::HTTP_OK);
     }
@@ -170,7 +170,7 @@ class CotizacionService
 
     public function findByIdPdf(Request $request)
     {
-        $cotizacion = Cotizacion::where('id',$request->id)->first();
+        $cotizacion = Cotizacion::where('id', $request->id)->first();
 
         $detalles = Cotizaciondetalle::where('cotizacion', $request->id)->get()->unique('id')->map(function ($detalle) {
             return [
@@ -181,9 +181,9 @@ class CotizacionService
                 'productoCodigo' => optional($detalle->productos)->codigo,
                 'precio' => $detalle->precio,
                 'cantidad' => $detalle->cantidad,
-                'subtotal' => number_format($detalle->precio*$detalle->cantidad,2)
+                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2)
             ];
-        })->values(); 
+        })->values();
 
         $cotizacion = [
             "cotizacion" => $cotizacion->id,
@@ -198,7 +198,7 @@ class CotizacionService
             "total" => $cotizacion->total,
             "descuento" => $cotizacion->descuento,
             "cantidad" => $detalles->sum('cantidad'),
-            "total" => number_format($detalles->sum('subtotal'),2)
+            "total" => number_format($detalles->sum('subtotal'), 2)
         ];
 
         $cotizacion['detalles'] = $detalles->all();
@@ -208,5 +208,54 @@ class CotizacionService
         $pdf->getDomPDF();
 
         return $pdf->stream();
+    }
+
+    public function generarCotizacionMailPdf($idCotizacion)
+    {
+        $cotizacion = Cotizacion::where('id', $idCotizacion)->first();
+
+        $detalles = Cotizaciondetalle::where('cotizacion', $idCotizacion)->get()->unique('id')->map(function ($detalle) {
+            return [
+                'id' => $detalle->id,
+                'cotizacion' => $detalle->cotizacion,
+                'productoId' => optional($detalle->productos)->id,
+                'productoNombre' => optional($detalle->productos)->nombre,
+                'productoCodigo' => optional($detalle->productos)->codigo,
+                'precio' => $detalle->precio,
+                'cantidad' => $detalle->cantidad,
+                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2)
+            ];
+        })->values();
+
+        $cotizacion = [
+            "cotizacion" => $cotizacion->id,
+            "fecha" => DateHelper::ToDateCustom($cotizacion->fecha),
+            "cliente" => $cotizacion->cliente,
+            "nombreCliente" => optional($cotizacion->clientes)->nombre,
+            "idCliente" => optional($cotizacion->clientes)->id,
+            "telefonoCliente" => optional($cotizacion->clientes)->telefono,
+            "direccionCliente" => optional($cotizacion->clientes)->direccion,
+            "emailCliente" => optional($cotizacion->clientes)->email,
+            "subTotal" => $cotizacion->subTotal,
+            "total" => $cotizacion->total,
+            "descuento" => $cotizacion->descuento,
+            "cantidad" => $detalles->sum('cantidad'),
+            "total" => number_format($detalles->sum('subtotal'), 2)
+        ];
+
+        $cotizacion['detalles'] = $detalles->all();
+
+        $pdf = Pdf::loadView('pdf.cotizacion', ['cotizacion' => $cotizacion]);
+        $pdfContent = $pdf->output();
+
+        // Guardar el PDF en el directorio storage/app/public/tmpPdf
+        $pdfPath = 'public/tmpdf/' . 'cotizacion_' . $idCotizacion . '.pdf';
+
+        try {
+            Storage::put($pdfPath, $pdfContent);
+            return response()->json(['response' => 'Pdf Guardado!'], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
 }
