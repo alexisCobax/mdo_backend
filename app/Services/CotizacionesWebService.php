@@ -115,7 +115,7 @@ class CotizacionesWebService
     public function procesar(Request $request)
     {
 
-        $cotizacion = Cotizacion::find($request->cotizacion)->first();
+        $cotizacion = Cotizacion::where('id',$request->cotizacion)->first();
 
         Carrito::where('cliente', $cotizacion->cliente)->update(['estado' => 1]);
 
