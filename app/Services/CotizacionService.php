@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Cliente;
 use App\Models\Invoice;
 use App\Models\Producto;
 use App\Models\Cotizacion;
@@ -93,12 +94,22 @@ class CotizacionService
         /** genero invoice PDF **/
         $this->generarCotizacionMailPdf($cotizacion->id);
 
+        $cliente = Cliente::where('id', $request->cliente)->first();
+        
         /** Envio por email PDF**/
         $cuerpo = '';
         $emailMdo = env('MAIL_COTIZACION_MDO');
-        $destinatarios = [
-            $emailMdo
-        ];
+        if ($cliente->email) {
+
+            $destinatarios = [
+                $emailMdo,
+                $cliente->email
+            ];
+        } else {
+            $destinatarios = [
+                $emailMdo
+            ];
+        }
 
         $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
 
