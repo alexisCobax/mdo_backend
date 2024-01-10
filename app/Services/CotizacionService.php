@@ -97,8 +97,7 @@ class CotizacionService
         $cuerpo = '';
         $emailMdo = env('MAIL_COTIZACION_MDO');
         $destinatarios = [
-            $emailMdo,
-            'mgarralda@cobax.com.ar'
+            $emailMdo
         ];
 
         $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
