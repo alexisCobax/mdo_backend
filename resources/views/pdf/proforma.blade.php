@@ -143,7 +143,7 @@
                         <tbody>
                             @foreach ($proforma['detalle'] as $p)
                                 <tr>
-                                    <td><img src="{{ env('URL_IMAGENES_PRODUCTOS') }}/{{ $p['producto'] }}.jpg"
+                                    <td><img src="{{ $p['imagen'] }}"
                                             style="width:90px; height: 70px;" alt="" /></td>
                                     <td class="align-center" style="padding-top:20px;">{{ $p['cantidad'] }}</td>
                                     <td class="align-center" style="padding-top:20px;">{{ $p['codigo'] }}</td>
