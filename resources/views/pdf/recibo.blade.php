@@ -42,7 +42,7 @@
                     <img class="logo" src="{{ public_path('mayorista.png') }}" alt="">
                 </td>
                 <td style="text-align:right;">
-                    12-Jun-2023
+                    {{ $recibo['fecha'] }}
                 </td>
             </tr>
         </table>
