@@ -42,6 +42,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'precio' => number_format($d->precio, 2),
                 'total' => number_format($precio, 2),
                 'imagen' => "https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/" . optional($d->productos)->imagenPrincipal ?? '',
+                'imagenPrincipal' => optional($d->productos)->imagenPrincipal 
             ];
         }
 
@@ -61,6 +62,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'precio' => number_format($dNn->precio, 2),
                 'total' => number_format($dNn->precio * $dNn->cantidad, 2),
                 'imagen' => "https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/" . 0,
+                'imagenPrincipal' => 0,
             ];
         }
 
