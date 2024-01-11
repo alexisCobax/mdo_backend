@@ -7,28 +7,44 @@ use App\Transformers\Marcas\FindAllTransformer;
 
 class MarcasFilters
 {
-    public static function getPaginateMarcas($model)
+    public static function getPaginateMarcas($request, $model)
     {
+                // Obtén los parámetros de la solicitud
+                $page = $request->input('pagina', env('PAGE'));
+                $perPage = $request->input('cantidad', env('PER_PAGE'));
+        
+                // Obtén los parámetros del filtro
+                $nombreCliente = $request->input('nombreCliente');
+                $estado = $request->input('estado');
+                $desde = $request->input('desde');
+                $hasta = $request->input('hasta');
+        
+                // Inicializa la consulta utilizando el modelo
+                $query = $model::query();
+
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
         // Aplica los filtros si se proporcionan
-        $query->where('MostrarEnWeb', 1);
+        //$query->where('MostrarEnWeb', 1);
 
-        // Obtén el valor de la cantidad desde la URL (por ejemplo, 'cantidad=5')
-        $cantidad = request('cantidad');
+        $data = $query->orderBy('id', 'desc')
+        ->paginate($perPage, ['*'], 'page', $page);
 
-        // Verifica si se proporciona una cantidad válida en la URL
-        if ($cantidad && is_numeric($cantidad)) {
-            $cantidad = max(1, $cantidad); // Si se proporciona una cantidad, úsala sin límites inferiores
-        }
+        // // Obtén el valor de la cantidad desde la URL (por ejemplo, 'cantidad=5')
+        // $cantidad = request('cantidad');
 
-        // Ejecuta la consulta y obtén los resultados
-        if ($cantidad) {
-            $data = $query->orderBy('id', 'desc')->take($cantidad)->get();
-        } else {
-            $data = $query->orderBy('id', 'desc')->get(); // Si no se proporciona cantidad, obtén todos los datos.
-        }
+        // // Verifica si se proporciona una cantidad válida en la URL
+        // if ($cantidad && is_numeric($cantidad)) {
+        //     $cantidad = max(1, $cantidad); // Si se proporciona una cantidad, úsala sin límites inferiores
+        // }
+
+        // // Ejecuta la consulta y obtén los resultados
+        // if ($cantidad) {
+        //     $data = $query->orderBy('id', 'desc')->take($cantidad)->get();
+        // } else {
+        //     $data = $query->orderBy('id', 'desc')->get(); // Si no se proporciona cantidad, obtén todos los datos.
+        // }
 
         // Crea una instancia del transformer
         $transformer = new FindAllTransformer();
@@ -38,11 +54,18 @@ class MarcasFilters
             return $transformer->transform($usuario);
         });
 
-        // // Crea la respuesta personalizada
+        // Crea la respuesta personalizada
         $response = [
             'status' => Response::HTTP_OK,
+            'total' => $data->total(),
+            'cantidad_por_pagina' => $data->perPage(),
+            'pagina' => $data->currentPage(),
+            'cantidad_total' => $data->total(),
             'results' => $marcasTransformadas,
         ];
+
+        // Devuelve la respuesta
+        return response()->json($response);
 
         // Devuelve la respuesta
         return response()->json($response);
