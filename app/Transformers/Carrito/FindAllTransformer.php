@@ -73,7 +73,7 @@ class FindAllTransformer extends TransformerAbstract
             'subtotal' => $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'],
             'totalConEnvio' => $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'],
             //'totalEnvio' => $calculo['totalEnvio'] == 0 ? '0.00' : $calculo['totalEnvio'],
-            'totalEnvio' => '10.00',
+            'totalEnvio' => $calculo['totalEnvio'],
             'detalles' => $response->toArray(),
             'cantidadUnidades' => $cantidades,
             'montoMaximoDePago' => $cliente->montoMaximoDePago,
