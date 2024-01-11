@@ -146,7 +146,7 @@
                                     <td><img src="{{ env('URL_IMAGENES_PRODUCTOS') }}/{{ $p['imagenPrincipal'] }}.jpg"
                                             style="width:90px; height: 70px;" alt="" /></td>
                                     <td class="align-center" style="padding-top:20px;">{{ $p['cantidad'] }}</td>
-                                    <td class="align-center" style="padding-top:20px;">{{ $p['codigo'] }}</td>
+                                    <td class="align-center" style="padding-top:20px;">&nbsp;&nbsp;&nbsp;{{ $p['codigo'] }}&nbsp;&nbsp;&nbsp;</td>
                                     <td class="align-left" style="padding-top:20px;">{{ $p['nombreProducto'] }}</td>
                                     <td class="align-left" style="padding-top:20px;">{{ $p['nombreColor'] }}</td>
                                     <td class="align-center" style="padding-top:20px;">{{ $p['precio'] }}</td>
