@@ -14,7 +14,7 @@ class MarcaproductoService
     public function findAll(Request $request)
     {
         try {
-            $data = MarcasFilters::getPaginateMarcas(Marcaproducto::class);
+            $data = MarcasFilters::getPaginateMarcas($request, Marcaproducto::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
