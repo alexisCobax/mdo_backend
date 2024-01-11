@@ -12,7 +12,7 @@ class CalcEnvioHelper
 
         $carrito = CarritoHelper::getCarrito();
 
-        $cliente = Cliente::where('id', $carrito['cliente'])->where('tipoDeEnvio', 3)->where('paisShape', 'USA')->first();
+        $cliente = Cliente::where('id', $carrito['cliente'])->where('tipoDeEnvio', 2)->where('paisShape', 'USA')->first();
 
         $totalEnvio = 0;
 

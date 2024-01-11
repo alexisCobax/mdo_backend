@@ -32,25 +32,16 @@ class PagoWebService
         $pagoResponse = $pago->getContent();
         $pago = json_decode($pagoResponse);
 
+        /* Guardo Transaccion**/
+        $this->saveTransaction($carrito['cliente'], json_encode([]), $pago->status, $pagoResponse);
+
         /* Si concreto la operacion realizo el guardado de datos **/
         if (isset($pago->paid) && $pago->paid) {
 
             /** Guardo pedido**/
             $pedido = $this->savePedido($carrito['cliente']);
 
-            /* Guardo detalle de pedidos **/
-            $this->saveDetallePedido($productosCarrito, $pedido);
-
-            /* Elimino carrito **/
-            $carritoUpdate = Carrito::find($carrito['id']);
-            $carritoUpdate->estado = 1;
-            $carritoUpdate->save();
-
-            /* Guardo Transaccion**/
-            $this->saveTransaction($carrito['cliente'], json_encode($pedido), $pago->status, $pagoResponse);
-
             //GENERAR RECIBO
-
             $recibo = [
                 "cliente" => $carrito['cliente'],
                 "formaDePago" => 2,
@@ -63,6 +54,15 @@ class PagoWebService
             ];
 
             $recibo = Recibo::create($recibo);
+
+            /* Guardo detalle de pedidos **/
+            $this->saveDetallePedido($productosCarrito, $pedido);
+
+            /* Elimino carrito **/
+            $carritoUpdate = Carrito::find($carrito['id']);
+            $carritoUpdate->estado = 1;
+            $carritoUpdate->save();
+
 
             if (!$recibo) {
                 return response()->json(['error' => 'Failed to create Recibo'], Response::HTTP_INTERNAL_SERVER_ERROR);
