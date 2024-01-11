@@ -14,11 +14,7 @@ class FindByIdTransformer extends TransformerAbstract
     {
         $pedidoDetalle = [];
         $cliente = Cliente::find($pedido->cliente);
-        $detalle = Pedidodetalle::with('productos.colores')->orWhere('pedido', $pedido->id)
-        ->join('producto', 'pedidodetalle.producto', '=', 'producto.id')
-        ->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-        ->orderBy('marcaproducto.nombre', 'asc')->get();
-
+        $detalle = Pedidodetalle::with('productos.colores')->orWhere('pedido', $pedido->id)->get();
         $detalleNn = Pedidodetallenn::orWhere('pedido', $pedido->id)->get();
 
         $cantidadTotal = 0;
