@@ -118,7 +118,7 @@ class CarritoWebService
 
         $carritoHelper = CarritoHelper::getCarrito();
 
-        Cotizacion::where('cliente', $carritoHelper['cliente'])->update(['estado' => 1]);
+        //Cotizacion::where('cliente', $carritoHelper['cliente'])->update(['estado' => 1]);
 
         if (!$carritoHelper['id']) {
             return response()->json(['error' => 'El carro de compras no existe'], Response::HTTP_NOT_FOUND);
