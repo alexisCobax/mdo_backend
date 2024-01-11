@@ -17,6 +17,8 @@ class FindByIdTransformer extends TransformerAbstract
         $detalle = Pedidodetalle::with('productos.colores')->orWhere('pedido', $pedido->id)->get();
         $detalleNn = Pedidodetallenn::orWhere('pedido', $pedido->id)->get();
 
+        
+
         $cantidadTotal = 0;
         
 
@@ -45,6 +47,10 @@ class FindByIdTransformer extends TransformerAbstract
                 'imagenPrincipal' => optional($d->productos)->imagenPrincipal 
             ];
         }
+
+        usort($pedidoDetalle, function ($a, $b) {
+            return strcmp($a['nombreProducto'], $b['nombreProducto']);
+        });
 
         foreach ($detalleNn as $dNn) {
             $cantidadTotal += $dNn->cantidad;
