@@ -219,13 +219,13 @@
                     <tr>
                         <td colspan="3">&nbsp;</td>
                         <td style="text-align:right;">
-                            <strong>Subtotal con envio</strong>
+                            <strong>Total con envio</strong>
                         </td>
                         <td style="text-align:right;">
                             <strong>U$S {{ $proforma['pedido']['subTotalConEnvio'] }}</strong>
                         </td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <td colspan="3">&nbsp;</td>
                         <td style="text-align:right;">
                             Credito disponible:
@@ -233,6 +233,7 @@
                         <td style="text-align:right;">
                             {{ $proforma['pedido']['creditoDisponible'] }}
                         </td>
+                    </tr>
                     <tr>
                         <td colspan="3">&nbsp;</td>
                         <td style="text-align:right;">
@@ -241,7 +242,7 @@
                         <td style="text-align:right;">
                             <strong>U$S {{ $proforma['pedido']['totalAabonar'] }}</strong>
                         </td>
-                    </tr>
+                    </tr> --}}
 
                 </table>
 

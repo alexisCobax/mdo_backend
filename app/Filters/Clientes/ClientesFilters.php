@@ -19,8 +19,8 @@ class ClientesFilters
         $email = $request->input('email');
 
         // Inicializa la consulta utilizando el modelo
-        $query = $model::query();
-        $query = $model::where('prospecto', 0);
+        $query = $model::query()->where('prospecto', 0);
+
         // Aplica los filtros si se proporcionan
         if ($id) {
             if($id!='undefined'){
