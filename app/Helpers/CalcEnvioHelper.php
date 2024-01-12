@@ -20,10 +20,14 @@ class CalcEnvioHelper
 
             $zipCode = Zipcode::where('zip', $cliente->cpShape)->first();
 
+            if($zipCode){
+
             $cantidadCajas = ceil($cantidad / env('UNIDADES_X_CAJA'));
             $totalEnvio = $cantidadCajas * $zipCode->precio;
 
             return $totalEnvio;
+            }
+            return 0;
         }
     }
 }
