@@ -199,19 +199,19 @@
                             <tr>
                                 <th style="text-align: center;">Cantidad</th>
                                 <th style="text-align: center;">UPC</th>
-                                <th style="text-align: center;">Descripción/Color/Tamaño/Material</th>
-                                <th style="text-align: center;">Valor</th>
-                                <th style="text-align: center;">Total</th>
+                                <th style="text-align: left;">Descripción/Color/Tamaño/Material</th>
+                                <th style="text-align: right;">Valor</th>
+                                <th style="text-align: right;">Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ( $invoice['detalle'] as $d)
                             <tr>
                                 <td style="text-align: center;">{{$d['qborder']}}</td>
-                                <td style="text-align: center;">{{$d['itemNumber']}}</td>
-                                <td style="text-align: center;">{{$d['Descripcion']}}</td>
-                                <td style="text-align: center;">{{$d['listPrice']}}</td>
-                                <td style="text-align: center;">{{$d['total']}}</td>
+                                <td style="text-align: center;">{{$d['itemNumber']}}&nbsp;&nbsp;</td>
+                                <td style="text-align: left;">{{$d['Descripcion']}}</td>
+                                <td style="text-align: right;">{{$d['listPrice']}}</td>
+                                <td style="text-align: right;">{{$d['total']}}</td>
                             </tr>
                             @endforeach
                         </tbody>

@@ -12,7 +12,7 @@ class FindByIdTransformer extends TransformerAbstract
 {
     public function transform($invoice, $request)
     {
-        $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->ToArray();
+        $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->orderBy('Descripcion', 'asc')->get()->ToArray();
 
         // $cliente = Cliente::where('id',$invoice->cliente)->first();
 
