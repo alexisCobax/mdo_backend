@@ -73,6 +73,18 @@ class PedidodetalleController extends Controller
         return $this->service->update($request);
     }
 
+        /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  use App\Services\PedidodetalleService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function updateProducto(Request $request)
+    {
+        return $this->service->updateProducto($request);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

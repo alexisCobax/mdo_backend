@@ -539,7 +539,11 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     Route::get('/pedidodetalle/{id}', [PedidodetalleController::class, 'show']);
     Route::get('/pedidodetalle/pedido/{id}', [PedidodetalleController::class, 'showDetalle']);
     Route::post('/pedidodetalle', [PedidodetalleController::class, 'create']);
+
     Route::put('/pedidodetalle/{id}', [PedidodetalleController::class, 'update']);
+
+    Route::put('/pedidodetalle/producto/{id}', [PedidodetalleController::class, 'updateProducto']);
+
     Route::delete('/pedidodetalle/{id}', [PedidodetalleController::class, 'delete']);
     Route::delete('/pedidodetalle/producto/{id}', [PedidodetalleController::class, 'deleteProducto']);
 
