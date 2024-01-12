@@ -6,6 +6,7 @@ use App\Models\Cotizacion;
 use App\Models\Cotizaciondetalle;
 use App\Models\Pedido;
 use App\Models\Pedidodetalle;
+use App\Models\Producto;
 use App\Transformers\CotizacionPedido\CreateCotizacionTransformer;
 use Error;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class CotizacionPedidoService
 
     public function create(Request $request)
     {
-        $cotizacion = Cotizacion::where('id',$request->cotizacion)->first();
+        $cotizacion = Cotizacion::where('id', $request->cotizacion)->first();
         $cotizacionTransformer = new CreateCotizacionTransformer();
         $cotizacionData = $cotizacionTransformer->transform($cotizacion);
 
@@ -39,6 +40,15 @@ class CotizacionPedidoService
         $cotizacionDetalles = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->get();
 
         $detalles = $cotizacionDetalles->map(function ($detalle) use ($pedido) {
+
+            $producto = Producto::where('id', $detalle->producto)->first();
+
+            if ($producto->stock < $detalle->cantidad) {
+                $producto->cantidad = $producto->stock;
+            }
+            $producto->stock -= $detalle->cantidad;
+            $producto->save();
+
             return [
                 'pedido' => $pedido->id,
                 'producto' => $detalle->producto,

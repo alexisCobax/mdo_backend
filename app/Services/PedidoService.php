@@ -223,8 +223,6 @@ class PedidoService
             });
 
             try {
-                //Pedidodetallenn::where('pedido', $pedido->id)->delete();
-                //Pedidodetallenn::insert($detalleNN->toArray());
                 Pedidodescuentospromocion::insert($descuentosPromo->toArray());
             } catch (Error $e) {
                 return response()->json($e->getMessage());
