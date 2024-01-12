@@ -215,6 +215,18 @@
                             </tr>
                             @endforeach
                         </tbody>
+                        <br/>
+                        <tfoot>
+                            <tr style="border-top: 1px solid black;">
+                                <td style="text-align:center;">
+                                    {{ $invoice['cantidad'] }}&nbsp;
+                                </td>
+                                <td colspan="3";></td>
+                                <td style="text-align:right;" colspan="2";>
+                                    <strong>U$S {{ $invoice['total'] }}</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 
                 </div>
