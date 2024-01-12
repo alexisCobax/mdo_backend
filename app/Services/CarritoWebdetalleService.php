@@ -121,7 +121,7 @@ class CarritoWebdetalleService
             $payload = [
                 'carrito' => $carrito,
                 'producto' => $request->producto,
-                'precio' => $precio * $cantidad,
+                'precio' => $precio,
                 'cantidad' => $cantidad,
             ];
         } else {
