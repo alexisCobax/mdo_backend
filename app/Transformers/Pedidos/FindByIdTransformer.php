@@ -8,6 +8,7 @@ use App\Models\Pedidodescuentospromocion;
 use App\Models\Pedidodetalle;
 use App\Models\Pedidodetallenn;
 use League\Fractal\TransformerAbstract;
+use Illuminate\Support\Facades\DB;
 
 class FindByIdTransformer extends TransformerAbstract
 {
@@ -23,7 +24,33 @@ class FindByIdTransformer extends TransformerAbstract
 
         $pedido = Pedido::find($this->request->id);
 
-        $pedidoDetalle = Pedidodetalle::where('pedido', $this->request->id)->get();
+        $pedidoDetalle = DB::select(
+            '
+        SELECT 
+            pedidodetalle.id, 
+            pedidodetalle.pedido, 
+            producto.nombre,
+            producto.id as producto, 
+            pedidodetalle.precio, 
+            pedidodetalle.cantidad, 
+            pedidodetalle.costo, 
+            pedidodetalle.envio, 
+            pedidodetalle.tax, 
+            pedidodetalle.taxEnvio, 
+            pedidodetalle.jet_order_item_id
+        FROM pedidodetalle
+            LEFT JOIN
+            producto
+            ON
+            producto.id=pedidodetalle.producto
+        WHERE
+            pedidodetalle.pedido = ?
+        ORDER BY
+            producto.nombre ASC',
+            [$this->request->id]
+        );
+
+
         $detalle = [];
 
         foreach ($pedidoDetalle as $p) {
@@ -32,7 +59,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'id' => $p->id,
                 'pedido' => $p->pedido,
                 'producto' => $p->producto,
-                'productoNombre' => $p->productos->nombre ?? '',
+                'productoNombre' => $p->nombre ?? '',
                 'precio' => $p->precio,
                 'cantidad' => $p->cantidad,
                 'costo' => $p->costo,
@@ -41,7 +68,6 @@ class FindByIdTransformer extends TransformerAbstract
                 'taxEnvio' => $p->taxEnvio,
                 'jet_order_item_id' => $p->jet_order_item_id,
             ];
-
         }
 
         $compraDetallenn = Pedidodetallenn::where('pedido', $this->request->id)->get();
