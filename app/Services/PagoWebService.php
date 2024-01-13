@@ -188,16 +188,16 @@ class PagoWebService
         try {
             $ch = curl_init();
 
-            curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
-            //curl_setopt($ch, CURLOPT_URL, 'https://scl.clover.com/v1/charges');
+            //curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
+            curl_setopt($ch, CURLOPT_URL, 'https://scl.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $calculo . ',"currency":"usd","source":"' . $token . '"}');
 
             $headers = [];
             $headers[] = 'Accept: application/json';
-            $headers[] = 'Authorization: Bearer 859c0171-ee8b-7c4b-7a07-3a02288fbc03';
-            //$headers[] = 'Authorization: Bearer 557ccda4-98cb-5aa7-5ea5-39ad96096908';
+            //$headers[] = 'Authorization: Bearer 859c0171-ee8b-7c4b-7a07-3a02288fbc03';
+            $headers[] = 'Authorization: Bearer 557ccda4-98cb-5aa7-5ea5-39ad96096908';
             $headers[] = 'idempotency-key ' . $this->gen_uuid();
             $headers[] = 'Content-Type: application/json';
 
