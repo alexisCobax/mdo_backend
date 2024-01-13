@@ -10,9 +10,11 @@ use App\Models\Pedidodetallenn;
 use App\Transformers\Pedidos\CreateTransformer;
 use App\Transformers\Pedidos\FindByIdTransformer;
 use Error;
+use Exception;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class PedidoService
 {
@@ -143,7 +145,7 @@ class PedidoService
     public function update(Request $request)
     {
         $pedido = Pedido::find($request->id);
-        
+
         if (!$pedido) {
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
@@ -234,6 +236,20 @@ class PedidoService
 
     public function delete(Request $request)
     {
+
+        $SQL = '
+        UPDATE producto
+        LEFT JOIN pedidodetalle ON pedidodetalle.producto = producto.id
+        SET producto.stock = producto.stock + pedidodetalle.cantidad
+        WHERE pedidodetalle.pedido = ?';
+
+        try {
+            DB::statement($SQL, [$request->id]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
+        }
+
+
         try {
             Pedidodetalle::where('pedido', $request->id)->delete();
         } catch (Error $e) {
@@ -241,7 +257,7 @@ class PedidoService
         }
 
         try {
-            $pedidoDetallenn = PedidoDetallenn::where('pedido', $request->id)->delete();
+            PedidoDetallenn::where('pedido', $request->id)->delete();
         } catch (Error $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
         }
