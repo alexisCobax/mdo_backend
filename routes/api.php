@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use App\Helpers\CalcCuponHelper;
+use App\Mail\EnvioCotizacionMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JetController;
 use App\Http\Controllers\PdfController;
@@ -33,6 +35,7 @@ use App\Http\Controllers\PortadaController;
 use App\Http\Controllers\PreciosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
+use App\Mail\EnvioCotizacionMailSinAdjunto;
 use App\Http\Controllers\Cliente2Controller;
 use App\Http\Controllers\ComisionController;
 use App\Http\Controllers\DepositoController;
@@ -98,8 +101,7 @@ use App\Http\Controllers\EmpresatransportadoraController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
 use App\Http\Controllers\PedidodescuentospromocionController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\EnvioCotizacionMail;
+use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -797,23 +799,23 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     Route::post('/web/me', [AuthWebController::class, 'me']);
 });
 
-    /* Producto ESTO DEBE IR SIN TOKEN**/
-    Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
-    Route::get('/web/producto', [ProductoWebController::class, 'index']);
-    Route::post('/producto/related', [ProductoController::class, 'related']);
-    Route::get('/web/marcaproducto', [MarcaproductoController::class, 'index']);
-    Route::get('/web/vistamarca', [MarcaproductoController::class, 'vista']);
-    Route::get('/web/generar-productos-csv', [ExcelController::class, 'GenerarProductosCsv']);
+/* Producto ESTO DEBE IR SIN TOKEN**/
+Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
+Route::get('/web/producto', [ProductoWebController::class, 'index']);
+Route::post('/producto/related', [ProductoController::class, 'related']);
+Route::get('/web/marcaproducto', [MarcaproductoController::class, 'index']);
+Route::get('/web/vistamarca', [MarcaproductoController::class, 'vista']);
+Route::get('/web/generar-productos-csv', [ExcelController::class, 'GenerarProductosCsv']);
 
-    /* Login Routes Not Auth **/
-    Route::post('/web/login', [AuthWebController::class, 'login']);
-    Route::post('/web/logout', [AuthWebController::class, 'logout']);
-    Route::post('/web/register', [AuthWebController::class, 'register']);
-    Route::post('/web/rescue', [AuthWebController::class, 'rescue']);
+/* Login Routes Not Auth **/
+Route::post('/web/login', [AuthWebController::class, 'login']);
+Route::post('/web/logout', [AuthWebController::class, 'logout']);
+Route::post('/web/register', [AuthWebController::class, 'register']);
+Route::post('/web/rescue', [AuthWebController::class, 'rescue']);
 
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout']);
+Route::post('register', [AuthController::class, 'register']);
 
 
 
@@ -850,3 +852,21 @@ Route::post('/subir-contacto', [ActiveCampaignController::class, 'subirContacto'
 Route::get('/web/pais', [PaisWebController::class, 'index']);
 
 Route::post('/web/cliente', [ClienteWebController::class, 'create']);
+
+Route::post('test/email', function(){
+
+    try{
+        $cuerpo = 'pdf.alta_cliente_prospecto';
+        $subject = 'Cotizacion';
+
+        $destinatarios = [
+            'alexiscobax1@gmail.com'
+        ];
+    
+    Mail::to($destinatarios)->send(new EnvioCotizacionMailSinAdjunto($cuerpo,$subject));
+    return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+    }catch(Exception $e){
+        return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+});
+

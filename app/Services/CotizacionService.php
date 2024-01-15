@@ -11,10 +11,10 @@ use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Mail\EnvioCotizacionMail;
 use App\Models\Cotizaciondetalle;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\EnvioCotizacionMailConAdjunto;
 use App\Filters\Cotizaciones\CotizacionesFilters;
 use App\Transformers\Cotizacion\FindByIdTransformer;
 
@@ -113,7 +113,7 @@ class CotizacionService
 
         $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
 
-        Mail::to($destinatarios)->send(new EnvioCotizacionMail($cuerpo, $rutaArchivoZip));
+        Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip));
 
         return response()->json($cotizacion, Response::HTTP_OK);
     }

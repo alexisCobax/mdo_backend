@@ -30,7 +30,7 @@
 <body style="margin: 0; padding: 0;">
 
     <p class="MsoNormal">
-        <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">Estimado/a [Nombre del Prospecto]<o:p>
+        <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">Estimado/a {{ $nombre }}<o:p>
             </o:p></span>
     </p>
     <p class="MsoNormal">
