@@ -142,18 +142,17 @@ class PagoWebService
                 $pedidoDetalle->taxEnvio = '0.00';
                 $pedidoDetalle->save();
 
-                $this->updateStock($pc['producto'], $cantidad);
+                $this->descuentoDeStock($pc['producto'], $cantidad);
             }
         }
         $pedido->total = $totalPedido;
         $pedido->save();
     }
 
-    public function updateStock($producto, $cantidad)
+    public function descuentoDeStock($producto, $cantidadDescuento)
     {
-
         $producto = Producto::findOrFail($producto);
-        $stock = $producto->stock - $cantidad;
+        $stock = $producto->stock - $cantidadDescuento;
         $producto->stock = $stock;
         $producto->save();
     }

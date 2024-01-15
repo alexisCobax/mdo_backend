@@ -15,6 +15,7 @@ class PedidosFilters
 
         // Obtén los parámetros del filtro
         $nombreCliente = $request->input('nombreCliente');
+        $id = $request->input('id');
         $estado = $request->input('estado');
         $desde = $request->input('desde');
         $hasta = $request->input('hasta');
@@ -23,7 +24,7 @@ class PedidosFilters
         $query = $model::query();
 
         // Aplica los filtros si se proporcionan
-        $query->codigo($nombreCliente);
+        $query->codigo($id);
         $query->nombreCliente($nombreCliente);
         $query->estado($estado);
         $query->stockRange($desde, $hasta);
