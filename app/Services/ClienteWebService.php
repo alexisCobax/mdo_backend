@@ -2,14 +2,16 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
 use App\Models\Cliente;
 use App\Models\Usuario;
-use App\Transformers\Cliente\CreateWebTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EnvioCotizacionMailSinAdjunto;
+use App\Transformers\Cliente\CreateWebTransformer;
 
 class ClienteWebService
 {
@@ -86,13 +88,27 @@ class ClienteWebService
 
         $transformer = new CreateWebTransformer();
         $cliente = $transformer->transform($request, $usuario->id);
-
-        //dd($cliente);
+        $nombre = (!empty($request->nombre)) ? $request->nombre : '';
 
         $cliente = Cliente::create($cliente);
 
         if (!$cliente) {
             return response()->json(['error' => 'Failed to create Cliente'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        /** Envio email a cliente **/
+
+        try{
+            $cuerpo = 'pdf.alta_cliente_prospecto';
+            $subject = 'Cotizacion';
+            $destinatarios = [
+                $request->email
+            ];
+        
+        Mail::to($destinatarios)->send(new EnvioCotizacionMailSinAdjunto($cuerpo,$subject,$nombre));
+        return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json($cliente, Response::HTTP_OK);

@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class EnvioCotizacionMail extends Mailable
+class EnvioCotizacionMailConAdjunto extends Mailable
 {
     use Queueable, SerializesModels;
 
