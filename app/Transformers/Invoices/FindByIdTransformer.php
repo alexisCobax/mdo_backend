@@ -56,7 +56,7 @@ class FindByIdTransformer extends TransformerAbstract
             'clienteTelefono' => $invoice->clientes->telefono,
             'clienteDireccionShape' => $invoice->clientes->direccionShape,
             //'total' => $invoice->total,
-            'total' => $invoice->subTotal,
+            'total' => $invoice->total,
             'formaDePago' => $invoice->formaDePago,
             'estado' => $invoice->estado,
             'observaciones' => $invoice->observaciones,
