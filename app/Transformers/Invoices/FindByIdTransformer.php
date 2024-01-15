@@ -55,7 +55,7 @@ class FindByIdTransformer extends TransformerAbstract
             'clienteCodigoPostal' => $invoice->clientes->codigoPostal,
             'clienteTelefono' => $invoice->clientes->telefono,
             'clienteDireccionShape' => $invoice->clientes->direccionShape,
-            'total' => $invoice->total-$invoice->TotalEnvio,
+            'total' => $invoice->total,
             'formaDePago' => $invoice->formaDePago,
             'estado' => $invoice->estado,
             'observaciones' => $invoice->observaciones,
@@ -87,7 +87,7 @@ class FindByIdTransformer extends TransformerAbstract
                 "subtotal" => $invoice->subTotal,
                 "totalEnvio" => $invoice->TotalEnvio,
                 'descuentoPorPromociones' => $invoice->DescuentoPorPromociones,
-                'total' => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones+$invoice->TotalEnvio
+                'total' => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones
             ]
 
             // 'datosEnvio' => $datosEnvio
