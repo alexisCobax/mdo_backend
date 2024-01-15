@@ -75,7 +75,7 @@ class FindByIdTransformer extends TransformerAbstract
             'UPS' => $invoice->UPS,
             'TotalEnvio' => $invoice->TotalEnvio,
             'codigoUPS' => $invoice->codigoUPS,
-            'subTotal' => $invoice->subTotal-$invoice->TotalEnvio,
+            'subTotal' => $invoice->subTotal,
             'DescuentoPorPromociones' => $invoice->DescuentoPorPromociones,
             'IdActiveCampaign' => $invoice->IdActiveCampaign,
             'detalle' => $detalle,
@@ -84,7 +84,7 @@ class FindByIdTransformer extends TransformerAbstract
                 "totalDescuentoPorcentual" => $invoice->subTotal*$invoice->DescuentoPorcentual/100,
                 "descuentoPorcentual" => $invoice->DescuentoPorcentual,
                 "subtotalConDescuento" => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones,
-                "subtotal" => $invoice->subTotal,
+                "subtotal" => $invoice->subTotal-$invoice->TotalEnvio,
                 "totalEnvio" => $invoice->TotalEnvio,
                 'descuentoPorPromociones' => $invoice->DescuentoPorPromociones,
                 'total' => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones+$invoice->TotalEnvio
