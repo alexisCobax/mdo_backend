@@ -244,9 +244,9 @@ class ExcelToJsonService
             $producto->colorSecundario = 0;
             $producto->save();
 
-            if ($tmpProducto->image) {
-                $this->procesarImagenes($tmpProducto->image, $producto->id);
-            }
+            // if ($tmpProducto->image) {
+            //     $this->procesarImagenes($tmpProducto->image, $producto->id);
+            // }
         }
 
         $productosProcesados = DB::table('tmp_productos as tp')
