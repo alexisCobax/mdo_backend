@@ -2,22 +2,23 @@
 
 namespace App\Services;
 
-use App\DataTransferObject\ProductoDTO;
-use App\Filters\Productos\ProductosFilters;
-use App\Helpers\ImagesHelper;
-use App\Models\Fotoproducto;
 use App\Models\Producto;
-use App\Transformers\Productos\FindByIdTransformer;
+use App\Models\Fotoproducto;
 use Illuminate\Http\Request;
+use App\Helpers\ImagesHelper;
 use Illuminate\Http\Response;
+use App\DataTransferObject\ProductoDTO;
 use Illuminate\Support\Facades\Storage;
+use App\Filters\Productos\ProductosFilters;
+use App\Filters\Productos\ProductosWebFilters;
+use App\Transformers\Productos\FindByIdTransformer;
 
 class ProductoWebService
 {
     public function findAll(Request $request)
     {
         try {
-            $data = ProductosFilters::getPaginateProducts($request, Producto::class);
+            $data = ProductosWebFilters::getPaginateProducts($request, Producto::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
             
