@@ -57,7 +57,7 @@ class ProductosWebFilters
         $query->buscador($buscador);
         $query->NuevosProductos($estado);
 
-        //$query->where('stock', '>', 0);
+        $query->where('stock', '>', 0);
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
