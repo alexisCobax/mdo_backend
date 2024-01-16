@@ -16,7 +16,9 @@
         "laravel/tinker": "^2.5",
         "league/fractal": "^0.20.1",
         "maatwebsite/excel": "^1.1",
-        "payeezy/payeezy-php": "^1.0@alpha"
+        "payeezy/payeezy-php": "^1.0@alpha",
+        "phpoffice/phpspreadsheet": "^1.12",
+        "ysgao/php-zip": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
