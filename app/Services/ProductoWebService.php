@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\DataTransferObject\ProductoDTO;
-use App\Filters\Productos\ProductosFilters;
+use App\Filters\Productos\ProductosWebFilters;
 use App\Helpers\ImagesHelper;
 use App\Models\Fotoproducto;
 use App\Models\Producto;
@@ -17,7 +17,7 @@ class ProductoWebService
     public function findAll(Request $request)
     {
         try {
-            $data = ProductosFilters::getPaginateProducts($request, Producto::class);
+            $data = ProductosWebFilters::getPaginateProducts($request, Producto::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
             
