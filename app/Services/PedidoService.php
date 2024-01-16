@@ -88,8 +88,6 @@ class PedidoService
             }
         }
 
-        //echo $request->descuentosPromocion;die;
-
         if ($request->descuentosPromocion) {
 
             $descuentosPromo = collect($request->descuentosPromocion)->map(function ($descPro) use ($pedido) {
@@ -180,23 +178,23 @@ class PedidoService
 
         $pedido->save();
 
-        if ($request->detalle) {
-            $detalle = collect($request->detalle)->map(function ($dt) use ($pedido) {
-                return [
-                    'pedido' => $pedido->id,
-                    'producto' => $dt['producto'],
-                    'precio' => $dt['precio'],
-                    'cantidad' => $dt['cantidad'],
-                    'costo' => '0',
-                    'envio' => '0',
-                    'tax' => '0',
-                    'taxEnvio' => '0',
-                ];
-            });
+        // if ($request->detalle) {
+        //     $detalle = collect($request->detalle)->map(function ($dt) use ($pedido) {
+        //         return [
+        //             'pedido' => $pedido->id,
+        //             'producto' => $dt['producto'],
+        //             'precio' => $dt['precio'],
+        //             'cantidad' => $dt['cantidad'],
+        //             'costo' => '0',
+        //             'envio' => '0',
+        //             'tax' => '0',
+        //             'taxEnvio' => '0',
+        //         ];
+        //     });
 
-            Pedidodetalle::where('pedido', $pedido->id)->delete();
-            Pedidodetalle::insert($detalle->toArray());
-        }
+        //     Pedidodetalle::where('pedido', $pedido->id)->delete();
+        //     Pedidodetalle::insert($detalle->toArray());
+        // }
 
         if ($request->detalleNN) {
             $detalleNN = collect($request->detalleNN)->map(function ($dtNN) use ($pedido) {
