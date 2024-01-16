@@ -28,7 +28,7 @@ class MarcasFilters
         // Aplica los filtros si se proporcionan
         //$query->where('MostrarEnWeb', 1);
 
-        $data = $query->orderBy('id', 'desc')
+        $data = $query->orderBy('nombre', 'asc')
         ->paginate($perPage, ['*'], 'page', $page);
 
         // // Obtén el valor de la cantidad desde la URL (por ejemplo, 'cantidad=5')
