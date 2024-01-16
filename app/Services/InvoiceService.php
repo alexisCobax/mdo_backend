@@ -161,7 +161,7 @@ class InvoiceService
             pedidodetalle.cantidad as qshipped,
             pedidodetalle.cantidad as qborder,
             codigo as itemNumber,
-            CONCAT(producto.nombre,'/'producto.nombre.'/'.producto.talle, as descripcion,
+            producto.nombre as descripcion,
             pedidodetalle.precio as listPrice,
             pedidodetalle.precio as netPrice,
             {$invoice->id} as invoice
