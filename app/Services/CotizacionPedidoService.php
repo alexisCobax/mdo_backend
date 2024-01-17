@@ -57,7 +57,7 @@ class CotizacionPedidoService
                 'costo' => $detalle->precio * $detalle->cantidad
             ];
         });
-
+ 
         try {
             PedidoDetalle::insert($detalles->toArray());
         } catch (Error $e) {
