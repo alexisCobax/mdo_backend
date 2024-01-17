@@ -176,7 +176,7 @@
                     <td colspan="3" style="border: 1px solid black;">Cliente:{{$invoice['clienteId']}}-{{$invoice['clienteNombre']}}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid black;">Orden #{{$invoice['id']}}</td>
+                    <td style="border: 1px solid black;">Orden #{{$invoice['orden']}}</td>
                     <td style="border: 1px solid black;">Envio Via:{{$invoice['shipTo']}}</td>
                     <td style="border: 1px solid black;">F.O.B.:MIAMI-MDO</td>
                 </tr>
