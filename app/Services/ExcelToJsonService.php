@@ -68,7 +68,7 @@ class ExcelToJsonService
             $estuche = $sheet->getCell('J' . $row->getRowIndex())->getValue();
             $costo = $sheet->getCell('K' . $row->getRowIndex())->getValue();
             $precio_venta = $sheet->getCell('L' . $row->getRowIndex())->getValue();
-            $upc = $sheet->getCell('M' . $row->getRowIndex())->getValue();
+            // $upc = $sheet->getCell('M' . $row->getRowIndex())->getValue();
 
             if (!empty($sku) && is_numeric($sku)) {
 
@@ -116,9 +116,9 @@ class ExcelToJsonService
                     $errorMessages[] = 'El campo Precio Venta esta vacio Celda L' . $row->getRowIndex();
                 }
 
-                if (empty($upc)) {
-                    $errorMessages[] = 'El campo UPC esta vacio Celda M' . $row->getRowIndex();
-                }
+                // if (empty($upc)) {
+                //     $errorMessages[] = 'El campo UPC esta vacio Celda M' . $row->getRowIndex();
+                // }
 
                 $tmpProductos = new TmpProductos();
                 $tmpProductos->sku = $sku;
@@ -133,7 +133,7 @@ class ExcelToJsonService
                 $tmpProductos->estuche = $estuche;
                 $tmpProductos->costo = $costo;
                 $tmpProductos->precio_venta = $precio_venta;
-                $tmpProductos->upc = $upc;
+                // $tmpProductos->upc = $upc;
                 $tmpProductos->image = 'N' . $row->getRowIndex();
                 if ($errorMessages) {
                     $tmpProductos->error = json_encode($errorMessages);
@@ -216,7 +216,7 @@ class ExcelToJsonService
             $producto->ultimaVentaDeMercaderia = NOW();
             $producto->genero = 1;
             $producto->imagenPrincipal = 0;
-            $producto->UPCreal = $tmpProducto->upc;
+            // $producto->UPCreal = $tmpProducto->upc;
             $producto->mdoNet = 1;
             $producto->jet = 0;
             $producto->precioJet = '0.00';
