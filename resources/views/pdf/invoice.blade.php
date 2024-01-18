@@ -112,23 +112,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    2618 NW 112th AVENUE.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    MIAMI, FL 33172
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Phone: 305 513 9177 / 305 424 8199
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    TAX ID # 46-0725157
+                                <td style="height: 100px;">
+                                    {!! nl2br(e($invoice['billTo'])) !!}
                                 </td>
                             </tr>
                         </table>
@@ -141,28 +126,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    {{$invoice['clienteNombre']}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {{$invoice['clienteDireccionShape']}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {{$invoice['clienteCiudad']}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {{$invoice['clienteCodigoPostal']}}, {{$invoice['clientePais']}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    TEL: {{$invoice['clienteTelefono']}}
+                                <td style="height: 100px;">
+                                    {!! nl2br(e($invoice['shipTo'])) !!}
                                 </td>
                             </tr>
                         </table>

@@ -42,9 +42,12 @@ class CotizacionPedidoService
         $detalles = $cotizacionDetalles->map(function ($detalle) use ($pedido) {
 
             $producto = Producto::where('id', $detalle->producto)->first();
-
-            if ($producto->stock < $detalle->cantidad) {
-               $producto->cantidad = $producto->stock;
+            if ($producto->stock < 0) {
+                $detalle->cantidad = 0;
+            } else {
+                if ($producto->stock < $detalle->cantidad) {
+                    $detalle->cantidad = $producto->stock;
+                }
             }
             $producto->stock -= $detalle->cantidad;
             $producto->save();
@@ -57,7 +60,7 @@ class CotizacionPedidoService
                 'costo' => $detalle->precio * $detalle->cantidad
             ];
         });
- 
+
         try {
             PedidoDetalle::insert($detalles->toArray());
         } catch (Error $e) {
