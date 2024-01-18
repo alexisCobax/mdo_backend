@@ -142,7 +142,7 @@
                 </tr>
                 <tr>
                     <td style="border: 1px solid black;">Orden #{{$invoice['orden']}}</td>
-                    <td style="border: 1px solid black;">Envio Via:{{$invoice['shipTo']}}</td>
+                    <td style="border: 1px solid black;">Envio Via:{{$invoice['shipVia']}}</td>
                     <td style="border: 1px solid black;">F.O.B.:MIAMI-MDO</td>
                 </tr>
                 <tr>
