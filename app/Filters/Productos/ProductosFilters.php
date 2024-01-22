@@ -29,6 +29,7 @@ class ProductosFilters
         $stockHasta = $request->input('stockHasta');
         $tipo = $request->input('tipo');
         $marca = $request->input('marca');
+        $nombreMarca = $request->input('nombreMarca');
         $idMarca = $request->input('idMarca');
         $material = $request->input('material');
         $color = $request->input('color');
