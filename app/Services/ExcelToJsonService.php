@@ -250,7 +250,7 @@ class ExcelToJsonService
         }
 
         $productosProcesados = DB::table('tmp_productos as tp')
-            ->select('p.id', 'p.nombre', 'tp.cantidad', 'p.precio')
+            ->select('p.id', 'p.nombre', 'tp.cantidad', 'p.costo')
             ->leftJoin('producto as p', 'tp.sku', '=', 'p.codigo')
             ->get();
 
