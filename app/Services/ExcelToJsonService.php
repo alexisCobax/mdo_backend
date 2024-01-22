@@ -188,7 +188,7 @@ class ExcelToJsonService
         foreach ($skusNoEncontrados as $tmpProducto) {
             $producto = new Producto();
             $producto->nombre = $tmpProducto->nombre;
-            $producto->descripcion = 'pruebaimportacion';
+            $producto->descripcion = $tmpProducto->nombre.' - '.$tmpProducto->tamanio.' - '.$tmpProducto->color_fabricante;
             $producto->tipo = $this->BuscarTipo($tmpProducto->tipo);
             $producto->categoria = 1;
             $producto->marca = $this->BuscarMarcas($tmpProducto->marca);
