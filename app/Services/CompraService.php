@@ -55,9 +55,10 @@ class CompraService
         $compra->enDeposito = 0;
         $compra->save();
         $compraId = $compra->id;
-
+        $precio = 0;
         if ($request->productos) {
             foreach ($request->productos as $p) {
+                $precio += $p['producto'] * $p['cantidad'];
                 $compraDetalle = new Compradetalle();
                 $compraDetalle->compra = $compraId;
                 $compraDetalle->producto = $p['producto'];
@@ -68,8 +69,10 @@ class CompraService
             }
         }
 
+
         if ($request->gastos) {
             foreach ($request->gastos as $g) {
+                $precio += $g['precioGasto'];
                 $compraGastos = new Compradetallenn();
                 $compraGastos->descripcion = $g['descripcion'];
                 $compraGastos->precio = $g['precioGasto'];
@@ -77,6 +80,10 @@ class CompraService
                 $compraGastos->save();
             }
         }
+
+        $compraPrecio = Compra::where('id', $compraId)->first();
+        $compraPrecio->precio = $precio;
+        $compraPrecio->save();
 
         return response()->json($compra, Response::HTTP_OK);
     }
@@ -115,8 +122,9 @@ class CompraService
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Error al eliminar los detalles de compra.']);
             }
-
+            $precio = 0;
             foreach ($request->productos as $p) {
+                $precio += $p['precioUnitario'] * $p['cantidad'];
                 if (isset($p['id']) == '') {
                     $compraDetalle = new Compradetalle();
                     $compraDetalle->compra = $request->id;
@@ -153,6 +161,7 @@ class CompraService
             }
 
             foreach ($request->gastos as $g) {
+                $precio += $g['precioGasto'];
                 if (isset($g['id']) == '') {
                     $compraDetallenn = new Compradetallenn();
                     $compraDetallenn->idCompra = $request->id;
@@ -167,6 +176,10 @@ class CompraService
                 }
             }
         }
+
+        $compraPrecio = Compra::where('id', $request->id)->first();
+        $compraPrecio->precio = $precio;
+        $compraPrecio->save();
 
         return response()->json($compra, Response::HTTP_OK);
     }
