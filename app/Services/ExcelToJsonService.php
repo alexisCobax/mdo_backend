@@ -262,7 +262,7 @@ class ExcelToJsonService
                 'producto' => $pp->id,
                 'nombreProducto' => $pp->nombre,
                 'cantidad' => $pp->cantidad,
-                'precioUnitario' => $pp->precio,
+                'precioUnitario' => $pp->costo,
                 'enDeposito' => 1,
             ];
         }
