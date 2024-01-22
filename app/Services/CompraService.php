@@ -96,7 +96,6 @@ class CompraService
             return response()->json(['error' => 'Compra not found'], Response::HTTP_NOT_FOUND);
         }
 
-        //hago un update de la compra
         $compra->proveedor = $request->proveedor;
         $compra->fechaDeIngreso = $request->fechaDeIngreso;
         $compra->fechaDePago = $request->fechaDePago;
@@ -109,14 +108,6 @@ class CompraService
 
         if ($request->productos) {
 
-            // $idsInJson = array_column($request->productos, 'id');
-            // $idsInCompraDetalle = CompraDetalle::pluck('id')->toArray();
-            // $idsToDelete = array_diff($idsInCompraDetalle, $idsInJson);
-
-            // if (!empty($idsToDelete)) {
-            //     CompraDetalle::whereIn('id', $idsToDelete)->delete();
-            // }
-
             try {
                 CompraDetalle::where('compra', $request->id)->delete();
             } catch (\Exception $e) {
@@ -125,34 +116,17 @@ class CompraService
             $precio = 0;
             foreach ($request->productos as $p) {
                 $precio += $p['precioUnitario'] * $p['cantidad'];
-                if (isset($p['id']) == '') {
-                    $compraDetalle = new Compradetalle();
-                    $compraDetalle->compra = $request->id;
-                    $compraDetalle->producto = $p['producto'];
-                    $compraDetalle->cantidad = $p['cantidad'];
-                    $compraDetalle->precioUnitario = $p['precioUnitario'];
-                    $compraDetalle->enDeposito = $p['enDeposito'];
-                    $compraDetalle->save();
-                } else {
-                    $compraDetalle = Compradetalle::find($p['id']);
-                    $compraDetalle->producto = $p['producto'];
-                    $compraDetalle->cantidad = $p['cantidad'];
-                    $compraDetalle->precioUnitario = $p['precioUnitario'];
-                    $compraDetalle->enDeposito = $p['enDeposito'];
-                    $compraDetalle->save();
-                }
+                $compraDetalle = new Compradetalle();
+                $compraDetalle->compra = $request->id;
+                $compraDetalle->producto = $p['producto'];
+                $compraDetalle->cantidad = $p['cantidad'];
+                $compraDetalle->precioUnitario = $p['precioUnitario'];
+                $compraDetalle->enDeposito = $p['enDeposito'];
+                $compraDetalle->save();
             }
         }
 
         if ($request->gastos) {
-
-            // $idsInJsons = array_column($request->gastos, 'id');
-            // $idsInCompraDetallenn = CompraDetallenn::pluck('id')->toArray();
-            // $idsToDeletes = array_diff($idsInCompraDetallenn, $idsInJsons);
-
-            // if (!empty($idsToDeletes)) {
-            //     Compradetallenn::whereIn('id', $idsToDeletes)->delete();
-            // }
 
             try {
                 CompraDetalle::where('idCompra', $request->id)->delete();
@@ -162,18 +136,11 @@ class CompraService
 
             foreach ($request->gastos as $g) {
                 $precio += $g['precioGasto'];
-                if (isset($g['id']) == '') {
-                    $compraDetallenn = new Compradetallenn();
-                    $compraDetallenn->idCompra = $request->id;
-                    $compraDetallenn->descripcion = $g['descripcion'];
-                    $compraDetallenn->precio = $g['precioGasto'];
-                    $compraDetallenn->save();
-                } else {
-                    $compraDetallenn = Compradetallenn::find($g['id']);
-                    $compraDetallenn->descripcion = $g['descripcion'];
-                    $compraDetallenn->precio = $g['precioGasto'];
-                    $compraDetallenn->save();
-                }
+                $compraDetallenn = new Compradetallenn();
+                $compraDetallenn->idCompra = $request->id;
+                $compraDetallenn->descripcion = $g['descripcion'];
+                $compraDetallenn->precio = $g['precioGasto'];
+                $compraDetallenn->save();
             }
         }
 
