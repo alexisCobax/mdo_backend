@@ -184,7 +184,6 @@ class Producto extends Model
 
     public function scopeNombre($query, $nombre)
     {
-        echo $nombre;die;
         if ($nombre) {
             return $query->whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombre) . '%'])
                 ->orWhereRaw('LOWER(codigo) LIKE ?', ['%' . strtolower($nombre) . '%']);
