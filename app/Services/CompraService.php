@@ -102,12 +102,18 @@ class CompraService
 
         if ($request->productos) {
 
-            $idsInJson = array_column($request->productos, 'id');
-            $idsInCompraDetalle = CompraDetalle::pluck('id')->toArray();
-            $idsToDelete = array_diff($idsInCompraDetalle, $idsInJson);
+            // $idsInJson = array_column($request->productos, 'id');
+            // $idsInCompraDetalle = CompraDetalle::pluck('id')->toArray();
+            // $idsToDelete = array_diff($idsInCompraDetalle, $idsInJson);
 
-            if (!empty($idsToDelete)) {
-                CompraDetalle::whereIn('id', $idsToDelete)->delete();
+            // if (!empty($idsToDelete)) {
+            //     CompraDetalle::whereIn('id', $idsToDelete)->delete();
+            // }
+
+            try {
+                CompraDetalle::where('compra', $request->id)->delete();
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error al eliminar los detalles de compra.']);
             }
 
             foreach ($request->productos as $p) {
@@ -132,12 +138,18 @@ class CompraService
 
         if ($request->gastos) {
 
-            $idsInJsons = array_column($request->gastos, 'id');
-            $idsInCompraDetallenn = CompraDetallenn::pluck('id')->toArray();
-            $idsToDeletes = array_diff($idsInCompraDetallenn, $idsInJsons);
+            // $idsInJsons = array_column($request->gastos, 'id');
+            // $idsInCompraDetallenn = CompraDetallenn::pluck('id')->toArray();
+            // $idsToDeletes = array_diff($idsInCompraDetallenn, $idsInJsons);
 
-            if (!empty($idsToDeletes)) {
-                Compradetallenn::whereIn('id', $idsToDeletes)->delete();
+            // if (!empty($idsToDeletes)) {
+            //     Compradetallenn::whereIn('id', $idsToDeletes)->delete();
+            // }
+
+            try {
+                CompraDetalle::where('idCompra', $request->id)->delete();
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error al eliminar los detalles NN de compra.']);
             }
 
             foreach ($request->gastos as $g) {
