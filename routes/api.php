@@ -101,6 +101,7 @@ use App\Http\Controllers\EmpresatransportadoraController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
 use App\Http\Controllers\PedidodescuentospromocionController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
+use App\Mail\EnvioMailCambiarClave;
 use Illuminate\Http\Response;
 
 /*
@@ -767,6 +768,7 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     /* Carrito**/
     Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
     Route::post('/web/carrito/cotizacion', [CarritoWebController::class, 'procesar']);
+    Route::post('/web/refresh', [AuthWebController::class, 'refresh']);
 
     /* Invoice **/
     Route::post('/web/invoice', [InvoiceWebController::class, 'index']);
@@ -856,14 +858,15 @@ Route::post('/web/cliente', [ClienteWebController::class, 'create']);
 Route::post('test/email', function(){
 
     try{
-        $cuerpo = 'pdf.alta_cliente_prospecto';
-        $subject = 'Cotizacion';
+        $cuerpo = 'mdo.emailCambiarClave';
+        $subject = 'Cambio de clave';
+        $nombre = 'Cambio de clave';
 
         $destinatarios = [
             'alexiscobax1@gmail.com'
         ];
     
-    Mail::to($destinatarios)->send(new EnvioCotizacionMailSinAdjunto($cuerpo,$subject));
+    Mail::to($destinatarios)->send(new EnvioMailCambiarClave($cuerpo,$subject,$nombre));
     return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
     }catch(Exception $e){
         return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

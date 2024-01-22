@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\TokenExpiredException;
-use App\Exceptions\TokenInvalidException;
-use App\Exceptions\TokenNotParsedException;
-use App\Http\Controllers\Controller;
-use App\Models\Cliente;
-use App\Models\User;
-use App\Models\Usuario;
 use Exception;
+use App\Models\User;
+use App\Models\Cliente;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use App\Mail\EnvioMailCambiarClave;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Exceptions\TokenExpiredException;
+use App\Exceptions\TokenInvalidException;
 use Illuminate\Support\Facades\Validator;
+use App\Exceptions\TokenNotParsedException;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthWebController extends Controller
@@ -113,7 +115,7 @@ class AuthWebController extends Controller
             }
 
             $client = Cliente::where('usuario', $user->id)->first();
-            if(is_object($client) && $client->prospecto == 1){
+            if (is_object($client) && $client->prospecto == 1) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Prospecto, debe pedir autorizacion.',
@@ -228,5 +230,34 @@ class AuthWebController extends Controller
         unset($user->apellido);
 
         return response()->json(['user' => $user], 200);
+    }
+
+    public function refresh(Request $request)
+    {
+
+        try {
+            $user = Auth::user();
+            $user = Usuario::where('id', $user->id)->first();
+            $user->clave = Hash::make($request->clave);
+
+            /** Envio un Email **/
+
+            try {
+                $cuerpo = 'mdo.emailCambiarClave';
+                $subject = 'Cambio de clave';
+                $nombre = 'Cambio de clave';
+
+                $destinatarios = [
+                    'alexiscobax1@gmail.com'
+                ];
+
+                Mail::to($destinatarios)->send(new EnvioMailCambiarClave($cuerpo, $subject, $nombre));
+                return response()->json(['response' => "Su clave ha sido cambiada con exito!"], 200);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error'], $e->getMessage());
+        }
     }
 }
