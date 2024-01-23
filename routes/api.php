@@ -863,7 +863,8 @@ Route::post('test/email', function(){
         $nombre = 'Cambio de clave';
 
         $destinatarios = [
-            'alexiscobax1@gmail.com'
+            'alexiscobax1@gmail.com',
+            'mgarralda@gmail.com'
         ];
     
     Mail::to($destinatarios)->send(new EnvioMailCambiarClave($cuerpo,$subject,$nombre));
