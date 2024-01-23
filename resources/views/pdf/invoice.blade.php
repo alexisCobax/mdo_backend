@@ -188,7 +188,7 @@
                                 </td>
                                 <td colspan="3";></td>
                                 <td style="text-align:right;" colspan="2";>
-                                    <strong>U$S {{ $invoice['total'] }}</strong>
+                                    <strong>U$S {{ $invoice['subTotal'] }}</strong>
                                 </td>
                             </tr>
                         </tfoot>
