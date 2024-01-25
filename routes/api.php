@@ -1,8 +1,12 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Helpers\CalcCuponHelper;
 use App\Mail\EnvioCotizacionMail;
+use App\Mail\EnvioMailComunicado;
+use App\Mail\EnvioMailCambiarClave;
+use App\Helpers\ProtegerClaveHelper;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JetController;
@@ -101,8 +105,6 @@ use App\Http\Controllers\EmpresatransportadoraController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
 use App\Http\Controllers\PedidodescuentospromocionController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
-use App\Mail\EnvioMailCambiarClave;
-use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -857,17 +859,23 @@ Route::post('/web/cliente', [ClienteWebController::class, 'create']);
 
 Route::post('test/email', function(){
 
+
+    //echo ProtegerClaveHelper::desencriptarClave('pKZgouVgIqhtWnys38Ke7GpjMFhDbEZxYVA1Ly9TbW1iK0NuVmc9PQ==',null);
     try{
-        $cuerpo = 'mdo.emailCambiarClave';
-        $subject = 'Cambio de clave';
-        $nombre = 'Cambio de clave';
+        $template = 'mdo.emailClienteGenerado';
+        $subject = 'Recibimos tu Aplicación';
+        $informacion = [
+            "usuario" => "alexiscobax1@gmail.com",
+            "clave" => "123456",
+            "nombre" => "alexis"
+        ];
 
         $destinatarios = [
             'alexiscobax1@gmail.com',
-            'mgarralda@gmail.com'
+            //'mgarralda@gmail.com'
         ];
     
-    Mail::to($destinatarios)->send(new EnvioMailCambiarClave($cuerpo,$subject,$nombre));
+    Mail::to($destinatarios)->send(new EnvioMailComunicado($template,$subject,$informacion));
     return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
     }catch(Exception $e){
         return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

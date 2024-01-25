@@ -39,13 +39,11 @@ class Usuario extends Authenticatable
 
     protected $fillable = [
         'nombre',
-        'apellido',
-        'email',
         'clave',
         'permisos',
         'suspendido',
-        'token',
-        'token_exp',
+        'clave_old',
+        'frase',
     ];
 
     public function scopePerfil($query, $perfil)
