@@ -6,25 +6,25 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class EnvioMailCambiarClave extends Mailable
+class EnvioMailComunicado extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $cuerpo;
     public $subject;
-    public $nombre;
+    public $informacion;
 
-    public function __construct($cuerpo,$subject,$nombre)
+    public function __construct($cuerpo,$subject,$informacion)
     {
         $this->cuerpo = $cuerpo;
         $this->subject = $subject;
-        $this->nombre = $nombre;
+        $this->informacion = $informacion;
     }
 
     public function build()
     {
         return $this->subject($this->subject)
                     ->view($this->cuerpo)
-                    ->with(['nombre' => $this->nombre]);
+                    ->with(['informacion' => $this->informacion]);
     }
 }

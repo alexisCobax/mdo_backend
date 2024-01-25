@@ -7,8 +7,12 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\PaginateHelper;
-use App\Filters\Clientes\ClientesFilters;
+use App\Mail\EnvioMailComunicado;
+use App\Mail\EnvioMailCambiarClave;
+use App\Helpers\ProtegerClaveHelper;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Filters\Clientes\ClientesFilters;
 use App\Transformers\Cliente\CreateTransformer;
 
 class ClienteService
@@ -46,22 +50,26 @@ class ClienteService
 
     public function create(Request $request)
     {
+        $frase = 0;
 
-        $existeEmail = Cliente::where('email', $request->email)->count();
-        if ($existeEmail != 0) {
-            return response()->json(['error' => 'Email existente', 'status' => 203], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
-        }
+        // $existeEmail = Cliente::where('email', $request->email)->count();
+        // if ($existeEmail != 0) {
+        //     return response()->json(['error' => 'Email existente', 'status' => 203], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
+        // }
 
-        $existeUsuario = Usuario::where('nombre', $request->usuario)->count();
-        if ($existeUsuario != 0) {
-            return response()->json(['error' => 'Usuario existente', 'status' => 203], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
-        }
+        // $existeUsuario = Usuario::where('nombre', $request->usuario)->count();
+        // if ($existeUsuario != 0) {
+        //     return response()->json(['error' => 'Usuario existente', 'status' => 203], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
+        // }
+
+        $frase = ProtegerClaveHelper::encriptarClave($request->clave);
 
         $usuario = [
             'nombre' => $request->usuario,
             'clave' => Hash::make($request->clave),
             'permisos' => 2,
             'suspendido' => 0,
+            'frase' => $frase
         ];
 
         $usuario = Usuario::create($usuario);
@@ -79,6 +87,66 @@ class ClienteService
             return response()->json(['error' => 'Failed to create Cliente'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        if ($request->prospecto != 1) {
+
+            /** Envio Email **/
+
+            try {
+                $template = 'mdo.emailClienteAprobado';
+                $subject = 'Recibimos tu Aplicación';
+                $informacion = [
+                    "usuario" => $usuario->nombre,
+                    "clave" => $request->clave,
+                    "nombre" => $cliente->nombre
+                ];
+
+                $destinatarios = array_filter([
+                    $cliente->email,
+                    env('MAIL_COTIZACION_MDO'),
+                    env('MAIL_COTIZACION_MDO_CCO')
+                ], function ($valor) {
+                    return !empty($valor);
+                });
+
+                Mail::bcc($destinatarios)
+                    ->send(new EnvioMailComunicado($template, $subject, $informacion));
+
+
+                return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+
+            /** Envio Email **/
+
+            try {
+                $template = 'mdo.emailClienteProspecto';
+                $subject = 'Gracias por tu solicitud en Mayoristas de Ópticas';
+                $informacion = [
+                    "usuario" => $usuario->nombre,
+                    "clave" => $request->clave,
+                    "nombre" => $cliente->nombre
+                ];
+
+                $destinatarios = array_filter([
+                    $cliente->email,
+                    env('MAIL_COTIZACION_MDO'),
+                    env('MAIL_COTIZACION_MDO_CCO')
+                ], function ($valor) {
+                    return !empty($valor);
+                });
+
+                Mail::bcc($destinatarios)
+                    ->send(new EnvioMailComunicado($template, $subject, $informacion));
+
+
+                return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+
         return response()->json($cliente, Response::HTTP_OK);
     }
 
@@ -87,14 +155,15 @@ class ClienteService
         $cliente = Cliente::findOrFail($request->id);
         $usuario = Usuario::findOrFail($cliente->usuario);
 
-        
-        if ($request->clave && $request->clave!=0 ) {
+
+        if ($request->clave && $request->clave != 0) {
             $dataUsuario = [
                 'id' => $usuario->id,
                 'nombre' => $request->nombreUsuario,
                 'clave' => Hash::make($request->clave),
                 'permisos' => 2,
                 'suspendido' => 0,
+                'frase' => ProtegerClaveHelper::encriptarClave($request->clave)
             ];
         } else {
             $dataUsuario = [
@@ -121,6 +190,37 @@ class ClienteService
                 'suspendido' => $usuario->suspendido,
             ],
         ];
+
+        if ($request->prospecto == 1) {
+
+            /** Envio Email **/
+
+            try {
+                $template = 'mdo.emailClienteProspecto';
+                $subject = 'Gracias por tu solicitud en Mayoristas de Ópticas';
+                $informacion = [
+                    "usuario" => $usuario->nombre,
+                    "clave" => $request->clave,
+                    "nombre" => $cliente->nombre
+                ];
+
+                $destinatarios = array_filter([
+                    $cliente->email,
+                    env('MAIL_COTIZACION_MDO'),
+                    env('MAIL_COTIZACION_MDO_CCO')
+                ], function ($valor) {
+                    return !empty($valor);
+                });
+
+                Mail::bcc($destinatarios)
+                    ->send(new EnvioMailComunicado($template, $subject, $informacion));
+
+
+                return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
 
         return response()->json($response, Response::HTTP_OK);
     }
