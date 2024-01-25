@@ -26,8 +26,8 @@ class CompraDetalleFilters
         $query->compra($compra);
 
         // Realiza la paginación de la consulta
-        $data = $query->orderBy('id', 'desc')
-        ->paginate($perPage, ['*'], 'page', $page);
+        $data = $query->orderBy('id', 'desc')->get();
+        // ->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
         $transformer = new FindAllTransformer();
@@ -40,10 +40,10 @@ class CompraDetalleFilters
         // Crea la respuesta personalizada
         $response = [
             'status' => Response::HTTP_OK,
-            'total' => $data->total(),
-            'cantidad_por_pagina' => $data->perPage(),
-            'pagina' => $data->currentPage(),
-            'cantidad_total' => $data->total(),
+            // 'total' => $data->total(),
+            // 'cantidad_por_pagina' => $data->perPage(),
+            // 'pagina' => $data->currentPage(),
+            // 'cantidad_total' => $data->total(),
             'results' => $comprasTransformadas,
         ];
 
