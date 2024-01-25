@@ -12,10 +12,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JetController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PaisController;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\ImageController;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CiudadController;
 use App\Http\Controllers\CloverController;
@@ -882,3 +885,26 @@ Route::post('test/email', function(){
     }
 });
 
+Route::get('test/excel', function(){
+    $data = array(
+        array('Nombre', 'Email', 'Teléfono'),
+        array('Juan Pérez', 'juan@example.com', '123-456-7890'),
+        array('María López', 'maria@example.com', '987-654-3210'),
+    );
+    
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    
+    foreach ($data as $row) {
+        $sheet->fromArray($row);
+    }
+    
+    $filename = 'productos.xlsx';
+    
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+    header('Content-Disposition: attachment;filename="' . $filename . '"');
+    header('Cache-Control: max-age=0');
+    
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
+});
