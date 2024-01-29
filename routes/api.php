@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\CalcCuponHelper;
 use App\Mail\EnvioCotizacionMail;
 use App\Mail\EnvioMailComunicado;
+use App\Helpers\ArrayToXlsxHelper;
 use App\Mail\EnvioMailCambiarClave;
 use App\Helpers\ProtegerClaveHelper;
 use Illuminate\Support\Facades\Mail;
@@ -886,25 +888,10 @@ Route::post('test/email', function(){
 });
 
 Route::get('test/excel', function(){
-    $data = array(
-        array('Nombre', 'Email', 'Teléfono'),
-        array('Juan Pérez', 'juan@example.com', '123-456-7890'),
-        array('María López', 'maria@example.com', '987-654-3210'),
-    );
+
+    $model = new Cliente;
     
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    
-    foreach ($data as $row) {
-        $sheet->fromArray($row);
-    }
-    
-    $filename = 'productos.xlsx';
-    
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
-    header('Content-Disposition: attachment;filename="' . $filename . '"');
-    header('Cache-Control: max-age=0');
-    
-    $writer = new Xlsx($spreadsheet);
-    $writer->save('php://output');
+    $clientes = $model->select('id', 'nombre')->get()->toArray();
+
+    return ArrayToXlsxHelper::getXlsx([],$clientes);
 });

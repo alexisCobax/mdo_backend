@@ -15,7 +15,7 @@ class CotizacionesFilters
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
-        $query->where('estado',0);
+        //$query->where('estado',0);
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
         ->paginate($perPage, ['*'], 'page', $page);
