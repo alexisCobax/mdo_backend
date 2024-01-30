@@ -30,6 +30,7 @@ class FindByIdTransformer extends TransformerAbstract
                     'id' => $c->id,
                     'compra' => $c->compra,
                     'producto' => $c->producto,
+                    'codigo' => optional($c->productos)->codigo,
                     'nombreProducto' => optional($c->productos)->nombre,
                     'cantidad' => $c->cantidad,
                     'precioUnitario' => $c->precioUnitario,
