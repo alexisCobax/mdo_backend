@@ -625,6 +625,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
 
     /* Prospecto Routes **/
 
+
     Route::get('/prospecto', [ProspectoController::class, 'index']);
     Route::get('/prospecto/{id}', [ProspectoController::class, 'show']);
     Route::post('/prospecto', [ProspectoController::class, 'create']);
@@ -862,36 +863,39 @@ Route::get('/web/pais', [PaisWebController::class, 'index']);
 
 Route::post('/web/cliente', [ClienteWebController::class, 'create']);
 
-Route::post('test/email', function(){
+// Route::post('test/email', function(){
 
 
-    //echo ProtegerClaveHelper::desencriptarClave('pKZgouVgIqhtWnys38Ke7GpjMFhDbEZxYVA1Ly9TbW1iK0NuVmc9PQ==',null);
-    try{
-        $template = 'mdo.emailClienteGenerado';
-        $subject = 'Recibimos tu Aplicación';
-        $informacion = [
-            "usuario" => "alexiscobax1@gmail.com",
-            "clave" => "123456",
-            "nombre" => "alexis"
-        ];
+//     //echo ProtegerClaveHelper::desencriptarClave('pKZgouVgIqhtWnys38Ke7GpjMFhDbEZxYVA1Ly9TbW1iK0NuVmc9PQ==',null);
+//     try{
+//         $template = 'mdo.emailClienteGenerado';
+//         $subject = 'Recibimos tu Aplicación';
+//         $informacion = [
+//             "usuario" => "alexiscobax1@gmail.com",
+//             "clave" => "123456",
+//             "nombre" => "alexis"
+//         ];
 
-        $destinatarios = [
-            'alexiscobax1@gmail.com',
-            //'mgarralda@gmail.com'
-        ];
+//         $destinatarios = [
+//             'alexiscobax1@gmail.com',
+//             //'mgarralda@gmail.com'
+//         ];
     
-    Mail::to($destinatarios)->send(new EnvioMailComunicado($template,$subject,$informacion));
-    return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
-    }catch(Exception $e){
-        return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-    }
-});
+//     Mail::to($destinatarios)->send(new EnvioMailComunicado($template,$subject,$informacion));
+//     return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+//     }catch(Exception $e){
+//         return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+//     }
+// });
 
-Route::get('test/excel', function(){
+// Route::get('test/excel', function(){
 
-    $model = new Cliente;
+//     $model = new Cliente;
     
-    $clientes = $model->select('id', 'nombre')->get()->toArray();
+//     $clientes = $model->select('id', 'nombre')->get()->toArray();
 
-    return ArrayToXlsxHelper::getXlsx([],$clientes);
-});
+//     return ArrayToXlsxHelper::getXlsx([],$clientes);
+// });
+
+Route::get('excel/prospecto', [ExcelController::class, 'prospectoExcel']);
+Route::get('excel/cliente', [ExcelController::class, 'clienteExcel']);

@@ -17,6 +17,8 @@ class ProspectosFilters
         $id = $request->input('id');
         $nombre = $request->input('nombre');
         $email = $request->input('email');
+        $telefono = $request->input('telefono');
+        $contacto = $request->input('contacto');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query()->where('prospecto', 1);
@@ -32,6 +34,12 @@ class ProspectosFilters
         }
         if ($email) {
             $query->email($email);
+        }
+        if ($telefono) {
+            $query->telefono($telefono);
+        }
+        if ($contacto) {
+            $query->contacto($contacto);
         }
 
         // Realiza la paginación de la consulta

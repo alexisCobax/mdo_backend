@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
+use App\Helpers\ArrayToXlsxHelper;
 use App\Filters\Prospectos\ProspectosFilters;
+use App\Models\Prospecto;
 
 class ProspectoService
 {
@@ -65,5 +67,76 @@ class ProspectoService
         $prospecto->delete();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+
+    public function excel(Request $request)
+    {
+
+        //                 // Obtén los parámetros del filtro
+        //                 $id = $request->input('id');
+        //                 $nombre = $request->input('nombre');
+        //                 $email = $request->input('email');
+
+        // $model = new Prospecto;
+
+        
+
+        // // Aplica los filtros si se proporcionan
+        // if ($id) {
+        //     if($id!='undefined'){
+        //     $query->id($id);
+        //     }
+        // }
+        // if ($nombre) {
+        //     $query->nombre($nombre);
+        // }
+        // if ($email) {
+        //     $query->email($email);
+        // }
+
+        // $prospectos = $model->select('id', 'nombre')->where('prospecto', 1)->get()->toArray();
+
+        // Obtén los parámetros del filtro
+        $id = $request->input('id');
+        $nombre = $request->input('nombre');
+        $email = $request->input('email');
+        $telefono = $request->input('telefono');
+        $contacto = $request->input('contacto');
+
+        // Crea una nueva instancia del modelo Prospecto
+        $model = new Prospecto;
+
+        // Inicia la construcción de la consulta utilizando el modelo
+        $query = $model->select('id', 'fecha', 'nombre', 'email, telefono, contacto')->where('prospecto', 1);
+
+        // Aplica los filtros si se proporcionan
+        if ($id && $id != 'undefined') {
+            $query->where('id', $id);
+        }
+
+        if ($nombre) {
+            $query->where('nombre', $nombre);
+        }
+
+        if ($email) {
+            $query->where('email', $email);
+        }
+        if ($telefono) {
+            $query->telefono($telefono);
+        }
+        if ($contacto) {
+            $query->contacto($contacto);
+        }
+
+        // Ejecuta la consulta y obtén los resultados en forma de array
+        $prospectos = $query->get()->toArray();
+
+        dd($prospectos);
+
+        try {
+            return ArrayToXlsxHelper::getXlsx([], $prospectos);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
 }
