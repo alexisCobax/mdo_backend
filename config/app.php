@@ -167,6 +167,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Fruitcake\Cors\CorsServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         /*
          * Package Service Providers...
          */

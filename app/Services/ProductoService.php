@@ -49,8 +49,8 @@ class ProductoService
         try {
 
             $productos = Producto::where('id',$request->id)->get();
-
-            if ($productos) {
+            
+            if ($productos->count()!=0) {
 
                 $transformer = new FindByIdTransformer();
 
@@ -176,8 +176,8 @@ class ProductoService
             'bestBrasil' => $request->bestBrasil,
             'posicion' => $request->posicion,
             'stockRoto' => $request->stockRoto,
-            'ultimoIngresoDeMercaderia' => $request->ultimoIngresoDeMercaderia,
-            'ultimaVentaDeMercaderia' => $request->ultimaVentaDeMercaderia,
+            //'ultimoIngresoDeMercaderia' => date("Y-m-d H:i:s"),
+            //'ultimaVentaDeMercaderia' => date("Y-m-d H:i:s"),
             'genero' => $request->genero,
             'UPCreal' => $request->UPCreal,
             'mdoNet' => $request->mdoNet,

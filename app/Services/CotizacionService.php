@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Mail\EnvioCotizacionMailConAdjunto;
 use App\Filters\Cotizaciones\CotizacionesFilters;
 use App\Transformers\Cotizacion\FindByIdTransformer;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Reader;
 
 class CotizacionService
 {
@@ -95,7 +98,7 @@ class CotizacionService
         $this->generarCotizacionMailPdf($cotizacion->id);
 
         $cliente = Cliente::where('id', $request->cliente)->first();
-        
+
         /** Envio por email PDF**/
         $cuerpo = '';
         $emailMdo = env('MAIL_COTIZACION_MDO');
@@ -267,5 +270,43 @@ class CotizacionService
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
+    }
+
+    public function excel()
+    {
+
+        $arrayFake = Configuracion::get()->toArray();
+
+        $rutaArchivoExistente = storage_path('app/public/excel/demo.xlsx');
+
+        $reader = new Reader();
+        $spreadsheet = $reader->load($rutaArchivoExistente);
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('B13', 'Nuevo Valorssss');
+        $i = 0;
+        foreach ($arrayFake as $fila => $datos) {
+            $i = 0;
+            foreach ($datos as $valor) {
+                $i++;
+                $sheet->setCellValueByColumnAndRow($i + 1, $fila + 29, $valor);
+            }
+        }
+
+        $ultimaFila = count($arrayFake) + 28;
+        $sheet->setCellValue('A' . ($ultimaFila + 1), 'termine!');
+
+        $sheet->getColumnDimension('B')->setWidth(40);
+
+        $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
+
+        $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $writer = new Xlsx($spreadsheet);
+        $rutaArchivoModificado = storage_path('app/public/excel/archivo_modificado.xlsx');
+        $writer->save($rutaArchivoModificado);
+
+        return response()->download($rutaArchivoModificado, 'archivo_modificado.xlsx')->deleteFileAfterSend(true);
     }
 }
