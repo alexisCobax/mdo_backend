@@ -74,7 +74,7 @@ class ExcelToJsonService
 
             if (!empty($sku) && is_numeric($sku)) {
 
-                if (empty($marca)) {
+                if (empty($marca)) {//
                     $errorMessages[] = 'El campo Marca esta vacio Celda B' . $row->getRowIndex();
                 }
 
@@ -82,7 +82,7 @@ class ExcelToJsonService
                     $errorMessages[] = 'El campo Nombre esta vacio Celda C' . $row->getRowIndex();
                 }
 
-                if (empty($tipo)) {
+                if (empty($tipo)) {//
                     $errorMessages[] = 'El campo Tipo esta vacio Celda D' . $row->getRowIndex();
                 }
 
@@ -90,7 +90,7 @@ class ExcelToJsonService
                     $errorMessages[] = 'El campo Color Fabricante esta vacio Celda E' . $row->getRowIndex();
                 }
 
-                if (empty($color_generico)) {
+                if (empty($color_generico)) {//
                     $errorMessages[] = 'El campo Color Generico esta vacio Celda F' . $row->getRowIndex();
                 }
 
@@ -102,11 +102,11 @@ class ExcelToJsonService
                     $errorMessages[] = 'El campo Material esta vacio Celda H' . $row->getRowIndex();
                 }
 
-                if (!is_numeric($cantidad)) {
+                if (!is_numeric($cantidad)) {//si es numerico debe ser mayor a 0
                     $errorMessages[] = 'El campo Cantidad es invalido Celda I' . $row->getRowIndex();
                 }
 
-                if (empty($estuche)) {
+                if (empty($estuche)) {//
                     $errorMessages[] = 'El campo Estuche esta vacio Celda J' . $row->getRowIndex();
                 }
 
@@ -318,16 +318,17 @@ class ExcelToJsonService
             if ($marca_existente) {
                 return $marca_existente->id;
             } else {
-                $nueva_marca = new MarcaProducto();
-                $nueva_marca->nombre = $marca;
-                $nueva_marca->propia = 0;
-                $nueva_marca->VIP = 0;
-                $nueva_marca->logo = 0;
-                $nueva_marca->MostrarEnWeb = 1;
-                $nueva_marca->suspendido = 0;
-                $nueva_marca->save();
+                return response()->json(['data' => $productosTransformados], Response::HTTP_OK);
+                // $nueva_marca = new MarcaProducto();
+                // $nueva_marca->nombre = $marca;
+                // $nueva_marca->propia = 0;
+                // $nueva_marca->VIP = 0;
+                // $nueva_marca->logo = 0;
+                // $nueva_marca->MostrarEnWeb = 1;
+                // $nueva_marca->suspendido = 0;
+                // $nueva_marca->save();
 
-                return $nueva_marca->id;
+                // return $nueva_marca->id;
             }
         }
     }

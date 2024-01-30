@@ -18,6 +18,7 @@
         "maatwebsite/excel": "^1.1",
         "payeezy/payeezy-php": "^1.0@alpha",
         "phpoffice/phpspreadsheet": "^1.12",
+        "rap2hpoutre/laravel-log-viewer": "^2.3",
         "ysgao/php-zip": "*"
     },
     "require-dev": {

@@ -74,6 +74,17 @@ class CotizacionController extends Controller
     }
 
     /**
+     * Excel generate.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function excel(Request $request)
+    {
+        return $this->service->excel($request);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

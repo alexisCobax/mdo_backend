@@ -1,26 +1,14 @@
 <?php
 
-use App\Models\Cliente;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Helpers\CalcCuponHelper;
-use App\Mail\EnvioCotizacionMail;
-use App\Mail\EnvioMailComunicado;
-use App\Helpers\ArrayToXlsxHelper;
-use App\Mail\EnvioMailCambiarClave;
-use App\Helpers\ProtegerClaveHelper;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Configuracion;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JetController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PaisController;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\ImageController;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CiudadController;
 use App\Http\Controllers\CloverController;
@@ -44,7 +32,6 @@ use App\Http\Controllers\PortadaController;
 use App\Http\Controllers\PreciosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
-use App\Mail\EnvioCotizacionMailSinAdjunto;
 use App\Http\Controllers\Cliente2Controller;
 use App\Http\Controllers\ComisionController;
 use App\Http\Controllers\DepositoController;
@@ -101,7 +88,6 @@ use App\Http\Controllers\PedidoCotizacionController;
 use App\Http\Controllers\SubidasfalabellaController;
 use App\Http\Controllers\CarritodetalleWebController;
 use App\Http\Controllers\CategoriaproductoController;
-use App\Http\Controllers\CotizaciondetalleController;
 use App\Http\Controllers\CategoriafalabellaController;
 use App\Http\Controllers\MovimientoproductoController;
 use App\Http\Controllers\OrderjetdevolucionController;
@@ -863,39 +849,10 @@ Route::get('/web/pais', [PaisWebController::class, 'index']);
 
 Route::post('/web/cliente', [ClienteWebController::class, 'create']);
 
-// Route::post('test/email', function(){
-
-
-//     //echo ProtegerClaveHelper::desencriptarClave('pKZgouVgIqhtWnys38Ke7GpjMFhDbEZxYVA1Ly9TbW1iK0NuVmc9PQ==',null);
-//     try{
-//         $template = 'mdo.emailClienteGenerado';
-//         $subject = 'Recibimos tu Aplicación';
-//         $informacion = [
-//             "usuario" => "alexiscobax1@gmail.com",
-//             "clave" => "123456",
-//             "nombre" => "alexis"
-//         ];
-
-//         $destinatarios = [
-//             'alexiscobax1@gmail.com',
-//             //'mgarralda@gmail.com'
-//         ];
-    
-//     Mail::to($destinatarios)->send(new EnvioMailComunicado($template,$subject,$informacion));
-//     return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
-//     }catch(Exception $e){
-//         return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-//     }
-// });
-
-// Route::get('test/excel', function(){
-
-//     $model = new Cliente;
-    
-//     $clientes = $model->select('id', 'nombre')->get()->toArray();
-
-//     return ArrayToXlsxHelper::getXlsx([],$clientes);
-// });
-
 Route::get('excel/prospecto', [ExcelController::class, 'prospectoExcel']);
+
 Route::get('excel/cliente', [ExcelController::class, 'clienteExcel']);
+
+Route::get('excel/cliente/cotizacion/{id}', [ExcelController::class, 'clienteExcel']);
+
+Route::get('/cotizacion/excel/{id}', [CotizacionController::class, 'excel']);
