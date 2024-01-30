@@ -27,4 +27,14 @@ class ExcelController extends Controller
         return $this->service->generarProductos($request);
 
     }
+
+    public function prospectoExcel(Request $request)
+    {
+        return $this->service->prospecto($request);
+    }
+
+    public function clienteExcel(Request $request)
+    { 
+        return $this->service->cliente($request);
+    }
 }

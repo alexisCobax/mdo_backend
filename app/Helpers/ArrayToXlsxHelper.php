@@ -23,6 +23,25 @@ class ArrayToXlsxHelper
        
         $sheet->fromArray($model, null, 'A1');
        
+        $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->getColumnDimension('C')->setWidth(40);
+        $sheet->getColumnDimension('D')->setWidth(40);
+        $sheet->getColumnDimension('E')->setWidth(40);
+        $sheet->getColumnDimension('F')->setWidth(40);
+        $sheet->getColumnDimension('G')->setWidth(40);
+        $sheet->getColumnDimension('H')->setWidth(40);
+        $sheet->getColumnDimension('I')->setWidth(40);
+        $sheet->getColumnDimension('J')->setWidth(40);
+        $sheet->getColumnDimension('K')->setWidth(40);
+        $sheet->getColumnDimension('L')->setWidth(40);
+
+        // Obtener el rango de celdas
+$rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
+
+// Establecer la alineación a la izquierda para todas las celdas
+$rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+
         $writer = new Xlsx($spreadsheet);
        
         $nombreArchivo = date('YmdHjs').'.xlsx';

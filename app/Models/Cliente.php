@@ -132,4 +132,14 @@ class Cliente extends Model
     {
         return $query->where('email', 'like', '%' . $email . '%');
     }
+
+    public function scopeTelefono($query, $telefono)
+    {
+        return $query->where('telefono', '=', $telefono);
+    }
+
+    public function scopeContacto($query, $contacto)
+    {
+        return $query->where('contacto', 'like', '%' . $contacto . '%');
+    }
 }

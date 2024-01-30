@@ -5,6 +5,7 @@ namespace App\Services;
 use Drawing;
 use Alignment;
 use App\Models\Color;
+use App\Models\Cliente;
 use PHPExcel_IOFactory;
 use App\Models\Producto;
 use App\Models\TmpImagenes;
@@ -15,14 +16,15 @@ use App\Models\TmpProductos;
 use Illuminate\Http\Request;
 use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
+use PHPExcel_Style_Alignment;
 use PHPExcel_Worksheet_Drawing;
 use App\Models\Materialproducto;
+use App\Helpers\ArrayToXlsxHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use PHPExcel_Worksheet_MemoryDrawing;
 use Maatwebsite\Excel\Classes\PHPExcel;
 use App\Filters\Productos\ProductosFilters;
-use PHPExcel_Style_Alignment;
 
 class ExcelToJsonService
 {
@@ -188,7 +190,7 @@ class ExcelToJsonService
         foreach ($skusNoEncontrados as $tmpProducto) {
             $producto = new Producto();
             $producto->nombre = $tmpProducto->nombre;
-            $producto->descripcion = $tmpProducto->nombre.' - '.$tmpProducto->tamanio.' - '.$tmpProducto->color_fabricante;
+            $producto->descripcion = $tmpProducto->nombre . ' - ' . $tmpProducto->tamanio . ' - ' . $tmpProducto->color_fabricante;
             $producto->tipo = $this->BuscarTipo($tmpProducto->tipo);
             $producto->categoria = 1;
             $producto->marca = $this->BuscarMarcas($tmpProducto->marca);
@@ -439,7 +441,7 @@ class ExcelToJsonService
                 "categoria" => $item["categoriaNombre"],
                 "marca" => $item['nombreMarca'],
                 "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
-                "imagen" => storage_path('app/public/images/'.$item['imagenPrincipal'])
+                "imagen" => storage_path('app/public/images/' . $item['imagenPrincipal'])
             ];
         }, $result);
 
@@ -523,5 +525,77 @@ class ExcelToJsonService
         $objWriter->save('php://output');
 
         exit();
+    }
+
+    public function prospecto(Request $request)
+    {
+        // Obtén los parámetros del filtro
+        $id = $request->input('id');
+        $nombre = $request->input('nombre');
+        $email = $request->input('email');
+
+        // Crea una nueva instancia del modelo Prospecto
+        $model = new Cliente;
+
+        // Inicia la construcción de la consulta utilizando el modelo
+        $query = $model->select('id', 'nombre', 'telefono', 'contacto', 'fechaAlta')->where('prospecto', 1);
+
+        // Aplica los filtros si se proporcionan
+        if ($id && $id != 'undefined') {
+            $query->where('id', $id);
+        }
+
+        if ($nombre) {
+            $query->where('nombre', $nombre);
+        }
+
+        if ($email) {
+            $query->where('email', $email);
+        }
+
+        // Ejecuta la consulta y obtén los resultados en forma de array
+        $prospectos = $query->get()->toArray();
+
+        try {
+            return ArrayToXlsxHelper::getXlsx([], $prospectos);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function cliente(Request $request)
+    {
+        // Obtén los parámetros del filtro
+        $id = $request->input('id');
+        $nombre = $request->input('nombre');
+        $email = $request->input('email');
+
+        // Crea una nueva instancia del modelo Cliente
+        $model = new Cliente;
+
+        // Inicia la construcción de la consulta utilizando el modelo
+        $query = $model->select('id', 'nombre', 'telefono', 'contacto', 'fechaAlta')->where('prospecto', 0);
+
+        // Aplica los filtros si se proporcionan
+        if ($id && $id != 'undefined') {
+            $query->where('id', $id);
+        }
+
+        if ($nombre) {
+            $query->where('nombre', $nombre);
+        }
+
+        if ($email) {
+            $query->where('email', $email);
+        }
+
+        // Ejecuta la consulta y obtén los resultados en forma de array
+        $clientes = $query->get()->toArray();
+
+        try {
+            return ArrayToXlsxHelper::getXlsx([], $clientes);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
 }
