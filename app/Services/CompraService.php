@@ -114,6 +114,7 @@ class CompraService
                 return response()->json(['error' => 'Error al eliminar los detalles de compra.']);
             }
             $precio = 0;
+            $compra->enDeposito = 1;
             foreach ($request->productos as $p) {
                 $precio += $p['precioUnitario'] * $p['cantidad'];
                 $compraDetalle = new Compradetalle();
@@ -123,7 +124,11 @@ class CompraService
                 $compraDetalle->precioUnitario = $p['precioUnitario'];
                 $compraDetalle->enDeposito = $p['enDeposito'];
                 $compraDetalle->save();
+                if ($p['enDeposito'] == 0) {
+                    $compra->enDeposito = 0;
+                }
             }
+            $compra->save();
         }
 
         if ($request->gastos) {

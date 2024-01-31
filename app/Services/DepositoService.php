@@ -53,17 +53,17 @@ class DepositoService
 
             $compraDetalle = Compradetalle::where('id', $productoData['producto'])->first(); //producto es id de detalle
 
-            if (!$productoData['isChecked']) {
+            if (!$productoData['enDeposito']) {
                 $cantidadProductosNoDeposito++;
             }
-            if ($compraDetalle->enDeposito != $productoData['isChecked']) {
+            if ($compraDetalle->enDeposito != $productoData['enDeposito']) {
 
                 $producto = Producto::where('id', $productoData['productoId'])->first();
 
                 if ($producto) {
                     $nuevaCantidad = $producto->stock;
 
-                    if ($productoData['isChecked']) {
+                    if ($productoData['enDeposito']) {
                         $nuevaCantidad += $productoData['cantidad'];
                     } else {
                         $nuevaCantidad -= $productoData['cantidad'];
@@ -77,7 +77,7 @@ class DepositoService
 
 
                 Compradetalle::where('id', $productoData['producto'])->update([
-                    'enDeposito' => $productoData['isChecked']
+                    'enDeposito' => $productoData['enDeposito']
                 ]);
             }
         }
