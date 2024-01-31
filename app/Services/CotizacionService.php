@@ -9,17 +9,19 @@ use App\Models\Cotizacion;
 use App\Helpers\CalcHelper;
 use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
+use App\Models\Configuracion;
 use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Cotizaciondetalle;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use App\Mail\EnvioCotizacionMailConAdjunto;
-use App\Filters\Cotizaciones\CotizacionesFilters;
-use App\Transformers\Cotizacion\FindByIdTransformer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Mail\EnvioCotizacionMailConAdjunto;
+use App\Filters\Cotizaciones\CotizacionesFilters;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Reader;
+use App\Transformers\Cotizacion\FindByIdTransformer;
+use Illuminate\Support\Facades\DB;
 
 class CotizacionService
 {
@@ -272,32 +274,77 @@ class CotizacionService
         }
     }
 
-    public function excel()
+    public function excel(Request $request)
     {
 
-        $arrayFake = Configuracion::get()->toArray();
+        $SQL = "SELECT 
+        cotizaciondetalle.cantidad,
+        producto.codigo,
+        concat(producto.descripcion,' ',
+        ' ',producto.color,
+        ' ',producto.tamano,
+        ' ',producto.material) AS descripcion,
+        cotizaciondetalle.precio
+        FROM 
+        tienda.cotizaciondetalle 
+        INNER JOIN 
+        producto 
+        ON 
+        cotizaciondetalle.producto=producto.id
+        INNER JOIN
+        marcaproducto
+        ON
+        producto.marca=marcaproducto.id
+        WHERE 
+        cotizaciondetalle.cotizacion = ?";
 
-        $rutaArchivoExistente = storage_path('app/public/excel/demo.xlsx');
+
+$response = DB::select($SQL, [$request->id]);
+
+        $CotizacionDetalle = json_decode(json_encode($response), true);
+
+        $rutaArchivoExistente = storage_path('app/public/excel/demo2.xlsx');
 
         $reader = new Reader();
         $spreadsheet = $reader->load($rutaArchivoExistente);
+        
 
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->setCellValue('B13', 'Nuevo Valorssss');
+        //$sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow())
+        $sheet->getStyle('A1:' . 'CZ' . 1000)
+        ->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()
+        ->setARGB('FFFFFFFF');
+
+
+        // $sheet->setCellValue('B13', 'Nuevo Valorssss');
+
+            // Texto con saltos de línea
+            $textoConSaltos = " MDO INC\n 2618 NW 112th AVENUE.\n MIAMI, FL 33172\n Phone: 305 513 9177 / 305 424 8199\n TAX ID # 46-0725157";
+
+            // Establecer el texto en la celda C2 con saltos de línea
+            $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+            $richText->createText($textoConSaltos);
+
+        $sheet->mergeCells('C2:J7'); // Fusionar celdas de C2 a J7
+        $sheet->setCellValue('C2', $richText); // Establecer valor en la celda fusionada
+    
+
         $i = 0;
-        foreach ($arrayFake as $fila => $datos) {
+        foreach ($CotizacionDetalle as $fila => $datos) {
             $i = 0;
             foreach ($datos as $valor) {
                 $i++;
-                $sheet->setCellValueByColumnAndRow($i + 1, $fila + 29, $valor);
+                $sheet->setCellValueByColumnAndRow($i + 2, $fila + 70, $valor);
             }
         }
 
-        $ultimaFila = count($arrayFake) + 28;
-        $sheet->setCellValue('A' . ($ultimaFila + 1), 'termine!');
+        // $ultimaFila = count($CotizacionDetalle) + 28;
+        // $sheet->setCellValue('A' . ($ultimaFila + 1), 'termine!');
 
-        $sheet->getColumnDimension('B')->setWidth(40);
+        // $sheet->getColumnDimension('B')->setWidth(40);
 
         $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
 
