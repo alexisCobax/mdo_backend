@@ -22,7 +22,7 @@ class InvoicedetalleService
 
     public function findById(Request $request)
     {
-        $data = Invoicedetalle::find($request->id);
+        $data = Invoicedetalle::where('invoice',$request->id)->get();
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
