@@ -298,7 +298,6 @@ class CotizacionService
         WHERE 
         cotizaciondetalle.cotizacion = ?";
 
-
 $response = DB::select($SQL, [$request->id]);
 
         $CotizacionDetalle = json_decode(json_encode($response), true);
@@ -336,10 +335,13 @@ $response = DB::select($SQL, [$request->id]);
         foreach ($CotizacionDetalle as $fila => $datos) {
             $i = 0;
             foreach ($datos as $valor) {
-                $i++;
-                $sheet->setCellValueByColumnAndRow($i + 2, $fila + 70, $valor);
+                var_dump($datos)."<br/>";
+                //$i++;
+                //$sheet->setCellValueByColumnAndRow($i + 2, $fila + 70, $valor);
             }
         }
+
+        die;
 
         // $ultimaFila = count($CotizacionDetalle) + 28;
         // $sheet->setCellValue('A' . ($ultimaFila + 1), 'termine!');

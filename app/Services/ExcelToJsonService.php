@@ -552,17 +552,18 @@ class ExcelToJsonService
             ->where('cliente.prospecto', 1);
 
         if ($id && $id != 'undefined') {
-            $query->where('id', $id);
+            $query->where('cliente.id', $id);
         }
 
         if ($nombre) {
-            $query->where('nombre', $nombre);
+            $query->where('cliente.nombre', $nombre);
         }
 
         if ($email) {
-            $query->where('email', $email);
+            $query->where('cliente.email', $email);
         }
 
+        $query->orderBy('cliente.id', 'desc');
         $prospectos = $query->get()->toArray();
 
         try {
@@ -595,20 +596,19 @@ class ExcelToJsonService
             ->where('cliente.prospecto', 0);
 
         if ($id && $id != 'undefined') {
-            $query->where('id', $id);
+            $query->where('cliente.id', $id);
         }
 
         if ($nombre) {
-            $query->where('nombre', $nombre);
+            $query->where('cliente.nombre', $nombre);
         }
 
         if ($email) {
-            $query->where('email', $email);
+            $query->where('cliente.email', $email);
         }
 
+        $query->orderBy('cliente.id', 'desc');
         $clientes = $query->get()->toArray();
-
-        $cabeceras = ['Id', 'Nombre', 'Telefono', 'Contacto', 'Fecha'];
 
         try {
             return ArrayToXlsxHelper::getXlsx($clientes, $cabeceras ?? []);
