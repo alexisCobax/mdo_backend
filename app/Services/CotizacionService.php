@@ -11,8 +11,10 @@ use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
 use App\Models\Configuracion;
 use Illuminate\Http\Response;
+use App\Models\Invoicedetalle;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Cotizaciondetalle;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -21,7 +23,8 @@ use App\Mail\EnvioCotizacionMailConAdjunto;
 use App\Filters\Cotizaciones\CotizacionesFilters;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Reader;
 use App\Transformers\Cotizacion\FindByIdTransformer;
-use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use \PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class CotizacionService
 {
@@ -277,80 +280,172 @@ class CotizacionService
     public function excel(Request $request)
     {
 
-        $SQL = "SELECT 
-        cotizaciondetalle.cantidad,
-        producto.codigo,
-        concat(producto.descripcion,' ',
-        ' ',producto.color,
-        ' ',producto.tamano,
-        ' ',producto.material) AS descripcion,
-        cotizaciondetalle.precio
-        FROM 
-        tienda.cotizaciondetalle 
-        INNER JOIN 
-        producto 
-        ON 
-        cotizaciondetalle.producto=producto.id
-        INNER JOIN
-        marcaproducto
-        ON
-        producto.marca=marcaproducto.id
-        WHERE 
-        cotizaciondetalle.cotizacion = ?";
+        // $invoice = Invoice::where('id',$request->id)->first();
+        // $invoice = Invoice::join('pedido', 'invoice.orden', '=', 'pedido.id')
+        // ->select('invoice.id', 'fechaOrden', 'billTo', 'shipTo', 'fechaOrden', 'orden', 'pedido.fecha as pedidoFecha')
+        // ->where('invoice.id', $request->id)
+        // ->first();
 
-$response = DB::select($SQL, [$request->id]);
+        $invoice = Invoice::join('cliente', 'invoice.cliente', '=', 'cliente.id')
+        ->select('invoice.*', 'cliente.*', 'cliente.nombre as clienteNombre') 
+        ->where('invoice.id', $request->id)
+        ->first();
 
-        $CotizacionDetalle = json_decode(json_encode($response), true);
-
+        //echo $invoice->shipTo;die;
+        $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->toArray();
         $rutaArchivoExistente = storage_path('app/public/excel/demo2.xlsx');
 
         $reader = new Reader();
         $spreadsheet = $reader->load($rutaArchivoExistente);
-        
+
 
         $sheet = $spreadsheet->getActiveSheet();
 
-        //$sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow())
         $sheet->getStyle('A1:' . 'CZ' . 1000)
-        ->getFill()
-        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-        ->getStartColor()
-        ->setARGB('FFFFFFFF');
+            ->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setARGB('FFFFFFFF');
 
+        // $textoConSaltos = " MDO INC\n 2618 NW 112th AVENUE.\n MIAMI, FL 33172\n Phone: 305 513 9177 / 305 424 8199\n TAX ID # 46-0725157";
 
-        // $sheet->setCellValue('B13', 'Nuevo Valorssss');
+        // $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+        // $richText->createText($textoConSaltos);
 
-            // Texto con saltos de línea
-            $textoConSaltos = " MDO INC\n 2618 NW 112th AVENUE.\n MIAMI, FL 33172\n Phone: 305 513 9177 / 305 424 8199\n TAX ID # 46-0725157";
+        // $sheet->setCellValue('C2', $richText);
 
-            // Establecer el texto en la celda C2 con saltos de línea
-            $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-            $richText->createText($textoConSaltos);
+        /** Numero factura **/
+        $sheet->setCellValue('AH4', $invoice->id);
 
-        $sheet->mergeCells('C2:J7'); // Fusionar celdas de C2 a J7
-        $sheet->setCellValue('C2', $richText); // Establecer valor en la celda fusionada
-    
+        /** Fecha orden**/
+        $sheet->setCellValue('C18', 'Fecha orden: '.DateHelper::ToDateCustom($invoice->fechaOrden));
 
-        $i = 0;
-        foreach ($CotizacionDetalle as $fila => $datos) {
-            $i = 0;
-            foreach ($datos as $valor) {
-                var_dump($datos)."<br/>";
-                //$i++;
-                //$sheet->setCellValueByColumnAndRow($i + 2, $fila + 70, $valor);
-            }
+        /** Fecha**/
+        $sheet->setCellValue('AD6', DateHelper::ToDateCustom($invoice->fecha));
+
+        /** Direccion de cobro BillTo **/
+        $sheet->setCellValue('C10', $invoice->billTo);
+
+        /** Direccion de envio ship to  */
+        $sheet->setCellValue('N10', $invoice->shipTo);
+
+        /** Numero de orden  */
+        $sheet->setCellValue('C16', 'Orden #'.$invoice->orden);
+
+        /** Envio **/
+        $sheet->setCellValue('I16', 'Envio Via: '.$invoice->shipVia);
+
+        /** Termino **/
+        $sheet->setCellValue('Q18', 'Terminos: '.$invoice->Terms);
+
+        /** Vendedor **/
+        $sheet->setCellValue('I18', 'Vendedor : '.$invoice->salesPerson);
+
+        /** Transporte **/
+        $sheet->setCellValue('J20', $invoice->UPS);
+
+        /** Codigo seguimiento **/
+        $sheet->setCellValue('s20', $invoice->codigoUPS);
+
+        /** Cliente **/
+        $sheet->setCellValue('C14', 'Cliente: '.$invoice->cliente.'-'.$invoice->clienteNombre);
+
+        $i = 24;
+        $total = 0;
+        $cantidad = 0;
+        foreach ($invoiceDetalle as $fila => $datos) {
+
+            $total += $datos['qordered'] * $datos['listPrice'];
+            $cantidad += $datos['qordered'];
+
+            $sheet->mergeCells('B' . $i . ':C' . $i . '');
+            $sheet->setCellValue('B' . $i, $datos['qordered']);
+
+            $sheet->mergeCells('D' . $i . ':F' . $i . '');
+            $sheet->setCellValue('D' . $i, $datos['itemNumber']);
+
+            $sheet->mergeCells('G' . $i . ':Z' . $i . '');
+            $sheet->setCellValue('G' . $i, $datos['Descripcion']);
+
+            $sheet->mergeCells('AB' . $i . ':AH' . $i . '');
+            $sheet->setCellValue('AB' . $i, $datos['listPrice']);
+
+            $sheet->mergeCells('AI' . $i . ':AM' . $i . '');
+            $sheet->setCellValue('AI' . $i, $datos['qordered'] * $datos['listPrice']);
+
+            $i++;
         }
+        //dd($invoice);
+        $sheet->mergeCells('AH' . $i . ':AN' . $i . '');
+        $sheet->setCellValue('AH' . $i, '$' . $total);
 
-        die;
+        $sheet->mergeCells('B' . $i . ':F' . $i . '');
+        $sheet->getStyle('B' . $i)->applyFromArray(['font' => ['bold' => true]]);
+        $sheet->setCellValue('B' . $i, 'Total de artículos: ' . $cantidad);
+        $sheet->getStyle('B' . $i . ':AI' . $i)->getBorders()->getTop()->setBorderStyle(Border::BORDER_THICK);
+        $sheet->getStyle('B' . $i . ':AI' . $i)->getBorders()->getTop()->getColor()->setARGB('000000');
 
-        // $ultimaFila = count($CotizacionDetalle) + 28;
-        // $sheet->setCellValue('A' . ($ultimaFila + 1), 'termine!');
+        /** Descuento Neto **/
+        $sheet->mergeCells('R' . ($i + 3) . ':AG' . ($i + 3) . '');
+        $sheet->setCellValue('R' . ($i + 3), 'Descuento por promociones');
 
-        // $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->mergeCells('AH' . ($i + 3) . ':AL' . ($i + 3) . '');
+        $sheet->getStyle('AH' . ($i + 3))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('AH' . ($i + 3), 'U$S ' . $invoice->DescuentoPorPromociones);
+
+        /** Descuento Porcentual **/
+        $sheet->mergeCells('U' . ($i + 4) . ':X' . ($i + 4) . '');
+        $sheet->setCellValue('U' . ($i + 4), 'Desc.');
+
+        $sheet->mergeCells('Z' . ($i + 4) . ':AB' . ($i + 4) . '');
+        $sheet->setCellValue('Z' . ($i + 4), $invoice->DescuentoPorcentual);
+
+        $sheet->mergeCells('AE' . ($i + 4) . ':AG' . ($i + 4) . '');
+        $sheet->setCellValue('AE' . ($i + 4), '%');
+
+        $sheet->MergeCells('AH' . ($i + 4) . ':AL' . ($i + 4) . '');
+        $sheet->getStyle('AH' . ($i + 4))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('AH' . ($i + 4), 'U$S ' . ($invoice->subTotal*$invoice->DescuentoPorcentual/100));
+
+        /** Descuento Neto **/
+        $sheet->mergeCells('T' . ($i + 5) . ':AG' . ($i + 5) . '');
+        $sheet->setCellValue('T' . ($i + 5), 'Descuento neto:');
+
+        $sheet->mergeCells('AH' . ($i + 5) . ':AL' . ($i + 5) . '');
+        $sheet->getStyle('AH' . ($i + 5))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('AH' . ($i + 5), 'U$S ' . $invoice->DescuentoNeto);
+
+        /** Subtotal **/
+        $sheet->mergeCells('X' . ($i + 6) . ':AG' . ($i + 6) . '');
+        $sheet->getStyle('X' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
+        $sheet->setCellValue('X' . ($i + 6), 'SubTotal:');
+
+        $sheet->mergeCells('AH' . ($i + 6) . ':AL' . ($i + 6) . '');
+        $sheet->getStyle('AH' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
+        $sheet->getStyle('AH' . ($i + 6))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('AH' . ($i + 6), 'U$S ' . ($invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones));
+
+        /** Envio y manejo **/
+        $sheet->mergeCells('T' . ($i + 7) . ':AG' . ($i + 7) . '');
+        $sheet->setCellValue('T' . ($i + 7), 'Envio y Manejo:');
+
+        $sheet->mergeCells('AH' . ($i + 7) . ':AL' . ($i + 7) . '');
+        $sheet->getStyle('AH' . ($i + 7))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('AH' . ($i + 7), 'U$S ' . $invoice->TotalEnvio);
+
+        /** Total **/
+        $sheet->mergeCells('AB' . ($i + 8) . ':AG' . ($i + 8) . '');
+        $sheet->getStyle('AB' . ($i + 8))->applyFromArray(['font' => ['bold' => true]]);
+        $sheet->setCellValue('AB' . ($i + 8), 'Total:');
+
+        $sheet->mergeCells('AH' . ($i + 8) . ':AL' . ($i + 8) . '');
+        $sheet->getStyle('AH' . ($i + 8))->applyFromArray(['font' => ['bold' => true]]);
+        $sheet->getStyle('AH' . ($i + 8))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('AH' . ($i + 8), 'U$S ' . ($invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones+$invoice->TotalEnvio));
 
         $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
 
-        $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $rangoCeldas->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         $writer = new Xlsx($spreadsheet);
         $rutaArchivoModificado = storage_path('app/public/excel/archivo_modificado.xlsx');
