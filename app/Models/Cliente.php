@@ -116,6 +116,11 @@ class Cliente extends Model
         return $this->belongsTo(Usuario::class, 'usuario');
     }
 
+    public function paises()
+    {
+        return $this->belongsTo(Pais::class, 'pais');
+    }
+
     //Filtros
 
     public function scopeId($query, $id)

@@ -74,7 +74,7 @@ class ExcelToJsonService
 
             if (!empty($sku) && is_numeric($sku)) {
 
-                if (empty($marca)) {//
+                if (empty($marca)) { //
                     $errorMessages[] = 'El campo Marca esta vacio Celda B' . $row->getRowIndex();
                 }
 
@@ -82,7 +82,7 @@ class ExcelToJsonService
                     $errorMessages[] = 'El campo Nombre esta vacio Celda C' . $row->getRowIndex();
                 }
 
-                if (empty($tipo)) {//
+                if (empty($tipo)) { //
                     $errorMessages[] = 'El campo Tipo esta vacio Celda D' . $row->getRowIndex();
                 }
 
@@ -90,7 +90,7 @@ class ExcelToJsonService
                     $errorMessages[] = 'El campo Color Fabricante esta vacio Celda E' . $row->getRowIndex();
                 }
 
-                if (empty($color_generico)) {//
+                if (empty($color_generico)) { //
                     $errorMessages[] = 'El campo Color Generico esta vacio Celda F' . $row->getRowIndex();
                 }
 
@@ -102,11 +102,11 @@ class ExcelToJsonService
                     $errorMessages[] = 'El campo Material esta vacio Celda H' . $row->getRowIndex();
                 }
 
-                if (!is_numeric($cantidad)) {//si es numerico debe ser mayor a 0
+                if (!is_numeric($cantidad)) { //si es numerico debe ser mayor a 0
                     $errorMessages[] = 'El campo Cantidad es invalido Celda I' . $row->getRowIndex();
                 }
 
-                if (empty($estuche)) {//
+                if (empty($estuche)) { //
                     $errorMessages[] = 'El campo Estuche esta vacio Celda J' . $row->getRowIndex();
                 }
 
@@ -530,18 +530,27 @@ class ExcelToJsonService
 
     public function prospecto(Request $request)
     {
-        // Obtén los parámetros del filtro
         $id = $request->input('id');
         $nombre = $request->input('nombre');
         $email = $request->input('email');
 
-        // Crea una nueva instancia del modelo Prospecto
+
         $model = new Cliente;
 
-        // Inicia la construcción de la consulta utilizando el modelo
-        $query = $model->select('id', 'nombre', 'telefono', 'contacto', 'fechaAlta')->where('prospecto', 1);
+        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp', 'Contacto', 'Fecha', 'Pais'];
 
-        // Aplica los filtros si se proporcionan
+        $query = $model->select(
+            'cliente.id',
+            'cliente.nombre',
+            'cliente.telefono',
+            'cliente.WhatsApp',
+            'cliente.contacto',
+            'cliente.fechaAlta',
+            'pais.nombre as nombrePais'
+        )
+            ->join('pais', 'cliente.pais', '=', 'pais.id')
+            ->where('cliente.prospecto', 1);
+
         if ($id && $id != 'undefined') {
             $query->where('id', $id);
         }
@@ -554,11 +563,10 @@ class ExcelToJsonService
             $query->where('email', $email);
         }
 
-        // Ejecuta la consulta y obtén los resultados en forma de array
         $prospectos = $query->get()->toArray();
 
         try {
-            return ArrayToXlsxHelper::getXlsx([], $prospectos);
+            return ArrayToXlsxHelper::getXlsx($prospectos, $cabeceras ?? []);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
@@ -566,18 +574,26 @@ class ExcelToJsonService
 
     public function cliente(Request $request)
     {
-        // Obtén los parámetros del filtro
         $id = $request->input('id');
         $nombre = $request->input('nombre');
         $email = $request->input('email');
 
-        // Crea una nueva instancia del modelo Cliente
         $model = new Cliente;
 
-        // Inicia la construcción de la consulta utilizando el modelo
-        $query = $model->select('id', 'nombre', 'telefono', 'contacto', 'fechaAlta')->where('prospecto', 0);
+        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp', 'Contacto', 'Fecha', 'Pais'];
 
-        // Aplica los filtros si se proporcionan
+        $query = $model->select(
+            'cliente.id',
+            'cliente.nombre',
+            'cliente.telefono',
+            'cliente.WhatsApp',
+            'cliente.contacto',
+            'cliente.fechaAlta',
+            'pais.nombre as nombrePais'
+        )
+            ->join('pais', 'cliente.pais', '=', 'pais.id')
+            ->where('cliente.prospecto', 0);
+
         if ($id && $id != 'undefined') {
             $query->where('id', $id);
         }
@@ -590,11 +606,12 @@ class ExcelToJsonService
             $query->where('email', $email);
         }
 
-        // Ejecuta la consulta y obtén los resultados en forma de array
         $clientes = $query->get()->toArray();
 
+        $cabeceras = ['Id', 'Nombre', 'Telefono', 'Contacto', 'Fecha'];
+
         try {
-            return ArrayToXlsxHelper::getXlsx([], $clientes);
+            return ArrayToXlsxHelper::getXlsx($clientes, $cabeceras ?? []);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }

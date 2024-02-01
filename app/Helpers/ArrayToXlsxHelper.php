@@ -15,14 +15,22 @@ class ArrayToXlsxHelper
      * @param  mixed $model
      * @return void
      */
-    public static function getXlsx($request, $model)
+    public static function getXlsx($model, $cabeceras)
     {
+
         $spreadsheet = new Spreadsheet();
 
         $sheet = $spreadsheet->getActiveSheet();
-       
-        $sheet->fromArray($model, null, 'A1');
-       
+        if ($cabeceras) {
+            $sheet->fromArray([$cabeceras], null, 'A1');
+            $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1')->getFont()->setBold(true);
+        }
+        foreach (range('A', 'L') as $columna) {
+            $sheet->getColumnDimension($columna)->setWidth(40);
+        }
+
+        $sheet->fromArray($model, null, 'A2');
+
         $sheet->getColumnDimension('B')->setWidth(40);
         $sheet->getColumnDimension('C')->setWidth(40);
         $sheet->getColumnDimension('D')->setWidth(40);
@@ -35,20 +43,18 @@ class ArrayToXlsxHelper
         $sheet->getColumnDimension('K')->setWidth(40);
         $sheet->getColumnDimension('L')->setWidth(40);
 
-        // Obtener el rango de celdas
-$rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
+        $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
 
-// Establecer la alineación a la izquierda para todas las celdas
-$rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
 
         $writer = new Xlsx($spreadsheet);
-       
-        $nombreArchivo = date('YmdHjs').'.xlsx';
+
+        $nombreArchivo = date('YmdHjs') . '.xlsx';
         $rutaArchivo = storage_path('app/' . $nombreArchivo);
-       
+
         $writer->save($rutaArchivo);
-       
+
         return response()->download($rutaArchivo, $nombreArchivo)->deleteFileAfterSend(true);
     }
 }
