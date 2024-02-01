@@ -148,7 +148,7 @@
                 <tr>
                     <td style="border: 1px solid black;">Fecha Orden:{{$invoice['fecha']}}</td>
                     <td style="border: 1px solid black;">Vendedor: {{$invoice['salesPerson']}}</td>
-                    <td style="border: 1px solid black;">Terminos: {{$invoice['Terms']}}/td>
+                    <td style="border: 1px solid black;">Terminos: {{$invoice['Terms']}}</td>
                 </tr>
             </table>
         </div>
