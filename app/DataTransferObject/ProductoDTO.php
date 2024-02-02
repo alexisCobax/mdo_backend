@@ -70,6 +70,7 @@ class ProductoDTO
             'descripcionLarga' => $data['descripcionLarga'],
             'colorPrincipal' => $data['colorPrincipal'],
             'colorSecundario' => $data['colorSecundario'],
+            'nuevo' => $data['nuevo']
         ];
     }
 }
