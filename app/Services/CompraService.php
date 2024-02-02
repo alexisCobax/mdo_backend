@@ -9,6 +9,7 @@ use App\Models\Compradetallenn;
 use App\Transformers\Compra\FindByIdTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class CompraService
 {
@@ -90,6 +91,18 @@ class CompraService
 
     public function update(Request $request)
     {
+
+        try {
+            DB::update("
+            UPDATE compradetalle
+            LEFT JOIN producto ON compradetalle.producto = producto.id
+            SET producto.stock = producto.stock - compradetalle.cantidad
+            WHERE compradetalle.compra = {$request->id} AND compradetalle.enDeposito = 1
+        ");
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+
         $compra = Compra::find($request->id);
 
         if (!$compra) {
@@ -152,6 +165,17 @@ class CompraService
         $compraPrecio = Compra::where('id', $request->id)->first();
         $compraPrecio->precio = $precio;
         $compraPrecio->save();
+
+        try {
+            DB::update("
+            UPDATE  compradetalle 
+	        LEFT JOIN producto on compradetalle.producto = producto.id 
+		    SET producto.stock = producto.stock +compradetalle.cantidad
+	        WHERE compradetalle.compra = {$request->id} and compradetalle.enDeposito= 1;
+        ");
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
 
         return response()->json($compra, Response::HTTP_OK);
     }
