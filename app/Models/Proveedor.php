@@ -49,6 +49,11 @@ class Proveedor extends Model
         'suspendido',
     ];
 
+    public function transportadoras()
+    {
+        return $this->belongsTo(Empresatransportadora::class, 'transportadora');
+    }
+
     //filtros
 
     public function scopeNombre($query, $nombre)

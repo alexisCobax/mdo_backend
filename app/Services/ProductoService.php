@@ -205,6 +205,7 @@ class ProductoService
             'descripcionLarga' => $request->descripcionLarga,
             'colorPrincipal' => $request->colorPrincipal,
             'colorSecundario' => $request->colorSecundario,
+            'nuevo' => $request->nuevo
         ];
 
         $producto->update($datosProducto);
