@@ -6,14 +6,9 @@
  * 
  */
 
-$servidor="172.18.0.2";	$bd="tienda";	$usuario="root"; $password="docker";
+$servidor="147.182.139.71";	$bd="jkkxjmpypf";	$usuario="jkkxjmpypf"; $password="CtZxUaBfS8";
 
 backup_tables($servidor,$usuario,$password,$bd);
-
-
-
-
-
 
 function backup_tables($host,$user,$pass,$name,$tables = '*')
 {
