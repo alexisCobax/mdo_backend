@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
+use App\Filters\Proveedor\ProveedorFilters;
 use App\Models\Proveedor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,7 +12,7 @@ class ProveedorService
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Proveedor::class);
+            $data = ProveedorFilters::getPaginateProveedor($request, Proveedor::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {

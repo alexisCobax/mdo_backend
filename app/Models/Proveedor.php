@@ -48,4 +48,18 @@ class Proveedor extends Model
         'formaDePago',
         'suspendido',
     ];
+
+    //filtros
+
+    public function scopeNombre($query, $nombre)
+    {
+        return $query->where('nombre', 'like', '%' . $nombre . '%');
+    }
+
+    public function scopeContacto($query, $contacto)
+    {
+        return $query->where('contacto', 'like', '%' . $contacto . '%');
+    }
+
+
 }
