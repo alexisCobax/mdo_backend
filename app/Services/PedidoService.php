@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Filters\Pedidos\PedidosFilters;
+use App\Filters\Pedidos\PedidosProductosFilters;
 use App\Models\Pedido;
 use App\Models\Pedidodescuentospromocion;
 use App\Models\Pedidodetalle;
@@ -21,7 +22,12 @@ class PedidoService
     public function findAll(Request $request)
     {
         try {
-            $data = PedidosFilters::getPaginatePedidos($request, Pedido::class);
+            if($request->codigoProducto){
+                $data = PedidosProductosFilters::getPaginatePedidos($request, Pedido::class);
+            }else{
+                $data = PedidosFilters::getPaginatePedidos($request, Pedido::class);
+            }
+
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
