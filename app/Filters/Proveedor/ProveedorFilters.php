@@ -21,12 +21,18 @@ class ProveedorFilters
         $query = $model::query();
 
         // Aplica los filtros si se proporcionan
-        $query->nombre($nombre);
-        $query->contacto($contacto);
+        if ($nombre != 'undefined') {
+            $query->nombre($nombre);
+        }
+
+        if ($contacto != 'undefined') {
+            $query->contacto($contacto);
+        }
+
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
-        ->paginate($perPage, ['*'], 'page', $page);
+            ->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
         $transformer = new FindAllTransformer();
