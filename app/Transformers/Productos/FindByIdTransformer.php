@@ -66,6 +66,7 @@ class FindByIdTransformer extends TransformerAbstract
             'verEnFalabella' => $producto->verEnFalabella,
             'categoriaFalabella' => $producto->categoriaFalabella,
             'precioPromocional' => $producto->precioPromocional,
+            'nuevo' => $producto->nuevo,
             'precioLista' => $producto->precio,
             'destacado' => $producto->destacado,
             'largo' => $producto->largo,

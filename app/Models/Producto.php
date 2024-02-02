@@ -130,6 +130,7 @@ class Producto extends Model
         'descripcionLarga',
         'colorPrincipal',
         'colorSecundario',
+        'nuevo'
     ];
 
     //Relationships
