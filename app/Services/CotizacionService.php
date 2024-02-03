@@ -121,7 +121,9 @@ class CotizacionService
 
         $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
 
-        Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip));
+        $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
+
+        Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip, $rutaArchivoFijo));
 
         return response()->json($cotizacion, Response::HTTP_OK);
     }
@@ -452,5 +454,10 @@ class CotizacionService
         $writer->save($rutaArchivoModificado);
 
         return response()->download($rutaArchivoModificado, 'archivo_modificado.xlsx')->deleteFileAfterSend(true);
+    }
+
+    public function notificacion(){
+        
+        echo 1;die;
     }
 }
