@@ -73,6 +73,7 @@ use App\Http\Controllers\CarritodetalleController;
 use App\Http\Controllers\CupondescuentoController;
 use App\Http\Controllers\InvoicedetalleController;
 use App\Http\Controllers\MarcafalabellaController;
+use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\ProductogeneroController;
 use App\Http\Controllers\TamanoproductoController;
 use App\Http\Controllers\ClientecontactoController;
@@ -93,6 +94,7 @@ use App\Http\Controllers\MovimientoproductoController;
 use App\Http\Controllers\OrderjetdevolucionController;
 use App\Http\Controllers\PlataformaproductoController;
 use App\Http\Controllers\EmpresatransportadoraController;
+use App\Http\Controllers\NotificacionesCotizacionController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
 use App\Http\Controllers\PedidodescuentospromocionController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
@@ -856,3 +858,8 @@ Route::get('excel/cliente', [ExcelController::class, 'clienteExcel']);
 Route::get('excel/cliente/cotizacion/{id}', [ExcelController::class, 'clienteExcel']);
 
 Route::get('/cotizacion/excel/{id}', [CotizacionController::class, 'excel']);
+
+/* Notificacion cron **/
+
+Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class, 'cotizacion']);
+
