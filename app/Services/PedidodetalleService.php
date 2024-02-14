@@ -53,16 +53,14 @@ class PedidodetalleService
 
         /*controlo stock*/
 
-        $update = 0;
+        //$update = 0;
 
         $producto = Producto::where('id', $request->producto)->first();
 
-        $stock = $producto->stock - $request->cantidad;
+        //$stockDiponible = $producto->stock - $request->cantidad;
 
-        if ($stock < 0) {
-            $update = $producto->stock;
-        } else {
-            $update = $stock;
+        if ($producto->stock < $request->cantidad) {
+            $request->cantidad = $producto->stock;
         }
 
         $pedidodetalle = Pedidodetalle::where('pedido', $request->pedido)
@@ -79,14 +77,15 @@ class PedidodetalleService
             }
         } else {
             $data = $request->all();
+            $data['cantidad'] = $request->cantidad;
             $pedidodetalle = Pedidodetalle::create($data);
-
-            if (!$pedidodetalle) {
+            
+             if (!$pedidodetalle) {
                 return response()->json(['error' => 'Failed to create Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
-        $producto->stock = $update;
+        $producto->stock = $producto->stock - $request->cantidad;
         $producto->save();
 
         return response()->json($pedidodetalle, Response::HTTP_OK);

@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\Invoice;
 use App\Models\Producto;
 use App\Models\Cotizacion;
+use App\Models\Pedido;
 use App\Helpers\CalcHelper;
 use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
@@ -293,8 +294,11 @@ class CotizacionService
         ->where('invoice.id', $request->id)
         ->first();
 
+        $pedido = Pedido::where('pedido.id', $invoice->orden)->first();
+
+
         //echo $invoice->shipTo;die;
-        $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->toArray();
+        $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->sortBy('Descripcion')->values()->toArray();
         $rutaArchivoExistente = storage_path('app/public/excel/demo2.xlsx');
 
         $reader = new Reader();
@@ -309,18 +313,12 @@ class CotizacionService
             ->getStartColor()
             ->setARGB('FFFFFFFF');
 
-        // $textoConSaltos = " MDO INC\n 2618 NW 112th AVENUE.\n MIAMI, FL 33172\n Phone: 305 513 9177 / 305 424 8199\n TAX ID # 46-0725157";
-
-        // $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-        // $richText->createText($textoConSaltos);
-
-        // $sheet->setCellValue('C2', $richText);
 
         /** Numero factura **/
-        $sheet->setCellValue('AH4', $invoice->id);
+        $sheet->setCellValue('AH4', $request->id);
 
         /** Fecha orden**/
-        $sheet->setCellValue('C18', 'Fecha orden: '.DateHelper::ToDateCustom($invoice->fechaOrden));
+        $sheet->setCellValue('C18', 'Fecha orden: '.DateHelper::ToDateCustom($pedido->fecha));
 
         /** Fecha**/
         $sheet->setCellValue('AD6', DateHelper::ToDateCustom($invoice->fecha));
