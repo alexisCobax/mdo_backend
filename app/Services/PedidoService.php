@@ -12,7 +12,6 @@ use App\Transformers\Pedidos\CreateTransformer;
 use App\Transformers\Pedidos\FindByIdTransformer;
 use Error;
 use Exception;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -22,12 +21,11 @@ class PedidoService
     public function findAll(Request $request)
     {
         try {
-            if($request->codigoProducto){
+            if ($request->codigoProducto) {
                 $data = PedidosProductosFilters::getPaginatePedidos($request, Pedido::class);
-            }else{
+            } else {
                 $data = PedidosFilters::getPaginatePedidos($request, Pedido::class);
             }
-
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -64,7 +62,7 @@ class PedidoService
                     'cantidad' => $dt['cantidad'],
                     'costo' => '00.00',
                     'envio' => '00.00',
-                    /*** 
+                    /***
                      * tax y taxEnvio dejar siempre en 0.00 para futuras actualizaciones
                      ***/
                     'tax' => '00.00',
@@ -98,11 +96,11 @@ class PedidoService
 
             $descuentosPromo = collect($request->descuentosPromocion)->map(function ($descPro) use ($pedido) {
                 return [
-                    "idPedido" => $pedido->id,
-                    "idPromocion" => $descPro['idPromocion'],
-                    "descripcion" => $descPro['descripcion'],
-                    "montoDescuento" => $descPro['montoDescuento'],
-                    "idTipoPromocion" => $descPro['idTipoPromocion']
+                    'idPedido' => $pedido->id,
+                    'idPromocion' => $descPro['idPromocion'],
+                    'descripcion' => $descPro['descripcion'],
+                    'montoDescuento' => $descPro['montoDescuento'],
+                    'idTipoPromocion' => $descPro['idTipoPromocion'],
                 ];
             });
 
@@ -132,7 +130,7 @@ class PedidoService
     {
 
         $pedidoTransformer = [
-            'fecha' => NOW()
+            'fecha' => NOW(),
         ];
 
         $pedido = Pedido::create($pedidoTransformer);
@@ -220,11 +218,11 @@ class PedidoService
 
             $descuentosPromo = collect($request->descuentosPorPromocion)->map(function ($descPro) use ($pedido) {
                 return [
-                    "idPedido" => $pedido->id,
-                    "idPromocion" => $descPro['idPromocion'],
-                    "descripcion" => $descPro['descripcion'],
-                    "montoDescuento" => $descPro['montoDescuento'],
-                    "idTipoPromocion" => $descPro['idTipoPromocion']
+                    'idPedido' => $pedido->id,
+                    'idPromocion' => $descPro['idPromocion'],
+                    'descripcion' => $descPro['descripcion'],
+                    'montoDescuento' => $descPro['montoDescuento'],
+                    'idTipoPromocion' => $descPro['idTipoPromocion'],
                 ];
             });
 
@@ -252,7 +250,6 @@ class PedidoService
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
         }
-
 
         try {
             Pedidodetalle::where('pedido', $request->id)->delete();

@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
+use App\Helpers\PaginateHelper;
+use App\Mail\EnvioCotizacionMailSinAdjunto;
 use App\Models\Cliente;
 use App\Models\Usuario;
+use App\Transformers\Cliente\CreateWebTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\EnvioCotizacionMailSinAdjunto;
-use App\Transformers\Cliente\CreateWebTransformer;
 
 class ClienteWebService
 {
@@ -47,7 +47,7 @@ class ClienteWebService
         if ($existeUsuario != 0) {
             return response()->json(['error' => 'Usuario existente', 'status' => 203], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
         }
-        
+
         $usuario = [
             'nombre' => $request->email,
             'clave' => $request->clave ? Hash::make($request->clave) : str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
@@ -61,19 +61,19 @@ class ClienteWebService
             return response()->json(['error' => 'Failed to create Usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $payload =  [
-            "contact" => [
-                "email" => $request->email,
-                "firstName" => $request->nombre,
-                "lastName" => $request->nombre,
-                "phone" => $request->telefono,
-                "fieldValues" => [
+        $payload = [
+            'contact' => [
+                'email' => $request->email,
+                'firstName' => $request->nombre,
+                'lastName' => $request->nombre,
+                'phone' => $request->telefono,
+                'fieldValues' => [
                     [
-                        "field" => "17",
-                        "value" => "9"
-                    ]
-                ]
-            ]
+                        'field' => '17',
+                        'value' => '9',
+                    ],
+                ],
+            ],
         ];
 
         $postData = json_encode($payload);
@@ -96,18 +96,19 @@ class ClienteWebService
             return response()->json(['error' => 'Failed to create Cliente'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        /** Envio email a cliente **/
+        /* Envio email a cliente **/
 
-        try{
+        try {
             $cuerpo = 'pdf.alta_cliente_prospecto';
             $subject = 'Cotizacion';
             $destinatarios = [
-                $request->email
+                $request->email,
             ];
-        
-        Mail::to($destinatarios)->send(new EnvioCotizacionMailSinAdjunto($cuerpo,$subject,$nombre));
-        return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
-        }catch(\Exception $e){
+
+            Mail::to($destinatarios)->send(new EnvioCotizacionMailSinAdjunto($cuerpo, $subject, $nombre));
+
+            return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+        } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

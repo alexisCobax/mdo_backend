@@ -6,7 +6,6 @@
 
 namespace App\Models;
 
-use App\Models\Tipobanner;
 use Illuminate\Database\Eloquent\Model;
 
 /**

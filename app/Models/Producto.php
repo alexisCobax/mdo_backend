@@ -130,7 +130,7 @@ class Producto extends Model
         'descripcionLarga',
         'colorPrincipal',
         'colorSecundario',
-        'nuevo'
+        'nuevo',
     ];
 
     //Relationships
@@ -195,6 +195,7 @@ class Producto extends Model
     {
         if ($nombreMarca) {
             $marca = Marcaproducto::whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombreMarca) . '%'])->first();
+
             return $query->where('marca', '=', $marca->id);
         }
     }

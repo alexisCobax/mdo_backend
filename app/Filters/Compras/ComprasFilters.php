@@ -25,7 +25,7 @@ class ComprasFilters
         // Aplica los filtros si se proporcionan
         $query->enDeposito($deposito);
         $query->proveedor($proveedor);
-        $query->desdeHasta($desde,$hasta);
+        $query->desdeHasta($desde, $hasta);
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')

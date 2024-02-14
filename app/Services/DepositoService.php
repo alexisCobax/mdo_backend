@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Helpers\PaginateHelper;
 use App\Models\Compra;
+use App\Models\Compradetalle;
 use App\Models\Deposito;
 use App\Models\Producto;
 use Illuminate\Http\Request;
-use App\Models\Compradetalle;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
 
 class DepositoService
 {
@@ -75,9 +75,8 @@ class DepositoService
                     ]);
                 }
 
-
                 Compradetalle::where('id', $productoData['producto'])->update([
-                    'enDeposito' => $productoData['enDeposito']
+                    'enDeposito' => $productoData['enDeposito'],
                 ]);
             }
         }
@@ -88,7 +87,6 @@ class DepositoService
 
         return response()->json(['mensaje' => 'Ingreso procesado con éxito']);
     }
-
 
     public function update(Request $request)
     {

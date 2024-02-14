@@ -14,7 +14,7 @@ class EnvioMailComunicado extends Mailable
     public $subject;
     public $informacion;
 
-    public function __construct($cuerpo,$subject,$informacion)
+    public function __construct($cuerpo, $subject, $informacion)
     {
         $this->cuerpo = $cuerpo;
         $this->subject = $subject;

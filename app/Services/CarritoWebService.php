@@ -127,7 +127,7 @@ class CarritoWebService
         $carritoDetalle = Carritodetalle::where('carrito', $carritoHelper['id'])->get();
 
         $total = $carritoDetalle->map(function ($detalle) {
-            return $detalle->precio*$detalle->cantidad;
+            return $detalle->precio * $detalle->cantidad;
         })->sum();
 
         $carrito = Carrito::find($carritoHelper['id'])->first();

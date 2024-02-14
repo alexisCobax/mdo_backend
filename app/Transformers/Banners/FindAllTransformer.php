@@ -14,7 +14,7 @@ class FindAllTransformer extends TransformerAbstract
             'ubicacion' => optional($banner->Ubicaciones)->nombre,
             'tipoUbicacion' => $banner->tipoUbicacion,
             'link' => $banner->link,
-            'nombre' => $banner->nombre
+            'nombre' => $banner->nombre,
         ];
 
         return $banners;

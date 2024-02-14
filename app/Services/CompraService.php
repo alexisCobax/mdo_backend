@@ -70,7 +70,6 @@ class CompraService
             }
         }
 
-
         if ($request->gastos) {
             foreach ($request->gastos as $g) {
                 $precio += $g['precioGasto'];

@@ -62,12 +62,11 @@ class Compra extends Model
     }
 
     public function scopeDesdeHasta($query, $fechaInicio, $fechaFin)
-{
-    if ($fechaInicio or $fechaFin) {
-        return $query->whereBetween('fechaDeIngreso', [$fechaInicio.' 00:00:00', $fechaFin.' 23:59:59']);
-    }
+    {
+        if ($fechaInicio or $fechaFin) {
+            return $query->whereBetween('fechaDeIngreso', [$fechaInicio . ' 00:00:00', $fechaFin . ' 23:59:59']);
+        }
 
-    return $query;
-}
-    
+        return $query;
+    }
 }

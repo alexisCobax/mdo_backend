@@ -49,7 +49,7 @@ class ReciboController extends Controller
         return $this->service->create($request);
     }
 
-        /**
+    /**
      * Creating a new resource.
      *
      * @param  \Illuminate\Http\Request $request

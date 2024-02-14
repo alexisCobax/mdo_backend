@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use Illuminate\Http\Response;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -46,7 +45,6 @@ class ArrayToXlsxHelper
         $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
 
         $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-
 
         $writer = new Xlsx($spreadsheet);
 

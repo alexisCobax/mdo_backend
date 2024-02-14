@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Recibo;
+use App\Filters\Recibos\RecibosFilters;
 use App\Helpers\DateHelper;
+use App\Models\Recibo;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Filters\Recibos\RecibosFilters;
 
 class ReciboService
 {
@@ -24,31 +24,30 @@ class ReciboService
 
     public function findById(Request $request)
     {
-        if($request->recibo){
+        if ($request->recibo) {
 
             $recibo = Recibo::where('id', $request->recibo)->first();
-        }else{
+        } else {
             $recibo = Recibo::where('pedido', $request->id)->first();
         }
-        
 
         $data = [
             'recibo' => [
-                "numero" => $recibo->id,
-                "cliente" => optional($recibo->clientes)->nombre,
-                "fecha" => DateHelper::ToDateCustom($recibo->fecha),
-                "total" => $recibo->total,
-                "observaciones" => $recibo->observaciones,
-                "formaPago" => optional($recibo->formasPago)->nombre
-            ]
+                'numero' => $recibo->id,
+                'cliente' => optional($recibo->clientes)->nombre,
+                'fecha' => DateHelper::ToDateCustom($recibo->fecha),
+                'total' => $recibo->total,
+                'observaciones' => $recibo->observaciones,
+                'formaPago' => optional($recibo->formasPago)->nombre,
+            ],
         ];
 
         $pdf = Pdf::loadView('pdf.recibo', $data);
 
         $pdf->getDomPDF();
-        
+
         return $pdf->download();
-        
+
         // $pdf->getDomPDF();
 
         // return $pdf->stream();
@@ -72,14 +71,14 @@ class ReciboService
     {
 
         $recibo = [
-            "cliente" => $request->cliente,
-            "formaDePago" => $request->formaDePago,
-            "total" => $request->total,
-            "observaciones" => $request->observaciones,
-            "pedido" => 0,
-            "garantia" => $request->garantia ? 1 : 0,
-            "anulado" => 0,
-            "fecha" => NOW()
+            'cliente' => $request->cliente,
+            'formaDePago' => $request->formaDePago,
+            'total' => $request->total,
+            'observaciones' => $request->observaciones,
+            'pedido' => 0,
+            'garantia' => $request->garantia ? 1 : 0,
+            'anulado' => 0,
+            'fecha' => NOW(),
         ];
 
         $recibo = Recibo::create($recibo);

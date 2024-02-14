@@ -2,30 +2,27 @@
 
 namespace App\Services;
 
-use App\Models\Cliente;
-use App\Models\Invoice;
-use App\Models\Producto;
-use App\Models\Cotizacion;
-use App\Models\Pedido;
+use App\Filters\Cotizaciones\CotizacionesFilters;
 use App\Helpers\CalcHelper;
 use App\Helpers\DateHelper;
-use Illuminate\Http\Request;
-use App\Models\Configuracion;
-use Illuminate\Http\Response;
-use App\Models\Invoicedetalle;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\EnvioCotizacionMailConAdjunto;
+use App\Models\Cliente;
+use App\Models\Cotizacion;
 use App\Models\Cotizaciondetalle;
-use Illuminate\Support\Facades\DB;
+use App\Models\Invoice;
+use App\Models\Invoicedetalle;
+use App\Models\Pedido;
+use App\Models\Producto;
+use App\Transformers\Cotizacion\FindByIdTransformer;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use App\Mail\EnvioCotizacionMailConAdjunto;
-use App\Filters\Cotizaciones\CotizacionesFilters;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Reader;
-use App\Transformers\Cotizacion\FindByIdTransformer;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use \PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class CotizacionService
 {
@@ -100,7 +97,7 @@ class CotizacionService
         $cotizacion->total = $totalCotizacion;
         $cotizacion->save();
 
-        /** genero invoice PDF **/
+        /* genero invoice PDF **/
         $this->generarCotizacionMailPdf($cotizacion->id);
 
         $cliente = Cliente::where('id', $request->cliente)->first();
@@ -112,11 +109,11 @@ class CotizacionService
 
             $destinatarios = [
                 $emailMdo,
-                $cliente->email
+                $cliente->email,
             ];
         } else {
             $destinatarios = [
-                $emailMdo
+                $emailMdo,
             ];
         }
 
@@ -202,24 +199,24 @@ class CotizacionService
                 'productoCodigo' => optional($detalle->productos)->codigo,
                 'precio' => $detalle->precio,
                 'cantidad' => $detalle->cantidad,
-                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2)
+                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2),
             ];
         })->values();
 
         $cotizacion = [
-            "cotizacion" => $cotizacion->id,
-            "fecha" => DateHelper::ToDateCustom($cotizacion->fecha),
-            "cliente" => $cotizacion->cliente,
-            "nombreCliente" => optional($cotizacion->clientes)->nombre,
-            "idCliente" => optional($cotizacion->clientes)->id,
-            "telefonoCliente" => optional($cotizacion->clientes)->telefono,
-            "direccionCliente" => optional($cotizacion->clientes)->direccion,
-            "emailCliente" => optional($cotizacion->clientes)->email,
-            "subTotal" => $cotizacion->subTotal,
-            "total" => $cotizacion->total,
-            "descuento" => $cotizacion->descuento,
-            "cantidad" => $detalles->sum('cantidad'),
-            "total" => number_format($detalles->sum('subtotal'), 2)
+            'cotizacion' => $cotizacion->id,
+            'fecha' => DateHelper::ToDateCustom($cotizacion->fecha),
+            'cliente' => $cotizacion->cliente,
+            'nombreCliente' => optional($cotizacion->clientes)->nombre,
+            'idCliente' => optional($cotizacion->clientes)->id,
+            'telefonoCliente' => optional($cotizacion->clientes)->telefono,
+            'direccionCliente' => optional($cotizacion->clientes)->direccion,
+            'emailCliente' => optional($cotizacion->clientes)->email,
+            'subTotal' => $cotizacion->subTotal,
+            'total' => $cotizacion->total,
+            'descuento' => $cotizacion->descuento,
+            'cantidad' => $detalles->sum('cantidad'),
+            'total' => number_format($detalles->sum('subtotal'), 2),
         ];
 
         $cotizacion['detalles'] = $detalles->all();
@@ -244,24 +241,24 @@ class CotizacionService
                 'productoCodigo' => optional($detalle->productos)->codigo,
                 'precio' => $detalle->precio,
                 'cantidad' => $detalle->cantidad,
-                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2)
+                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2),
             ];
         })->values();
 
         $cotizacion = [
-            "cotizacion" => $cotizacion->id,
-            "fecha" => DateHelper::ToDateCustom($cotizacion->fecha),
-            "cliente" => $cotizacion->cliente,
-            "nombreCliente" => optional($cotizacion->clientes)->nombre,
-            "idCliente" => optional($cotizacion->clientes)->id,
-            "telefonoCliente" => optional($cotizacion->clientes)->telefono,
-            "direccionCliente" => optional($cotizacion->clientes)->direccion,
-            "emailCliente" => optional($cotizacion->clientes)->email,
-            "subTotal" => $cotizacion->subTotal,
-            "total" => $cotizacion->total,
-            "descuento" => $cotizacion->descuento,
-            "cantidad" => $detalles->sum('cantidad'),
-            "total" => number_format($detalles->sum('subtotal'), 2)
+            'cotizacion' => $cotizacion->id,
+            'fecha' => DateHelper::ToDateCustom($cotizacion->fecha),
+            'cliente' => $cotizacion->cliente,
+            'nombreCliente' => optional($cotizacion->clientes)->nombre,
+            'idCliente' => optional($cotizacion->clientes)->id,
+            'telefonoCliente' => optional($cotizacion->clientes)->telefono,
+            'direccionCliente' => optional($cotizacion->clientes)->direccion,
+            'emailCliente' => optional($cotizacion->clientes)->email,
+            'subTotal' => $cotizacion->subTotal,
+            'total' => $cotizacion->total,
+            'descuento' => $cotizacion->descuento,
+            'cantidad' => $detalles->sum('cantidad'),
+            'total' => number_format($detalles->sum('subtotal'), 2),
         ];
 
         $cotizacion['detalles'] = $detalles->all();
@@ -274,6 +271,7 @@ class CotizacionService
 
         try {
             Storage::put($pdfPath, $pdfContent);
+
             return response()->json(['response' => 'Pdf Guardado!'], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
@@ -290,12 +288,11 @@ class CotizacionService
         // ->first();
 
         $invoice = Invoice::join('cliente', 'invoice.cliente', '=', 'cliente.id')
-        ->select('invoice.*', 'cliente.*', 'cliente.nombre as clienteNombre') 
+        ->select('invoice.*', 'cliente.*', 'cliente.nombre as clienteNombre')
         ->where('invoice.id', $request->id)
         ->first();
 
         $pedido = Pedido::where('pedido.id', $invoice->orden)->first();
-
 
         //echo $invoice->shipTo;die;
         $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->sortBy('Descripcion')->values()->toArray();
@@ -303,7 +300,6 @@ class CotizacionService
 
         $reader = new Reader();
         $spreadsheet = $reader->load($rutaArchivoExistente);
-
 
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -313,42 +309,41 @@ class CotizacionService
             ->getStartColor()
             ->setARGB('FFFFFFFF');
 
-
-        /** Numero factura **/
+        /* Numero factura **/
         $sheet->setCellValue('AH4', $request->id);
 
-        /** Fecha orden**/
-        $sheet->setCellValue('C18', 'Fecha orden: '.DateHelper::ToDateCustom($pedido->fecha));
+        /* Fecha orden**/
+        $sheet->setCellValue('C18', 'Fecha orden: ' . DateHelper::ToDateCustom($pedido->fecha));
 
-        /** Fecha**/
+        /* Fecha**/
         $sheet->setCellValue('AD6', DateHelper::ToDateCustom($invoice->fecha));
 
-        /** Direccion de cobro BillTo **/
+        /* Direccion de cobro BillTo **/
         $sheet->setCellValue('C10', $invoice->billTo);
 
-        /** Direccion de envio ship to  */
+        /* Direccion de envio ship to  */
         $sheet->setCellValue('N10', $invoice->shipTo);
 
-        /** Numero de orden  */
-        $sheet->setCellValue('C16', 'Orden #'.$invoice->orden);
+        /* Numero de orden  */
+        $sheet->setCellValue('C16', 'Orden #' . $invoice->orden);
 
-        /** Envio **/
-        $sheet->setCellValue('I16', 'Envio Via: '.$invoice->shipVia);
+        /* Envio **/
+        $sheet->setCellValue('I16', 'Envio Via: ' . $invoice->shipVia);
 
-        /** Termino **/
-        $sheet->setCellValue('Q18', 'Terminos: '.$invoice->Terms);
+        /* Termino **/
+        $sheet->setCellValue('Q18', 'Terminos: ' . $invoice->Terms);
 
-        /** Vendedor **/
-        $sheet->setCellValue('I18', 'Vendedor : '.$invoice->salesPerson);
+        /* Vendedor **/
+        $sheet->setCellValue('I18', 'Vendedor : ' . $invoice->salesPerson);
 
-        /** Transporte **/
+        /* Transporte **/
         $sheet->setCellValue('J20', $invoice->UPS);
 
-        /** Codigo seguimiento **/
+        /* Codigo seguimiento **/
         $sheet->setCellValue('s20', $invoice->codigoUPS);
 
-        /** Cliente **/
-        $sheet->setCellValue('C14', 'Cliente: '.$invoice->cliente.'-'.$invoice->clienteNombre);
+        /* Cliente **/
+        $sheet->setCellValue('C14', 'Cliente: ' . $invoice->cliente . '-' . $invoice->clienteNombre);
 
         $i = 24;
         $total = 0;
@@ -385,7 +380,7 @@ class CotizacionService
         $sheet->getStyle('B' . $i . ':AI' . $i)->getBorders()->getTop()->setBorderStyle(Border::BORDER_THICK);
         $sheet->getStyle('B' . $i . ':AI' . $i)->getBorders()->getTop()->getColor()->setARGB('000000');
 
-        /** Descuento Neto **/
+        /* Descuento Neto **/
         $sheet->mergeCells('R' . ($i + 3) . ':AG' . ($i + 3) . '');
         $sheet->setCellValue('R' . ($i + 3), 'Descuento por promociones');
 
@@ -393,7 +388,7 @@ class CotizacionService
         $sheet->getStyle('AH' . ($i + 3))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('AH' . ($i + 3), 'U$S ' . $invoice->DescuentoPorPromociones);
 
-        /** Descuento Porcentual **/
+        /* Descuento Porcentual **/
         $sheet->mergeCells('U' . ($i + 4) . ':X' . ($i + 4) . '');
         $sheet->setCellValue('U' . ($i + 4), 'Desc.');
 
@@ -405,9 +400,9 @@ class CotizacionService
 
         $sheet->MergeCells('AH' . ($i + 4) . ':AL' . ($i + 4) . '');
         $sheet->getStyle('AH' . ($i + 4))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 4), 'U$S ' . ($invoice->subTotal*$invoice->DescuentoPorcentual/100));
+        $sheet->setCellValue('AH' . ($i + 4), 'U$S ' . ($invoice->subTotal * $invoice->DescuentoPorcentual / 100));
 
-        /** Descuento Neto **/
+        /* Descuento Neto **/
         $sheet->mergeCells('T' . ($i + 5) . ':AG' . ($i + 5) . '');
         $sheet->setCellValue('T' . ($i + 5), 'Descuento neto:');
 
@@ -415,7 +410,7 @@ class CotizacionService
         $sheet->getStyle('AH' . ($i + 5))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('AH' . ($i + 5), 'U$S ' . $invoice->DescuentoNeto);
 
-        /** Subtotal **/
+        /* Subtotal **/
         $sheet->mergeCells('X' . ($i + 6) . ':AG' . ($i + 6) . '');
         $sheet->getStyle('X' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->setCellValue('X' . ($i + 6), 'SubTotal:');
@@ -423,9 +418,9 @@ class CotizacionService
         $sheet->mergeCells('AH' . ($i + 6) . ':AL' . ($i + 6) . '');
         $sheet->getStyle('AH' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->getStyle('AH' . ($i + 6))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 6), 'U$S ' . ($invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones));
+        $sheet->setCellValue('AH' . ($i + 6), 'U$S ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones));
 
-        /** Envio y manejo **/
+        /* Envio y manejo **/
         $sheet->mergeCells('T' . ($i + 7) . ':AG' . ($i + 7) . '');
         $sheet->setCellValue('T' . ($i + 7), 'Envio y Manejo:');
 
@@ -433,7 +428,7 @@ class CotizacionService
         $sheet->getStyle('AH' . ($i + 7))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('AH' . ($i + 7), 'U$S ' . $invoice->TotalEnvio);
 
-        /** Total **/
+        /* Total **/
         $sheet->mergeCells('AB' . ($i + 8) . ':AG' . ($i + 8) . '');
         $sheet->getStyle('AB' . ($i + 8))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->setCellValue('AB' . ($i + 8), 'Total:');
@@ -441,7 +436,7 @@ class CotizacionService
         $sheet->mergeCells('AH' . ($i + 8) . ':AL' . ($i + 8) . '');
         $sheet->getStyle('AH' . ($i + 8))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->getStyle('AH' . ($i + 8))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 8), 'U$S ' . ($invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones+$invoice->TotalEnvio));
+        $sheet->setCellValue('AH' . ($i + 8), 'U$S ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio));
 
         $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
 
@@ -454,8 +449,10 @@ class CotizacionService
         return response()->download($rutaArchivoModificado, 'archivo_modificado.xlsx')->deleteFileAfterSend(true);
     }
 
-    public function notificacion(){
-        
-        echo 1;die;
+    public function notificacion()
+    {
+
+        echo 1;
+        die;
     }
 }

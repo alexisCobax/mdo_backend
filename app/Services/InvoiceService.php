@@ -15,7 +15,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Services\PedidoService;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceService
@@ -192,7 +191,6 @@ class InvoiceService
         if (!$invoice) {
             return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
 
         return response()->json($invoice, Response::HTTP_OK);
     }

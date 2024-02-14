@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Recibo;
 use App\Models\Cliente;
 use App\Models\Invoice;
+use App\Models\Recibo;
 use App\Models\Reintegro;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -25,7 +25,7 @@ class CuentaCorrienteService
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-        $cliente = Cliente::where('id',$clienteId)->first();
+        $cliente = Cliente::where('id', $clienteId)->first();
 
         $resultados = Recibo::select('id', 'cliente', DB::raw("'RECIBO' AS comprobante"), 'id AS numero', 'fecha', 'total', DB::raw("CONCAT('/recibo/', id, '.pdf') AS link"))
             ->where('anulado', 0)
@@ -76,7 +76,7 @@ class CuentaCorrienteService
                 'results' => $resultados->items(),
                 'exception' => null,
                 'cliente' => $cliente->nombre,
-                'ctacteTotal' => $total
+                'ctacteTotal' => $total,
             ],
         ];
 

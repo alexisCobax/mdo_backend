@@ -35,5 +35,4 @@ class Cotizaciondetalle extends Model
     {
         return $this->belongsTo(Producto::class, 'producto');
     }
-    
 }

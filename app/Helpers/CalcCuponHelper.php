@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use App\Helpers\CarritoHelper;
 use App\Models\Carritodetalle;
 use App\Models\Cupondescuento;
 
@@ -16,8 +15,8 @@ class CalcCuponHelper
 
         $descuentoPorCupon = 0;
 
-        if ($cupon && $total  >= $cupon->montoMinimo) {
-            $descuentoPorCupon = $cupon->descuentoFijo + ($total  * ($cupon->descuentoPorcentual / 100));
+        if ($cupon && $total >= $cupon->montoMinimo) {
+            $descuentoPorCupon = $cupon->descuentoFijo + ($total * ($cupon->descuentoPorcentual / 100));
         }
 
         $carritoDetallesProductos = Carritodetalle::where('carrito', $carrito['id'])->get();
@@ -47,6 +46,7 @@ class CalcCuponHelper
                 }
             }
         }
+
         return $descuentoPorCupon;
     }
 }

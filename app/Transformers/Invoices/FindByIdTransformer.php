@@ -5,7 +5,6 @@ namespace App\Transformers\Invoices;
 use App\Helpers\DateHelper;
 use App\Models\Cliente;
 use App\Models\Invoicedetalle;
-use App\Models\Producto;
 use League\Fractal\TransformerAbstract;
 
 class FindByIdTransformer extends TransformerAbstract
@@ -21,7 +20,7 @@ class FindByIdTransformer extends TransformerAbstract
 
         foreach ($invoiceDetalle as $id) {
 
-            $total = $id['listPrice']*$id['qordered'];
+            $total = $id['listPrice'] * $id['qordered'];
             $detalle[] = [
                 'id' => $id['id'],
                 'qordered' => $id['qordered'],
@@ -32,7 +31,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'listPrice' => number_format($id['listPrice'], 2, '.', ''),
                 'netPrice' => $id['netPrice'],
                 'invoice' => $id['invoice'],
-                'total' => number_format($total, 2, '.', '')
+                'total' => number_format($total, 2, '.', ''),
             ];
         }
 
@@ -55,7 +54,7 @@ class FindByIdTransformer extends TransformerAbstract
             'clienteCodigoPostal' => $invoice->clientes->codigoPostal,
             'clienteTelefono' => $invoice->clientes->telefono,
             'clienteDireccionShape' => $invoice->clientes->direccionShape,
-            'total' => $invoice->total-$invoice->TotalEnvio,
+            'total' => $invoice->total - $invoice->TotalEnvio,
             'formaDePago' => $invoice->formaDePago,
             'estado' => $invoice->estado,
             'observaciones' => $invoice->observaciones,
@@ -65,7 +64,7 @@ class FindByIdTransformer extends TransformerAbstract
             'shipVia' => $invoice->shipVia,
             'FOB' => $invoice->FOB,
             'Terms' => $invoice->Terms,
-            'fechaOrden' => date('Y-m-d',strtotime($invoice->fechaOrden)),
+            'fechaOrden' => date('Y-m-d', strtotime($invoice->fechaOrden)),
             'salesPerson' => $invoice->salesPerson,
             'orden' => $invoice->orden,
             'peso' => $invoice->peso,
@@ -80,15 +79,15 @@ class FindByIdTransformer extends TransformerAbstract
             'IdActiveCampaign' => $invoice->IdActiveCampaign,
             'detalle' => $detalle,
             'preciosTotales' => [
-                "descuentoNeto" => $invoice->DescuentoNeto,
-                "totalDescuentoPorcentual" => $invoice->subTotal*$invoice->DescuentoPorcentual/100,
-                "descuentoPorcentual" => $invoice->DescuentoPorcentual,
-                "subtotalConDescuento" => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones,
-                "subtotal" => $invoice->subTotal,
-                "totalEnvio" => $invoice->TotalEnvio,
+                'descuentoNeto' => $invoice->DescuentoNeto,
+                'totalDescuentoPorcentual' => $invoice->subTotal * $invoice->DescuentoPorcentual / 100,
+                'descuentoPorcentual' => $invoice->DescuentoPorcentual,
+                'subtotalConDescuento' => $invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones,
+                'subtotal' => $invoice->subTotal,
+                'totalEnvio' => $invoice->TotalEnvio,
                 'descuentoPorPromociones' => $invoice->DescuentoPorPromociones,
-                'total' => $invoice->subTotal-$invoice->DescuentoNeto-($invoice->subTotal*$invoice->DescuentoPorcentual/100)-$invoice->DescuentoPorPromociones+$invoice->TotalEnvio
-            ]
+                'total' => $invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio,
+            ],
 
             // 'datosEnvio' => $datosEnvio
         ];

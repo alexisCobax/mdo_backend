@@ -80,5 +80,4 @@ class Invoice extends Model
     {
         return $this->belongsTo(Cliente::class, 'cliente');
     }
-
 }

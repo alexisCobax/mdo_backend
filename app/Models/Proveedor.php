@@ -65,6 +65,4 @@ class Proveedor extends Model
     {
         return $query->where('contacto', 'like', '%' . $contacto . '%');
     }
-
-
 }

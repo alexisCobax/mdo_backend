@@ -48,9 +48,9 @@ class ProductoService
     {
         try {
 
-            $productos = Producto::where('id',$request->id)->get();
-            
-            if ($productos->count()!=0) {
+            $productos = Producto::where('id', $request->id)->get();
+
+            if ($productos->count() != 0) {
 
                 $transformer = new FindByIdTransformer();
 
@@ -205,7 +205,7 @@ class ProductoService
             'descripcionLarga' => $request->descripcionLarga,
             'colorPrincipal' => $request->colorPrincipal,
             'colorSecundario' => $request->colorSecundario,
-            'nuevo' => $request->nuevo
+            'nuevo' => $request->nuevo,
         ];
 
         $producto->update($datosProducto);

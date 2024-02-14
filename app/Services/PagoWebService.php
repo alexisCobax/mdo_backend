@@ -2,21 +2,20 @@
 
 namespace App\Services;
 
-use App\Models\Pedido;
-use App\Models\Recibo;
-use App\Models\Carrito;
-use App\Models\Producto;
-use App\Helpers\LogHelper;
-use App\Models\Transaccion;
-use Illuminate\Http\Request;
-use App\Models\Pedidodetalle;
-use Illuminate\Http\Response;
-use App\Helpers\CarritoHelper;
-use App\Models\Carritodetalle;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Helpers\CalcTotalHelper;
+use App\Helpers\CarritoHelper;
+use App\Helpers\LogHelper;
+use App\Models\Carrito;
+use App\Models\Carritodetalle;
+use App\Models\Pedido;
+use App\Models\Pedidodetalle;
+use App\Models\Producto;
+use App\Models\Recibo;
+use App\Models\Transaccion;
 use App\Transformers\Pdf\FindByIdTransformer;
-use Illuminate\Validation\ValidationException;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PagoWebService
 {
@@ -43,14 +42,14 @@ class PagoWebService
 
             //GENERAR RECIBO
             $recibo = [
-                "cliente" => $carrito['cliente'],
-                "formaDePago" => 2,
-                "total" => $pago->amount / 100,
-                "observaciones" => "Pago realizado a traves de la plataforma de clover",
-                "pedido" => $pedido->id,
-                "garantia" => 0,
-                "anulado" => 0,
-                "fecha" => NOW()
+                'cliente' => $carrito['cliente'],
+                'formaDePago' => 2,
+                'total' => $pago->amount / 100,
+                'observaciones' => 'Pago realizado a traves de la plataforma de clover',
+                'pedido' => $pedido->id,
+                'garantia' => 0,
+                'anulado' => 0,
+                'fecha' => NOW(),
             ];
 
             $recibo = Recibo::create($recibo);
@@ -62,7 +61,6 @@ class PagoWebService
             $carritoUpdate = Carrito::find($carrito['id']);
             $carritoUpdate->estado = 1;
             $carritoUpdate->save();
-
 
             if (!$recibo) {
                 return response()->json(['error' => 'Failed to create Recibo'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -210,9 +208,11 @@ class PagoWebService
                 LogHelper::get(curl_error($ch));
             }
             curl_close($ch);
+
             return response()->json($responseClover, Response::HTTP_OK);
         } catch (\Exception $e) {
             LogHelper::get($e->getMessage());
+
             return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }

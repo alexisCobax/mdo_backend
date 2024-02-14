@@ -2,9 +2,7 @@
 
 namespace App\Helpers;
 
-use Illuminate\Http\Response;
-
-class JsonToCsvHelper
+class ArrayToCsvHelper
 {
     /**
      * getPaginatedData.
@@ -15,11 +13,11 @@ class JsonToCsvHelper
      */
     public static function getCsv($request, $model)
     {
-        $data = array(
-            array('Nombre', 'Email', 'Teléfono'),
-            array('Juan Pérez', 'juan@example.com', '123-456-7890'),
-            array('María López', 'maria@example.com', '987-654-3210'),
-        );
+        $data = [
+            ['Nombre', 'Email', 'Teléfono'],
+            ['Juan Pérez', 'juan@example.com', '123-456-7890'],
+            ['María López', 'maria@example.com', '987-654-3210'],
+        ];
 
         $filename = 'productos.csv';
 

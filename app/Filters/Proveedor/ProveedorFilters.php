@@ -29,7 +29,6 @@ class ProveedorFilters
             $query->contacto($contacto);
         }
 
-
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);

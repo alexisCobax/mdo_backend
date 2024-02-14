@@ -48,7 +48,7 @@ class ProductoController extends Controller
         return $this->service->findById($request);
     }
 
-        /**
+    /**
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request $request

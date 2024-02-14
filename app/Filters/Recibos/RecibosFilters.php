@@ -3,7 +3,6 @@
 namespace App\Filters\Recibos;
 
 use App\Helpers\DateHelper;
-use App\Models\Recibo;
 use Illuminate\Http\Response;
 
 class RecibosFilters
@@ -26,16 +25,16 @@ class RecibosFilters
 
         foreach ($data->items() as $item) {
             $recibosTransformados[] = [
-                "id"=> $item->id,
-                "cliente"=> $item->cliente,
-                "clienteNombre"=> optional($item->clientes)->nombre,
-                "fecha"=> DateHelper::ToDateCustom($item->fecha),
-                "formaDePago"=> $item->formaDePago,
-                "total"=> $item->total,
-                "anulado"=> $item->anulado,
-                "observaciones"=> $item->observaciones,
-                "pedido"=> $item->pedido,
-                "garantia"=> $item->garantia
+                'id'=> $item->id,
+                'cliente'=> $item->cliente,
+                'clienteNombre'=> optional($item->clientes)->nombre,
+                'fecha'=> DateHelper::ToDateCustom($item->fecha),
+                'formaDePago'=> $item->formaDePago,
+                'total'=> $item->total,
+                'anulado'=> $item->anulado,
+                'observaciones'=> $item->observaciones,
+                'pedido'=> $item->pedido,
+                'garantia'=> $item->garantia,
             ];
         }
 

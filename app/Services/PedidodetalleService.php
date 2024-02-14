@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use App\Helpers\StockHelper;
-use Illuminate\Http\Request;
-use App\Models\Pedidodetalle;
-use Illuminate\Http\Response;
 use App\Helpers\PaginateHelper;
+use App\Models\Pedidodetalle;
 use App\Models\Producto;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PedidodetalleService
 {
@@ -24,7 +23,7 @@ class PedidodetalleService
 
     public function findById(Request $request)
     {
-        $data = Pedidodetalle::where('id',$request->id);
+        $data = Pedidodetalle::where('id', $request->id);
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
@@ -33,7 +32,6 @@ class PedidodetalleService
     {
         $pedidoDetalle = Pedidodetalle::where('pedido', $request->id)->get();
 
-
         $pedidoDetalleConProductos = $pedidoDetalle->map(function ($detalle) {
             return [
                 'id' => $detalle->id,
@@ -41,7 +39,7 @@ class PedidodetalleService
                 'productoNombre' => optional($detalle->productos)->nombre,
                 'productoCosto' => optional($detalle->productos)->costo,
                 'precioProducto' => $detalle->precio,
-                'cantidadProducto' => $detalle->cantidad
+                'cantidadProducto' => $detalle->cantidad,
             ];
         });
 
@@ -79,8 +77,8 @@ class PedidodetalleService
             $data = $request->all();
             $data['cantidad'] = $request->cantidad;
             $pedidodetalle = Pedidodetalle::create($data);
-            
-             if (!$pedidodetalle) {
+
+            if (!$pedidodetalle) {
                 return response()->json(['error' => 'Failed to create Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -93,7 +91,7 @@ class PedidodetalleService
 
     public function update(Request $request)
     {
-        $pedidodetalle = Pedidodetalle::where('id',$request->id)->first();
+        $pedidodetalle = Pedidodetalle::where('id', $request->id)->first();
 
         if (!$pedidodetalle) {
             return response()->json(['error' => 'Pedidodetalle not found'], Response::HTTP_NOT_FOUND);
@@ -111,25 +109,25 @@ class PedidodetalleService
         $cantidadAnterior = 0;
         $nuevaCantidad = 0;
         $stockActual = 0;
-        $pedidodetalle = Pedidodetalle::where('id',$request->id)->first();
+        $pedidodetalle = Pedidodetalle::where('id', $request->id)->first();
 
         if (!$pedidodetalle) {
             return response()->json(['error' => 'Pedidodetalle not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $producto = Producto::where('id',$pedidodetalle->producto)->first();
+        $producto = Producto::where('id', $pedidodetalle->producto)->first();
 
-        $cantidadAnterior = $pedidodetalle->cantidad; 
-        $nuevaCantidad = $request->cantidad; 
+        $cantidadAnterior = $pedidodetalle->cantidad;
+        $nuevaCantidad = $request->cantidad;
         $stockActual = $producto->stock;
 
-        if($stockActual+$cantidadAnterior<$nuevaCantidad){
-            return response()->json(['status' => '404','respuesta' => 'Cantidad es mayor que stock, el stock disponible es '.($stockActual+$cantidadAnterior)], Response::HTTP_NOT_FOUND);
+        if ($stockActual + $cantidadAnterior < $nuevaCantidad) {
+            return response()->json(['status' => '404', 'respuesta' => 'Cantidad es mayor que stock, el stock disponible es ' . ($stockActual + $cantidadAnterior)], Response::HTTP_NOT_FOUND);
         }
 
-        $producto->stock = $stockActual+$cantidadAnterior-$nuevaCantidad;
+        $producto->stock = $stockActual + $cantidadAnterior - $nuevaCantidad;
         $producto->save();
-        
+
         $pedidodetalle->cantidad = $nuevaCantidad;
         $pedidodetalle->precio = $request->precio;
         $pedidodetalle->save();

@@ -4,7 +4,6 @@ namespace App\Transformers\Compra;
 
 use App\Helpers\DateHelper;
 use App\Models\Compra;
-use App\Models\Compradetalle;
 use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract

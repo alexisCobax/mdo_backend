@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
+use App\Filters\Marcas\MarcasFilters;
+use App\Models\Marcaproducto;
 use App\Models\VistaMarcas;
 use Illuminate\Http\Request;
-use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
-use App\Filters\Marcas\MarcasFilters;
 
 class MarcaproductoService
 {
@@ -25,10 +24,11 @@ class MarcaproductoService
     public function vista(Request $request)
     {
         try {
-            $data = VistaMarcas::all(); 
+            $data = VistaMarcas::all();
 
             $data->transform(function ($item) {
                 $item->NombreMarca = ucfirst(strtolower($item->NombreMarca));
+
                 return $item;
             });
 
