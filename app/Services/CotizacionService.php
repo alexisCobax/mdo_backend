@@ -334,7 +334,7 @@ class CotizacionService
         $sheet->setCellValue('Q18', 'Terminos: ' . $invoice->Terms);
 
         /* Vendedor **/
-        $sheet->setCellValue('I18', 'Vendedor : ' . $invoice->salesPerson);
+        $sheet->setCellValue('I18', 'Vendedor : Vendedor: MDO S.');
 
         /* Transporte **/
         $sheet->setCellValue('J20', $invoice->UPS);
