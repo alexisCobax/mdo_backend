@@ -25,7 +25,7 @@ class NotificacionesCotizacionService
 
     public function cotizacion()
     {
-        $cotizaciones = Cotizacion::where('estado', 1)->get();
+        $cotizaciones = Cotizacion::where('estado', 0)->get();
 
         foreach ($cotizaciones as $cotizacion) {
 
@@ -78,7 +78,7 @@ class NotificacionesCotizacionService
                 case 20:
 
                     $cotizacionEliminar = Cotizacion::where('id', $cotizacion->id)->first();
-                    $cotizacionEliminar->estado = 3;
+                    $cotizacionEliminar->estado = 2;
                     $cotizacionEliminar->save();
 
                     break;

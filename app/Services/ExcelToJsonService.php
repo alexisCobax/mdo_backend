@@ -537,13 +537,14 @@ class ExcelToJsonService
 
         $model = new Cliente;
 
-        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp', 'Contacto', 'Fecha', 'Pais'];
+        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp','Email', 'Contacto', 'Fecha', 'Pais'];
 
         $query = $model->select(
             'cliente.id',
             'cliente.nombre',
             'cliente.telefono',
             'cliente.WhatsApp',
+            'cliente.email',
             'cliente.contacto',
             'cliente.fechaAlta',
             'pais.nombre as nombrePais'
@@ -581,13 +582,14 @@ class ExcelToJsonService
 
         $model = new Cliente;
 
-        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp', 'Contacto', 'Fecha', 'Pais'];
+        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp','Email', 'Contacto', 'Fecha', 'Pais'];
 
         $query = $model->select(
             'cliente.id',
             'cliente.nombre',
             'cliente.telefono',
             'cliente.WhatsApp',
+            'cliente.email',
             'cliente.contacto',
             'cliente.fechaAlta',
             'pais.nombre as nombrePais'
