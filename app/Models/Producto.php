@@ -296,6 +296,7 @@ class Producto extends Model
             return $query->where('stock', '>', 0)
                 ->where('precio', '>', 0)
                 ->where('stock', '>', 0)
+                ->orderBy('nuevo', 'desc')
                 ->orderBy('ultimoIngresoDeMercaderia', 'desc')
                 ->take(3);
         }
