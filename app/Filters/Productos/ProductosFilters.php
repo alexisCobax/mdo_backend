@@ -3,11 +3,8 @@
 namespace App\Filters\Productos;
 
 use App\Models\Producto;
-use App\Models\Marcaproducto;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use App\Enums\EstadosProductosEnums;
 use App\Transformers\Productos\FindAllTransformer;
+use Illuminate\Http\Response;
 
 class ProductosFilters
 {
@@ -38,8 +35,8 @@ class ProductosFilters
         $buscador = $request->input('buscador');
         $grupo = $request->input('grupo');
 
-            // Inicializa la consulta utilizando el modelo
-            $query = $model::query();
+        // Inicializa la consulta utilizando el modelo
+        $query = $model::query();
 
         // Aplica los filtros si se proporcionan
         $query->codigo($codigo);

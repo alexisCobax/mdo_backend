@@ -7,7 +7,6 @@ use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract
 {
-
     public function transform(Cliente $cliente)
     {
         $clientes = [
@@ -55,7 +54,7 @@ class FindAllTransformer extends TransformerAbstract
             'contactoApellido' => $cliente->contactoApellido,
             'IdActiveCampaign' => $cliente->IdActiveCampaign,
             'IdActiveCampaignContact' => $cliente->IdActiveCampaignContact,
-            'notification' => $cliente->notification
+            'notification' => $cliente->notification,
         ];
 
         return $clientes;

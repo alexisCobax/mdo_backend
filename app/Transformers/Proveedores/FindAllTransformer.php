@@ -7,7 +7,7 @@ use League\Fractal\TransformerAbstract;
 class FindAllTransformer extends TransformerAbstract
 {
     public function transform($proveedor)
-    {   
+    {
         return [
             'id' => $proveedor->id,
             'nombre' => $proveedor->nombre,

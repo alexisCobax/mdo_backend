@@ -37,7 +37,7 @@ class PedidodetalleController extends Controller
         return $this->service->findById($request);
     }
 
-        /**
+    /**
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request $request
@@ -73,7 +73,7 @@ class PedidodetalleController extends Controller
         return $this->service->update($request);
     }
 
-        /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

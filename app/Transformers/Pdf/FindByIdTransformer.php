@@ -2,8 +2,8 @@
 
 namespace App\Transformers\Pdf;
 
-use App\Models\Cliente;
 use App\Helpers\DateHelper;
+use App\Models\Cliente;
 use App\Models\Pedidodetalle;
 use App\Models\Pedidodetallenn;
 use League\Fractal\TransformerAbstract;
@@ -17,11 +17,7 @@ class FindByIdTransformer extends TransformerAbstract
         $detalle = Pedidodetalle::with('productos.colores')->orWhere('pedido', $pedido->id)->get();
         $detalleNn = Pedidodetallenn::orWhere('pedido', $pedido->id)->get();
 
-        
-
         $cantidadTotal = 0;
-        
-
 
         //------
 
@@ -33,7 +29,7 @@ class FindByIdTransformer extends TransformerAbstract
 
             //-----
 
-            $subtotal += $d->precio*$d->cantidad;
+            $subtotal += $d->precio * $d->cantidad;
             $pedidoDetalle[] = [
                 'cantidad' => $d->cantidad,
                 'codigo' => optional($d->productos)->codigo ?? '',
@@ -44,7 +40,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'precio' => number_format($d->precio, 2),
                 'total' => number_format($precio, 2),
                 'imagen' => env('URL_IMAGENES_PRODUCTOS') . optional($d->productos)->imagenPrincipal ?? '',
-                'imagenPrincipal' => optional($d->productos)->imagenPrincipal 
+                'imagenPrincipal' => optional($d->productos)->imagenPrincipal,
             ];
         }
 
@@ -56,7 +52,7 @@ class FindByIdTransformer extends TransformerAbstract
             $cantidadTotal += $dNn->cantidad;
 
             //------
-            $subtotal += $dNn->precio*$dNn->cantidad;
+            $subtotal += $dNn->precio * $dNn->cantidad;
 
             $pedidoDetalle[] = [
                 'cantidad' => $dNn->cantidad,
@@ -72,7 +68,7 @@ class FindByIdTransformer extends TransformerAbstract
             ];
         }
 
-        $descuentoPorcentual = $subtotal*($pedido->DescuentoPorcentual / 100);
+        $descuentoPorcentual = $subtotal * ($pedido->DescuentoPorcentual / 100);
         $totalDescuentos = $descuentoPorcentual + $pedido->DescuentoPromociones + $pedido->DescuentoNeto;
         $totalEnvio = $pedido->TotalEnvio;
 

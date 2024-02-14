@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
+use App\Filters\Prospectos\ProspectosFilters;
+use App\Helpers\ArrayToXlsxHelper;
 use App\Models\Cliente;
+use App\Models\Prospecto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
-use App\Helpers\ArrayToXlsxHelper;
-use App\Filters\Prospectos\ProspectosFilters;
-use App\Models\Prospecto;
 
 class ProspectoService
 {
@@ -78,8 +77,6 @@ class ProspectoService
         //                 $email = $request->input('email');
 
         // $model = new Prospecto;
-
-        
 
         // // Aplica los filtros si se proporcionan
         // if ($id) {

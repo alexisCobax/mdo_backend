@@ -7,7 +7,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -125,7 +124,7 @@ class Cliente extends Model
 
     public function scopeId($query, $id)
     {
-            return $query->where('id', $id);
+        return $query->where('id', $id);
     }
 
     public function scopeNombre($query, $nombre)

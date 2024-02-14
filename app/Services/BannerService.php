@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Filters\Banners\BannersFilters;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Intervention\Image\Facades\Image;
-use App\Filters\Banners\BannersFilters;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class BannerService
 {
@@ -32,8 +32,8 @@ class BannerService
     public function create(Request $request, $tipobanner)
     {
 
-        if(!$request->tipo){
-            return response()->json("Tipo es obligatorio", Response::HTTP_INTERNAL_SERVER_ERROR);
+        if (!$request->tipo) {
+            return response()->json('Tipo es obligatorio', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $tipo = $tipobanner->find($request->tipo)->first();
@@ -43,7 +43,7 @@ class BannerService
 
         $imagen = Image::make(storage_path("app/$pathOriginal"))
             ->resize($tipo->ancho, $tipo->alto)
-            ->save(storage_path("app/public/banners/" . date('YmdHis') . ".jpg"));
+            ->save(storage_path('app/public/banners/' . date('YmdHis') . '.jpg'));
 
         Storage::delete($pathOriginal);
 
@@ -61,7 +61,7 @@ class BannerService
             return response()->json(['error' => 'Failed to create Banner'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json("Imagen generada correctamente", Response::HTTP_OK);
+        return response()->json('Imagen generada correctamente', Response::HTTP_OK);
     }
 
     public function update(Request $request)

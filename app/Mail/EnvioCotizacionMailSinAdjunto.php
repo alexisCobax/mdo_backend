@@ -14,7 +14,7 @@ class EnvioCotizacionMailSinAdjunto extends Mailable
     public $subject;
     public $nombre;
 
-    public function __construct($cuerpo,$subject,$nombre)
+    public function __construct($cuerpo, $subject, $nombre)
     {
         $this->cuerpo = $cuerpo;
         $this->subject = $subject;

@@ -23,8 +23,8 @@ class ClientesFilters
 
         // Aplica los filtros si se proporcionan
         if ($id) {
-            if($id!='undefined'){
-            $query->id($id);
+            if ($id != 'undefined') {
+                $query->id($id);
             }
         }
         if ($nombre) {

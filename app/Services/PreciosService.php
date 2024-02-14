@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Helpers\PaginateHelper;
 use App\Models\Portada;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\PaginateHelper;
 
 class PreciosService
 {
@@ -55,7 +55,8 @@ class PreciosService
             if ($request->stock_desde) {
                 $productos->whereBetween('stock', [$request->stock_desde, $request->stock_hasta]);
             }
-            return "Debe ingresar stock hasta";
+
+            return 'Debe ingresar stock hasta';
         }
         if ($request->stock_hasta) {
             $productos->where('stock', $request->stock_hasta);
@@ -67,31 +68,31 @@ class PreciosService
             $productos->where('suspendido', $request->suspendido);
         }
 
-            $productos->get()->each(function ($producto) use ($request){
+        $productos->get()->each(function ($producto) use ($request) {
 
-                if($request->monto_fijo){
-                    $producto->precioPromocional = $producto->precio - $request->monto_fijo;
-                    $producto->save();
-                }
+            if ($request->monto_fijo) {
+                $producto->precioPromocional = $producto->precio - $request->monto_fijo;
+                $producto->save();
+            }
 
-                if($request->descuento){
-                    $producto->precioPromocional = $producto->precio - $request->descuento;
-                    $producto->save();
-                }
+            if ($request->descuento) {
+                $producto->precioPromocional = $producto->precio - $request->descuento;
+                $producto->save();
+            }
 
-                if($request->porcentaje){
-                    $porcentaje = $producto->precio * ($request->porcentaje/100);
-                    $precio = $producto->precio - $porcentaje;
-                    $producto->precioPromocional = $precio;
-                    $producto->save();
-                }
+            if ($request->porcentaje) {
+                $porcentaje = $producto->precio * ($request->porcentaje / 100);
+                $precio = $producto->precio - $porcentaje;
+                $producto->precioPromocional = $precio;
+                $producto->save();
+            }
 
-                if($request->suspendido){
-                    $producto->suspendido = $request->suspendido;
-                    $producto->save();
-                }
-            
-            });
+            if ($request->suspendido) {
+                $producto->suspendido = $request->suspendido;
+                $producto->save();
+            }
+
+        });
 
         $resultado = $productos->get();
 

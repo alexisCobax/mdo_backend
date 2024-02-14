@@ -2,29 +2,26 @@
 
 namespace App\Services;
 
-use Drawing;
-use Alignment;
-use App\Models\Color;
-use App\Models\Cliente;
-use PHPExcel_IOFactory;
-use App\Models\Producto;
-use App\Models\TmpImagenes;
+use App\Filters\Productos\ProductosFilters;
+use App\Helpers\ArrayToXlsxHelper;
 use App\Helpers\ExcelHelper;
+use App\Models\Cliente;
+use App\Models\Color;
 use App\Models\Fotoproducto;
+use App\Models\Marcaproducto;
+use App\Models\Materialproducto;
+use App\Models\Producto;
 use App\Models\Tipoproducto;
+use App\Models\TmpImagenes;
 use App\Models\TmpProductos;
 use Illuminate\Http\Request;
-use App\Models\Marcaproducto;
 use Illuminate\Http\Response;
-use PHPExcel_Style_Alignment;
-use PHPExcel_Worksheet_Drawing;
-use App\Models\Materialproducto;
-use App\Helpers\ArrayToXlsxHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use PHPExcel_Worksheet_MemoryDrawing;
 use Maatwebsite\Excel\Classes\PHPExcel;
-use App\Filters\Productos\ProductosFilters;
+use PHPExcel_IOFactory;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Worksheet_MemoryDrawing;
 
 class ExcelToJsonService
 {
@@ -437,12 +434,12 @@ class ExcelToJsonService
         $results = array_map(function ($item) {
 
             return [
-                "codigo" => $item["codigo"],
-                "nombre" => $item["nombre"],
-                "categoria" => $item["categoriaNombre"],
-                "marca" => $item['nombreMarca'],
-                "precio" => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
-                "imagen" => storage_path('app/public/images/' . $item['imagenPrincipal'])
+                'codigo' => $item['codigo'],
+                'nombre' => $item['nombre'],
+                'categoria' => $item['categoriaNombre'],
+                'marca' => $item['nombreMarca'],
+                'precio' => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
+                'imagen' => storage_path('app/public/images/' . $item['imagenPrincipal']),
             ];
         }, $result);
 
@@ -534,10 +531,9 @@ class ExcelToJsonService
         $nombre = $request->input('nombre');
         $email = $request->input('email');
 
-
         $model = new Cliente;
 
-        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp','Email', 'Contacto', 'Fecha', 'Pais'];
+        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp', 'Email', 'Contacto', 'Fecha', 'Pais'];
 
         $query = $model->select(
             'cliente.id',
@@ -582,7 +578,7 @@ class ExcelToJsonService
 
         $model = new Cliente;
 
-        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp','Email', 'Contacto', 'Fecha', 'Pais'];
+        $cabeceras = ['Id', 'Nombre', 'Telefono', 'WhatsApp', 'Email', 'Contacto', 'Fecha', 'Pais'];
 
         $query = $model->select(
             'cliente.id',

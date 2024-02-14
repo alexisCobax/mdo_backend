@@ -2,16 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\Carrito;
-use App\Models\Producto;
-use App\Helpers\CalcHelper;
-use Illuminate\Http\Request;
-use App\Models\Marcaproducto;
-use Illuminate\Http\Response;
-use App\Helpers\CarritoHelper;
-use App\Models\Cupondescuento;
 use App\Helpers\CalcCuponHelper;
+use App\Helpers\CalcHelper;
+use App\Helpers\CarritoHelper;
+use App\Models\Carrito;
+use App\Models\Cupondescuento;
+use App\Models\Producto;
 use App\Models\Promocioncomprandoxgratisz;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DescuentosService
 {
@@ -29,16 +28,16 @@ class DescuentosService
             $precioMenor = $this->calcularPrecioMenor($detalleProductos);
             $cantidadBonificada = $this->calcularCantidadBonificada($idMarca, $cantidad);
             $precio = $precioMenor * $cantidadBonificada['cantidadBonificada'];
+
             return [
                 'id' => 0,
                 'idPedido' => 0,
                 'idPromocion' => $cantidadBonificada['idPromocion'],
                 'descripcion' => $cantidadBonificada['nombrePromocion'],
                 'montoDescuento' => $precio,
-                'idTipoPromocion' => 1
+                'idTipoPromocion' => 1,
             ];
         })->values();
-
 
         return response()->json($productosAgrupados);
     }
@@ -74,7 +73,7 @@ class DescuentosService
         return [
             'idPromocion' => $promocion->id,
             'nombrePromocion' => $promocion->nombre,
-            'cantidadBonificada' => $cantidadTotalBonificada
+            'cantidadBonificada' => $cantidadTotalBonificada,
         ];
 
         //return $cantidadTotalBonificada;
@@ -106,6 +105,7 @@ class DescuentosService
                 $carrito->cupon = $cupon->id;
                 $carrito->save();
             }
+
             return response()->json(['cupon' => $cupon->id, 'status' => 200], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los cupones'], Response::HTTP_INTERNAL_SERVER_ERROR);

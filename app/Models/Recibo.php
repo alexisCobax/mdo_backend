@@ -7,7 +7,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\Formadepago;
 use Illuminate\Database\Eloquent\Model;
 
 /**

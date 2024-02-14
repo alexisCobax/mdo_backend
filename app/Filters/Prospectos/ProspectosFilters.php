@@ -12,7 +12,7 @@ class ProspectosFilters
         // Obtén los parámetros de la solicitud
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
-        
+
         // Obtén los parámetros del filtro
         $id = $request->input('id');
         $nombre = $request->input('nombre');
@@ -25,8 +25,8 @@ class ProspectosFilters
 
         // Aplica los filtros si se proporcionan
         if ($id) {
-            if($id!='undefined'){
-            $query->id($id);
+            if ($id != 'undefined') {
+                $query->id($id);
             }
         }
         if ($nombre) {

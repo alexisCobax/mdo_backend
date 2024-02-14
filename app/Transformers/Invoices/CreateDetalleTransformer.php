@@ -6,21 +6,20 @@ use League\Fractal\TransformerAbstract;
 
 class CreateDetalleTransformer extends TransformerAbstract
 {
-
     public function transform($detalle, $id)
     {
 
-        $response = $detalle->map(function ($detalle) use ($id){
+        $response = $detalle->map(function ($detalle) use ($id) {
 
-            if($detalle->producto){
+            if ($detalle->producto) {
                 $descripcion = optional($detalle->productos)->nombre . ' | ' . optional($detalle->productos->marcas)->nombre . ' | ' . optional($detalle->productos->colores)->nombre;
-            }else{
+            } else {
                 $descripcion = $detalle->descripcion;
             }
 
-            if($detalle->producto){
+            if ($detalle->producto) {
                 $itemNumber = optional($detalle->productos)->codigo;
-            }else{
+            } else {
                 $itemNumber = 'NN';
             }
 

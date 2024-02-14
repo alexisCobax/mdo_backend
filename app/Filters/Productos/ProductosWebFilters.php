@@ -3,11 +3,8 @@
 namespace App\Filters\Productos;
 
 use App\Models\Producto;
-use App\Models\Marcaproducto;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use App\Enums\EstadosProductosEnums;
 use App\Transformers\Productos\FindAllTransformer;
+use Illuminate\Http\Response;
 
 class ProductosWebFilters
 {
@@ -37,8 +34,8 @@ class ProductosWebFilters
         $buscador = $request->input('buscador');
         $grupo = $request->input('grupo');
 
-            // Inicializa la consulta utilizando el modelo
-            $query = $model::query();
+        // Inicializa la consulta utilizando el modelo
+        $query = $model::query();
 
         // Aplica los filtros si se proporcionan
         $query->codigo($codigo);
@@ -57,7 +54,7 @@ class ProductosWebFilters
         $query->buscador($buscador);
         $query->NuevosProductos($estado);
 
-        $query->where('stock', '>', 0)->where('suspendido','=',0);
+        $query->where('stock', '>', 0)->where('suspendido', '=', 0);
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer

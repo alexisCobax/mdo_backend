@@ -49,7 +49,7 @@ class DescuentosController extends Controller
         return $this->service->add($request);
     }
 
-        /**
+    /**
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request $request

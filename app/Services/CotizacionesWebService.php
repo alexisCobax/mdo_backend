@@ -17,7 +17,6 @@ use App\Transformers\Invoices\FindByIdTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class CotizacionesWebService
 {
@@ -32,7 +31,7 @@ class CotizacionesWebService
             $page = $request->input('pagina', env('PAGE'));
             $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-            $data = Cotizacion::where('cliente', $cliente->id)->where('estado',0)->orderBy('id', 'desc')->selectRaw('*, DATE_FORMAT(fecha, "%d-%b-%Y") as formatted_fecha')->paginate($perPage, ['*'], 'page', $page);
+            $data = Cotizacion::where('cliente', $cliente->id)->where('estado', 0)->orderBy('id', 'desc')->selectRaw('*, DATE_FORMAT(fecha, "%d-%b-%Y") as formatted_fecha')->paginate($perPage, ['*'], 'page', $page);
 
             $response = [
                 'status' => Response::HTTP_OK,
@@ -115,7 +114,7 @@ class CotizacionesWebService
     public function procesar(Request $request)
     {
 
-        $cotizacion = Cotizacion::where('id',$request->cotizacion)->first();
+        $cotizacion = Cotizacion::where('id', $request->cotizacion)->first();
 
         Carrito::where('cliente', $cotizacion->cliente)->update(['estado' => 1]);
 
@@ -142,7 +141,7 @@ class CotizacionesWebService
             return response()->json(['error' => 'Carrito not found'], Response::HTTP_NOT_FOUND);
         }
 
-        Cotizacion::where('id',$request->cotizacion)->update(['estado' => 1]);
+        Cotizacion::where('id', $request->cotizacion)->update(['estado' => 1]);
 
         return response()->json(['data' => $carrito], Response::HTTP_OK);
     }

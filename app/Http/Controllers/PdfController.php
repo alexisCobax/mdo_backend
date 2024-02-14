@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 // use Barryvdh\DomPDF\Facade\Pdf;
 
-use App\Models\Recibo;
+use App\Services\CotizacionService;
 use App\Services\InvoiceService;
 use App\Services\ProformaService;
 use App\Services\ReciboService;
-use App\Services\CotizacionService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class PdfController extends Controller
@@ -20,11 +18,11 @@ class PdfController extends Controller
     private $cotizacion;
 
     public function __construct(
-        ProformaService $ProformaService, 
-        InvoiceService $InvoiceService, 
+        ProformaService $ProformaService,
+        InvoiceService $InvoiceService,
         ReciboService $ReciboService,
-        CotizacionService $cotizacionService)
-    {
+        CotizacionService $cotizacionService
+    ) {
         $this->proforma = $ProformaService;
         $this->invoice = $InvoiceService;
         $this->recibo = $ReciboService;

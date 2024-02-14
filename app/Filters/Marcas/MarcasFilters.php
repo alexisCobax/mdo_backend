@@ -2,25 +2,25 @@
 
 namespace App\Filters\Marcas;
 
-use Illuminate\Http\Response;
 use App\Transformers\Marcas\FindAllTransformer;
+use Illuminate\Http\Response;
 
 class MarcasFilters
 {
     public static function getPaginateMarcas($request, $model)
     {
-                // Obtén los parámetros de la solicitud
-                $page = $request->input('pagina', env('PAGE'));
-                $perPage = $request->input('cantidad', env('PER_PAGE'));
-        
-                // Obtén los parámetros del filtro
-                $nombreCliente = $request->input('nombreCliente');
-                $estado = $request->input('estado');
-                $desde = $request->input('desde');
-                $hasta = $request->input('hasta');
-        
-                // Inicializa la consulta utilizando el modelo
-                $query = $model::query();
+        // Obtén los parámetros de la solicitud
+        $page = $request->input('pagina', env('PAGE'));
+        $perPage = $request->input('cantidad', env('PER_PAGE'));
+
+        // Obtén los parámetros del filtro
+        $nombreCliente = $request->input('nombreCliente');
+        $estado = $request->input('estado');
+        $desde = $request->input('desde');
+        $hasta = $request->input('hasta');
+
+        // Inicializa la consulta utilizando el modelo
+        $query = $model::query();
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();

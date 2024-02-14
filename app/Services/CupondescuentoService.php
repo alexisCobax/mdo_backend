@@ -29,21 +29,21 @@ class CupondescuentoService
 
     public function create(Request $request)
     {
-        
+
         $nombre = strtoupper($request->nombre);
         $nombre = str_replace(' ', '', $nombre);
 
         $payload = [
-            "nombre"=> $nombre,
-            "descripcion"=> $request->descripcion,
-            "descuentoFijo"=> $request->descuentoFijo,
-            "descuentoPorcentual"=> $request->descuentoPorcentual,
-            "marca"=> $request->marca,
-            "combinable"=> $request->combinable,
-            "inicio"=> $request->inicio,
-            "vencimiento"=> $request->vencimiento,
-            "stock"=> $request->stock,
-            "suspendido"=> $request->suspendido
+            'nombre'=> $nombre,
+            'descripcion'=> $request->descripcion,
+            'descuentoFijo'=> $request->descuentoFijo,
+            'descuentoPorcentual'=> $request->descuentoPorcentual,
+            'marca'=> $request->marca,
+            'combinable'=> $request->combinable,
+            'inicio'=> $request->inicio,
+            'vencimiento'=> $request->vencimiento,
+            'stock'=> $request->stock,
+            'suspendido'=> $request->suspendido,
         ];
         $cupondescuento = Cupondescuento::create($payload);
 

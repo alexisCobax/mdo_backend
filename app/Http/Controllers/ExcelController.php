@@ -34,7 +34,7 @@ class ExcelController extends Controller
     }
 
     public function clienteExcel(Request $request)
-    { 
+    {
         return $this->service->cliente($request);
     }
 }

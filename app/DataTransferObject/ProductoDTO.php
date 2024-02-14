@@ -41,8 +41,8 @@ class ProductoDTO
             'bestBrasil' => $data['bestBrasil'],
             'posicion' => $data['posicion'],
             'stockRoto' => $data['stockRoto'],
-            'ultimoIngresoDeMercaderia' => date("Y-m-d H:i:s"),
-            'ultimaVentaDeMercaderia' => date("Y-m-d H:i:s"),
+            'ultimoIngresoDeMercaderia' => date('Y-m-d H:i:s'),
+            'ultimaVentaDeMercaderia' => date('Y-m-d H:i:s'),
             'genero' => $data['genero'],
             'UPCreal' => $data['UPCreal'],
             'mdoNet' => $data['mdoNet'],
@@ -70,7 +70,7 @@ class ProductoDTO
             'descripcionLarga' => $data['descripcionLarga'],
             'colorPrincipal' => $data['colorPrincipal'],
             'colorSecundario' => $data['colorSecundario'],
-            'nuevo' => $data['nuevo']
+            'nuevo' => $data['nuevo'],
         ];
     }
 }

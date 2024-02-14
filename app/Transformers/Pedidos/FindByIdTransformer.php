@@ -5,10 +5,9 @@ namespace App\Transformers\Pedidos;
 use App\Helpers\DateHelper;
 use App\Models\Pedido;
 use App\Models\Pedidodescuentospromocion;
-use App\Models\Pedidodetalle;
 use App\Models\Pedidodetallenn;
-use League\Fractal\TransformerAbstract;
 use Illuminate\Support\Facades\DB;
+use League\Fractal\TransformerAbstract;
 
 class FindByIdTransformer extends TransformerAbstract
 {
@@ -49,7 +48,6 @@ class FindByIdTransformer extends TransformerAbstract
             producto.nombre ASC',
             [$this->request->id]
         );
-
 
         $detalle = [];
 

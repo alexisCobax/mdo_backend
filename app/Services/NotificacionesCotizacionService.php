@@ -2,27 +2,19 @@
 
 namespace App\Services;
 
-use App\Models\Cliente;
-use App\Models\Invoice;
-use App\Models\Producto;
-use App\Models\Cotizacion;
-use App\Helpers\CalcHelper;
 use App\Helpers\DateHelper;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\EnvioCotizacionMailConAdjuntoNotificacion;
+use App\Models\Cliente;
+use App\Models\Cotizacion;
 use App\Models\Cotizaciondetalle;
-use Illuminate\Support\Facades\DB;
+use App\Models\Invoice;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
-use App\Mail\EnvioCotizacionMailConAdjunto;
-use App\Mail\EnvioCotizacionMailConAdjuntoNotificacion;
-
-
 class NotificacionesCotizacionService
 {
-
     public function cotizacion()
     {
         $cotizaciones = Cotizacion::where('estado', 0)->get();
@@ -86,7 +78,7 @@ class NotificacionesCotizacionService
 
             if ($enviarEmail) {
 
-                /** genero invoice PDF **/
+                /* genero invoice PDF **/
                 $this->generarCotizacionMailPdf($cotizacion->id);
 
                 $cliente = Cliente::where('id', $cotizacion->cliente)->first();
@@ -98,11 +90,11 @@ class NotificacionesCotizacionService
 
                     $destinatarios = [
                         $emailMdo,
-                        $cliente->email
+                        $cliente->email,
                     ];
                 } else {
                     $destinatarios = [
-                        $emailMdo
+                        $emailMdo,
                     ];
                 }
 
@@ -118,7 +110,6 @@ class NotificacionesCotizacionService
         return response()->json($cotizacion, Response::HTTP_OK);
     }
 
-
     public function generarCotizacionMailPdf($idCotizacion)
     {
         $cotizacion = Cotizacion::where('id', $idCotizacion)->first();
@@ -132,24 +123,24 @@ class NotificacionesCotizacionService
                 'productoCodigo' => optional($detalle->productos)->codigo,
                 'precio' => $detalle->precio,
                 'cantidad' => $detalle->cantidad,
-                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2)
+                'subtotal' => number_format($detalle->precio * $detalle->cantidad, 2),
             ];
         })->values();
 
         $cotizacion = [
-            "cotizacion" => $cotizacion->id,
-            "fecha" => DateHelper::ToDateCustom($cotizacion->fecha),
-            "cliente" => $cotizacion->cliente,
-            "nombreCliente" => optional($cotizacion->clientes)->nombre,
-            "idCliente" => optional($cotizacion->clientes)->id,
-            "telefonoCliente" => optional($cotizacion->clientes)->telefono,
-            "direccionCliente" => optional($cotizacion->clientes)->direccion,
-            "emailCliente" => optional($cotizacion->clientes)->email,
-            "subTotal" => $cotizacion->subTotal,
-            "total" => $cotizacion->total,
-            "descuento" => $cotizacion->descuento,
-            "cantidad" => $detalles->sum('cantidad'),
-            "total" => number_format($detalles->sum('subtotal'), 2)
+            'cotizacion' => $cotizacion->id,
+            'fecha' => DateHelper::ToDateCustom($cotizacion->fecha),
+            'cliente' => $cotizacion->cliente,
+            'nombreCliente' => optional($cotizacion->clientes)->nombre,
+            'idCliente' => optional($cotizacion->clientes)->id,
+            'telefonoCliente' => optional($cotizacion->clientes)->telefono,
+            'direccionCliente' => optional($cotizacion->clientes)->direccion,
+            'emailCliente' => optional($cotizacion->clientes)->email,
+            'subTotal' => $cotizacion->subTotal,
+            'total' => $cotizacion->total,
+            'descuento' => $cotizacion->descuento,
+            'cantidad' => $detalles->sum('cantidad'),
+            'total' => number_format($detalles->sum('subtotal'), 2),
         ];
 
         $cotizacion['detalles'] = $detalles->all();
@@ -162,6 +153,7 @@ class NotificacionesCotizacionService
 
         try {
             Storage::put($pdfPath, $pdfContent);
+
             return response()->json(['response' => 'Pdf Guardado!'], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);

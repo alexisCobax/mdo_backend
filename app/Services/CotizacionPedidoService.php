@@ -35,7 +35,7 @@ class CotizacionPedidoService
             $pedido = Pedido::create($cotizacionData);
         } catch (Error $e) {
 
-            return response()->json("error", $e->getMessage());
+            return response()->json('error', $e->getMessage());
         }
         $cotizacionDetalles = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->get();
 
@@ -57,7 +57,7 @@ class CotizacionPedidoService
                 'producto' => $detalle->producto,
                 'precio' => $detalle->precio,
                 'cantidad' => $detalle->cantidad,
-                'costo' => $detalle->precio * $detalle->cantidad
+                'costo' => $detalle->precio * $detalle->cantidad,
             ];
         });
 
@@ -65,7 +65,7 @@ class CotizacionPedidoService
             PedidoDetalle::insert($detalles->toArray());
         } catch (Error $e) {
 
-            return response()->json("error", $e->getMessage());
+            return response()->json('error', $e->getMessage());
         }
 
         return response()->json($pedido, Response::HTTP_OK);

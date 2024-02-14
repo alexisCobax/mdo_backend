@@ -14,7 +14,6 @@ class PedidosProductosFilters
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-
         $nombreCliente = trim($request->input('nombreCliente'));
         $id = $request->input('id');
         $estado = $request->input('estado');
@@ -82,7 +81,7 @@ class PedidosProductosFilters
                 'cliente' => $pedido->cliente,
                 'nombreEmpleado' => $pedido->nombre,
                 'nombreEstado' => $pedido->nombreEstado,
-                'total' => $pedido->total
+                'total' => $pedido->total,
             ];
         });
 

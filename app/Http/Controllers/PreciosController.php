@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\PreciosService;
+use Illuminate\Http\Request;
 
 class PreciosController extends Controller
 {

@@ -1,103 +1,102 @@
 <?php
 
-use App\Models\Configuracion;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\JetController;
-use App\Http\Controllers\PdfController;
-use App\Http\Controllers\PaisController;
-use App\Http\Controllers\ColorController;
-use App\Http\Controllers\ExcelController;
-use App\Http\Controllers\GrupoController;
-use App\Http\Controllers\ImageController;
-use App\Http\Controllers\BannerController;
-use App\Http\Controllers\CiudadController;
-use App\Http\Controllers\CloverController;
-use App\Http\Controllers\CompraController;
-use App\Http\Controllers\MonedaController;
-use App\Http\Controllers\PaypalController;
-use App\Http\Controllers\PedidoController;
-use App\Http\Controllers\PerfilController;
-use App\Http\Controllers\PuestoController;
-use App\Http\Controllers\ReciboController;
-use App\Http\Controllers\SesionController;
-use App\Http\Controllers\CarrierController;
-use App\Http\Controllers\CarritoController;
-use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\EstucheController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\PagoWebController;
-use App\Http\Controllers\PaisWebController;
-use App\Http\Controllers\PayeezyController;
-use App\Http\Controllers\PortadaController;
-use App\Http\Controllers\PreciosController;
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\ZipcodeController;
-use App\Http\Controllers\Cliente2Controller;
-use App\Http\Controllers\ComisionController;
-use App\Http\Controllers\DepositoController;
-use App\Http\Controllers\EmpleadoController;
-use App\Http\Controllers\OrderjetController;
-use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\ProspectoController;
-use App\Http\Controllers\ProveedorController;
-use App\Http\Controllers\ReintegroController;
-use App\Http\Controllers\CarritoWebController;
-use App\Http\Controllers\ClienteWebController;
-use App\Http\Controllers\CotizacionController;
-use App\Http\Controllers\DescuentosController;
-use App\Http\Controllers\InvoiceWebController;
-use App\Http\Controllers\PlataformaController;
-use App\Http\Controllers\TipobannerController;
-use App\Http\Controllers\EtapapedidoController;
-use App\Http\Controllers\FormadepagoController;
-use App\Http\Controllers\GlobalToolsController;
-use App\Http\Controllers\PedidocuponController;
-use App\Http\Controllers\ProductoWebController;
-use App\Http\Controllers\TipodeenvioController;
-use App\Http\Controllers\TransaccionController;
-use App\Http\Controllers\Auth\AuthWebController;
-use App\Http\Controllers\EstadopedidoController;
-use App\Http\Controllers\FotoproductoController;
-use App\Http\Controllers\OrigenpedidoController;
-use App\Http\Controllers\SexoproductoController;
-use App\Http\Controllers\TipoproductoController;
-use App\Http\Controllers\CarriermethodController;
-use App\Http\Controllers\CompradetalleController;
-use App\Http\Controllers\ConfiguracionController;
-use App\Http\Controllers\MarcaproductoController;
-use App\Http\Controllers\PagostarjetumController;
-use App\Http\Controllers\PedidodetalleController;
 use App\Http\Controllers\ActiveCampaignController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\AuthWebController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\CarrierController;
+use App\Http\Controllers\CarriermethodController;
+use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CarritodetalleController;
-use App\Http\Controllers\CupondescuentoController;
-use App\Http\Controllers\InvoicedetalleController;
-use App\Http\Controllers\MarcafalabellaController;
-use App\Http\Controllers\NotificacionesController;
-use App\Http\Controllers\ProductogeneroController;
-use App\Http\Controllers\TamanoproductoController;
+use App\Http\Controllers\CarritodetalleWebController;
+use App\Http\Controllers\CarritoWebController;
+use App\Http\Controllers\CategoriafalabellaController;
+use App\Http\Controllers\CategoriaproductoController;
+use App\Http\Controllers\CiudadController;
+use App\Http\Controllers\Cliente2Controller;
 use App\Http\Controllers\ClientecontactoController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ClienteWebController;
+use App\Http\Controllers\CloverController;
+use App\Http\Controllers\ColorController;
+use App\Http\Controllers\ComisionController;
+use App\Http\Controllers\CompraController;
+use App\Http\Controllers\CompradetalleController;
 use App\Http\Controllers\CompradetallennController;
+use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\CotizacionController;
 use App\Http\Controllers\CotizacionesWebController;
-use App\Http\Controllers\CuentaCorrienteController;
-use App\Http\Controllers\PedidodetallennController;
 use App\Http\Controllers\CotizacionPedidoController;
+use App\Http\Controllers\CuentaCorrienteController;
+use App\Http\Controllers\CupondescuentoController;
+use App\Http\Controllers\DepositoController;
+use App\Http\Controllers\DescuentosController;
+use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\EmpresatransportadoraController;
 use App\Http\Controllers\EncargadodeventaController;
 use App\Http\Controllers\EstadocotizacionController;
+use App\Http\Controllers\EstadopedidoController;
+use App\Http\Controllers\EstucheController;
+use App\Http\Controllers\EtapapedidoController;
+use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\FormadepagoController;
+use App\Http\Controllers\FotoproductoController;
+use App\Http\Controllers\GlobalToolsController;
+use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\InvoicedetalleController;
+use App\Http\Controllers\InvoiceWebController;
+use App\Http\Controllers\JetController;
+use App\Http\Controllers\MarcafalabellaController;
+use App\Http\Controllers\MarcaproductoController;
 use App\Http\Controllers\MaterialproductoController;
-use App\Http\Controllers\PedidoCotizacionController;
-use App\Http\Controllers\SubidasfalabellaController;
-use App\Http\Controllers\CarritodetalleWebController;
-use App\Http\Controllers\CategoriaproductoController;
-use App\Http\Controllers\CategoriafalabellaController;
+use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\MovimientoproductoController;
-use App\Http\Controllers\OrderjetdevolucionController;
-use App\Http\Controllers\PlataformaproductoController;
-use App\Http\Controllers\EmpresatransportadoraController;
 use App\Http\Controllers\NotificacionesCotizacionController;
+use App\Http\Controllers\OrderjetController;
+use App\Http\Controllers\OrderjetdevolucionController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
+use App\Http\Controllers\OrigenpedidoController;
+use App\Http\Controllers\PagostarjetumController;
+use App\Http\Controllers\PagoWebController;
+use App\Http\Controllers\PaisController;
+use App\Http\Controllers\PaisWebController;
+use App\Http\Controllers\PayeezyController;
+use App\Http\Controllers\PaypalController;
+use App\Http\Controllers\PdfController;
+use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\PedidoCotizacionController;
+use App\Http\Controllers\PedidocuponController;
 use App\Http\Controllers\PedidodescuentospromocionController;
+use App\Http\Controllers\PedidodetalleController;
+use App\Http\Controllers\PedidodetallennController;
+use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\PlataformaController;
+use App\Http\Controllers\PlataformaproductoController;
+use App\Http\Controllers\PortadaController;
+use App\Http\Controllers\PreciosController;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProductogeneroController;
+use App\Http\Controllers\ProductoWebController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
+use App\Http\Controllers\ProspectoController;
+use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\PuestoController;
+use App\Http\Controllers\ReciboController;
+use App\Http\Controllers\ReintegroController;
+use App\Http\Controllers\SesionController;
+use App\Http\Controllers\SexoproductoController;
+use App\Http\Controllers\SubidasfalabellaController;
+use App\Http\Controllers\TamanoproductoController;
+use App\Http\Controllers\TipobannerController;
+use App\Http\Controllers\TipodeenvioController;
+use App\Http\Controllers\TipoproductoController;
+use App\Http\Controllers\TransaccionController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ZipcodeController;
+use App\Models\Configuracion;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,7 +110,6 @@ use App\Http\Controllers\PromocioncomprandoxgratiszController;
 */
 
 Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
-
 
     /* Banner Routes **/
 
@@ -613,7 +611,6 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
 
     /* Prospecto Routes **/
 
-
     Route::get('/prospecto', [ProspectoController::class, 'index']);
     Route::get('/prospecto/{id}', [ProspectoController::class, 'show']);
     Route::post('/prospecto', [ProspectoController::class, 'create']);
@@ -790,7 +787,7 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     /* Pagos **/
     Route::post('/web/pagar/carrito', [PagoWebController::class, 'create']);
 
-    /** Descuentos **/
+    /* Descuentos **/
     Route::post('/web/descuento', [DescuentosController::class, 'show']);
     Route::post('/web/descuento/add', [DescuentosController::class, 'add']);
 
@@ -814,8 +811,6 @@ Route::post('/web/rescue', [AuthWebController::class, 'rescue']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
 Route::post('register', [AuthController::class, 'register']);
-
-
 
 /* Categorias Routes Not Auth **/
 
@@ -862,4 +857,3 @@ Route::get('/cotizacion/excel/{id}', [CotizacionController::class, 'excel']);
 /* Notificacion cron **/
 
 Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class, 'cotizacion']);
-

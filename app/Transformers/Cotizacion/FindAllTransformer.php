@@ -15,11 +15,11 @@ class FindAllTransformer extends TransformerAbstract
             'fecha' => DateHelper::ToDateCustom($cotizacion->fecha),
             'cliente' => $cotizacion->cliente,
             'clienteNombre' => optional($cotizacion->clientes)->nombre,
-            'total' => number_format($cotizacion->total,2),
+            'total' => number_format($cotizacion->total, 2),
             'estado' => $cotizacion->estado,
             'IdActiveCampaign' => $cotizacion->IdActiveCampaign,
             'descuento' => $cotizacion->descuento,
-            'subTotal' => number_format($cotizacion->subTotal,2),
+            'subTotal' => number_format($cotizacion->subTotal, 2),
         ];
     }
 }
