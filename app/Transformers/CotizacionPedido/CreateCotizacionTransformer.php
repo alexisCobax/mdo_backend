@@ -10,7 +10,7 @@ class CreateCotizacionTransformer
         $cliente = [
             'fecha'=>date('Y-m-d'),
             'cliente'=>$cotizacion->cliente,
-            'estado'=>$cotizacion->estado,
+            'estado'=>1,
             'vendedor'=>1,
             'formaDePago'=>1,
             'observaciones'=>'',

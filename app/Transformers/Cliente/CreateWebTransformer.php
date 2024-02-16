@@ -38,7 +38,7 @@ class CreateWebTransformer
             'vendedor' => $request->vendedor,
             'web' => $request->web,
             'notification' => $request->notification,
-            'fechaAlta' => date('Y-m-d')
+            'fechaAlta' => date('Y-m-d'),
             //'IdActiveCampaignContact'=>$id
         ];
 

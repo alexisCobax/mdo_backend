@@ -39,7 +39,7 @@ class CreateTransformer
             'web' => $request->web,
             'notification' => $request->notification,
             'ciudadEnvio' => $request->ciudadEnvio,
-            'fechaAlta' => date('Y-m-d')
+            'fechaAlta' => date('Y-m-d'),
         ];
 
         return $cliente;
