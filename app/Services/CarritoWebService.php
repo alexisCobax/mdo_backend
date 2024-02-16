@@ -136,7 +136,7 @@ class CarritoWebService
         $cotizacion->fecha = NOW();
         $cotizacion->cliente = $carritoHelper['cliente'];
         $cotizacion->total = $total;
-        $cotizacion->estado = 0;
+        $cotizacion->estado = 3;
         $cotizacion->descuento = '0.00';
         try {
             $cotizacion->save();
