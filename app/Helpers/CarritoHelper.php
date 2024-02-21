@@ -19,6 +19,7 @@ class CarritoHelper
         if (!$carrito) {
             return [
                 'id' => '',
+                'cupon' => 0,
                 'cliente' => $cliente->id,
                 'usuario' => $user['id'],
             ];
@@ -26,6 +27,7 @@ class CarritoHelper
 
         return [
             'id' => $carrito->id,
+            'cupon' => $carrito->cupon,
             'cliente' => $cliente->id,
             'usuario' => $user['id'],
         ];

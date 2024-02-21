@@ -7,7 +7,6 @@ class CalcTotalHelper
     public static function calcular($subTotal, $cantidad, $descuentos)
     {
         $totalEnvio = CalcEnvioHelper::calcular($cantidad);
-        $descuentos = '0.00';
         $total = $subTotal - $descuentos; //subtotal - descuentos
         $totalConEnvio = $total + $totalEnvio;
 
