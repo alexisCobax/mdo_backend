@@ -37,4 +37,9 @@ class Carrito extends Model
         'session',
         'observaciones',
     ];
+
+    public function cupones()
+    {
+        return $this->belongsTo(Cupondescuento::class, 'cupon');
+    }
 }

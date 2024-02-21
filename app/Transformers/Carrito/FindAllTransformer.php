@@ -70,6 +70,7 @@ class FindAllTransformer extends TransformerAbstract
             'carrito' => $id,
             'total' => $total == 0 ? '0.00' : number_format($total, 2),
             'descuentos' => $descuento == 0 ? '0.00' : number_format($descuento, 2),
+            'cupon' => optional($carrito->cupones)->nombre,
             'subtotal' => $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'],
             'totalConEnvio' => $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'],
             'totalEnvio' => $calculo['totalEnvio'] == 0 ? '0.00' : $calculo['totalEnvio'],
