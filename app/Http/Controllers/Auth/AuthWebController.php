@@ -114,13 +114,13 @@ class AuthWebController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $client = Cliente::where('usuario', $user->id)->first();
-            if (is_object($client) && $client->prospecto == 1) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Prospecto, debe pedir autorizacion.',
-                ], Response::HTTP_UNAUTHORIZED);
-            }
+            // $client = Cliente::where('usuario', $user->id)->first();
+            // if (is_object($client) && $client->prospecto == 1) {
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'Prospecto, debe pedir autorizacion.',
+            //     ], Response::HTTP_UNAUTHORIZED);
+            // }
 
             return response()->json([
                 'token' => $user->createToken('API TOKEN')->plainTextToken,
