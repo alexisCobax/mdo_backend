@@ -7,6 +7,7 @@ use App\Helpers\CarritoHelper;
 use App\Helpers\LogHelper;
 use App\Models\Carrito;
 use App\Models\Carritodetalle;
+use App\Models\Cupondescuento;
 use App\Models\Pedido;
 use App\Models\Pedidodetalle;
 use App\Models\Producto;
@@ -26,7 +27,7 @@ class PagoWebService
 
         $productosCarrito = Carritodetalle::where('carrito', $carrito['id'])->get();
 
-        $pago = $this->creditCard($productosCarrito, $request->token);
+        $pago = $this->creditCard($productosCarrito, $request->token, $carrito);
 
         $pagoResponse = $pago->getContent();
         $pago = json_decode($pagoResponse);
@@ -166,7 +167,7 @@ class PagoWebService
         return $pdf->stream();
     }
 
-    public function creditCard($carritoDetalle, $token)
+    public function creditCard($carritoDetalle, $token, $carrito)
     {
 
         $totalPorProducto = $carritoDetalle->map(function ($item) {
@@ -177,8 +178,14 @@ class PagoWebService
 
         $cantidades = $carritoDetalle->pluck('cantidad');
         $cantidad = $cantidades->sum();
+
+        $cupon = Cupondescuento::where('id', $carrito['cupon'])->firts();
+        
         $descuentos = '0.00';
 
+        if($cupon){
+            $descuentos = $subtotal * $cupon->descuentoPorcentual / 100;
+        }
         $calculo = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
         $calculo = number_format($calculo['totalConEnvio'], 2, '', '');
 
