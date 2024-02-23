@@ -309,7 +309,14 @@ class Producto extends Model
 
     public function scopeMenos20($query)
     {
-        $query->where('precioPromocional', '<', 20.00);
+        $query->where(function($query) {
+            $query->where('precioPromocional', '=', 0)
+                  ->where('precio', '<=', 20.00);
+        })
+        ->orWhere(function($query) {
+            $query->where('precioPromocional', '>', 0)
+                  ->where('precioPromocional', '<=', 20.00);
+        });
     }
 
     public function scopeMarcaBuscador()
