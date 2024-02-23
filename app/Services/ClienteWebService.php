@@ -26,6 +26,22 @@ class ClienteWebService
         }
     }
 
+    public function find(Request $request)
+    {
+        try {
+            $query = $request->input('nombre');
+
+            $data = Cliente::where('nombre', 'LIKE', "%$query%")
+            ->select('id', 'nombre')
+            ->get()
+            ->pluck('nombre', 'id');    
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener los clientes'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function findByToken(Request $request)
     {
         $user = Auth::user();

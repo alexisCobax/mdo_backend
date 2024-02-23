@@ -33,6 +33,7 @@ class ProductosWebFilters
         $estado = $request->input('estado');
         $buscador = $request->input('buscador');
         $grupo = $request->input('grupo');
+        $tag = $request->input('tag');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
@@ -53,6 +54,15 @@ class ProductosWebFilters
         $query->grupo($grupo);
         $query->buscador($buscador);
         $query->NuevosProductos($estado);
+
+        switch ($tag) {
+            case 'precioPromocional':
+                $query->PrecioPromocional();
+                break;
+            case 'menos20':
+                $query->Menos20();
+                break;
+        }
 
         $query->where('stock', '>', 0)->where('suspendido', '=', 0);
         $data = $query->paginate($perPage, ['*'], 'page', $page);
