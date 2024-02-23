@@ -25,6 +25,17 @@ class ClienteWebController extends Controller
         return $this->service->findAll($request);
     }
 
+        /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ClienteWebService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function find(Request $request)
+    {
+        return $this->service->find($request);
+    }
+
     /**
      * Display the specified resource.
      *

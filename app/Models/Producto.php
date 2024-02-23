@@ -302,6 +302,16 @@ class Producto extends Model
         }
     }
 
+    public function scopePrecioPromocional($query)
+    {
+        $query->where('precioPromocional', '!=', 0);
+    }
+
+    public function scopeMenos20($query)
+    {
+        $query->where('precioPromocional', '<', 20.00);
+    }
+
     public function scopeMarcaBuscador()
     {
         return $this->belongsTo(Marcaproducto::class, 'marca');

@@ -267,4 +267,10 @@ class ProductoService
 
         return response()->json($producto, Response::HTTP_OK);
     }
+
+    public function precioGeneral(Request $request){
+
+        
+
+    }
 }
