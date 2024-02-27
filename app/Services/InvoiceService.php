@@ -144,7 +144,7 @@ class InvoiceService
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
 
-        // Crear invoice
+        // Crear invoice regenerar
 
         $sqlCantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
             ->selectRaw('pedido, SUM(cantidad) as suma_cantidad') 
