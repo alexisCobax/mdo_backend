@@ -146,9 +146,15 @@ class InvoiceService
 
         // Crear invoice
 
-        $cantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
+        $sqlCantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
             ->selectRaw('pedido, SUM(cantidad) as suma_cantidad') 
             ->first();
+
+            if($sqlCantidad==''){
+                $cantidad = 0;
+            }else{
+                $cantidad = $sqlCantidad->suma_cantidad;
+            }
 
         $invoiceData = new CreateTransformer();
         $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
