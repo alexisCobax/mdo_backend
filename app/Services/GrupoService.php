@@ -5,13 +5,14 @@ namespace App\Services;
 use App\Models\Grupo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\PaginateHelper;
 
 class GrupoService
 {
     public function findAll(Request $request)
     {
         try {
-            $data = Grupo::all();
+            $data = PaginateHelper::getPaginatedData($request, Grupo::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {

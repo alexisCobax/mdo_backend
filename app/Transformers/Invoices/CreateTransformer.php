@@ -16,13 +16,13 @@ class CreateTransformer extends TransformerAbstract
         } else {
             $vendedorNombre = '';
         }
-
+        
         if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $pedido->fecha)) {
             $pedido_fecha = null;
         } else {
             $pedido_fecha = $pedido->fecha;
         }
-
+        
         return [
             'fecha' => NOW(),
             'cliente' => $pedido->cliente,
@@ -40,7 +40,7 @@ class CreateTransformer extends TransformerAbstract
             'salesPerson' => $vendedorNombre,
             'orden' => $pedido->id,
             'peso' => 0,
-            'cantidad' => $cantidad[0]->suma_cantidad,
+            'cantidad' => $cantidad,
             'DescuentoNeto' => $pedido->DescuentoNeto,
             'DescuentoPorcentual' => $pedido->DescuentoPorcentual,
             'UPS' => '',

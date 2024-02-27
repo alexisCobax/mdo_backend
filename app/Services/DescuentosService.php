@@ -2,15 +2,16 @@
 
 namespace App\Services;
 
-use App\Helpers\CalcCuponHelper;
-use App\Helpers\CalcHelper;
-use App\Helpers\CarritoHelper;
 use App\Models\Carrito;
-use App\Models\Cupondescuento;
 use App\Models\Producto;
-use App\Models\Promocioncomprandoxgratisz;
+use App\Helpers\CalcHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Cupondescuento;
+use App\Helpers\CalcCuponHelper;
+use Illuminate\Support\Facades\DB;
+use App\Models\Promocioncomprandoxgratisz;
 
 class DescuentosService
 {
@@ -114,39 +115,95 @@ class DescuentosService
     public function create(Request $request)
     {
 
-        $modificacion = $request->input('modificacion');
+        try {
+            $strCondicion = "";
+            $strCambios = "";
 
-        switch ($modificacion) {
-            case 'monto_fijo':
-                $datos = $request->only(['marca', 'tipo', 'categoria', 'color', 'grupo', 'destacado', 'estuche', 'stock_desde', 'stock_hasta', 'precio_desde', 'precio_hasta', 'suspendido']);
-                break;
+            $query = "UPDATE producto SET " . $strCambios . " WHERE " . substr($strCondicion, 4);
 
-            case 'aumento_fijo':
-                $datos = $request->only(['aumento_fijo', 'estuche', 'suspendido']);
-                break;
+            $bindings = [];
 
-            case 'aumento_porcentual':
-                $datos = $request->only(['aumento_porcentual', 'estuche', 'suspendido']);
-                break;
+            if ($request->marcaCheckbox != 0) {
+                $strCondicion .= " AND marca = ?";
+                $bindings[] = $request->marca;
+            }
+            if ($request->tipoCheckbox != 0) {
+                $strCondicion .= " AND tipo = ?";
+                $bindings[] = $request->tipo;
+            }
+            if ($request->categoriaCheckbox != 0) {
+                $strCondicion .= " AND categoria = ?";
+                $bindings[] = $request->categoria;
+            }
+            if ($request->colorCheckbox != 0) {
+                $strCondicion .= " AND color = ?";
+                $bindings[] = $request->color;
+            }
+            if ($request->grupoCheckbox != 0) {
+                $strCondicion .= " AND grupo = ?";
+                $bindings[] = $request->grupo;
+            }
+            if ($request->destacadoCheckbox) {
+                $strCondicion .= " AND destacado = ?";
+                $bindings[] = $request->destacado;
+            }
+            if ($request->estucheCheckbox) {
+                $strCondicion .= " AND estuche = ?";
+                $bindings[] = $request->estuche;
+            }
+            if ($request->stockCheckbox) {
+                $strCondicion .= " AND stock BETWEEN ? AND ?";
+                $bindings[] = $request->stockDesde;
+                $bindings[] = $request->stockHasta;
+            }
+            if ($request->precioCheckbox) {
+                $strCondicion .= " AND precio BETWEEN ? AND ?";
+                $bindings[] = $request->precioDesde;
+                $bindings[] = $request->precioHasta;
+            }
 
-            case 'costo':
-                $datos = $request->only(['costo', 'estuche', 'suspendido']);
-                break;
+            if ($request->suspendidoCheckbox) {
+                $strCondicion .= " AND suspendido = ?";
+                $bindings[] = $request->suspendido;
+            }
 
-            case 'estuche':
-                $datos = $request->only(['estuche', 'suspendido']);
-                break;
+            switch ($request->modificacion) {
+                case 'montoFijo':
+                    //
+                    break;
+                case 'descuentoAumentoFijo':
+                    $strCambios = " precio = (precio + ?)";
+                    $bindings[] = $request->montoFijo;
 
-            case 'suspendido':
-                $datos = $request->only(['suspendido']);
-                break;
+                    break;
+                case 'descuentoAumentoPorcentual';
+                    $strCambios = " precio = (precio + (? * precio / 100))";
+                    $bindings[] = $request->descuentoAumentoPorcentual;
+                    break;
+                case 'costo':
+                    $strCambios = " costo = ?";
+                    $bindings[] = $request->costo;
+                    break;
+                case 'estuche':
+                    $strCambios = " estuche = ?";
+                    $bindings[] = $request->estucheModificacion;
+                    break;
+                case 'suspendidoModificacion':
+                    $strCambios = " suspendido = ?";
+                    $bindings[] = $request->optionsSuspendidoModificado;
+                    break;
+                case 'stockModificacion':
+                    //
+                    break;
+            }
 
-            default:
-                return response()->json(['mensaje' => 'Tipo de modificación no válido'], 400);
+            $result = DB::update($query, $bindings);
+
+            return response()->json(['data' => $result], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        //$producto->update($datos);
-
-        return response()->json(['data' => $datos, 'mensaje' => 'Producto actualizado con éxito']);
+        return true;
     }
 }
