@@ -151,7 +151,7 @@ class InvoiceService
             ->first();
 
             if($sqlCantidad==''){
-                $cantidad = 0;
+                $cantidad = 0; 
             }else{
                 $cantidad = $sqlCantidad->suma_cantidad;
             }
