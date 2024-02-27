@@ -116,88 +116,90 @@ class DescuentosService
     {
 
         try {
-            $strCondicion = "";
+            $strCondicion = " AND 1 = 1";
             $strCambios = "";
 
-            $query = "UPDATE producto SET " . $strCambios . " WHERE " . substr($strCondicion, 4);
-
-            $bindings = [];
+            //$bindings = [];
 
             if ($request->marcaCheckbox != 0) {
                 $strCondicion .= " AND marca = ?";
-                $bindings[] = $request->marca;
+                //$bindings[] = $request->marca;
             }
             if ($request->tipoCheckbox != 0) {
                 $strCondicion .= " AND tipo = ?";
-                $bindings[] = $request->tipo;
+                //$bindings[] = $request->tipo;
             }
-            if ($request->categoriaCheckbox != 0) {
-                $strCondicion .= " AND categoria = ?";
-                $bindings[] = $request->categoria;
-            }
+            // if ($request->categoriaCheckbox != 0) {
+            //     $strCondicion .= " AND categoria = ?";
+            //     //$bindings[] = $request->categoria;
+            // }
             if ($request->colorCheckbox != 0) {
-                $strCondicion .= " AND color = ?";
-                $bindings[] = $request->color;
+                $strCondicion .= " AND colorPrincipal = ?";
+                //$bindings[] = $request->color;
             }
-            if ($request->grupoCheckbox != 0) {
-                $strCondicion .= " AND grupo = ?";
-                $bindings[] = $request->grupo;
-            }
+            // if ($request->grupoCheckbox != 0) {
+            //     $strCondicion .= " AND grupo = ?";
+            //     //$bindings[] = $request->grupo;
+            // }
             if ($request->destacadoCheckbox) {
                 $strCondicion .= " AND destacado = ?";
-                $bindings[] = $request->destacado;
+                //$bindings[] = $request->destacado;
             }
             if ($request->estucheCheckbox) {
                 $strCondicion .= " AND estuche = ?";
-                $bindings[] = $request->estuche;
+                //$bindings[] = $request->estuche;
             }
             if ($request->stockCheckbox) {
                 $strCondicion .= " AND stock BETWEEN ? AND ?";
-                $bindings[] = $request->stockDesde;
-                $bindings[] = $request->stockHasta;
+                //$bindings[] = $request->stockDesde;
+                //$bindings[] = $request->stockHasta;
             }
             if ($request->precioCheckbox) {
                 $strCondicion .= " AND precio BETWEEN ? AND ?";
-                $bindings[] = $request->precioDesde;
-                $bindings[] = $request->precioHasta;
+                //$bindings[] = $request->precioDesde;
+                //$bindings[] = $request->precioHasta;
             }
 
             if ($request->suspendidoCheckbox) {
                 $strCondicion .= " AND suspendido = ?";
-                $bindings[] = $request->suspendido;
+                //$bindings[] = $request->suspendido;
             }
 
             switch ($request->modificacion) {
                 case 'montoFijo':
-                    //
+                    $strCambios = " precioPromocional = ?";
+                    //$bindings[] = $request->montoFijo;
                     break;
                 case 'descuentoAumentoFijo':
-                    $strCambios = " precio = (precio + ?)";
-                    $bindings[] = $request->montoFijo;
+                    $strCambios = " precioPromocional = (precio + (".$request->descuentoAumentoFijo."))";
+                    //$bindings[] = $request->descuentoAumentoFijo;
 
                     break;
                 case 'descuentoAumentoPorcentual';
-                    $strCambios = " precio = (precio + (? * precio / 100))";
-                    $bindings[] = $request->descuentoAumentoPorcentual;
+                    $strCambios = " precioPromocional = (precio + (? * precio / 100))";
+                    //$bindings[] = $request->descuentoAumentoPorcentual;
                     break;
                 case 'costo':
                     $strCambios = " costo = ?";
-                    $bindings[] = $request->costo;
+                    //$bindings[] = $request->costo;
                     break;
                 case 'estuche':
                     $strCambios = " estuche = ?";
-                    $bindings[] = $request->estucheModificacion;
+                    //$bindings[] = $request->estucheModificacion;
                     break;
                 case 'suspendidoModificacion':
                     $strCambios = " suspendido = ?";
-                    $bindings[] = $request->optionsSuspendidoModificado;
+                    //$bindings[] = $request->optionsSuspendidoModificado;
                     break;
-                case 'stockModificacion':
-                    //
+                case 'destacadoModificacion':
+                    $strCambios = " destacado = ?";
+                    //$bindings[] = $request->optionsDestacadoModificado;
                     break;
             }
 
-            $result = DB::update($query, $bindings);
+            $query = "UPDATE producto SET " . $strCambios . " WHERE " . substr($strCondicion, 4);
+
+            $result = DB::update($query);
 
             return response()->json(['data' => $result], Response::HTTP_OK);
         } catch (\Exception $e) {
