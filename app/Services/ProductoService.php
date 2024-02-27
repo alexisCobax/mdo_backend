@@ -270,7 +270,96 @@ class ProductoService
 
     public function precioGeneral(Request $request){
 
-        
+        try {
+            $strCondicion = "";
+            $strCambios = "";
+    
+            $query = "UPDATE producto SET " . $strCambios . " WHERE " . substr($strCondicion, 4);
+    
+            $bindings = [];
+    
+            if ($intMarca != 0) {
+                $strCondicion .= " AND marca = ?";
+                $bindings[] = $intMarca;
+            }
+            if ($intTipo != 0) {
+                $strCondicion .= " AND tipo = ?";
+                $bindings[] = $intTipo;
+            }
+            if ($intCategoria != 0) {
+                $strCondicion .= " AND categoria = ?";
+                $bindings[] = $intCategoria;
+            }
+            if ($intColor != 0) {
+                $strCondicion .= " AND color = ?";
+                $bindings[] = $intColor;
+            }
+            if ($intGrupo != 0) {
+                $strCondicion .= " AND grupo = ?";
+                $bindings[] = $intGrupo;
+            }
+            if ($blnFiltrarPagina) {
+                $strCondicion .= " AND pagina = ?";
+                $bindings[] = $blnPagina;
+            }
+            if ($blnFiltrarEstuche) {
+                $strCondicion .= " AND estuche = ?";
+                $bindings[] = $intEstuche;
+            }
+            if ($blnFiltrarSuspendido) {
+                $strCondicion .= " AND suspendido = ?";
+                $bindings[] = $blnSuspendido;
+            }
+            if ($blnFiltrarStock) {
+                $strCondicion .= " AND stock BETWEEN ? AND ?";
+                $bindings[] = $intStockDesde;
+                $bindings[] = $intStockHasta;
+            }
+            if ($blnFiltrarPrecio) {
+                $strCondicion .= " AND precio BETWEEN ? AND ?";
+                $bindings[] = $decPrecioDesde;
+                $bindings[] = $decPrecioHasta;
+            }
+    
+            if ($blnCambiarPrecio) {
+                $strCambios = " precio = ?";
+                $bindings[] = $decCambioPrecio;
+            }
+    
+            if ($blnCambiarCosto) {
+                $strCambios = " costo = ?";
+                $bindings[] = $decCambioCosto;
+            }
+    
+            if ($blnCambiarDescuentoPorcentual) {
+                $strCambios = " precio = (precio + (? * precio / 100))";
+                $bindings[] = $decCambioDescuentoPorcentual;
+            }
+    
+            if ($blnCambiarDescuento) {
+                $strCambios = " precio = (precio + ?)";
+                $bindings[] = $decCambioDescuento;
+            }
+    
+            if ($blnCambiarEstuche) {
+                $strCambios = " estuche = ?";
+                $bindings[] = $intCambiarEstuche;
+            }
+    
+            if ($blnCambiarEstadoSuspendio) {
+                $strCambios = " suspendido = ?";
+                $bindings[] = $blnNuevoEstadoSuspendido;
+            }
+    
+            $result = DB::update($query, $bindings);
+    
+            return $result !== false;
+        } catch (Exception $ex) {
+            // Handle the exception
+            return false;
+        }
+    
+        return true;
 
     }
 }

@@ -71,15 +71,22 @@ class InvoiceService
 
     public function create(Request $request)
     {
-
+        
         $pedido = Pedido::find($request->pedido);
 
-        $cantidad = Pedidodetalle::where('pedido', $request->pedido)->groupBy('pedido')
+        $sqlCantidad = Pedidodetalle::where('pedido', $request->pedido)->groupBy('pedido')
             ->selectRaw('pedido, SUM(cantidad) as suma_cantidad')
-            ->get();
+            ->first();
+
+        if($sqlCantidad==''){
+            $cantidad = 0;
+        }else{
+            $cantidad = $sqlCantidad->suma_cantidad;
+        }
 
         $invoiceData = new CreateTransformer();
         $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
+
         $invoice = Invoice::create($invoiceData);
 
         $pedidosDetalle = Pedidodetalle::where('pedido', $request->pedido)

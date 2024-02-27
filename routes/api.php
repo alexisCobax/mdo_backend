@@ -376,6 +376,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
 
     /* Grupo Routes **/
 
+    Route::get('/grupo', [GrupoController::class, 'index']);
     Route::post('/grupo', [GrupoController::class, 'create']);
     Route::put('/grupo/{id}', [GrupoController::class, 'update']);
     Route::delete('/grupo/{id}', [GrupoController::class, 'delete']);
