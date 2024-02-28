@@ -114,86 +114,57 @@ class DescuentosService
 
     public function create(Request $request)
     {
-
         try {
             $strCondicion = " AND 1 = 1";
             $strCambios = "";
 
-            //$bindings = [];
-
             if ($request->marcaCheckbox != 0) {
-                $strCondicion .= " AND marca = ?";
-                //$bindings[] = $request->marca;
+                $strCondicion .= " AND marca = " . $request->marca . "";
             }
             if ($request->tipoCheckbox != 0) {
-                $strCondicion .= " AND tipo = ?";
-                //$bindings[] = $request->tipo;
+                $strCondicion .= " AND tipo = " . $request->tipo . "";
             }
-            // if ($request->categoriaCheckbox != 0) {
-            //     $strCondicion .= " AND categoria = ?";
-            //     //$bindings[] = $request->categoria;
-            // }
             if ($request->colorCheckbox != 0) {
-                $strCondicion .= " AND colorPrincipal = ?";
-                //$bindings[] = $request->color;
+                $strCondicion .= " AND colorPrincipal = " . $request->color . "";
             }
-            // if ($request->grupoCheckbox != 0) {
-            //     $strCondicion .= " AND grupo = ?";
-            //     //$bindings[] = $request->grupo;
-            // }
             if ($request->destacadoCheckbox) {
-                $strCondicion .= " AND destacado = ?";
-                //$bindings[] = $request->destacado;
+                $strCondicion .= " AND destacado = " . $request->destacado . "";
             }
             if ($request->estucheCheckbox) {
-                $strCondicion .= " AND estuche = ?";
-                //$bindings[] = $request->estuche;
+                $strCondicion .= " AND estuche = " . $request->estuche . "";
             }
             if ($request->stockCheckbox) {
-                $strCondicion .= " AND stock BETWEEN ? AND ?";
-                //$bindings[] = $request->stockDesde;
-                //$bindings[] = $request->stockHasta;
+                $strCondicion .= " AND stock BETWEEN " . $request->stockDesde . " AND " . $request->stockHasta . "";
             }
             if ($request->precioCheckbox) {
-                $strCondicion .= " AND precio BETWEEN ? AND ?";
-                //$bindings[] = $request->precioDesde;
-                //$bindings[] = $request->precioHasta;
+                $strCondicion .= " AND precio BETWEEN " . $request->precioDesde . " AND " . $request->precioHasta . "";
             }
 
             if ($request->suspendidoCheckbox) {
-                $strCondicion .= " AND suspendido = ?";
-                //$bindings[] = $request->suspendido;
+                $strCondicion .= " AND suspendido = " . $request->suspendido . "";
             }
 
             switch ($request->modificacion) {
                 case 'montoFijo':
-                    $strCambios = " precioPromocional = ?";
-                    //$bindings[] = $request->montoFijo;
-                    break;
-                case 'descuentoAumentoFijo':
-                    $strCambios = " precioPromocional = (precio + (".$request->descuentoAumentoFijo."))";
-                    //$bindings[] = $request->descuentoAumentoFijo;
+                    $strCambios = " precioPromocional = " . $request->montoFijo . "";
 
                     break;
+                case 'descuentoAumentoFijo':
+                    $strCambios = " precioPromocional = (precio + (" . $request->descuentoAumentoFijo . "))";
+                    break;
                 case 'descuentoAumentoPorcentual';
-                    $strCambios = " precioPromocional = (precio + (? * precio / 100))";
-                    //$bindings[] = $request->descuentoAumentoPorcentual;
                     break;
                 case 'costo':
-                    $strCambios = " costo = ?";
-                    //$bindings[] = $request->costo;
+                    $strCambios = " costo = (" . $request->costo . ")";
                     break;
                 case 'estuche':
-                    $strCambios = " estuche = ?";
-                    //$bindings[] = $request->estucheModificacion;
+                    $strCambios = " estuche = (" . $request->estucheModificacion . ")";
                     break;
                 case 'suspendidoModificacion':
-                    $strCambios = " suspendido = ?";
-                    //$bindings[] = $request->optionsSuspendidoModificado;
+                    $strCambios = " suspendido = " . $request->optionsSuspendidoModificado . "";
                     break;
                 case 'destacadoModificacion':
-                    $strCambios = " destacado = ?";
-                    //$bindings[] = $request->optionsDestacadoModificado;
+                    $strCambios = " destacado = " . $request->optionsDestacadoModificado . "";
                     break;
             }
 
