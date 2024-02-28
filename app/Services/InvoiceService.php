@@ -146,14 +146,19 @@ class InvoiceService
 
         // Crear invoice regenerar
 
-        $sqlCantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
+        $pedidoDetalleCantidad = 0;
+        $pedidoDetalleNnCantidad = 0;
+
+        $pedidoDetalleCantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
             ->selectRaw('pedido, SUM(cantidad) as suma_cantidad') 
             ->first();
 
-            if($sqlCantidad==''){
+
+
+            if($pedidoDetalleCantidad==''){
                 $cantidad = 0; 
             }else{
-                $cantidad = $sqlCantidad->suma_cantidad;
+                $cantidad = $pedidoDetalleCantidad->suma_cantidad;
             }
 
         $invoiceData = new CreateTransformer();
