@@ -58,15 +58,16 @@ class ExcelToJsonService
             $sku = $sheet->getCell('A' . $row->getRowIndex())->getValue();
             $marca = $sheet->getCell('B' . $row->getRowIndex())->getValue();
             $nombre = $sheet->getCell('C' . $row->getRowIndex())->getValue();
-            $tipo = $sheet->getCell('D' . $row->getRowIndex())->getValue();
-            $color_fabricante = $sheet->getCell('E' . $row->getRowIndex())->getValue();
-            $color_generico = $sheet->getCell('F' . $row->getRowIndex())->getValue();
-            $tamanio = $sheet->getCell('G' . $row->getRowIndex())->getValue();
-            $material = $sheet->getCell('H' . $row->getRowIndex())->getValue();
-            $cantidad = $sheet->getCell('I' . $row->getRowIndex())->getValue();
-            $estuche = $sheet->getCell('J' . $row->getRowIndex())->getValue();
-            $costo = $sheet->getCell('K' . $row->getRowIndex())->getValue();
-            $precio_venta = $sheet->getCell('L' . $row->getRowIndex())->getValue();
+            $descripcion = $sheet->getCell('D' . $row->getRowIndex())->getValue();
+            $tipo = $sheet->getCell('E' . $row->getRowIndex())->getValue();
+            $color_fabricante = $sheet->getCell('F' . $row->getRowIndex())->getValue();
+            $color_generico = $sheet->getCell('G' . $row->getRowIndex())->getValue();
+            $tamanio = $sheet->getCell('H' . $row->getRowIndex())->getValue();
+            $material = $sheet->getCell('I' . $row->getRowIndex())->getValue();
+            $cantidad = $sheet->getCell('J' . $row->getRowIndex())->getValue();
+            $estuche = $sheet->getCell('K' . $row->getRowIndex())->getValue();
+            $costo = $sheet->getCell('L' . $row->getRowIndex())->getValue();
+            $precio_venta = $sheet->getCell('M' . $row->getRowIndex())->getValue();
             // $upc = $sheet->getCell('M' . $row->getRowIndex())->getValue();
 
             if (!empty($sku) && is_numeric($sku)) {
@@ -80,39 +81,43 @@ class ExcelToJsonService
                 }
 
                 if (empty($tipo)) { //
-                    $errorMessages[] = 'El campo Tipo esta vacio Celda D' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Descripcion esta vacio Celda D' . $row->getRowIndex();
+                }
+
+                if (empty($tipo)) { //
+                    $errorMessages[] = 'El campo Tipo esta vacio Celda E' . $row->getRowIndex();
                 }
 
                 if (empty($color_fabricante)) {
-                    $errorMessages[] = 'El campo Color Fabricante esta vacio Celda E' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Color Fabricante esta vacio Celda F' . $row->getRowIndex();
                 }
 
                 if (empty($color_generico)) { //
-                    $errorMessages[] = 'El campo Color Generico esta vacio Celda F' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Color Generico esta vacio Celda G' . $row->getRowIndex();
                 }
 
                 if (empty($tamanio)) {
-                    $errorMessages[] = 'El campo Tamaño esta vacio Celda G' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Tamaño esta vacio Celda H' . $row->getRowIndex();
                 }
 
                 if (empty($material)) {
-                    $errorMessages[] = 'El campo Material esta vacio Celda H' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Material esta vacio Celda I' . $row->getRowIndex();
                 }
 
                 if (!is_numeric($cantidad)) { //si es numerico debe ser mayor a 0
-                    $errorMessages[] = 'El campo Cantidad es invalido Celda I' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Cantidad es invalido Celda J' . $row->getRowIndex();
                 }
 
                 if (empty($estuche)) { //
-                    $errorMessages[] = 'El campo Estuche esta vacio Celda J' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Estuche esta vacio Celda K' . $row->getRowIndex();
                 }
 
                 if (!is_numeric($costo)) {
-                    $errorMessages[] = 'El campo Costo esta vacio o es invalido en Celda K' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Costo esta vacio o es invalido en Celda L' . $row->getRowIndex();
                 }
 
                 if (empty($precio_venta)) {
-                    $errorMessages[] = 'El campo Precio Venta esta vacio Celda L' . $row->getRowIndex();
+                    $errorMessages[] = 'El campo Precio Venta esta vacio Celda M' . $row->getRowIndex();
                 }
 
                 // if (empty($upc)) {
@@ -124,6 +129,7 @@ class ExcelToJsonService
                 $tmpProductos->marca = $marca;
                 $tmpProductos->nombre = $nombre;
                 $tmpProductos->tipo = $tipo;
+                $tmpProductos->descripcion = $descripcion;
                 $tmpProductos->color_fabricante = $color_fabricante;
                 $tmpProductos->color_generico = $color_generico;
                 $tmpProductos->tamanio = $tamanio;
@@ -133,7 +139,7 @@ class ExcelToJsonService
                 $tmpProductos->costo = $costo;
                 $tmpProductos->precio_venta = $precio_venta;
                 // $tmpProductos->upc = $upc;
-                $tmpProductos->image = 'N' . $row->getRowIndex();
+                //$tmpProductos->image = 'N' . $row->getRowIndex();
                 if ($errorMessages) {
                     $tmpProductos->error = json_encode($errorMessages);
                 }
@@ -187,7 +193,7 @@ class ExcelToJsonService
         foreach ($skusNoEncontrados as $tmpProducto) {
             $producto = new Producto();
             $producto->nombre = $tmpProducto->nombre;
-            $producto->descripcion = $tmpProducto->nombre . ' - ' . $tmpProducto->tamanio . ' - ' . $tmpProducto->color_fabricante;
+            $producto->descripcion = $tmpProducto->descripcion;
             $producto->tipo = $this->BuscarTipo($tmpProducto->tipo);
             $producto->categoria = 1;
             $producto->marca = $this->BuscarMarcas($tmpProducto->marca);
