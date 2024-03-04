@@ -141,7 +141,7 @@ class CotizacionesWebService
             return response()->json(['error' => 'Carrito not found'], Response::HTTP_NOT_FOUND);
         }
 
-        Cotizacion::where('id', $request->cotizacion)->update(['estado' => 1]);
+        Cotizacion::where('id', $request->cotizacion)->update(['estado' => 3]);
 
         return response()->json(['data' => $carrito], Response::HTTP_OK);
     }
