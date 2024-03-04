@@ -121,7 +121,7 @@ class CotizacionesWebService
         $carrito = new Carrito;
         $carrito->fecha = $cotizacion->fecha;
         $carrito->cliente = $cotizacion->cliente;
-        $carrito->estado = 0;
+        $carrito->estado = 3;
         $carrito->vendedor = 1;
         $carrito->save();
 
