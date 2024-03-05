@@ -413,12 +413,12 @@ class CotizacionService
         /* Subtotal **/
         $sheet->mergeCells('X' . ($i + 6) . ':AG' . ($i + 6) . '');
         $sheet->getStyle('X' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
-        $sheet->setCellValue('X' . ($i + 6), 'SubTotal:');
+        $sheet->setCellValue('X' . ($i + 6), 'SubTotasssl:');
 
         $sheet->mergeCells('AH' . ($i + 6) . ':AL' . ($i + 6) . '');
         $sheet->getStyle('AH' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->getStyle('AH' . ($i + 6))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 6), 'U$Szz ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones));
+        $sheet->setCellValue('AH' . ($i + 6), 'U$S ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones));
 
         /* Envio y manejo **/
         $sheet->mergeCells('T' . ($i + 7) . ':AG' . ($i + 7) . '');
