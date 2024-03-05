@@ -374,7 +374,7 @@ class CotizacionService
         $sheet->mergeCells('AH' . $i . ':AN' . $i . '');
         $sheet->setCellValue('AH' . $i, '$' . $total);
 
-        $sheet->mergeCells('B' . $i . ':F' . $i . '');
+        $sheet->mergeCells('B' . $i . ':J' . $i . '');
         $sheet->getStyle('B' . $i)->applyFromArray(['font' => ['bold' => true]]);
         $sheet->setCellValue('B' . $i, 'Total de artículos: ' . $cantidad);
         $sheet->getStyle('B' . $i . ':AL' . $i)->getBorders()->getTop()->setBorderStyle(Border::BORDER_THICK);
