@@ -377,8 +377,8 @@ class CotizacionService
         $sheet->mergeCells('B' . $i . ':F' . $i . '');
         $sheet->getStyle('B' . $i)->applyFromArray(['font' => ['bold' => true]]);
         $sheet->setCellValue('B' . $i, 'Total de artículos: ' . $cantidad);
-        $sheet->getStyle('B' . $i . ':AI' . $i)->getBorders()->getTop()->setBorderStyle(Border::BORDER_THICK);
-        $sheet->getStyle('B' . $i . ':AI' . $i)->getBorders()->getTop()->getColor()->setARGB('000000');
+        $sheet->getStyle('B' . $i . ':AL' . $i)->getBorders()->getTop()->setBorderStyle(Border::BORDER_THICK);
+        $sheet->getStyle('B' . $i . ':AL' . $i)->getBorders()->getTop()->getColor()->setARGB('000000');
 
         /* Descuento Neto **/
         $sheet->mergeCells('R' . ($i + 3) . ':AG' . ($i + 3) . '');
@@ -436,17 +436,17 @@ class CotizacionService
         $sheet->mergeCells('AH' . ($i + 8) . ':AL' . ($i + 8) . '');
         $sheet->getStyle('AH' . ($i + 8))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->getStyle('AH' . ($i + 8))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 8), 'U$S ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio));
+        $sheet->setCellValue('AH' . ($i + 8), 'U$S ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones));
 
         $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
 
         $rangoCeldas->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         $writer = new Xlsx($spreadsheet);
-        $rutaArchivoModificado = storage_path('app/public/excel/archivo_modificado.xlsx');
+        $rutaArchivoModificado = storage_path('app/public/excel/invoice.xlsx');
         $writer->save($rutaArchivoModificado);
 
-        return response()->download($rutaArchivoModificado, 'archivo_modificado.xlsx')->deleteFileAfterSend(true);
+        return response()->download($rutaArchivoModificado, 'invoice.xlsx')->deleteFileAfterSend(true);
     }
 
     public function notificacion()
