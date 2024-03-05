@@ -413,7 +413,7 @@ class CotizacionService
         /* Subtotal **/
         $sheet->mergeCells('X' . ($i + 6) . ':AG' . ($i + 6) . '');
         $sheet->getStyle('X' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
-        $sheet->setCellValue('X' . ($i + 6), 'SubTotasssl:');
+        $sheet->setCellValue('X' . ($i + 6), 'SubTotal:');
 
         $sheet->mergeCells('AH' . ($i + 6) . ':AL' . ($i + 6) . '');
         $sheet->getStyle('AH' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
