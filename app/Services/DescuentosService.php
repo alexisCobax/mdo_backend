@@ -80,6 +80,24 @@ class DescuentosService
         //return $cantidadTotalBonificada;
     }
 
+    public function calcularPorcentajeBonificado($idMarca, $cantidad)
+    {
+        $promocion = Promocioncomprandoxgratisz::where('idMarca', $idMarca)->where('activa', 1)->first();
+        if (!$promocion) {
+            return 0;
+        }
+        $cantidadBonificada = $promocion->CantidadBonificada;
+
+        $cantidadTotalBonificada = floor($cantidad / $promocion->Cantidad) * $cantidadBonificada;
+
+        return [
+            'idPromocion' => $promocion->id,
+            'nombrePromocion' => $promocion->nombre,
+            'cantidadBonificada' => $cantidadTotalBonificada,
+        ];
+
+    }
+
     public function discount($cupon, $total, $descuento)
     {
         return CalcCuponHelper::calcularDescuento($cupon, $total, $descuento);
