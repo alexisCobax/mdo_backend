@@ -73,8 +73,6 @@ class ProductosWebFilters
 
 
         $query->where('stock', '>', 0)->where('suspendido', '=', 0);
-        $query->orderBy('nombreMarca', 'asc');
-
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
