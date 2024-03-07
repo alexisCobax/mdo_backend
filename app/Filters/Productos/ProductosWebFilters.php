@@ -64,16 +64,16 @@ class ProductosWebFilters
                 break;
         }
 
-        $query->join('marcaproducto', 'marca', '=', 'marcaproducto.id')
-        ->where('producto.stock', '>', 0)
-        ->where('producto.suspendido', '=', 0)
-        ->orderBy('marcaproducto.nombre', 'asc')
-        ->orderBy('ultimoIngresoDeMercaderia', 'desc');
+        // $query->join('marcaproducto', 'marca', '=', 'marcaproducto.id')
+        // ->where('producto.stock', '>', 0)
+        // ->where('producto.suspendido', '=', 0)
+        // ->orderBy('marcaproducto.nombre', 'asc')
+        // ->orderBy('ultimoIngresoDeMercaderia', 'desc');
   
 
 
-        // $query->where('stock', '>', 0)->where('suspendido', '=', 0);
-        // $query->orderBy('nombreMarca', 'asc');
+        $query->where('stock', '>', 0)->where('suspendido', '=', 0);
+        $query->orderBy('nombreMarca', 'asc');
 
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
