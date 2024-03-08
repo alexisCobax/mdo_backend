@@ -16,8 +16,17 @@ class RecibosFilters
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
 
+        $nombreCliente = $request->input('nombreCliente');
+        $id = $request->input('id');
+        $desde = $request->input('desde');
+        $hasta = $request->input('hasta');
+
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
+
+        $query->clienteFiltro($nombreCliente);
+        $query->id($id);
+        $query->desdeHasta($desde,$hasta);
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')

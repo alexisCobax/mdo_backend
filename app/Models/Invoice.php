@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\Cliente;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -79,5 +80,34 @@ class Invoice extends Model
     public function clientes()
     {
         return $this->belongsTo(Cliente::class, 'cliente');
+    }
+
+    public function scopeCodigo($query, $codigo)
+    {
+        if ($codigo) {
+            return $query->where('id', '=', $codigo);
+        }
+
+        return $query;
+    }
+
+    public function scopeClienteFiltro($query, $nombre)
+    {
+        if($nombre){
+        $cliente = Cliente::where('nombre', 'like', '%' . $nombre . '%')->first();
+        if ($cliente) {
+            return $query->where('cliente', '=', $cliente->id);
+        }
+    }
+        return $query;
+    }
+
+    public function scopeDesdeHasta($query, $fechaInicio, $fechaFin)
+    {
+        if ($fechaInicio or $fechaFin) {
+            return $query->whereBetween('fechaOrden', [$fechaInicio . ' 00:00:00', $fechaFin . ' 23:59:59']);
+        }
+
+        return $query;
     }
 }
