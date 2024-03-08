@@ -15,12 +15,30 @@ class InvoicesFilters
 
         // Obtén los parámetros del filtro
         $nombreCliente = $request->input('nombreCliente');
-        $estado = $request->input('estado');
+        $codigo = $request->input('id');
         $desde = $request->input('desde');
         $hasta = $request->input('hasta');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
+
+        $query->clienteFiltro($nombreCliente);
+        $query->codigo($codigo);
+        $query->desdeHasta($desde,$hasta);
+        // $query->categoria($categoria);
+        // $query->nombre($nombre);
+        // $query->nombreMarca($nombreMarca);
+        // $query->suspendido($suspendido);
+        // $query->precioRange($precioDesde, $precioHasta);
+        // $query->stockRange($stockDesde, $stockHasta);
+        // $query->tipo($tipo);
+        // $query->idMarca($idMarca);
+        // $query->material($material);
+        // $query->color($color);
+        // $query->destacado($destacado);
+        // $query->grupo($grupo);
+        // $query->buscador($buscador);
+        // $query->NuevosProductos($estado);
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')

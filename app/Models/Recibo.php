@@ -47,4 +47,33 @@ class Recibo extends Model
     {
         return $this->belongsTo(Formadepago::class, 'formaDePago');
     }
+
+    public function scopeId($query, $id)
+    {
+        if ($id) {
+            return $query->where('id', '=', $id);
+        }
+
+        return $query;
+    }
+
+    public function scopeClienteFiltro($query, $nombre)
+    {
+        if($nombre){
+        $cliente = Cliente::where('nombre', 'like', '%' . $nombre . '%')->first();
+        if ($cliente) {
+            return $query->where('cliente', '=', $cliente->id);
+        }
+    }
+        return $query;
+    }
+
+    public function scopeDesdeHasta($query, $fechaInicio, $fechaFin)
+    {
+        if ($fechaInicio or $fechaFin) {
+            return $query->whereBetween('fecha', [$fechaInicio, $fechaFin]);
+        }
+
+        return $query;
+    }
 }
