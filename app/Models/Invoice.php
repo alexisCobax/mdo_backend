@@ -93,12 +93,13 @@ class Invoice extends Model
 
     public function scopeClienteFiltro($query, $nombre)
     {
-        if($nombre){
-        $cliente = Cliente::where('nombre', 'like', '%' . $nombre . '%')->first();
-        if ($cliente) {
-            return $query->where('cliente', '=', $cliente->id);
+        if ($nombre) {
+            $cliente = Cliente::where('nombre', 'like', '%' . $nombre . '%')->get();
+            $idClientes = $cliente->pluck('id')->toArray();
+            if ($cliente) {
+                return $query->whereIn('cliente', $idClientes);
+            }
         }
-    }
         return $query;
     }
 
