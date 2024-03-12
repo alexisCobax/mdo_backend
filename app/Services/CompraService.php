@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Filters\Compras\ComprasFilters;
+use App\Filters\Compras\ComprasProductoFilters;
 use App\Models\Compra;
 use App\Models\Compradetalle;
 use App\Models\Compradetallenn;
@@ -17,7 +18,12 @@ class CompraService
     {
 
         try {
-            $data = ComprasFilters::getPaginateCompras($request, Compra::class);
+            if($request->codigo){
+                $data = ComprasProductoFilters::getPaginateCompras($request, Compra::class);
+            }else{
+                $data = ComprasFilters::getPaginateCompras($request, Compra::class);
+            }
+            
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
