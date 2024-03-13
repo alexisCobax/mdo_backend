@@ -95,7 +95,6 @@ class DescuentosService
             'nombrePromocion' => $promocion->nombre,
             'cantidadBonificada' => $cantidadTotalBonificada,
         ];
-
     }
 
     public function discount($cupon, $total, $descuento)
@@ -168,9 +167,18 @@ class DescuentosService
 
                     break;
                 case 'descuentoAumentoFijo':
-                    $strCambios = " precioPromocional = (precio + (" . $request->descuentoAumentoFijo . "))";
+
+                    $valor = abs($request->descuentoAumentoFijo);
+
+                    $strCambios = " precioPromocional = (precio - (" . $valor . "))";
+
                     break;
                 case 'descuentoAumentoPorcentual';
+
+                    $valor = abs($request->descuentoAumentoPorcentual);
+
+                    $strCambios = "precioPromocional = precio - (precio * " . ($valor / 100) . ")";
+
                     break;
                 case 'costo':
                     $strCambios = " costo = (" . $request->costo . ")";
