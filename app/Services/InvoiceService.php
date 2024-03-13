@@ -106,7 +106,7 @@ class InvoiceService
         if (!$invoice) {
             return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
+        $pedido->estado = 2;//pagado
         $pedido->invoice = $invoice->id;
         $pedido->save();
 
