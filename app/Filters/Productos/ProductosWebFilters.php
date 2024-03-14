@@ -3,8 +3,9 @@
 namespace App\Filters\Productos;
 
 use App\Models\Producto;
-use App\Transformers\Productos\FindAllTransformer;
 use Illuminate\Http\Response;
+use App\Transformers\Productos\FindAllTransformer;
+use App\Transformers\Productos\FindAllWebTransformer;
 
 class ProductosWebFilters
 {
@@ -64,19 +65,30 @@ class ProductosWebFilters
                 break;
         }
 
-        // $query->join('marcaproducto', 'marca', '=', 'marcaproducto.id')
-        // ->where('producto.stock', '>', 0)
-        // ->where('producto.suspendido', '=', 0)
-        // ->orderBy('marcaproducto.nombre', 'asc')
-        // ->orderBy('ultimoIngresoDeMercaderia', 'desc');
-  
+        $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
+            ->select(
+                'producto.id as producto_id', 
+                'producto.nombre', 
+                'producto.codigo', 
+                'producto.categoria', 
+                'producto.precio', 
+                'producto.precioPromocional', 
+                'producto.stock', 
+                'producto.destacado', 
+                'producto.color', 
+                'producto.nuevo', 
+                'producto.imagenPrincipal', 
+                'marcaproducto.nombre as marca_nombre',
+                'marcaproducto.id as marca_id')
+            ->where('producto.stock', '>', 0)
+            ->where('producto.suspendido', '=', 0)
+            ->orderBy('marcaproducto.nombre', 'asc')
+            ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc');
 
-
-        $query->where('stock', '>', 0)->where('suspendido', '=', 0);
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
-        $transformer = new FindAllTransformer();
+        $transformer = new FindAllWebTransformer();
 
         // Transforma cada producto individualmente
         $productosTransformados = $data->map(function ($producto) use ($transformer) {
