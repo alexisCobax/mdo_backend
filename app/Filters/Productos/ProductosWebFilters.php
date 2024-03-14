@@ -64,13 +64,15 @@ class ProductosWebFilters
                 break;
         }
 
-        $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-            ->select('producto.id as producto_id', 'producto.nombre', 'producto.codigo', 'producto.categoria', 'producto.precio', 'producto.precioPromocional', 'producto.stock', 'producto.destacado', 'producto.color', 'producto.nuevo', 'marcaproducto.nombre as marca_nombre')
-            ->where('producto.stock', '>', 0)
-            ->where('producto.suspendido', '=', 0)
-            ->orderBy('marcaproducto.nombre', 'asc')
-            ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc');
+        // $query->join('marcaproducto', 'marca', '=', 'marcaproducto.id')
+        // ->where('producto.stock', '>', 0)
+        // ->where('producto.suspendido', '=', 0)
+        // ->orderBy('marcaproducto.nombre', 'asc')
+        // ->orderBy('ultimoIngresoDeMercaderia', 'desc');
+  
 
+
+        $query->where('stock', '>', 0)->where('suspendido', '=', 0);
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
