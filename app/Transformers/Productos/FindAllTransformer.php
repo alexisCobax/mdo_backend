@@ -12,7 +12,7 @@ class FindAllTransformer extends TransformerAbstract
         $arrayEnum = EstadosProductosEnums::toArray();
 
         return [
-            'id' => $producto->producto_id,
+            'id' => $producto->id,
             'imagenPrincipal' => $producto->imagenPrincipal . '.jpg',
             'nombre' => utf8_encode($producto->nombre),
             'codigo' => $producto->codigo,
@@ -24,7 +24,7 @@ class FindAllTransformer extends TransformerAbstract
             'stock' => $producto->stock,
             'destacado' => $producto->destacado,
             'marca' => optional($producto->marcas)->id,
-            'nombreMarca' => $producto->marca_nombre,
+            'nombreMarca' => utf8_encode(optional($producto->marcas)->nombre),
             'colorNombre' => $producto->color,
             'precioPromocional' => number_format($producto->precioPromocional, 2),
             'nuevo' => $producto->nuevo,
