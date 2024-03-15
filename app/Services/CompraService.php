@@ -23,7 +23,7 @@ class CompraService
             }else{
                 $data = ComprasFilters::getPaginateCompras($request, Compra::class);
             }
-            
+
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -45,7 +45,6 @@ class CompraService
 
     public function create(Request $request)
     {
-
         $compra = new Compra();
 
         if (!$compra) {
@@ -65,7 +64,7 @@ class CompraService
         $precio = 0;
         if ($request->productos) {
             foreach ($request->productos as $p) {
-                $precio += $p['producto'] * $p['cantidad'];
+                $precio += $p['precioUnitario'] * $p['cantidad'];
                 $compraDetalle = new Compradetalle();
                 $compraDetalle->compra = $compraId;
                 $compraDetalle->producto = $p['producto'];
@@ -173,8 +172,8 @@ class CompraService
 
         try {
             DB::update("
-            UPDATE  compradetalle 
-	        LEFT JOIN producto on compradetalle.producto = producto.id 
+            UPDATE  compradetalle
+	        LEFT JOIN producto on compradetalle.producto = producto.id
 		    SET producto.stock = producto.stock +compradetalle.cantidad
 	        WHERE compradetalle.compra = {$request->id} and compradetalle.enDeposito= 1;
         ");
