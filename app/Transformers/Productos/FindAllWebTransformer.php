@@ -24,7 +24,7 @@ class FindAllWebTransformer extends TransformerAbstract
             'stock' => $producto->stock,
             'destacado' => $producto->destacado,
             'marca' => $producto->marca_id,
-            'nombreMarca' => $producto->marca_nombre,
+            'nombreMarca' => utf8_encode($producto->marca_nombre),
             'colorNombre' => $producto->color,
             'precioPromocional' => number_format($producto->precioPromocional, 2),
             'nuevo' => $producto->nuevo,
