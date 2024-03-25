@@ -92,7 +92,15 @@ class PedidodetalleService
     public function create(Request $request)
 {
     /*control de stock*/
-    $producto = Producto::where('id', $request->producto)->first();
+
+    if($request->codigo){
+        $producto = Producto::where('codigo', $request->codigo)->first();
+        $idProducto = $producto->id;
+    }else{
+        $producto = Producto::where('id', $request->producto)->first();
+        $idProducto = $request->producto;
+    }
+
 
     if ($producto->stock == 0) {
         return response()->json(['error' => 'Producto sin stock', 'status' => 500], Response::HTTP_OK);
@@ -103,7 +111,7 @@ class PedidodetalleService
     }
 
     $pedidodetalle = Pedidodetalle::with('productos')->where('pedido', $request->pedido)
-        ->where('producto', $request->producto)
+        ->where('producto', $idProducto)
         ->first();
 
     if ($pedidodetalle) {
