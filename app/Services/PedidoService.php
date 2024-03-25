@@ -177,7 +177,7 @@ class PedidoService
         $pedido->domicilioEnvio = $request->envioDomicilio;
         $pedido->cpEnvio = $request->envioCp;
         //$pedido->fecha = NOW();
-        $pedido->estado = 1;
+        //$pedido->estado = 1;
         $pedido->formaDePago = 1;
 
         $pedido->save();
