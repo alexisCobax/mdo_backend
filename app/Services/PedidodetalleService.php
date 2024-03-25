@@ -36,6 +36,7 @@ class PedidodetalleService
             return [
                 'id' => $detalle->id,
                 'idProducto' => $detalle->producto,
+                'codigo' => optional($detalle->productos)->codigo,
                 'productoNombre' => optional($detalle->productos)->nombre,
                 'productoCosto' => optional($detalle->productos)->costo,
                 'precioProducto' => $detalle->precio,
@@ -46,48 +47,92 @@ class PedidodetalleService
         return response()->json(['data' => $pedidoDetalleConProductos], Response::HTTP_OK);
     }
 
+    // public function create(Request $request)
+    // {
+
+    //     /*controlo stock*/
+
+    //     $producto = Producto::where('id', $request->producto)->first();
+
+    //     if ($producto->stock==0){
+    //         return response()->json(['error' => 'Producto sin stock','status'=>500], Response::HTTP_OK);
+    //     }
+
+    //     if ($producto->stock < $request->cantidad) {
+    //         $request->cantidad = $producto->stock;
+    //     }
+
+    //     $pedidodetalle = Pedidodetalle::with('productos')->where('pedido', $request->pedido)
+    //         ->where('producto', $request->producto)
+    //         ->first();
+
+    //     if ($pedidodetalle) {
+
+    //         $pedidodetalle->cantidad = $pedidodetalle->cantidad + $request->cantidad;
+
+    //         $pedidodetalle->save();
+    //         if (!$pedidodetalle) {
+    //             return response()->json(['error' => 'Failed to create Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //         }
+    //         $data = $request->all();
+    //         $data['cantidad'] = $request->cantidad;
+    //         $pedidodetalle = Pedidodetalle::with('productos')->create($data);
+
+    //         if (!$pedidodetalle) {
+    //             return response()->json(['error' => 'Failed to create Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //         }
+    //     }
+
+    //     $producto->stock = $producto->stock - $request->cantidad;
+    //     $producto->save();
+
+    //     return response()->json($pedidodetalle, Response::HTTP_OK);
+    // }
+
     public function create(Request $request)
-    {
+{
+    /*control de stock*/
+    $producto = Producto::where('id', $request->producto)->first();
 
-        /*controlo stock*/
-
-        //$update = 0;
-
-        $producto = Producto::where('id', $request->producto)->first();
-
-        //$stockDiponible = $producto->stock - $request->cantidad;
-
-        if ($producto->stock < $request->cantidad) {
-            $request->cantidad = $producto->stock;
-        }
-
-        $pedidodetalle = Pedidodetalle::where('pedido', $request->pedido)
-            ->where('producto', $request->producto)
-            ->first();
-
-        if ($pedidodetalle) {
-
-            $pedidodetalle->cantidad = $pedidodetalle->cantidad + $request->cantidad;
-
-            $pedidodetalle->save();
-            if (!$pedidodetalle) {
-                return response()->json(['error' => 'Failed to create Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            $data = $request->all();
-            $data['cantidad'] = $request->cantidad;
-            $pedidodetalle = Pedidodetalle::create($data);
-
-            if (!$pedidodetalle) {
-                return response()->json(['error' => 'Failed to create Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        $producto->stock = $producto->stock - $request->cantidad;
-        $producto->save();
-
-        return response()->json($pedidodetalle, Response::HTTP_OK);
+    if ($producto->stock == 0) {
+        return response()->json(['error' => 'Producto sin stock', 'status' => 500], Response::HTTP_OK);
     }
+
+    if ($producto->stock < $request->cantidad) {
+        $request->cantidad = $producto->stock;
+    }
+
+    $pedidodetalle = Pedidodetalle::with('productos')->where('pedido', $request->pedido)
+        ->where('producto', $request->producto)
+        ->first();
+
+    if ($pedidodetalle) {
+        $pedidodetalle->cantidad += $request->cantidad;
+        $pedidodetalle->save();
+
+        if (!$pedidodetalle) {
+            return response()->json(['error' => 'Failed to update Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    } else {
+        $data = $request->all();
+        $data['cantidad'] = $request->cantidad;
+        $pedidodetalle = Pedidodetalle::with('productos')->create($data);
+
+        if (!$pedidodetalle) {
+            return response()->json(['error' => 'Failed to create Pedidodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    $producto->stock = $producto->stock - $request->cantidad;
+    $producto->save();
+
+    if (!$producto) {
+        return response()->json(['error' => 'Failed to update Producto'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    return response()->json($pedidodetalle, Response::HTTP_OK);
+}
+
 
     public function update(Request $request)
     {
