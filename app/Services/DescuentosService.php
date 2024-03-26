@@ -162,6 +162,24 @@ class DescuentosService
             }
 
             switch ($request->modificacion) {
+                case 'montoFijoRegular':
+                    $strCambios = " precio = " . $request->montoFijoRegular . "";
+
+                    break;
+                case 'descuentoAumentoFijoRegular':
+
+                    $valor = abs($request->descuentoAumentoFijoRegular);
+
+                    $strCambios = " precio = (precio - (" . $valor . "))";
+
+                    break;
+                case 'descuentoAumentoPorcentualRegular';
+
+                    $valor = abs($request->descuentoAumentoPorcentualRegular);
+
+                    $strCambios = "precio = precio - (precio * " . ($valor / 100) . ")";
+
+                    break;
                 case 'montoFijo':
                     $strCambios = " precioPromocional = " . $request->montoFijo . "";
 
