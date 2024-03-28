@@ -297,13 +297,13 @@ class CotizacionService
         $sheet = $spreadsheet->getActiveSheet();
 
         // Establecer el color de fondo a blanco para todas las celdas
-        $lastColumn = $sheet->getHighestColumn();
-        $lastRow = $sheet->getHighestRow();
-        $sheet->getStyle('A1:' . $lastColumn . $lastRow)
-            ->getFill()
-            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()
-            ->setARGB('FFFFFFFF');
+        // $lastColumn = $sheet->getHighestColumn();
+        // $lastRow = $sheet->getHighestRow();
+        // $sheet->getStyle('A1:' . $lastColumn . $lastRow)
+        //     ->getFill()
+        //     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        //     ->getStartColor()
+        //     ->setARGB('FFFFFFFF');
 
         /* Numero factura **/
         $sheet->setCellValue('AH4', $request->id);
