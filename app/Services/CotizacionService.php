@@ -281,20 +281,13 @@ class CotizacionService
     public function excel(Request $request)
     {
 
-        // $invoice = Invoice::where('id',$request->id)->first();
-        // $invoice = Invoice::join('pedido', 'invoice.orden', '=', 'pedido.id')
-        // ->select('invoice.id', 'fechaOrden', 'billTo', 'shipTo', 'fechaOrden', 'orden', 'pedido.fecha as pedidoFecha')
-        // ->where('invoice.id', $request->id)
-        // ->first();
-
         $invoice = Invoice::join('cliente', 'invoice.cliente', '=', 'cliente.id')
-        ->select('invoice.*', 'cliente.*', 'cliente.nombre as clienteNombre')
-        ->where('invoice.id', $request->id)
-        ->first();
+            ->select('invoice.*', 'cliente.*', 'cliente.nombre as clienteNombre')
+            ->where('invoice.id', $request->id)
+            ->first();
 
         $pedido = Pedido::where('pedido.id', $invoice->orden)->first();
 
-        //echo $invoice->shipTo;die;
         $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->get()->sortBy('Descripcion')->values()->toArray();
         $rutaArchivoExistente = storage_path('app/public/excel/demo2.xlsx');
 
@@ -303,7 +296,10 @@ class CotizacionService
 
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->getStyle('A1:' . 'CZ' . 1000)
+        // Establecer el color de fondo a blanco para todas las celdas
+        $lastColumn = $sheet->getHighestColumn();
+        $lastRow = $sheet->getHighestRow();
+        $sheet->getStyle('A1:' . $lastColumn . $lastRow)
             ->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()

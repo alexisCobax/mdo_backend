@@ -95,12 +95,19 @@ class PedidodetalleService
 
     if($request->codigo){
         $producto = Producto::where('codigo', $request->codigo)->first();
+        if(!$producto){
+            return response()->json(['error' => 'Producto inexistente', 'status' => 501], Response::HTTP_OK);
+        }
         $idProducto = $producto->id;
     }else{
         $producto = Producto::where('id', $request->producto)->first();
+        if(!$producto){
+            return response()->json(['error' => 'Producto inexistente', 'status' => 501], Response::HTTP_OK);
+        }
         $idProducto = $request->producto;
     }
 
+    dd($producto);die;
 
     if ($producto->stock == 0) {
         return response()->json(['error' => 'Producto sin stock', 'status' => 500], Response::HTTP_OK);
