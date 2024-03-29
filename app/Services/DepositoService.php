@@ -71,6 +71,7 @@ class DepositoService
                     $producto->update([
                         'stock' => $nuevaCantidad,
                         'costo' => $productoData['precioUnitario'],
+                        'precio' => $productoData['precioVenta'],
                         'ultimoIngresoDeMercaderia' => now()->toDateString(),
                     ]);
                 }

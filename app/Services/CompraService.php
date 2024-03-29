@@ -71,6 +71,7 @@ class CompraService
                 $compraDetalle->cantidad = $p['cantidad'];
                 $compraDetalle->precioUnitario = $p['precioUnitario'];
                 $compraDetalle->enDeposito = 0;
+                $compraDetalle->precioVenta = $p['precioVenta'];
                 $compraDetalle->save();
             }
         }
@@ -140,6 +141,7 @@ class CompraService
                 $compraDetalle->cantidad = $p['cantidad'];
                 $compraDetalle->precioUnitario = $p['precioUnitario'];
                 $compraDetalle->enDeposito = $p['enDeposito'];
+                $compraDetalle->precioVenta = $p['precioVenta'];
                 $compraDetalle->save();
                 if ($p['enDeposito'] == 0) {
                     $compra->enDeposito = 0;
