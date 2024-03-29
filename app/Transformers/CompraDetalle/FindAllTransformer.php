@@ -16,6 +16,7 @@ class FindAllTransformer extends TransformerAbstract
             'productoNombre' => optional($compraDetalle->productos)->nombre,
             'cantidad' => $compraDetalle->cantidad,
             'precioUnitario' => $compraDetalle->precioUnitario,
+            'precioVenta' => $compraDetalle->precioVenta,
             'enDeposito' => $compraDetalle->enDeposito,
             'productoCodigo' => optional($compraDetalle->productos)->codigo,
         ];

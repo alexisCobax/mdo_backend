@@ -34,6 +34,7 @@ class FindByIdTransformer extends TransformerAbstract
                     'nombreProducto' => optional($c->productos)->nombre,
                     'cantidad' => $c->cantidad,
                     'precioUnitario' => $c->precioUnitario,
+                    'precioVenta' => $c->precioVenta,
                     'enDeposito' => $c->enDeposito,
                 ];
             }
