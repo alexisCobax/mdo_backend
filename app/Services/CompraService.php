@@ -8,6 +8,7 @@ use App\Models\Compra;
 use App\Models\Compradetalle;
 use App\Models\Compradetallenn;
 use App\Transformers\Compra\FindByIdTransformer;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +19,9 @@ class CompraService
     {
 
         try {
-            if($request->codigo){
+            if ($request->codigo) {
                 $data = ComprasProductoFilters::getPaginateCompras($request, Compra::class);
-            }else{
+            } else {
                 $data = ComprasFilters::getPaginateCompras($request, Compra::class);
             }
 
@@ -90,6 +91,18 @@ class CompraService
         $compraPrecio = Compra::where('id', $compraId)->first();
         $compraPrecio->precio = $precio;
         $compraPrecio->save();
+
+        $sql = "UPDATE compradetalle
+        LEFT JOIN producto ON compradetalle.producto = producto.id
+        SET producto.precio = compradetalle.precioVenta
+        WHERE compradetalle.compra = {$compraId}";
+
+        try {
+            DB::statement($sql);
+        } catch (Error $e) {
+            return response()->json("Error: " . $e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+
 
         return response()->json($compra, Response::HTTP_OK);
     }
@@ -176,11 +189,22 @@ class CompraService
             DB::update("
             UPDATE  compradetalle
 	        LEFT JOIN producto on compradetalle.producto = producto.id
-		    SET producto.stock = producto.stock +compradetalle.cantidad
+		    SET producto.stock = producto.stock + compradetalle.cantidad
 	        WHERE compradetalle.compra = {$request->id} and compradetalle.enDeposito= 1;
         ");
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+
+        $sql = "UPDATE compradetalle
+        LEFT JOIN producto ON compradetalle.producto = producto.id
+        SET producto.precio = compradetalle.precioVenta
+        WHERE compradetalle.compra = {$request->id}";
+
+        try {
+            DB::statement($sql);
+        } catch (Error $e) {
+            return response()->json("Error: " . $e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
         return response()->json($compra, Response::HTTP_OK);
