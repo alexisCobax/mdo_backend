@@ -194,8 +194,9 @@ class Producto extends Model
     public function scopeNombreMarca($query, $nombreMarca)
     {
         if ($nombreMarca) {
-            $marca = Marcaproducto::whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombreMarca) . '%'])->first();
-            return $query->where('marca', '=', $marca->id);
+            $marcas = Marcaproducto::whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($nombreMarca) . '%'])->get();
+            $marcaIds = $marcas->pluck('id')->toArray();
+            return $query->whereIn('marca', $marcaIds);
         }
     }
 
