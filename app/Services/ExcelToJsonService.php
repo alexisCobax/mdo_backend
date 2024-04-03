@@ -322,17 +322,17 @@ class ExcelToJsonService
             if ($marca_existente) {
                 return $marca_existente->id;
             } else {
-                return response()->json(['data' => $productosTransformados], Response::HTTP_OK);
-                // $nueva_marca = new MarcaProducto();
-                // $nueva_marca->nombre = $marca;
-                // $nueva_marca->propia = 0;
-                // $nueva_marca->VIP = 0;
-                // $nueva_marca->logo = 0;
-                // $nueva_marca->MostrarEnWeb = 1;
-                // $nueva_marca->suspendido = 0;
-                // $nueva_marca->save();
+                //return response()->json(['data' => $productosTransformados], Response::HTTP_OK);
+                $nueva_marca = new MarcaProducto();
+                $nueva_marca->nombre = $marca;
+                $nueva_marca->propia = 0;
+                $nueva_marca->VIP = 0;
+                $nueva_marca->logo = 0;
+                $nueva_marca->MostrarEnWeb = 1;
+                $nueva_marca->suspendido = 0;
+                $nueva_marca->save();
 
-                // return $nueva_marca->id;
+                return $nueva_marca->id;
             }
         }
     }
