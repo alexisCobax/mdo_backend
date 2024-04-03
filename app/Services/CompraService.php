@@ -2,16 +2,17 @@
 
 namespace App\Services;
 
+use Error;
+use App\Models\Compra;
+use App\Models\Producto;
+use Illuminate\Http\Request;
+use App\Models\Compradetalle;
+use Illuminate\Http\Response;
+use App\Models\Compradetallenn;
+use Illuminate\Support\Facades\DB;
 use App\Filters\Compras\ComprasFilters;
 use App\Filters\Compras\ComprasProductoFilters;
-use App\Models\Compra;
-use App\Models\Compradetalle;
-use App\Models\Compradetallenn;
 use App\Transformers\Compra\FindByIdTransformer;
-use Error;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
 class CompraService
 {
@@ -70,11 +71,22 @@ class CompraService
                 $compraDetalle->compra = $compraId;
                 $compraDetalle->producto = $p['producto'];
                 $compraDetalle->cantidad = $p['cantidad'];
-                $compraDetalle->precioUnitario = $p['precioUnitario'];
+                // $compraDetalle->precioUnitario = $p['precioUnitario'];
+                if (isset($p['precioUnitario'])) {
+                    $compraDetalle->precioUnitario = $p['precioUnitario'];
+                }else{
+                    $producto = Producto::where('id',$p['producto'])->first();
+                    $compraDetalle->precioUnitario = $producto->costo;
+                }
                 $compraDetalle->enDeposito = 0;
-                $compraDetalle->precioVenta = $p['precioVenta'];
-                $compraDetalle->save();
+                if (isset($p['precioVenta'])) {
+                    $compraDetalle->precioVenta = $p['precioVenta'];
+                }else{
+                    $producto = Producto::where('id',$p['producto'])->first();
+                    $compraDetalle->precioVenta = $producto->precio;
+                }
             }
+            $compraDetalle->save();
         }
 
         if ($request->gastos) {
@@ -152,9 +164,20 @@ class CompraService
                 $compraDetalle->compra = $request->id;
                 $compraDetalle->producto = $p['producto'];
                 $compraDetalle->cantidad = $p['cantidad'];
-                $compraDetalle->precioUnitario = $p['precioUnitario'];
+                //$compraDetalle->precioUnitario = $p['precioUnitario'];
+                if (isset($p['precioUnitario'])) {
+                    $compraDetalle->precioUnitario = $p['precioUnitario'];
+                }else{
+                    $producto = Producto::where('id',$p['producto'])->first();
+                    $compraDetalle->precioUnitario = $producto->costo;
+                }
                 $compraDetalle->enDeposito = $p['enDeposito'];
-                $compraDetalle->precioVenta = $p['precioVenta'];
+                if (isset($p['precioVenta'])) {
+                    $compraDetalle->precioVenta = $p['precioVenta'];
+                }else{
+                    $producto = Producto::where('id',$p['producto'])->first();
+                    $compraDetalle->precioVenta = $producto->precio;
+                }
                 $compraDetalle->save();
                 if ($p['enDeposito'] == 0) {
                     $compra->enDeposito = 0;
