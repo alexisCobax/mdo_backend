@@ -322,7 +322,6 @@ class ExcelToJsonService
             if ($marca_existente) {
                 return $marca_existente->id;
             } else {
-                //return response()->json(['data' => $productosTransformados], Response::HTTP_OK);
                 $nueva_marca = new MarcaProducto();
                 $nueva_marca->nombre = $marca;
                 $nueva_marca->propia = 0;
