@@ -293,9 +293,9 @@ class Producto extends Model
     public function scopeNuevosProductos($query, $estado)
     {
         if ($estado == 'nuevo') {
-            return $query->where('nuevo', '=', 1);
+            return $query->where('nuevo', '=', 1)
                 //->orderBy('id', 'desc') 
-                //->take(3);
+                ->take(3);
         }
     }
 
