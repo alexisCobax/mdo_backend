@@ -294,7 +294,7 @@ class Producto extends Model
     {
         if ($estado == 'nuevo') {
             return $query->where('nuevo', '=', 1)
-                ->orderBy('id', 'desc') 
+                //->orderBy('id', 'desc') 
                 ->take(3);
         }
     }
