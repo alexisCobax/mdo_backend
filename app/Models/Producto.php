@@ -293,10 +293,8 @@ class Producto extends Model
     public function scopeNuevosProductos($query, $estado)
     {
         if ($estado == 'nuevo') {
-            return $query->where('stock', '>', 0)
-                ->where('precio', '>', 0)
-                ->where('stock', '>', 0)
-                //->orderBy('nuevo', 'desc')
+            return $query->where('nuevo', '=', 1)
+                ->orderBy('id', 'desc') 
                 ->take(3);
         }
     }
