@@ -92,7 +92,7 @@ class PedidodetalleService
     public function create(Request $request)
 {
     /*control de stock*/
-
+    
     if($request->codigo){
         $producto = Producto::where('codigo', $request->codigo)->first();
         if(!$producto){
@@ -106,8 +106,6 @@ class PedidodetalleService
         }
         $idProducto = $request->producto;
     }
-
-    dd($producto);die;
 
     if ($producto->stock == 0) {
         return response()->json(['error' => 'Producto sin stock', 'status' => 500], Response::HTTP_OK);
