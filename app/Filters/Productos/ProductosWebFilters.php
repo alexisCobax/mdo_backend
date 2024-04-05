@@ -124,7 +124,8 @@ $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
     ->where('producto.stock', '>', 0)
     ->where('producto.suspendido', '=', 0)
     ->orderBy('marcaproducto.nombre', 'asc')
-    ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc');
+    ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
+    ->orderBy('producto.id', 'asc'); // Añade esta línea;
 
 $data = $query->paginate($perPage, ['*'], 'page', $page);
         // Crea una instancia del transformer
