@@ -40,30 +40,30 @@ class ProductosWebFilters
         $query = $model::query();
 
         // Aplica los filtros si se proporcionan
-        $query->codigo($codigo);
-        $query->categoria($categoria);
-        $query->nombre($nombre);
+        // $query->codigo($codigo);
+        // $query->categoria($categoria);
+        // $query->nombre($nombre);
         $query->nombreMarca($nombreMarca);
-        $query->suspendido($suspendido);
-        $query->precioRange($precioDesde, $precioHasta);
-        $query->stockRange($stockDesde, $stockHasta);
-        $query->tipo($tipo);
-        $query->idMarca($idMarca);
-        $query->material($material);
-        $query->color($color);
-        $query->destacado($destacado);
-        $query->grupo($grupo);
-        $query->buscador($buscador);
-        $query->NuevosProductos($estado);
+        // $query->suspendido($suspendido);
+        // $query->precioRange($precioDesde, $precioHasta);
+        // $query->stockRange($stockDesde, $stockHasta);
+        // $query->tipo($tipo);
+        // $query->idMarca($idMarca);
+        // $query->material($material);
+        // $query->color($color);
+        // $query->destacado($destacado);
+        // $query->grupo($grupo);
+        // $query->buscador($buscador);
+        // $query->NuevosProductos($estado);
 
-        switch ($tag) {
-            case 'precioPromocional':
-                $query->PrecioPromocional();
-                break;
-            case 'menos20':
-                $query->Menos20();
-                break;
-        }
+        // switch ($tag) {
+        //     case 'precioPromocional':
+        //         $query->PrecioPromocional();
+        //         break;
+        //     case 'menos20':
+        //         $query->Menos20();
+        //         break;
+        // }
 
         $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
             ->select(
