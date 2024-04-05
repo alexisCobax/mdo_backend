@@ -85,8 +85,12 @@ class ProductosWebFilters
             ->orderBy('marcaproducto.nombre', 'asc')
             ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc');
 
-        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        // $data = $query->paginate($perPage, ['*'], 'page', $page);
+        
+        $data = $query->get();
+        $data->toSql();
 
+        echo $data;die;
         // Crea una instancia del transformer
         $transformer = new FindAllWebTransformer();
 
