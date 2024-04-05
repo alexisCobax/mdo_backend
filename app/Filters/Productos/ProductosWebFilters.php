@@ -127,7 +127,6 @@ $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
     ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc');
 
 $data = $query->paginate($perPage, ['*'], 'page', $page);
-
         // Crea una instancia del transformer
         $transformer = new FindAllWebTransformer();
 
