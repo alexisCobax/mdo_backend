@@ -48,7 +48,7 @@ class ProductosWebFilters
         // $query->precioRange($precioDesde, $precioHasta);
         // $query->stockRange($stockDesde, $stockHasta);
         // $query->tipo($tipo);
-        // $query->idMarca($idMarca);
+        $query->idMarca($idMarca);
         // $query->material($material);
         // $query->color($color);
         // $query->destacado($destacado);
