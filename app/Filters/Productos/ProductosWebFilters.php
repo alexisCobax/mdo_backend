@@ -87,9 +87,9 @@ class ProductosWebFilters
 
         // $data = $query->paginate($perPage, ['*'], 'page', $page);
         
-        $data = $query->get()->toSql();
+        $sql = $query->toSql();
 
-        echo $data;die;
+        echo $sql;die;
         // Crea una instancia del transformer
         $transformer = new FindAllWebTransformer();
 
