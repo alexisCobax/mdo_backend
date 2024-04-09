@@ -166,19 +166,18 @@ class CompraService
                 $compraDetalle->compra = $request->id;
                 $compraDetalle->producto = $p['producto'];
                 $compraDetalle->cantidad = $p['cantidad'];
-                //$compraDetalle->precioUnitario = $p['precioUnitario'];
-                if (isset($p['precioUnitario'])) {
-                    $compraDetalle->precioUnitario = $p['precioUnitario'];
-                } else {
+                if ($p['precioUnitario'] == "") {
                     $producto = Producto::where('id', $p['producto'])->first();
                     $compraDetalle->precioUnitario = $producto->costo;
-                }
-                $compraDetalle->enDeposito = $p['enDeposito'];
-                if (isset($p['precioVenta'])) {
-                    $compraDetalle->precioVenta = $p['precioVenta'];
                 } else {
+                    $compraDetalle->precioUnitario = $p['precioUnitario'];
+                }
+                $compraDetalle->enDeposito = 0;
+                if ($p['precioVenta'] == "") {
                     $producto = Producto::where('id', $p['producto'])->first();
                     $compraDetalle->precioVenta = $producto->precio;
+                } else {
+                    $compraDetalle->precioVenta = $p['precioVenta'];
                 }
                 $compraDetalle->save();
                 if ($p['enDeposito'] == 0) {
