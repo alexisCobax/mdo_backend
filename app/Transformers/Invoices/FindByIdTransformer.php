@@ -17,10 +17,10 @@ class FindByIdTransformer extends TransformerAbstract
 
         $detalle = [];
         // $datosEnvio = [];
-
+        $cantidad = 0;
         foreach ($invoiceDetalle as $id) {
-
-            $total = $id['listPrice'] * $id['qordered'];
+            $cantidad += $id['qordered'];
+                $total = $id['listPrice'] * $id['qordered'];
             $detalle[] = [
                 'id' => $id['id'],
                 'qordered' => $id['qordered'],
@@ -68,7 +68,7 @@ class FindByIdTransformer extends TransformerAbstract
             'salesPerson' => $invoice->salesPerson,
             'orden' => $invoice->orden,
             'peso' => $invoice->peso,
-            'cantidad' => $invoice->cantidad,
+            'cantidad' => $cantidad,
             'DescuentoNeto' => $invoice->DescuentoNeto,
             'DescuentoPorcentual' => $invoice->DescuentoPorcentual,
             'UPS' => $invoice->UPS,
@@ -91,6 +91,5 @@ class FindByIdTransformer extends TransformerAbstract
 
             // 'datosEnvio' => $datosEnvio
         ];
-
     }
 }
