@@ -33,6 +33,7 @@ use App\Http\Controllers\PreciosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ZipcodeController;
 use App\Http\Controllers\Cliente2Controller;
+use App\Http\Controllers\ColorWebController;
 use App\Http\Controllers\ComisionController;
 use App\Http\Controllers\DepositoController;
 use App\Http\Controllers\EmpleadoController;
@@ -799,6 +800,7 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
 });
 
 /* Producto ESTO DEBE IR SIN TOKEN**/
+Route::get('/web/color', [ColorWebController::class, 'index']);
 Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
 Route::get('/web/producto', [ProductoWebController::class, 'index']);
 Route::post('/producto/related', [ProductoController::class, 'related']);
