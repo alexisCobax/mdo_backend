@@ -103,7 +103,7 @@ class PagoWebService
         $transaccion->fecha = NOW();
         $transaccion->cliente = $cliente;
         $transaccion->pedido = $pedido ? $pedido = 0 : $pedido;
-        $transaccion->resultado = $status;
+        $transaccion->resultado = json_encode($status);
         $transaccion->ctr = $data;
         $transaccion->save();
     }
