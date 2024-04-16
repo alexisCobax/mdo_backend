@@ -32,8 +32,6 @@ class PagoWebService
         $pagoResponse = $pago->getContent();
         $pago = json_decode($pagoResponse);
 
-        dd($pago);die;
-
         /* Guardo Transaccion**/
         $this->saveTransaction($carrito['cliente'], json_encode([]), $pago->status, $pagoResponse);
 
