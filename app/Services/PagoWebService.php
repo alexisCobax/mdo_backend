@@ -28,13 +28,13 @@ class PagoWebService
         $productosCarrito = Carritodetalle::where('carrito', $carrito['id'])->get();
 
         $pago = $this->creditCard($productosCarrito, $request->token, $carrito);
-        echo response()->json($pago);die;
+
         $pagoResponse = $pago->getContent();
 
         $pago = json_decode($pagoResponse);
 
         /* Guardo Transaccion**/
-        $this->saveTransaction($carrito['cliente'], json_encode([]), $pago->status, $pagoResponse);
+        $this->saveTransaction($carrito['cliente'], json_encode([]), $pago, $pagoResponse);
 
         /* Si concreto la operacion realizo el guardado de datos **/
         if (isset($pago->paid) && $pago->paid) {
