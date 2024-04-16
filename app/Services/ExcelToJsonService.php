@@ -197,7 +197,8 @@ class ExcelToJsonService
             $producto->tipo = $this->BuscarTipo($tmpProducto->tipo);
             $producto->categoria = 1;
             $producto->marca = $this->BuscarMarcas($tmpProducto->marca);
-            $producto->material = $this->BuscarMateriales($tmpProducto->material);
+            //$producto->material = $this->BuscarMateriales($tmpProducto->material);
+            $producto->material = $tmpProducto->material;
             $producto->estuche = $this->BuscarEstuches($tmpProducto->estuche);
             $producto->sexo = 0;
             $producto->proveedor = 0;
