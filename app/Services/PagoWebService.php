@@ -33,7 +33,7 @@ class PagoWebService
         $pago = json_decode($pagoResponse);
 
         /* Guardo Transaccion**/
-        $this->saveTransaction($carrito['cliente'], json_encode([]), $pago->status, $pagoResponse);
+        //$this->saveTransaction($carrito['cliente'], json_encode([]), $pago->status, $pagoResponse);
 
         /* Si concreto la operacion realizo el guardado de datos **/
         if (isset($pago->paid) && $pago->paid) {
