@@ -179,7 +179,7 @@ class PagoWebService
         $cantidades = $carritoDetalle->pluck('cantidad');
         $cantidad = $cantidades->sum();
 
-        $cupon = Cupondescuento::where('id', $carrito['cupon'])->firts();
+        $cupon = Cupondescuento::where('id', $carrito['cupon'])->first();
         
         $descuentos = '0.00';
 
