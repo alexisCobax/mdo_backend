@@ -28,9 +28,9 @@ class PagoWebService
         $productosCarrito = Carritodetalle::where('carrito', $carrito['id'])->get();
 
         $pago = $this->creditCard($productosCarrito, $request->token, $carrito);
-
+        echo response()->json($pago);die;
         $pagoResponse = $pago->getContent();
-        dd($pagoResponse);
+
         $pago = json_decode($pagoResponse);
 
         /* Guardo Transaccion**/
