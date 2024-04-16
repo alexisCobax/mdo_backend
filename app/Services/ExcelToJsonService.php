@@ -443,7 +443,7 @@ class ExcelToJsonService
                     INNER JOIN categoriaproducto ON categoriaproducto.id = producto.categoria 
                     INNER JOIN marcaproducto ON marcaproducto.id = producto.marca 
                     WHERE producto.marca = :idMarca
-                "), ['idMarca' => $request->idMarca]);
+                "), ['idMarca' => $request->idmarca]);
         $productos = json_decode(json_encode($productos), true);
 
         $results = array_map(function ($item) {
@@ -457,8 +457,6 @@ class ExcelToJsonService
                 'imagen' => storage_path('app/public/images/' . $item['imagenPrincipal']),
             ];
         }, $productos);
-
-        dd($results);
 
         $objPHPExcel = new PHPExcel();
         $objPHPExcel->setActiveSheetIndex(0);
