@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\Usuario;
+use Illuminate\Http\Request;
 use App\Models\Configuracion;
+use App\Helpers\ProtegerClaveHelper;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JetController;
 use App\Http\Controllers\PdfController;
@@ -865,3 +869,31 @@ Route::get('/cotizacion/excel/{id}', [CotizacionController::class, 'excel']);
 /* Notificacion cron **/
 
 Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class, 'cotizacion']);
+
+Route::post('test', function(Request $request){
+    // Verificar si el usuario actual es un administrador
+    //if (Auth::user()->is_admin) {
+        // Buscar el usuario al que se quiere impersonar
+        $user = Usuario::where('nombre', $request->nombre)->first();
+        dd($user);
+        // Si el usuario existe
+        if ($user) {
+            // Iniciar sesión como el usuario
+            Auth::login($user);
+
+            // Crear un token de Sanctum para el usuario
+            $token = $user->createToken('impersonation');
+
+            // Devolver el token al cliente
+            return response()->json([
+                'token' => $token->plainTextToken
+            ]);
+        } else {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    // } else {
+    //     return response()->json(['error' => 'Unauthorized'], 403);
+    // }
+});
+
+
