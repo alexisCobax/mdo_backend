@@ -433,10 +433,18 @@ class ExcelToJsonService
      */
     public function generarProductos($request)
     {
-
-        $jsonResponse = ProductosFilters::getPaginateProducts($request, Producto::class);
-        $response = $jsonResponse->getData(true);
-        $result = $response['results'];
+        $productos = DB::select(DB::raw("
+                    SELECT producto.codigo, producto.nombre, 
+                    producto.precioPromocional, producto.precio,
+                    producto.imagenPrincipal,
+                    categoriaproducto.nombre as categoriaNombre, 
+                    marcaproducto.nombre as nombreMarca 
+                    FROM producto 
+                    INNER JOIN categoriaproducto ON categoriaproducto.id = producto.categoria 
+                    INNER JOIN marcaproducto ON marcaproducto.id = producto.marca 
+                    WHERE producto.marca = :idMarca
+                "), ['idMarca' => $request->idMarca]);
+        $productos = json_decode(json_encode($productos), true);
 
         $results = array_map(function ($item) {
 
@@ -448,7 +456,7 @@ class ExcelToJsonService
                 'precio' => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
                 'imagen' => storage_path('app/public/images/' . $item['imagenPrincipal']),
             ];
-        }, $result);
+        }, $productos);
 
         $objPHPExcel = new PHPExcel();
         $objPHPExcel->setActiveSheetIndex(0);
