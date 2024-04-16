@@ -875,7 +875,6 @@ Route::post('test', function(Request $request){
     //if (Auth::user()->is_admin) {
         // Buscar el usuario al que se quiere impersonar
         $user = Usuario::where('nombre', $request->nombre)->first();
-        dd($user);
         // Si el usuario existe
         if ($user) {
             // Iniciar sesión como el usuario
