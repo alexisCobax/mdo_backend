@@ -454,7 +454,7 @@ class ExcelToJsonService
                 'categoria' => $item['categoriaNombre'],
                 'marca' => $item['nombreMarca'],
                 'precio' => $item['precioPromocional'] == 0 ? number_format($item['precio'], 2) : number_format($item['precioPromocional'], 2),
-                'imagen' => storage_path('app/public/images/' . $item['imagenPrincipal']),
+                'imagen' => storage_path('app/public/images/' . $item['imagenPrincipal'].'.jpg'),
             ];
         }, $productos);
 
@@ -512,7 +512,7 @@ class ExcelToJsonService
                 $drawing = new PHPExcel_Worksheet_MemoryDrawing();
                 $drawing->setName('Imagen');
                 $drawing->setDescription('Imagen');
-                $drawing->setImageResource(imagecreatefromjpeg($item['imagen'].'.jpg'));
+                $drawing->setImageResource(imagecreatefromjpeg($item['imagen']));
                 $drawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
                 $drawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
                 $drawing->setCoordinates('F' . $row);
