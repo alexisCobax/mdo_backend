@@ -433,6 +433,11 @@ class ExcelToJsonService
      */
     public function generarProductos($request)
     {
+
+        if( $request->color){
+            echo 'color: '.$request->color;die;
+        }
+
         $productos = DB::select(DB::raw("
                     SELECT producto.codigo, producto.nombre,
                     producto.precioPromocional, producto.precio,
