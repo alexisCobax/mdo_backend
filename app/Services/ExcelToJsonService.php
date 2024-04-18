@@ -434,15 +434,15 @@ class ExcelToJsonService
     public function generarProductos($request)
     {
         $productos = DB::select(DB::raw("
-                    SELECT producto.codigo, producto.nombre, 
+                    SELECT producto.codigo, producto.nombre,
                     producto.precioPromocional, producto.precio,
                     producto.imagenPrincipal,
-                    categoriaproducto.nombre as categoriaNombre, 
-                    marcaproducto.nombre as nombreMarca 
-                    FROM producto 
-                    INNER JOIN categoriaproducto ON categoriaproducto.id = producto.categoria 
-                    INNER JOIN marcaproducto ON marcaproducto.id = producto.marca 
-                    WHERE producto.marca = :idMarca
+                    categoriaproducto.nombre as categoriaNombre,
+                    marcaproducto.nombre as nombreMarca
+                    FROM producto
+                    INNER JOIN categoriaproducto ON categoriaproducto.id = producto.categoria
+                    INNER JOIN marcaproducto ON marcaproducto.id = producto.marca
+                    WHERE producto.marca = :idMarca LIMIT 10
                 "), ['idMarca' => $request->idmarca]);
         $productos = json_decode(json_encode($productos), true);
 
