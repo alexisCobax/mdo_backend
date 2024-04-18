@@ -442,7 +442,7 @@ class ExcelToJsonService
                     FROM producto
                     INNER JOIN categoriaproducto ON categoriaproducto.id = producto.categoria
                     INNER JOIN marcaproducto ON marcaproducto.id = producto.marca
-                    WHERE producto.marca = :idMarca LIMIT 10
+                    WHERE producto.marca = :idMarca
                 "), ['idMarca' => $request->idmarca]);
         $productos = json_decode(json_encode($productos), true);
 
