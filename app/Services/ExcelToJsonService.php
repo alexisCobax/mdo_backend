@@ -507,7 +507,7 @@ class ExcelToJsonService
             $styleE1->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             $styleE = $sheet->getStyle('E' . $row);
             $styleE->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-
+            echo $item['imagen'];die;
             if (file_exists($item['imagen'])) {
                 $drawing = new PHPExcel_Worksheet_MemoryDrawing();
                 $drawing->setName('Imagen');
