@@ -250,7 +250,7 @@ class Producto extends Model
     public function scopeColor($query, $color)
     {
         if ($color) {
-            return $query->where('color', '=', $color);
+            return $query->where('color', 'LIKE', '%' . $color . '%');
         }
     }
 
@@ -294,7 +294,7 @@ class Producto extends Model
     {
         if ($estado == 'nuevo') {
             return $query->where('nuevo', '=', 1)
-                //->orderBy('id', 'desc') 
+                //->orderBy('id', 'desc')
                 ->take(3);
         }
     }
