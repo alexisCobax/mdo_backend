@@ -250,7 +250,7 @@ class Producto extends Model
     public function scopeColor($query, $color)
     {
         if ($color) {
-            return $query->where('color', 'LIKE', '%' . $color . '%');
+            return $query->where('LOWER(color) LIKE ?', ['%' . strtolower($color) . '%']);
         }
     }
 
