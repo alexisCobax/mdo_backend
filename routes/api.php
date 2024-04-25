@@ -43,6 +43,7 @@ use App\Http\Controllers\DepositoController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\OrderjetController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ReportesController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProspectoController;
 use App\Http\Controllers\ProveedorController;
@@ -894,5 +895,11 @@ Route::post('test', function(Request $request){
     //     return response()->json(['error' => 'Unauthorized'], 403);
     // }
 });
+
+    /* Reportes **/
+
+    Route::get('/reportes/stock', [ReportesController::class, 'stock']);
+    Route::get('/reportes/productos', [ReportesController::class, 'productos']);
+    Route::get('/reportes/invoices', [ReportesController::class, 'invoices']);
 
 
