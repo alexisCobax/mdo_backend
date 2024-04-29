@@ -20,9 +20,20 @@ class ReportesController extends Controller
      * @param  use App\Services\ReportesService $service
      * @return \Illuminate\Http\Response
      */
-    public function stock(Request $request)
+    public function stockList(Request $request)
     {
-        return $this->service->stock($request);
+        return $this->service->stockList($request);
+    }
+
+        /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function stockReport(Request $request)
+    {
+        return $this->service->stockReport($request);
     }
 
     /**

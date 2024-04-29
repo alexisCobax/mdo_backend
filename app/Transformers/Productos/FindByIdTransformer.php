@@ -36,7 +36,7 @@ class FindByIdTransformer extends TransformerAbstract
             'material' => $producto->material,
             //'nombreMaterial' => optional($producto->materiales)->nombre,
             'nombreMaterial' => $producto->material,
-            'estuche' => $producto->estuche,
+            'estuche' => $resultado = $producto->estuche == 0 ? 'No' : ($producto->estuche == 1 ? 'Si' : 'Si, Genérico'),
             'proveedor' => $producto->proveedor,
             'precio' => $producto->precioPromocional == 0 ? $producto->precio : $producto->precioPromocional,
             'suspendido' => $producto->suspendido,
