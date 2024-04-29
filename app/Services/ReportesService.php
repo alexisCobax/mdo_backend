@@ -2,14 +2,52 @@
 
 namespace App\Services;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\ArrayToXlsxHelper;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\PaginateHelper;
 
 class ReportesService
 {
-    public function stock(Request $request)
+
+    public function stockList(Request $request)
+    {
+
+        $query = DB::table('producto')
+            ->select(
+                'id AS idProducto',
+                'codigo',
+                'nombre AS nombreProducto',
+                'color',
+                'stock',
+                'costo',
+                'precio',
+                DB::raw('stock * costo AS CostoStock'),
+                DB::raw('stock * precio AS PrecioStock')
+            )
+            ->where('stock', '>', 0);
+
+        $page = $request->input('pagina', env('PAGE'));
+        $perPage = $request->input('cantidad', env('PER_PAGE'));
+
+        $data = $query->orderBy('id', 'asc')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $response = [
+            'status' => Response::HTTP_OK,
+            'total' => $data->total(),
+            'cantidad_por_pagina' => $data->perPage(),
+            'pagina' => $data->currentPage(),
+            'cantidad_total' => $data->total(),
+            'results' => $data->items(),
+        ];
+
+        return response()->json($response);
+    }
+
+    public function stockReport(Request $request)
     {
         try {
             $sql = "SELECT
