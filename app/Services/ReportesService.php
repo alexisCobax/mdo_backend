@@ -70,7 +70,7 @@ class ReportesService
        LEFT JOIN color ON producto.color = color.id
        LEFT JOIN pedido ON pedidodetalle.pedido = pedido.id
    WHERE pedido.fecha BETWEEN '{$fecha_inicio}' AND '{$fecha_fin}' AND pedido.estado <> 4
-       GROUP BY color.nombre, producto.nombre, producto.stock, pedidodetalle.precio, producto.id, producto.precio, producto.costo
+       GROUP BY producto.color, color.nombre, producto.nombre, producto.stock, pedidodetalle.precio, producto.id, producto.precio, producto.costo
 UNION
    SELECT pedidodetallenn.cantidad AS cantidad,
            '' AS nombreColor,
