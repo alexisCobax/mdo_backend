@@ -84,8 +84,7 @@ class ReportesService
     FROM
         producto
     WHERE
-        stock > 0
-        LIMIT 10";
+        stock > 0";
 
             $stock = DB::select($sql);
 
@@ -216,7 +215,7 @@ UNION
        pedidodetallenn
        LEFT JOIN pedido ON pedidodetallenn.pedido = pedido.id
     WHERE pedido.fecha BETWEEN '{$fecha_inicio}' AND '{$fecha_fin}' AND pedido.estado <> 4
-    order by 3 LIMIT 10
+    order by 3
 ", [$fecha_inicio, $fecha_fin]);
 
 
@@ -319,7 +318,7 @@ UNION
         FROM
             invoice
         LEFT JOIN
-            cliente ON invoice.cliente = cliente.id LIMIT 10";
+            cliente ON invoice.cliente = cliente.id";
 
             $invoices = DB::select($sql);
 
