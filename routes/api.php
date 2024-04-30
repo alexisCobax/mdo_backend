@@ -899,7 +899,9 @@ Route::post('test', function(Request $request){
     /* Reportes **/
     Route::get('/reportes/stock/report', [ReportesController::class, 'stockReport']);
     Route::get('/reportes/stock/list', [ReportesController::class, 'stockList']);
-    Route::get('/reportes/productos', [ReportesController::class, 'productos']);
-    Route::get('/reportes/invoices', [ReportesController::class, 'invoices']);
+    Route::get('/reportes/productos/report', [ReportesController::class, 'productosReport']);
+    Route::get('/reportes/productos/list', [ReportesController::class, 'productosList']);
+    Route::get('/reportes/invoices/report', [ReportesController::class, 'invoicesReport']);
+    Route::get('/reportes/invoices/list', [ReportesController::class, 'invoicesList']);
 
 
