@@ -32,16 +32,37 @@ class ReportesService
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-        $data = $query->orderBy('id', 'asc')
-            ->paginate($perPage, ['*'], 'page', $page);
+        $data = $query->orderBy('id', 'asc')->paginate($perPage, ['*'], 'page', $page);
 
+        $results = $data->items();
+
+        // Mapea los resultados para ajustar los nombres de las claves y eliminar las que no necesitas
+        $transformedResults = array_map(function ($result) {
+            return [
+                'id' => $result->idProducto,
+                'nombre' => $result->nombreProducto,
+                'codigo' => $result->codigo,
+                'precio' => $result->precio,
+                'costo' => $result->costo,
+                'stock' => $result->stock,
+                'color' => $result->color,
+            ];
+        }, $results);
+
+        // Construye la respuesta final
         $response = [
-            'status' => Response::HTTP_OK,
-            'total' => $data->total(),
-            'cantidad_por_pagina' => $data->perPage(),
-            'pagina' => $data->currentPage(),
-            'cantidad_total' => $data->total(),
-            'results' => $data->items(),
+            'data' => [
+                'headers' => [], // Puedes agregar encabezados si lo necesitas
+                'original' => [
+                    'status' => Response::HTTP_OK,
+                    'total' => $data->total(),
+                    'cantidad_por_pagina' => $data->perPage(),
+                    'pagina' => $data->currentPage(),
+                    'cantidad_total' => $data->total(),
+                    'results' => $transformedResults,
+                ],
+                'exception' => null,
+            ],
         ];
 
         return response()->json($response);
@@ -63,7 +84,8 @@ class ReportesService
     FROM
         producto
     WHERE
-        stock > 0";
+        stock > 0
+        LIMIT 10";
 
             $stock = DB::select($sql);
 
@@ -82,7 +104,78 @@ class ReportesService
         }
     }
 
-    public function productos(Request $request)
+    public function productosList(Request $request)
+    {
+
+        $fecha_inicio = '2024-01-01';
+        $fecha_fin = '2024-02-01';
+
+        $perPage = $request->input('cantidad', env('PER_PAGE'));
+        $page = $request->input('pagina', env('PAGE'));
+
+        $query = DB::table('pedidodetalle')
+            ->select(
+                DB::raw('SUM(pedidodetalle.cantidad) AS cantidad'),
+                'producto.id',
+                'producto.color',
+                'producto.nombre',
+                'producto.stock',
+                'producto.codigo',
+                'producto.id AS idProducto',
+                'producto.precio',
+                'producto.costo',
+                DB::raw('((producto.precio - producto.costo) * SUM(pedidodetalle.cantidad)) AS ganancia'),
+                DB::raw('(producto.stock * producto.costo) AS CostoStock'),
+                DB::raw('SUM(pedidodetalle.cantidad) * producto.precio AS total'),
+                DB::raw('(producto.costo * SUM(pedidodetalle.cantidad)) AS costoVenta')
+            )
+            ->leftJoin('producto', 'pedidodetalle.producto', '=', 'producto.id')
+            ->leftJoin('color', 'producto.color', '=', 'color.id')
+            ->leftJoin('pedido', 'pedidodetalle.pedido', '=', 'pedido.id')
+            ->whereBetween('pedido.fecha', [$fecha_inicio, $fecha_fin])
+            ->where('pedido.estado', '<>', 4)
+            ->groupBy('producto.color', 'color.nombre', 'producto.nombre', 'producto.stock', 'producto.id', 'producto.precio', 'producto.costo')
+            ->orderBy('producto.nombre', 'asc');
+
+        $results = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $transformedResults = $results->map(function ($result) {
+            return [
+                'id' => $result->id,
+                'cantidad' => $result->cantidad,
+                'codigo' => $result->codigo,
+                'color' => $result->color,
+                'nombre' => $result->nombre,
+                'stock' => $result->stock,
+                'idProducto' => $result->idProducto,
+                'precio' => $result->precio,
+                'costo' => $result->costo,
+                'ganancia' => $result->ganancia,
+                'CostoStock' => $result->CostoStock,
+                'total' => $result->total,
+                'costoVenta' => $result->costoVenta
+            ];
+        });
+
+        $response = [
+            'data' => [
+                'headers' => [],
+                'original' => [
+                    'status' => Response::HTTP_OK,
+                    'total' => $results->total(),
+                    'cantidad_por_pagina' => $results->perPage(),
+                    'pagina' => $results->currentPage(),
+                    'cantidad_total' => $results->total(),
+                    'results' => $transformedResults,
+                ],
+                'exception' => null,
+            ],
+        ];
+
+        return response()->json($response);
+    }
+
+    public function productosReport(Request $request)
     {
 
         try {
@@ -123,7 +216,7 @@ UNION
        pedidodetallenn
        LEFT JOIN pedido ON pedidodetallenn.pedido = pedido.id
     WHERE pedido.fecha BETWEEN '{$fecha_inicio}' AND '{$fecha_fin}' AND pedido.estado <> 4
-    order by 3
+    order by 3 LIMIT 10
 ", [$fecha_inicio, $fecha_fin]);
 
 
@@ -146,7 +239,59 @@ UNION
         }
     }
 
-    public function invoices(Request $request)
+    public function invoicesList(Request $request){
+
+        $perPage = request()->input('cantidad', env('PER_PAGE'));
+        $page = request()->input('pagina', env('PAGE'));
+
+        $query = DB::table('invoice')
+            ->select(
+                'invoice.id AS id',
+                DB::raw('DATE(invoice.fecha) AS fecha'),
+                'invoice.cliente',
+                'invoice.total',
+                'invoice.formaDePago',
+                'invoice.estado',
+                'invoice.observaciones',
+                'invoice.anulada',
+                'invoice.billTo',
+                'invoice.shipTo',
+                'invoice.shipVia',
+                'invoice.FOB',
+                'invoice.Terms',
+                'invoice.fechaOrden',
+                'invoice.salesPerson',
+                'invoice.orden',
+                'invoice.peso',
+                'invoice.cantidad',
+                'cliente.nombre AS nombreCliente',
+                'invoice.subTotal',
+                'invoice.TotalEnvio'
+            )
+            ->leftJoin('cliente', 'invoice.cliente', '=', 'cliente.id');
+
+        $invoices = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $response = [
+            'data' => [
+                'headers' => [],
+                'original' => [
+                    'status' => Response::HTTP_OK,
+                    'total' => $invoices->total(),
+                    'cantidad_por_pagina' => $invoices->perPage(),
+                    'pagina' => $invoices->currentPage(),
+                    'cantidad_total' => $invoices->total(),
+                    'results' => $invoices->items(),
+                ],
+                'exception' => null,
+            ],
+        ];
+
+        return response()->json($response);
+
+    }
+
+    public function invoicesReport(Request $request)
     {
         try {
             $sql = "SELECT
@@ -174,7 +319,7 @@ UNION
         FROM
             invoice
         LEFT JOIN
-            cliente ON invoice.cliente = cliente.id";
+            cliente ON invoice.cliente = cliente.id LIMIT 10";
 
             $invoices = DB::select($sql);
 

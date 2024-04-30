@@ -36,15 +36,15 @@ class ReportesController extends Controller
         return $this->service->stockReport($request);
     }
 
-    /**
+        /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service
      * @return \Illuminate\Http\Response
      */
-    public function productos(Request $request)
+    public function productosList(Request $request)
     {
-        return $this->service->productos($request);
+        return $this->service->productosList($request);
     }
 
     /**
@@ -53,8 +53,30 @@ class ReportesController extends Controller
      * @param  use App\Services\ReportesService $service
      * @return \Illuminate\Http\Response
      */
-    public function invoices(Request $request)
+    public function productosReport(Request $request)
     {
-        return $this->service->invoices($request);
+        return $this->service->productosReport($request);
+    }
+
+        /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function invoicesList(Request $request)
+    {
+        return $this->service->invoicesList($request);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function invoicesReport(Request $request)
+    {
+        return $this->service->invoicesReport($request);
     }
 }
