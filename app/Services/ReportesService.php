@@ -149,7 +149,7 @@ class ReportesService
             $query->where('producto.marca', '=', $marca);
         }
         $query->where('pedido.estado', '<>', 4)
-            ->groupBy('producto.color', 'color.nombre', 'producto.nombre', 'producto.stock', 'producto.id', 'producto.precio', 'producto.costo')
+            ->groupBy('producto.color', 'color.nombre', 'producto.nombre', 'producto.stock', 'producto.codigo', 'producto.id', 'producto.precio', 'producto.costo')
             ->orderBy('producto.nombre', 'asc');
 
         $results = $query->paginate($perPage, ['*'], 'page', $page);
