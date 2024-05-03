@@ -28,6 +28,9 @@ class ReportesService
                 DB::raw('stock * precio AS PrecioStock')
             )
             ->where('stock', '>', 0);
+        if (isset($request->marca)) {
+            $query->where('marca', $request->marca);
+        }
 
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
@@ -72,21 +75,26 @@ class ReportesService
     {
         try {
             $sql = "SELECT
-        id AS idProducto,
-        codigo,
-        nombre AS nombreProducto,
-        color,
-        stock,
-        costo,
-        precio,
-        stock * costo AS CostoStock,
-        stock * precio AS PrecioStock
-    FROM
-        producto
-    WHERE
-        stock > 0";
+            id AS idProducto,
+            codigo,
+            nombre AS nombreProducto,
+            color,
+            stock,
+            costo,
+            precio,
+            stock * costo AS CostoStock,
+            stock * precio AS PrecioStock
+        FROM
+            producto
+        WHERE
+            stock > 0";
 
-            $stock = DB::select($sql);
+            if (isset($request->marca)) {
+                $sql .= " AND marca = ?";
+                $stock = DB::select($sql, [$request->marca]);
+            } else {
+                $stock = DB::select($sql);
+            }
 
             // Convertir los objetos stdClass en arrays asociativos
             $stock = array_map(function ($item) {
@@ -106,8 +114,9 @@ class ReportesService
     public function productosList(Request $request)
     {
 
-        $fecha_inicio = '2024-01-01';
-        $fecha_fin = '2024-02-01';
+        $fecha_inicio = $request->desde;
+        $fecha_fin = $request->hasta;
+        $marca = $request->marca;
 
         $perPage = $request->input('cantidad', env('PER_PAGE'));
         $page = $request->input('pagina', env('PAGE'));
@@ -130,9 +139,16 @@ class ReportesService
             )
             ->leftJoin('producto', 'pedidodetalle.producto', '=', 'producto.id')
             ->leftJoin('color', 'producto.color', '=', 'color.id')
-            ->leftJoin('pedido', 'pedidodetalle.pedido', '=', 'pedido.id')
-            ->whereBetween('pedido.fecha', [$fecha_inicio, $fecha_fin])
-            ->where('pedido.estado', '<>', 4)
+            ->leftJoin('pedido', 'pedidodetalle.pedido', '=', 'pedido.id');
+
+        if (!empty($fecha_inicio) && !empty($fecha_fin)) {
+            $query->whereBetween('pedido.fecha', [$fecha_inicio, $fecha_fin]);
+        }
+
+        if ($marca && $marca != 'undefined') {
+            $query->where('producto.marca', '=', $marca);
+        }
+        $query->where('pedido.estado', '<>', 4)
             ->groupBy('producto.color', 'color.nombre', 'producto.nombre', 'producto.stock', 'producto.id', 'producto.precio', 'producto.costo')
             ->orderBy('producto.nombre', 'asc');
 
@@ -179,8 +195,11 @@ class ReportesService
 
         try {
 
-            $fecha_inicio = '2024-01-01';
-            $fecha_fin = '2024-02-01';
+            $fecha_condicion = '';
+
+            if (!empty($request->desde) && !empty($request->hasta)) {
+                $fecha_condicion = "AND pedido.fecha BETWEEN '{$request->desde}' AND '{$request->hasta}'";
+            }
 
             $productos = DB::select("
             SELECT SUM(pedidodetalle.cantidad) AS cantidad,
@@ -199,7 +218,7 @@ class ReportesService
        LEFT JOIN producto  on pedidodetalle.producto = producto.id
        LEFT JOIN color ON producto.color = color.id
        LEFT JOIN pedido ON pedidodetalle.pedido = pedido.id
-   WHERE pedido.fecha BETWEEN '{$fecha_inicio}' AND '{$fecha_fin}' AND pedido.estado <> 4
+   WHERE 1=1 {$fecha_condicion} AND pedido.estado <> 4
        GROUP BY producto.color, color.nombre, producto.nombre, producto.stock, pedidodetalle.precio, producto.id, producto.precio, producto.costo
 UNION
    SELECT pedidodetallenn.cantidad AS cantidad,
@@ -214,9 +233,9 @@ UNION
     FROM
        pedidodetallenn
        LEFT JOIN pedido ON pedidodetallenn.pedido = pedido.id
-    WHERE pedido.fecha BETWEEN '{$fecha_inicio}' AND '{$fecha_fin}' AND pedido.estado <> 4
+    WHERE 1=1 {$fecha_condicion} AND pedido.estado <> 4
     order by 3
-", [$fecha_inicio, $fecha_fin]);
+", [$request->desde, $request->hasta]);
 
 
 
@@ -238,7 +257,8 @@ UNION
         }
     }
 
-    public function invoicesList(Request $request){
+    public function invoicesList(Request $request)
+    {
 
         $perPage = request()->input('cantidad', env('PER_PAGE'));
         $page = request()->input('pagina', env('PAGE'));
@@ -287,7 +307,6 @@ UNION
         ];
 
         return response()->json($response);
-
     }
 
     public function invoicesReport(Request $request)
