@@ -903,5 +903,9 @@ Route::post('test', function(Request $request){
     Route::get('/reportes/productos/list', [ReportesController::class, 'productosList']);
     Route::get('/reportes/invoices/report', [ReportesController::class, 'invoicesReport']);
     Route::get('/reportes/invoices/list', [ReportesController::class, 'invoicesList']);
+    Route::get('/reportes/clientes/report', [ReportesController::class, 'topClientesReport']);
+    Route::get('/reportes/clientes/list', [ReportesController::class, 'topClientesList']);
+    Route::get('/reportes/marcas/report', [ReportesController::class, 'topMarcasReport']);
+    Route::get('/reportes/marcas/list', [ReportesController::class, 'topMarcasList']);
 
 

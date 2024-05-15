@@ -14,6 +14,50 @@ class ReportesController extends Controller
         $this->service = $ReportesService;
     }
 
+        /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function topClientesList(Request $request)
+    {
+        return $this->service->topClientesList($request);
+    }
+
+            /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function topClientesReport(Request $request)
+    {
+        return $this->service->topClientesReport($request);
+    }
+
+            /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function topMarcasList(Request $request)
+    {
+        return $this->service->topMarcasList($request);
+    }
+
+            /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function topMarcasReport(Request $request)
+    {
+        return $this->service->topMarcasReport($request);
+    }
+
     /**
      * Display a listing of the resource.
      *
