@@ -22,11 +22,8 @@ class MarcasFilters
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
-        // Inicializa la consulta utilizando el modelo
-        $query = $model::query();
-
         // Aplica los filtros si se proporcionan
-        //$query->where('MostrarEnWeb', 1);
+        $query->where('suspendido', 0);
 
         $data = $query->orderBy('nombre', 'asc')
         ->paginate($perPage, ['*'], 'page', $page);
