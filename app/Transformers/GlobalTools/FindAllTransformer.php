@@ -18,12 +18,12 @@ class FindAllTransformer extends TransformerAbstract
     public function transform()
     {
         return [
-            'marcas' => Marcaproducto::where('suspendido', 0)->get()->toArray(),
-            'tiposProducto' => Tipoproducto::all()->toArray(),
-            'colores' => Color::all()->toArray(),
-            'categoria' => Categoriaproducto::all()->toArray(),
-            'materiales' => Materialproducto::all()->toArray(),
-            'tamanios' => Tamanoproducto::all()->toArray(),
+            'marcas' => Marcaproducto::where('suspendido', 0)->orderby('nombre','asc')->get()->toArray(),
+            'tiposProducto' => Tipoproducto::all()->orderby('nombre','asc')->toArray(),
+            'colores' => Color::all()->orderby('nombre','asc')->toArray(),
+            'categoria' => Categoriaproducto::all()->orderby('nombre','asc')->toArray(),
+            'materiales' => Materialproducto::all()->orderby('nombre','asc')->toArray(),
+            'tamanios' => Tamanoproducto::all()->orderby('nombre','asc')->toArray(),
             'estuche' => Estuche::all()->toArray(),
             'grupo' => Grupo::all()->toArray(),
             'genero' => Productogenero::all()->toArray(),
