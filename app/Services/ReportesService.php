@@ -366,8 +366,11 @@ UNION
         $fecha_inicio = $request->filled('desde') ? $request->desde : null;
         $fecha_fin = $request->filled('hasta') ? $request->hasta : null;
 
-        $perPage = $request->input('cantidad', env('PER_PAGE'));
-        $page = $request->input('pagina', env('PAGE'));
+        // $perPage = $request->input('cantidad', env('PER_PAGE'));
+        // $page = $request->input('pagina', env('PAGE'));
+
+        $perPage = 10;
+        $page = 1;
 
         $query = DB::table('invoice')
             ->select(
@@ -467,8 +470,11 @@ UNION
         $fecha_fin = $request->filled('hasta') ? $request->hasta : null;
         $nombreMarca = $request->filled('nombreMarca') ? $request->nombreMarca : null;
 
-        $perPage = $request->input('cantidad', env('PER_PAGE'));
-        $page = $request->input('pagina', env('PAGE'));
+        // $perPage = $request->input('cantidad', env('PER_PAGE'));
+        // $page = $request->input('pagina', env('PAGE'));
+
+        $perPage = 10;
+        $page = 1;
 
         $query = DB::table('pedidodetalle')
         ->select('marcaproducto.id','marcaproducto.nombre as marca', DB::raw('SUM(pedidodetalle.cantidad) as cantidad'))
