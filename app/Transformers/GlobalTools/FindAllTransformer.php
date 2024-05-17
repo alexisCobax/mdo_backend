@@ -19,11 +19,11 @@ class FindAllTransformer extends TransformerAbstract
     {
         return [
             'marcas' => Marcaproducto::where('suspendido', 0)->orderby('nombre','asc')->get()->toArray(),
-            'tiposProducto' => Tipoproducto::all()->orderby('nombre','asc')->toArray(),
-            'colores' => Color::all()->orderby('nombre','asc')->toArray(),
-            'categoria' => Categoriaproducto::all()->orderby('nombre','asc')->toArray(),
-            'materiales' => Materialproducto::all()->orderby('nombre','asc')->toArray(),
-            'tamanios' => Tamanoproducto::all()->orderby('nombre','asc')->toArray(),
+            'tiposProducto' => Tipoproducto::orderBy('nombre', 'asc')->get()->toArray(),
+            'colores' => Color::orderBy('nombre', 'asc')->get()->toArray(),
+            'categoria' => Categoriaproducto::orderBy('nombre', 'asc')->get()->toArray(),
+            'materiales' => Materialproducto::orderBy('nombre', 'asc')->get()->toArray(),
+            'tamanios' => Tamanoproducto::orderBy('nombre', 'asc')->get()->toArray(),
             'estuche' => Estuche::all()->toArray(),
             'grupo' => Grupo::all()->toArray(),
             'genero' => Productogenero::all()->toArray(),
