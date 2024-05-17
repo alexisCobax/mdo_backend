@@ -18,7 +18,7 @@ class FindAllTransformer extends TransformerAbstract
     public function transform()
     {
         return [
-            'marcas' => Marcaproducto::all()->toArray(),
+            'marcas' => Marcaproducto::where('suspendido', 0)->get()->toArray(),
             'tiposProducto' => Tipoproducto::all()->toArray(),
             'colores' => Color::all()->toArray(),
             'categoria' => Categoriaproducto::all()->toArray(),
