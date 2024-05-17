@@ -79,7 +79,8 @@ class MarcaproductoService
             return response()->json(['error' => 'Marcaproducto not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $marcaproducto->delete();
+        $marcaproducto->suspendido = 1;
+        $marcaproducto->save();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
