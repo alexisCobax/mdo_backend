@@ -152,8 +152,8 @@ class PedidoService
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $transformer = new CreateTransformer;
-        $pedidoTransformer = $transformer->transform($request);
+        // $transformer = new CreateTransformer;
+        // $pedidoTransformer = $transformer->transform($request);
 
         $pedido->cliente = $request->cliente;
         $pedido->origen = $request->origen;
@@ -200,7 +200,7 @@ class PedidoService
         //     Pedidodetalle::insert($detalle->toArray());
         // }
 
-        if ($request->detalleNN) {
+        //if ($request->detalleNN) {
             $detalleNN = collect($request->detalleNN)->map(function ($dtNN) use ($pedido) {
                 return [
                     'descripcion' => $dtNN['descripcion'],
@@ -212,7 +212,7 @@ class PedidoService
 
             Pedidodetallenn::where('pedido', $pedido->id)->delete();
             Pedidodetallenn::insert($detalleNN->toArray());
-        }
+        //}
 
         if ($request->descuentosPorPromocion) {
 
