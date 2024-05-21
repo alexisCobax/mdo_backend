@@ -200,7 +200,8 @@ class PedidoService
         //     Pedidodetalle::insert($detalle->toArray());
         // }
 
-        //if ($request->detalleNN) {
+        
+
             $detalleNN = collect($request->detalleNN)->map(function ($dtNN) use ($pedido) {
                 return [
                     'descripcion' => $dtNN['descripcion'],
@@ -211,8 +212,10 @@ class PedidoService
             });
 
             Pedidodetallenn::where('pedido', $pedido->id)->delete();
+
+        if ($request->detalleNN) {
             Pedidodetallenn::insert($detalleNN->toArray());
-        //}
+        }
 
         if ($request->descuentosPorPromocion) {
 
