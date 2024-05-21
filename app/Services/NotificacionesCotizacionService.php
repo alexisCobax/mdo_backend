@@ -67,13 +67,13 @@ class NotificacionesCotizacionService
                     $enviarEmail = 1;
 
                     break;
-                case 20:
+                // case 20:
 
-                    $cotizacionEliminar = Cotizacion::where('id', $cotizacion->id)->first();
-                    $cotizacionEliminar->estado = 2;
-                    $cotizacionEliminar->save();
+                //     $cotizacionEliminar = Cotizacion::where('id', $cotizacion->id)->first();
+                //     $cotizacionEliminar->estado = 2;
+                //     $cotizacionEliminar->save();
 
-                    break;
+                //     break;
             }
 
             if ($enviarEmail) {
@@ -86,17 +86,19 @@ class NotificacionesCotizacionService
                 /** Envio por email PDF**/
                 $cuerpo = '';
                 $emailMdo = env('MAIL_COTIZACION_MDO');
-                if ($cliente->email) {
+                // if ($cliente->email) {
 
-                    $destinatarios = [
-                        $emailMdo,
-                        $cliente->email,
-                    ];
-                } else {
-                    $destinatarios = [
-                        $emailMdo,
-                    ];
-                }
+                //     $destinatarios = [
+                //         $emailMdo,
+                //         $cliente->email,
+                //     ];
+                // } else {
+                //     $destinatarios = [
+                //         $emailMdo,
+                //     ];
+                // }
+
+                $destinatarios = ['alexiscobax1@gmail.com', 'mgarralda@cobax.com.ar'];
 
                 $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
 
