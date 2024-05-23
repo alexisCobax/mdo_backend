@@ -33,7 +33,7 @@ class NotificacionesCotizacionService
             switch ($diasDiferencia) {
                 case 1:
 
-                    $view = 'mdo.pdf.notificaciones.cotizaciones.dia1';
+                    $view = 'mdo.notificaciones.cotizaciones.dia1';
 
                     $subject = 'Cotizacion';
 
@@ -51,7 +51,7 @@ class NotificacionesCotizacionService
                     break;
                 case 3:
 
-                    $view = 'mdo.pdf.notificaciones.cotizaciones.dia3';
+                    $view = 'mdo.notificaciones.cotizaciones.dia3';
 
                     $subject = 'Cotizacion';
 
@@ -60,7 +60,7 @@ class NotificacionesCotizacionService
                     break;
                 case 5:
 
-                    $view = 'mdo.pdf.notificaciones.cotizaciones.dia5';
+                    $view = 'mdo.notificaciones.cotizaciones.dia5';
 
                     $subject = 'Cotizacion';
 
