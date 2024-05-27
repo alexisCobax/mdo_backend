@@ -1,12 +1,10 @@
 <br /><br />
 <div>
-    <div style="text-align:center; display:inline;">
         <span style="font-style:normal;">
             <font face="georgia, serif" color="#000000">
-                MDO INC | <u><a href="http://www.mayoristasdeopticas.net/" target="_blank">www.MayoristasDeOpticas.Net</a></u>
+                MDO INC | <u><a href="http://www.mayoristasdeopticas.com/" target="_blank">www.MayoristasDeOpticas.Com</a></u>
             </font>
         </span>
-    </div>
     <br>
     <div>
         <font face="georgia, serif" color="#000000">
