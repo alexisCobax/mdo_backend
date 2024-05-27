@@ -12,7 +12,7 @@ class TestEmail extends Mailable
 
     public function build()
     {
-        return $this->view('mdo.notificaciones.cotizaciones.dia1')
+        return $this->view('mdo.notificaciones.cotizaciones.dia2')
                     ->subject('Email de Prueba');
     }
 }
