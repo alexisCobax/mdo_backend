@@ -20,7 +20,7 @@
 
         <div class="gmail_default" style="font-family:georgia,serif">
         Hola! <br />
-Sabemos que tu tiempo vale oro. Por eso queremos darte este último aviso para que puedas concretar la compra de tu Cotizacion, la cual expira el dia de hoy. Si necesitas más asistencia con el proceso de pago, por favor llámanos por Whatsapp al + 1 (305) 513-9177 o responde este email con tus consultas y con gusto te asistiremos.
+Sabemos que tu tiempo vale oro. Por eso queremos darte este último aviso para que puedas concretar la compra de tu Cotizacion, la cual expira el dia de hoy. Si necesitas más asistencia con el proceso de pago, por favor llámanos por Whatsapp al <a href="tel:+13055139177">+ 1 (305) 513-9177</a> o responde este email con tus consultas y con gusto te asistiremos.
             <br />
             <br />
             Muchas gracias.
