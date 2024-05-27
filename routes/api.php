@@ -104,6 +104,8 @@ use App\Http\Controllers\NotificacionesCotizacionController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
 use App\Http\Controllers\PedidodescuentospromocionController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TestEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -871,30 +873,30 @@ Route::get('/cotizacion/excel/{id}', [CotizacionController::class, 'excel']);
 
 Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class, 'cotizacion']);
 
-Route::post('test', function(Request $request){
-    // Verificar si el usuario actual es un administrador
-    //if (Auth::user()->is_admin) {
-        // Buscar el usuario al que se quiere impersonar
-        $user = Usuario::where('nombre', $request->nombre)->first();
-        // Si el usuario existe
-        if ($user) {
-            // Iniciar sesión como el usuario
-            Auth::login($user);
+// Route::post('test', function(Request $request){
+//     // Verificar si el usuario actual es un administrador
+//     //if (Auth::user()->is_admin) {
+//         // Buscar el usuario al que se quiere impersonar
+//         $user = Usuario::where('nombre', $request->nombre)->first();
+//         // Si el usuario existe
+//         if ($user) {
+//             // Iniciar sesión como el usuario
+//             Auth::login($user);
 
-            // Crear un token de Sanctum para el usuario
-            $token = $user->createToken('impersonation');
+//             // Crear un token de Sanctum para el usuario
+//             $token = $user->createToken('impersonation');
 
-            // Devolver el token al cliente
-            return response()->json([
-                'token' => $token->plainTextToken
-            ]);
-        } else {
-            return response()->json(['error' => 'User not found'], 404);
-        }
-    // } else {
-    //     return response()->json(['error' => 'Unauthorized'], 403);
-    // }
-});
+//             // Devolver el token al cliente
+//             return response()->json([
+//                 'token' => $token->plainTextToken
+//             ]);
+//         } else {
+//             return response()->json(['error' => 'User not found'], 404);
+//         }
+//     // } else {
+//     //     return response()->json(['error' => 'Unauthorized'], 403);
+//     // }
+// });
 
     /* Reportes **/
     Route::get('/reportes/stock/report', [ReportesController::class, 'stockReport']);
@@ -907,5 +909,12 @@ Route::post('test', function(Request $request){
     Route::get('/reportes/clientes/list', [ReportesController::class, 'topClientesList']);
     Route::get('/reportes/marcas/report', [ReportesController::class, 'topMarcasReport']);
     Route::get('/reportes/marcas/list', [ReportesController::class, 'topMarcasList']);
+
+    Route::get('/test/email',function(){
+
+        Mail::to('alexiscobax1@gmail.com')->send(new TestEmail());
+        return 'Correo de prueba enviado';
+
+    });
 
 
