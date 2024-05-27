@@ -912,7 +912,7 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
 
     Route::get('/test/email',function(){
 
-        Mail::to('alexiscobax1@gmail.com')->send(new TestEmail());
+        Mail::to('mgarralda@cobax.com.ar')->send(new TestEmail());
         return 'Correo de prueba enviado';
 
     });
