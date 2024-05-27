@@ -24,7 +24,6 @@
                 <br />
                 Muchas gracias. <br>
             </div>
-            <br /><br />
             @include('mdo.layouts.pie')
 </body>
 
