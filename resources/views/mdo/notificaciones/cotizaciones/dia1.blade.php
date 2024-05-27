@@ -30,7 +30,7 @@
                     <div style="text-align:center;display:inline"><span style="font-style:normal"><i><font face="georgia, serif" color="#000000">MDO INC | <u><a href="http://www.mayoristasdeopticas.net/" target="_blank">www.MayoristasDeOpticas.Net</a> </u></font></i></span></div>
                 </i><br>
             </div>
-            @include('layouts.pie');
+            @include('mdo.layouts.pie');
             <div class="gmail_default" style="font-family:georgia,serif;font-size:large"></div><br><br><u></u>
  
 
