@@ -165,6 +165,8 @@ class CarritoWebService
             return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
         }
 
+        // ACA MANDAR EL EMAIL
+
         return response()->json(['data' => $cotizacion], Response::HTTP_OK);
     }
 }
