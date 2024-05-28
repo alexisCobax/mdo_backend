@@ -93,7 +93,7 @@
             <o:p></o:p>
         </span>
     </p>
-    @include('layouts.pie')
+    @include('mdo.layouts.pie')
 
 </body>
 

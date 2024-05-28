@@ -38,7 +38,7 @@
         </span>
     </p>
     <p class="MsoNormal">
-        <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">Agradecemos sinceramente tu interés en 
+        <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">Agradecemos sinceramente tu interés en
             abrir una cuenta comercial con nosotros.<br/>
             Hemos recibido tu solicitud y estamos emocionados de procesarla.<o:p></o:p></span>
     </p>
@@ -60,7 +60,7 @@
             <o:p></o:p>
         </span>
     </p>
-    @include('layouts.pie')
+    @include('mdo.layouts.pie')
 
 </body>
 
