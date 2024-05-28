@@ -2,15 +2,19 @@
 
 namespace App\Services;
 
-use App\Helpers\CarritoHelper;
-use App\Models\Carrito;
-use App\Models\Carritodetalle;
-use App\Models\Cotizacion;
-use App\Models\Cotizaciondetalle;
-use App\Transformers\Carrito\FindAllTransformer;
 use Error;
+use App\Models\Carrito;
+use App\Models\Cliente;
+use App\Models\Cotizacion;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
+use App\Models\Carritodetalle;
+use App\Models\Cotizaciondetalle;
+use App\Services\CotizacionService;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EnvioCotizacionMailConAdjunto;
+use App\Transformers\Carrito\FindAllTransformer;
 
 class CarritoWebService
 {
@@ -166,6 +170,35 @@ class CarritoWebService
         }
 
         // ACA MANDAR EL EMAIL
+
+        $cotizacion = new CotizacionService();
+
+        $cotizacion->generarCotizacionMailPdf($idCotizacion);
+
+        $cliente = Cliente::where('id', $carritoHelper['cliente'])->first();
+
+        /** Envio por email PDF**/
+        $cuerpo = '';
+        $emailMdo = env('MAIL_COTIZACION_MDO');
+        // if ($cliente->email) {
+
+        //     $destinatarios = [
+        //         $emailMdo,
+        //         $cliente->email,
+        //     ];
+        // } else {
+        //     $destinatarios = [
+        //         $emailMdo,
+        //     ];
+        // }
+
+        $destinatarios = 'alexiscobax1@gmail.com';
+
+        $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $idCotizacion . '.pdf');
+
+        $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
+
+        Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip, $rutaArchivoFijo));
 
         return response()->json(['data' => $cotizacion], Response::HTTP_OK);
     }
