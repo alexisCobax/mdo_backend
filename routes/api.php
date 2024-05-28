@@ -910,11 +910,11 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
     Route::get('/reportes/marcas/report', [ReportesController::class, 'topMarcasReport']);
     Route::get('/reportes/marcas/list', [ReportesController::class, 'topMarcasList']);
 
-    Route::get('/test/email',function(){
+    // Route::get('/test/email',function(){
 
-        Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
-        return 'Correo de prueba enviado';
+    //     Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
+    //     return 'Correo de prueba enviado';
 
-    });
+    // });
 
 
