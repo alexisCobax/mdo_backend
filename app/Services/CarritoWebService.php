@@ -180,19 +180,17 @@ class CarritoWebService
         /** Envio por email PDF**/
         $cuerpo = '';
         $emailMdo = env('MAIL_COTIZACION_MDO');
-        // if ($cliente->email) {
+        if ($cliente->email) {
 
-        //     $destinatarios = [
-        //         $emailMdo,
-        //         $cliente->email,
-        //     ];
-        // } else {
-        //     $destinatarios = [
-        //         $emailMdo,
-        //     ];
-        // }
-
-        $destinatarios = 'alexiscobax1@gmail.com';
+            $destinatarios = [
+                $emailMdo,
+                $cliente->email,
+            ];
+        } else {
+            $destinatarios = [
+                $emailMdo,
+            ];
+        }
 
         $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $idCotizacion . '.pdf');
 
