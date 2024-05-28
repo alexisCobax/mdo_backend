@@ -94,57 +94,7 @@
             <o:p></o:p>
         </span>
     </p>
-    <p class="MsoNormal">
-        <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">
-            <o:p>&nbsp;</o:p>
-        </span>
-    </p>
-    <p class="MsoNormal">
-        <span style="font-size:13.5pt;font-family:&quot;Georgia&quot;,serif;
-color:#0B5394">Paola D&#39;Angelo&nbsp;|
-            MDO INC&nbsp;</span><span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">
-            <o:p></o:p>
-        </span>
-    </p>
-    <p class="MsoNormal">
-        <span style="font-size:13.5pt;font-family:&quot;Georgia&quot;,serif;
-color:#0B5394">WhatsApp:&nbsp;
-            +1/786-800-0990</span><span style="font-size:
-18.0pt;font-family:&quot;Georgia&quot;,serif">
-            <o:p></o:p>
-        </span>
-    </p>
-    <p class="MsoNormal">
-        <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">
-            <o:p>&nbsp;</o:p>
-        </span>
-    </p>
-    <p class="MsoNormal">
-        <i>
-            <span style="font-size:13.5pt;font-family:&quot;Georgia&quot;,serif;color:black">
-                MDO INC |&nbsp;<u><a href="http://www.mayoristasdeopticas.net/"
-                        target="_blank">www.MayoristasDeOpticas.Net</a>&nbsp;</u></span>
-            <o:p></o:p>
-        </i>
-    </p>
-    <p class="MsoNormal">
-        <i>
-            <span style="font-size:13.5pt;font-family:&quot;Georgia&quot;,serif;
-color:black">2618 NW 112th Ave.
-                Miami&nbsp; FL 33172&nbsp; USA<br />
-                Horario de atención&nbsp;al cliente</span></i>
-        <o:p></o:p>
-    </p>
-    <p class="MsoNormal">
-        <span style="font-size:13.5pt;font-family:&quot;Georgia&quot;,serif">Lunes a
-            Viernes 8:30 a 16:30 Hrs.&nbsp;</span>
-        <o:p></o:p>
-    </p>
-    <p class="MsoNormal">
-        <span style="font-size:13.5pt;font-family:&quot;Georgia&quot;,serif">PH:
-            305-513-9177 / 305-513-9191 / 305-513-9191.</span>
-        <o:p></o:p>
-    </p>
+    @include('layouts.pie')
 
 </body>
 
