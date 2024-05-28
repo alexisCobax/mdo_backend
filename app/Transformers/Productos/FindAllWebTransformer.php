@@ -10,7 +10,7 @@ class FindAllWebTransformer extends TransformerAbstract
     public function transform($producto)
     {
         $arrayEnum = EstadosProductosEnums::toArray();
-        if($producto->imagenPrincipal == 0 && $producto->imagenPrincipal == ''){
+        if($producto->imagenPrincipal != 0 && $producto->imagenPrincipal != ''){
         return [
             'id' => $producto->producto_id,
             'imagenPrincipal' => $producto->imagenPrincipal . '.jpg',
