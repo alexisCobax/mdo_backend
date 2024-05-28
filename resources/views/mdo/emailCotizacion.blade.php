@@ -59,7 +59,7 @@
         <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif"> ATENCIÓN: Por favor nota que el costo de
             envío NO fue cotizado aún. Si no
             tienes un transportista que retire tu carga en nuestro depósito en Miami, por
-            favor contáctanos por WhatsApp al +1-786-800-0990 para ayudarte a cotizarlo
+            favor contáctanos por WhatsApp al <a href="https://wa.me/13053168267">+ 1 305 316 8267</a> para ayudarte a cotizarlo
             a fin de que puedas realizar un solo pago y así ahorrarte cualquier cargo extra
 
             de tu banco o Western Union.</span>
