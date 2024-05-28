@@ -48,7 +48,7 @@
     <p class="MsoNormal">
         <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">con
             transferencia bancaria.Si deseas realizar el pago con Western Union, por favor contactanos al Whatsapp
-            +1/786-800-0990<o:p></o:p></span>
+            <a href="https://wa.me/13053168267">+ 1 305 316 8267</a><o:p></o:p></span>
     </p>
     <p class="MsoNormal">
         <span style="font-size:18.0pt;font-family:&quot;Georgia&quot;,serif">
