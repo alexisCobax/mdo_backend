@@ -262,6 +262,8 @@ UNION
 
         $perPage = request()->input('cantidad', env('PER_PAGE'));
         $page = request()->input('pagina', env('PAGE'));
+        $fecha_desde = $request->desde . ' 00:00:00';
+        $fecha_hasta = $request->hasta . ' 23:59:59';
 
         $query = DB::table('invoice')
             ->select(
@@ -288,6 +290,10 @@ UNION
                 'invoice.TotalEnvio'
             )
             ->leftJoin('cliente', 'invoice.cliente', '=', 'cliente.id');
+
+            if (!empty($request->desde) && !empty($request->hasta)) {
+                $query->whereBetween('invoice.fecha', [$fecha_desde, $fecha_hasta]);
+            }
 
         $invoices = $query->paginate($perPage, ['*'], 'page', $page);
 
@@ -529,10 +535,10 @@ UNION
             $fecha_inicio = $request->filled('desde') ? $request->desde : null;
             $fecha_fin = $request->filled('hasta') ? $request->hasta : null;
             $nombreMarca = $request->filled('nombreMarca') ? $request->nombreMarca : null;
-    
+
             $perPage = $request->input('cantidad', env('PER_PAGE'));
             $page = $request->input('pagina', env('PAGE'));
-    
+
             $marcas = DB::table('pedidodetalle')
             ->select('marcaproducto.id','marcaproducto.nombre as marca', DB::raw('SUM(pedidodetalle.cantidad) as cantidad'))
             ->leftJoin('pedido', 'pedido.id', '=', 'pedidodetalle.pedido')

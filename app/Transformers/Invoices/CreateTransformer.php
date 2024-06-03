@@ -16,15 +16,15 @@ class CreateTransformer extends TransformerAbstract
         } else {
             $vendedorNombre = '';
         }
-        
+
         if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $pedido->fecha)) {
             $pedido_fecha = null;
         } else {
             $pedido_fecha = $pedido->fecha;
         }
-        
+
         return [
-            'fecha' => NOW(),
+            //'fecha' => NOW(),
             'cliente' => $pedido->cliente,
             'total' => $pedido->total,
             'formaDePago' => $pedido->formaDePago,
@@ -36,7 +36,7 @@ class CreateTransformer extends TransformerAbstract
             'shipVia' => '',
             'FOB' => '',
             'Terms' => '',
-            'fechaOrden' => $pedido_fecha,
+            //'fechaOrden' => $pedido_fecha,
             'salesPerson' => $vendedorNombre,
             'orden' => $pedido->id,
             'peso' => 0,
