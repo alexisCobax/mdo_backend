@@ -26,14 +26,7 @@ Espero que estés muy bien. Han pasado unos días desde que realizaste tu Cotiza
             <br />
             <br />
 <br></div>
-        <div>
-            <div>
-                <i>
-                    <div style="text-align:center;display:inline"><span style="font-style:normal"><i><font face="georgia, serif" color="#000000">MDO INC | <u><a href="http://www.mayoristasdeopticas.net/" target="_blank">www.MayoristasDeOpticas.Net</a> </u></font></i></span></div>
-                </i><br>
-            </div>
-            <div>
-                <i><font face="georgia, serif"><font color="#000000">2618 NW 112th Ave. Miami  FL 33172  USA</font><font style="color:rgb(0,0,0)"><br></font><font color="#000000">Horario de atención al cliente</font></font></i></div><div><font face="georgia, serif">Lunes a Viernes 8:30 a 16:30 Hrs. </font></div><div><font face="georgia, serif">PH: 305-513-9177 / 305-513-9191 / 305-513-9191.</font><span style="font-family:georgia,serif"> </span></div></div><div class="gmail_default" style="font-family:georgia,serif;font-size:large"></div><br><br><u></u>
+@include('mdo.layouts.pie')
  
 
  

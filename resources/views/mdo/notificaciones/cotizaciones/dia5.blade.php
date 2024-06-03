@@ -20,7 +20,9 @@
 
         <div class="gmail_default" style="font-family:georgia,serif">
         Hola! <br />
-Sabemos que tu tiempo vale oro. Por eso queremos darte este último aviso para que puedas concretar la compra de tu Cotizacion, la cual expira el dia de hoy. Si necesitas más asistencia con el proceso de pago, por favor llámanos por Whatsapp al +1/786-800-0990 o responde este email con tus consultas y con gusto te asistiremos.
+Sabemos que tu tiempo vale oro. Por eso queremos darte este último aviso para que puedas concretar la compra de tu Cotizacion, 
+la cual expira el dia de hoy. Si necesitas más asistencia con el proceso de pago, por favor llámanos por 
+Whatsapp al <a href="https://wa.me/13053168267">+ 1 305 316 8267</a> o responde este email con tus consultas y con gusto te asistiremos.
             <br />
             <br />
             Muchas gracias.
@@ -28,14 +30,7 @@ Sabemos que tu tiempo vale oro. Por eso queremos darte este último aviso para q
 
         
         </div>
-        <div>
-            <div>
-                <i>
-                    <div style="text-align:center;display:inline"><span style="font-style:normal"><i><font face="georgia, serif" color="#000000">MDO INC | <u><a href="http://www.mayoristasdeopticas.net/" target="_blank">www.MayoristasDeOpticas.Net</a> </u></font></i></span></div>
-                </i><br>
-            </div>
-            <div>
-                <i><font face="georgia, serif"><font color="#000000">2618 NW 112th Ave. Miami  FL 33172  USA</font><font style="color:rgb(0,0,0)"><br></font><font color="#000000">Horario de atención al cliente</font></font></i></div><div><font face="georgia, serif">Lunes a Viernes 8:30 a 16:30 Hrs. </font></div><div><font face="georgia, serif">PH: 305-513-9177 / 305-513-9191 / 305-513-9191.</font><span style="font-family:georgia,serif"> </span></div></div><div class="gmail_default" style="font-family:georgia,serif;font-size:large"></div><br><br><u></u>
+        @include('mdo.layouts.pie')
  
 
  
