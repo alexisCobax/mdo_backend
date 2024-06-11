@@ -18,7 +18,8 @@ class FindAllTransformer extends TransformerAbstract
     public function transform()
     {
         return [
-            'marcas' => Marcaproducto::where('suspendido', 0)->orderby('nombre','asc')->get()->toArray(),
+            //'marcas' => Marcaproducto::where('suspendido', 0)->orderby('nombre','asc')->get()->toArray(),
+            'marcas' => Marcaproducto::orderby('nombre','asc')->get()->toArray(),
             'tiposProducto' => Tipoproducto::orderBy('nombre', 'asc')->get()->toArray(),
             'colores' => Color::orderBy('nombre', 'asc')->get()->toArray(),
             'categoria' => Categoriaproducto::orderBy('nombre', 'asc')->get()->toArray(),
