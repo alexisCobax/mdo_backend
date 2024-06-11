@@ -131,6 +131,7 @@ class PedidoService
 
         $pedidoTransformer = [
             'fecha' => NOW(),
+            'estado' => 1
         ];
 
         $pedido = Pedido::create($pedidoTransformer);
@@ -200,7 +201,7 @@ class PedidoService
         //     Pedidodetalle::insert($detalle->toArray());
         // }
 
-        
+
 
             $detalleNN = collect($request->detalleNN)->map(function ($dtNN) use ($pedido) {
                 return [
