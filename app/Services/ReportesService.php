@@ -87,8 +87,7 @@ class ReportesService
             FROM
                 producto
             WHERE
-                stock > 0
-                LIMIT 10";
+                stock > 0";
 
             if (isset($request->marca)) {
                 $sql .= " AND marca = ?";
