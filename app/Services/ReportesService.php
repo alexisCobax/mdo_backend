@@ -75,19 +75,20 @@ class ReportesService
     {
         try {
             $sql = "SELECT
-            id AS idProducto,
-            codigo,
-            nombre AS nombreProducto,
-            color,
-            stock,
-            costo,
-            precio,
-            stock * costo AS CostoStock,
-            stock * precio AS PrecioStock
-        FROM
-            producto
-        WHERE
-            stock > 0";
+                id AS idProducto,
+                codigo,
+                nombre AS nombreProducto,
+                color,
+                stock,
+                costo,
+                precio,
+                stock * costo AS CostoStock,
+                stock * precio AS PrecioStock
+            FROM
+                producto
+            WHERE
+                stock > 0
+                LIMIT 10";
 
             if (isset($request->marca)) {
                 $sql .= " AND marca = ?";
@@ -103,13 +104,22 @@ class ReportesService
 
             $cabeceras = ['idProducto', 'codigo', 'nombreProducto', 'color', 'stock', 'costo', 'precio', 'CostoStock', 'PrecioStock'];
 
-            $response = ArrayToXlsxHelper::getXlsx($stock, $cabeceras);
+            // Definir las columnas y sus etiquetas para los totales
+            $totalColumns = [
+                ['column' => 'PrecioStock', 'label' => 'Total PrecioStock:'],
+                ['column' => 'precio', 'label' => 'Total Precio:'],
+                ['column' => 'stock', 'label' => 'Cantidad de Producto:']
+            ];
+
+            $response = ArrayToXlsxHelper::getXlsx($stock, $cabeceras, $totalColumns);
 
             return $response;
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     public function productosList(Request $request)
     {
