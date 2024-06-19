@@ -14,45 +14,101 @@ class ArrayToXlsxHelper
      * @param  mixed $model
      * @return void
      */
-    public static function getXlsx($model, $cabeceras)
-    {
 
-        $spreadsheet = new Spreadsheet();
+     public static function getXlsx($model, $cabeceras, $totalColumns = [])
+     {
+         $spreadsheet = new Spreadsheet();
+         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet = $spreadsheet->getActiveSheet();
-        if ($cabeceras) {
-            $sheet->fromArray([$cabeceras], null, 'A1');
-            $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1')->getFont()->setBold(true);
-        }
-        foreach (range('A', 'L') as $columna) {
-            $sheet->getColumnDimension($columna)->setWidth(40);
-        }
+         if ($cabeceras) {
+             $sheet->fromArray([$cabeceras], null, 'A1');
+             $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1')->getFont()->setBold(true);
+         }
 
-        $sheet->fromArray($model, null, 'A2');
+         foreach (range('A', 'L') as $columna) {
+             $sheet->getColumnDimension($columna)->setWidth(40);
+         }
 
-        $sheet->getColumnDimension('B')->setWidth(40);
-        $sheet->getColumnDimension('C')->setWidth(40);
-        $sheet->getColumnDimension('D')->setWidth(40);
-        $sheet->getColumnDimension('E')->setWidth(40);
-        $sheet->getColumnDimension('F')->setWidth(40);
-        $sheet->getColumnDimension('G')->setWidth(40);
-        $sheet->getColumnDimension('H')->setWidth(40);
-        $sheet->getColumnDimension('I')->setWidth(40);
-        $sheet->getColumnDimension('J')->setWidth(40);
-        $sheet->getColumnDimension('K')->setWidth(40);
-        $sheet->getColumnDimension('L')->setWidth(40);
+         $sheet->fromArray($model, null, 'A2');
 
-        $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
+         $highestRow = $sheet->getHighestRow();
 
-        $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+         if (!empty($totalColumns)) {
+             $currentRow = $highestRow + 1;
 
-        $writer = new Xlsx($spreadsheet);
+             // Añadir línea negra de separación
+             $sheet->getStyle('A' . $currentRow . ':' . $sheet->getHighestColumn() . $currentRow)
+                   ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)
+                   ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF000000'));
 
-        $nombreArchivo = date('YmdHjs') . '.xlsx';
-        $rutaArchivo = storage_path('app/' . $nombreArchivo);
+             foreach ($totalColumns as $totalColumn) {
+                 $total = array_sum(array_column($model, $totalColumn['column']));
 
-        $writer->save($rutaArchivo);
+                 // Agregar la fila de total
+                 $sheet->setCellValue('H' . ($currentRow + 1), $totalColumn['label']);
+                 $sheet->setCellValue('I' . ($currentRow + 1), $total);
 
-        return response()->download($rutaArchivo, $nombreArchivo)->deleteFileAfterSend(true);
-    }
+                 // Poner en negrita la celda del total
+                 $sheet->getStyle('H' . ($currentRow + 1))->getFont()->setBold(true);
+
+                 $currentRow++;
+             }
+         }
+
+         $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
+         $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+         $writer = new Xlsx($spreadsheet);
+
+         $nombreArchivo = date('YmdHjs') . '.xlsx';
+         $rutaArchivo = storage_path('app/' . $nombreArchivo);
+
+         $writer->save($rutaArchivo);
+
+         return response()->download($rutaArchivo, $nombreArchivo)->deleteFileAfterSend(true);
+     }
+
+
+
+    // public static function getXlsx($model, $cabeceras)
+    // {
+
+    //     $spreadsheet = new Spreadsheet();
+
+    //     $sheet = $spreadsheet->getActiveSheet();
+    //     if ($cabeceras) {
+    //         $sheet->fromArray([$cabeceras], null, 'A1');
+    //         $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1')->getFont()->setBold(true);
+    //     }
+    //     foreach (range('A', 'L') as $columna) {
+    //         $sheet->getColumnDimension($columna)->setWidth(40);
+    //     }
+
+    //     $sheet->fromArray($model, null, 'A2');
+
+    //     $sheet->getColumnDimension('B')->setWidth(40);
+    //     $sheet->getColumnDimension('C')->setWidth(40);
+    //     $sheet->getColumnDimension('D')->setWidth(40);
+    //     $sheet->getColumnDimension('E')->setWidth(40);
+    //     $sheet->getColumnDimension('F')->setWidth(40);
+    //     $sheet->getColumnDimension('G')->setWidth(40);
+    //     $sheet->getColumnDimension('H')->setWidth(40);
+    //     $sheet->getColumnDimension('I')->setWidth(40);
+    //     $sheet->getColumnDimension('J')->setWidth(40);
+    //     $sheet->getColumnDimension('K')->setWidth(40);
+    //     $sheet->getColumnDimension('L')->setWidth(40);
+
+    //     $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
+
+    //     $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+    //     $writer = new Xlsx($spreadsheet);
+
+    //     $nombreArchivo = date('YmdHjs') . '.xlsx';
+    //     $rutaArchivo = storage_path('app/' . $nombreArchivo);
+
+    //     $writer->save($rutaArchivo);
+
+    //     return response()->download($rutaArchivo, $nombreArchivo)->deleteFileAfterSend(true);
+    // }
 }
