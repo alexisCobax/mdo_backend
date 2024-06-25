@@ -12,6 +12,10 @@ class FindAllTransformer extends TransformerAbstract
         $compra = [
             'id' => $marca->id,
             'nombre' => $marca->nombre,
+            'mostrarWeb' => $marca->MostrarEnWeb,
+            'suspendido' => $marca->suspendido,
+            'vip' => $marca->VIP,
+            'propia' => $marca->propia
         ];
 
         return $compra;

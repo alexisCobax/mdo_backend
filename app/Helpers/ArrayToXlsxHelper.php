@@ -31,29 +31,29 @@ class ArrayToXlsxHelper
 
          $sheet->fromArray($model, null, 'A2');
 
-         $highestRow = $sheet->getHighestRow();
+        //  $highestRow = $sheet->getHighestRow();
 
-         if (!empty($totalColumns)) {
-             $currentRow = $highestRow + 1;
+        //  if (!empty($totalColumns)) {
+        //      $currentRow = $highestRow + 1;
 
-             // Añadir línea negra de separación
-             $sheet->getStyle('A' . $currentRow . ':' . $sheet->getHighestColumn() . $currentRow)
-                   ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)
-                   ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF000000'));
+        //      // Añadir línea negra de separación
+        //      $sheet->getStyle('A' . $currentRow . ':' . $sheet->getHighestColumn() . $currentRow)
+        //            ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)
+        //            ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF000000'));
 
-             foreach ($totalColumns as $totalColumn) {
-                 $total = array_sum(array_column($model, $totalColumn['column']));
+        //      foreach ($totalColumns as $totalColumn) {
+        //          $total = array_sum(array_column($model, $totalColumn['column']));
 
-                 // Agregar la fila de total
-                 $sheet->setCellValue('H' . ($currentRow + 1), $totalColumn['label']);
-                 $sheet->setCellValue('I' . ($currentRow + 1), $total);
+        //          // Agregar la fila de total
+        //          $sheet->setCellValue('H' . ($currentRow + 1), $totalColumn['label']);
+        //          $sheet->setCellValue('I' . ($currentRow + 1), $total);
 
-                 // Poner en negrita la celda del total
-                 $sheet->getStyle('H' . ($currentRow + 1))->getFont()->setBold(true);
+        //          // Poner en negrita la celda del total
+        //          $sheet->getStyle('H' . ($currentRow + 1))->getFont()->setBold(true);
 
-                 $currentRow++;
-             }
-         }
+        //          $currentRow++;
+        //      }
+        //  }
 
          $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
          $rangoCeldas->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
