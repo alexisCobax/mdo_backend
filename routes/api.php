@@ -909,7 +909,8 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
     Route::get('/reportes/clientes/list', [ReportesController::class, 'topClientesList']);
     Route::get('/reportes/marcas/report', [ReportesController::class, 'topMarcasReport']);
     Route::get('/reportes/marcas/list', [ReportesController::class, 'topMarcasList']);
-
+    Route::get('/reportes/recibos/report', [ReportesController::class, 'recibosReport']);
+    Route::get('/reportes/recibos/list', [ReportesController::class, 'recibosList']);
     // Route::get('/test/email',function(){
 
     //     Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
