@@ -250,13 +250,13 @@ class ReportesService
                 WHEN recibo.anulado = 1 THEN 'Anulada'
             END AS estado
         FROM
-            tienda.recibo
+            recibo
         INNER JOIN
-            tienda.formadepago
+            formadepago
         ON
             recibo.formaDePago = formadepago.id
         INNER JOIN
-            tienda.cliente
+            cliente
         ON
             recibo.cliente = cliente.id
             {$fecha_condicion}";
