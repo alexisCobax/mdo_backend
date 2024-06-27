@@ -14,7 +14,7 @@ class ReportesController extends Controller
         $this->service = $ReportesService;
     }
 
-        /**
+    /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service
@@ -25,7 +25,7 @@ class ReportesController extends Controller
         return $this->service->topClientesList($request);
     }
 
-            /**
+    /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service
@@ -36,7 +36,7 @@ class ReportesController extends Controller
         return $this->service->topClientesReport($request);
     }
 
-            /**
+    /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service
@@ -47,7 +47,7 @@ class ReportesController extends Controller
         return $this->service->topMarcasList($request);
     }
 
-            /**
+    /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service
@@ -69,7 +69,7 @@ class ReportesController extends Controller
         return $this->service->stockList($request);
     }
 
-        /**
+    /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service
@@ -80,7 +80,29 @@ class ReportesController extends Controller
         return $this->service->stockReport($request);
     }
 
-        /**
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function recibosList(Request $request)
+    {
+        return $this->service->recibosList($request);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ReportesService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function recibosReport(Request $request)
+    {
+        return $this->service->recibosReport($request);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service
@@ -102,7 +124,7 @@ class ReportesController extends Controller
         return $this->service->productosReport($request);
     }
 
-        /**
+    /**
      * Display a listing of the resource.
      *
      * @param  use App\Services\ReportesService $service

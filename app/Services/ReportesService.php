@@ -165,59 +165,162 @@ class ReportesService
         }
     }
 
+    public function recibosList(Request $request)
+    {
+
+        $fecha_inicio = $request->desde;
+        $fecha_fin = $request->hasta;
+
+        $query = DB::table('recibo')
+        ->select(
+            'recibo.id',
+            'cliente.nombre AS cliente',
+            'recibo.fecha',
+            'formadepago.nombre AS formaDePago',
+            'recibo.total',
+            DB::raw("CASE
+                        WHEN recibo.anulado = 0 THEN 'No Anulada'
+                        WHEN recibo.anulado = 1 THEN 'Anulada'
+                    END AS estado")
+        )
+        ->join('formadepago', 'recibo.formaDePago', '=', 'formadepago.id')
+        ->join('cliente', 'recibo.cliente', '=', 'cliente.id');
+
+        if (!empty($fecha_inicio) && !empty($fecha_fin)) {
+            $query->whereBetween('recibo.fecha', [$fecha_inicio, $fecha_fin]);
+        }
+
+        $page = $request->input('pagina', env('PAGE'));
+        $perPage = $request->input('cantidad', env('PER_PAGE'));
+
+        $data = $query->orderBy('id', 'asc')->paginate($perPage, ['*'], 'page', $page);
+
+        $results = $data->items();
+
+        // Mapea los resultados para ajustar los nombres de las claves y eliminar las que no necesitas
+        $transformedResults = array_map(function ($result) {
+            return [
+                'id' => $result->id,
+                'clienteNombre' => $result->cliente,
+                'fecha' => $result->fecha,
+                'formaDePago' => $result->formaDePago,
+                'total' => $result->total,
+                'estado' => $result->estado
+            ];
+        }, $results);
+
+        // Construye la respuesta final
+        $response = [
+            'data' => [
+                'headers' => [], // Puedes agregar encabezados si lo necesitas
+                'original' => [
+                    'status' => Response::HTTP_OK,
+                    'total' => $data->total(),
+                    'cantidad_por_pagina' => $data->perPage(),
+                    'pagina' => $data->currentPage(),
+                    'cantidad_total' => $data->total(),
+                    'results' => $transformedResults,
+                ],
+                'exception' => null,
+            ],
+        ];
+
+        return response()->json($response);
+    }
 
 
+    public function recibosReport(Request $request)
+    {
+
+        $fecha_condicion = '';
+
+        if (!empty($request->desde) && !empty($request->hasta)) {
+            $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->desde}' AND '{$request->hasta}'";
+        }
 
 
-    // public function stockReport(Request $request)
-    // {
-    //     try {
-    //         $sql = "SELECT
-    //             id AS idProducto,
-    //             codigo,
-    //             nombre AS nombreProducto,
-    //             color,
-    //             stock,
-    //             costo,
-    //             precio,
-    //             stock * costo AS CostoStock,
-    //             stock * precio AS PrecioStock
-    //         FROM
-    //             producto
-    //         WHERE
-    //             stock > 0
-    //             LIMIT 10";
+        try {
+            $sql = "SELECT
+            cliente.nombre AS cliente,
+            recibo.fecha,
+            formadepago.nombre AS formaDePago,
+            recibo.total,
+            CASE
+                WHEN recibo.anulado = 0 THEN 'No Anulada'
+                WHEN recibo.anulado = 1 THEN 'Anulada'
+            END AS estado
+        FROM
+            tienda.recibo
+        INNER JOIN
+            tienda.formadepago
+        ON
+            recibo.formaDePago = formadepago.id
+        INNER JOIN
+            tienda.cliente
+        ON
+            recibo.cliente = cliente.id
+            {$fecha_condicion}";
 
-    //         if (isset($request->marca)) {
-    //             $sql .= " AND marca = ?";
-    //             $stock = DB::select($sql, [$request->marca]);
-    //         } else {
-    //             $stock = DB::select($sql);
-    //         }
+            $recibo = DB::select($sql);
 
-    //         // Convertir los objetos stdClass en arrays asociativos
-    //         $stock = array_map(function ($item) {
-    //             return (array) $item;
-    //         }, $stock);
+            // Convertir los objetos stdClass en arrays asociativos
+            $recibo = array_map(function ($item) {
+                return (array) $item;
+            }, $recibo);
 
-    //         $cabeceras = ['idProducto', 'codigo', 'nombreProducto', 'color', 'stock', 'costo', 'precio', 'CostoStock', 'PrecioStock'];
+            // Definir las cabeceras y el orden deseado
+            $cabeceras = ['Cliente', 'Fecha', 'formaDePago', 'total', 'estado'];
 
-    //         // Definir las columnas y sus etiquetas para los totales
-    //         $totalColumns = [
-    //             ['column' => 'PrecioStock', 'label' => 'Total PrecioStock:'],
-    //             ['column' => 'precio', 'label' => 'Total Precio:'],
-    //             ['column' => 'stock', 'label' => 'Cantidad de Producto:']
-    //         ];
+            // Generar el archivo Excel con la función genérica
+            $response = ArrayToXlsxHelper::getXlsx($recibo, $cabeceras);
 
-    //         $response = ArrayToXlsxHelper::getXlsx($stock, $cabeceras, $totalColumns);
+            // Manipular la hoja de cálculo para asegurar el orden de las columnas
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(storage_path('app/' . $response->getFile()->getFilename()));
+            $sheet = $spreadsheet->getActiveSheet();
 
-    //         return $response;
-    //     } catch (\Exception $e) {
-    //         return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-    // }
+            $highestRow = $sheet->getHighestRow();
+
+            // Calcular totales
+            $totalRecibo = array_sum(array_column($recibo, 'total'));
+
+            // Añadir línea negra de separación
+            $currentRow = $highestRow + 1;
+            $sheet->getStyle('A' . $currentRow . ':' . $sheet->getHighestColumn() . $currentRow)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)
+                ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF000000'));
+
+            // Añadir totales al final de las columnas correspondientes
+            $sheet->setCellValue('A' . ($currentRow), 'TOTALES');
+            $sheet->setCellValue('D' . ($currentRow), $totalRecibo);
+
+            // Poner en negrita las celdas de los totales
+            $sheet->getStyle('A' . ($currentRow))->getFont()->setBold(true);
+            $sheet->getStyle('D' . ($currentRow))->getFont()->setBold(true);
+
+            // Alinear el contenido de las columnas de precios a la izquierda
+            $sheet->getStyle('D2:D' . ($currentRow))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+            $sheet->getColumnDimension('A')->setWidth(30);
+            $sheet->getColumnDimension('B')->setWidth(15);
+            $sheet->getColumnDimension('C')->setWidth(30);
+            $sheet->getColumnDimension('D')->setWidth(15);
+            $sheet->getColumnDimension('E')->setWidth(15);
+
+            // Alinear todos los encabezados al centro
+            $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
 
+            // Guardar el archivo actualizado
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $nombreArchivo = date('YmdHjs') . '.xlsx';
+            $rutaArchivo = storage_path('app/' . $nombreArchivo);
+            $writer->save($rutaArchivo);
+
+            return response()->download($rutaArchivo, $nombreArchivo)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
     public function productosList(Request $request)
     {
