@@ -229,8 +229,8 @@ class ReportesService
 
         $fecha_condicion = '';
 
-        if (!empty($request->desde) && !empty($request->hasta)) {
-            $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->desde}' AND '{$request->hasta}'";
+        if (!empty($request->fecha_desde) && !empty($request->fecha_hasta)) {
+            $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->fecha_desde}' AND '{$request->fecha_hasta}'";
         }
 
 
