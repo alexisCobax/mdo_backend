@@ -177,11 +177,7 @@ class ReportesService
             'cliente.nombre AS cliente',
             'recibo.fecha',
             'formadepago.nombre AS formaDePago',
-            'recibo.total',
-            DB::raw("CASE
-                        WHEN recibo.anulado = 0 THEN 'No Anulada'
-                        WHEN recibo.anulado = 1 THEN 'Anulada'
-                    END AS estado")
+            'recibo.total'
         )
         ->join('formadepago', 'recibo.formaDePago', '=', 'formadepago.id')
         ->join('cliente', 'recibo.cliente', '=', 'cliente.id');
@@ -204,8 +200,7 @@ class ReportesService
                 'clienteNombre' => $result->cliente,
                 'fecha' => $result->fecha,
                 'formaDePago' => $result->formaDePago,
-                'total' => $result->total,
-                'estado' => $result->estado
+                'total' => $result->total
             ];
         }, $results);
 
@@ -244,11 +239,7 @@ class ReportesService
             cliente.nombre AS cliente,
             recibo.fecha,
             formadepago.nombre AS formaDePago,
-            recibo.total,
-            CASE
-                WHEN recibo.anulado = 0 THEN 'No Anulada'
-                WHEN recibo.anulado = 1 THEN 'Anulada'
-            END AS estado
+            recibo.total
         FROM
             recibo
         INNER JOIN
@@ -269,7 +260,7 @@ class ReportesService
             }, $recibo);
 
             // Definir las cabeceras y el orden deseado
-            $cabeceras = ['Cliente', 'Fecha', 'formaDePago', 'total', 'estado'];
+            $cabeceras = ['Cliente', 'Fecha', 'formaDePago', 'total'];
 
             // Generar el archivo Excel con la función genérica
             $response = ArrayToXlsxHelper::getXlsx($recibo, $cabeceras);
@@ -304,7 +295,6 @@ class ReportesService
             $sheet->getColumnDimension('B')->setWidth(15);
             $sheet->getColumnDimension('C')->setWidth(30);
             $sheet->getColumnDimension('D')->setWidth(15);
-            $sheet->getColumnDimension('E')->setWidth(15);
 
             // Alinear todos los encabezados al centro
             $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
