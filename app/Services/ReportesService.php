@@ -469,7 +469,7 @@ class ReportesService
         $query = DB::table('invoice')
             ->select(
                 'invoice.id AS id',
-                DB::raw('DATE(invoice.fecha) AS fecha'),
+                DB::raw("DATE_FORMAT(invoice.fecha, '%d-%b-%Y') AS fecha"),
                 'invoice.cliente',
                 'invoice.total',
                 'invoice.formaDePago',
@@ -490,7 +490,8 @@ class ReportesService
                 'invoice.subTotal',
                 'invoice.TotalEnvio'
             )
-            ->leftJoin('cliente', 'invoice.cliente', '=', 'cliente.id');
+            ->leftJoin('cliente', 'invoice.cliente', '=', 'cliente.id')
+            ->orderBy('id','desc');
 
         if (!empty($request->desde) && !empty($request->hasta)) {
             $query->whereBetween('invoice.fecha', [$fecha_desde, $fecha_hasta]);
@@ -520,31 +521,14 @@ class ReportesService
     {
         try {
             $sql = "SELECT
-            invoice.id AS id,
-            invoice.fecha,
-            invoice.cliente,
-            invoice.total,
-            invoice.formaDePago,
-            invoice.estado,
-            invoice.observaciones,
-            invoice.anulada,
+            invoice.id as id,
+            DATE_FORMAT(invoice.fecha, '%Y-%m-%d') AS fecha,
+            cliente.nombre AS nombreCliente,
             invoice.billTo,
             invoice.shipTo,
-            invoice.shipVia,
-            invoice.FOB,
-            invoice.Terms,
-            invoice.fechaOrden,
-            invoice.salesPerson,
-            invoice.orden,
-            invoice.peso,
-            invoice.cantidad,
-            cliente.nombre AS nombreCliente,
-            invoice.subTotal,
-            invoice.TotalEnvio
-        FROM
-            invoice
-        LEFT JOIN
-            cliente ON invoice.cliente = cliente.id";
+            invoice.total
+            FROM invoice
+            INNER JOIN cliente ON invoice.cliente=cliente.id";
 
             $invoices = DB::select($sql);
 
@@ -554,15 +538,54 @@ class ReportesService
             }, $invoices);
 
             $cabeceras = [
-                'id', 'fecha', 'cliente', 'total', 'forma de pago', 'estado', 'observaciones', 'anulada', 'billto', 'shipto', 'shipvia', 'fob', 'terms', 'fecha orden', 'sales person', 'orden',
-                'peso', 'cantidad', 'nombre cliente', 'subtotal', ' total envio'
+                'id', 'fecha', 'cliente', 'billto', 'shipto', 'total'
             ];
 
             $response = ArrayToXlsxHelper::getXlsx($invoices, $cabeceras);
 
-            return $response;
+            // Manipular la hoja de cálculo para asegurar el orden de las columnas
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(storage_path('app/' . $response->getFile()->getFilename()));
+            $sheet = $spreadsheet->getActiveSheet();
 
-            //     return response()->json(['data' => $invoices], Response::HTTP_OK);
+            $highestRow = $sheet->getHighestRow();
+
+            // Calcular totales
+            $totalInvoice = array_sum(array_column($invoices, 'total'));
+
+                        // Añadir línea negra de separación
+                        $currentRow = $highestRow + 1;
+                        $sheet->getStyle('A' . $currentRow . ':' . $sheet->getHighestColumn() . $currentRow)
+                            ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)
+                            ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF000000'));
+
+                                        // Añadir totales al final de las columnas correspondientes
+            $sheet->setCellValue('A' . ($currentRow), 'TOTALES');
+            $sheet->setCellValue('F' . ($currentRow), $totalInvoice);
+
+                         // Poner en negrita las celdas de los totales
+            $sheet->getStyle('A' . ($currentRow))->getFont()->setBold(true);
+            $sheet->getStyle('F' . ($currentRow))->getFont()->setBold(true);
+
+            // Alinear el contenido de las columnas de precios a la izquierda
+            $sheet->getStyle('D2:D' . ($currentRow))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+            $sheet->getColumnDimension('A')->setWidth(30);
+            $sheet->getColumnDimension('B')->setWidth(15);
+            $sheet->getColumnDimension('C')->setWidth(30);
+            $sheet->getColumnDimension('D')->setWidth(15);
+
+            // Alinear todos los encabezados al centro
+            $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+
+            // Guardar el archivo actualizado
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $nombreArchivo = date('YmdHjs') . '.xlsx';
+            $rutaArchivo = storage_path('app/' . $nombreArchivo);
+            $writer->save($rutaArchivo);
+
+            return response()->download($rutaArchivo, $nombreArchivo)->deleteFileAfterSend(true);
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los invoices'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

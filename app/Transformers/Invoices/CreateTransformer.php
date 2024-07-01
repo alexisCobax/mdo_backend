@@ -17,11 +17,11 @@ class CreateTransformer extends TransformerAbstract
             $vendedorNombre = '';
         }
 
-        if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $pedido->fecha)) {
-            $pedido_fecha = null;
-        } else {
+        // if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $pedido->fecha)) {
+        //     $pedido_fecha = null;
+        // } else {
             $pedido_fecha = $pedido->fecha;
-        }
+        // }
 
         return [
             //'fecha' => NOW(),
@@ -36,7 +36,7 @@ class CreateTransformer extends TransformerAbstract
             'shipVia' => '',
             'FOB' => '',
             'Terms' => '',
-            //'fechaOrden' => $pedido_fecha,
+            'fechaOrden' => $pedido_fecha,
             'salesPerson' => $vendedorNombre,
             'orden' => $pedido->id,
             'peso' => 0,

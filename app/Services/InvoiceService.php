@@ -71,7 +71,7 @@ class InvoiceService
 
     public function create(Request $request)
     {
-        
+
         $pedido = Pedido::find($request->pedido);
 
         $sqlCantidad = Pedidodetalle::where('pedido', $request->pedido)->groupBy('pedido')
@@ -86,6 +86,8 @@ class InvoiceService
 
         $invoiceData = new CreateTransformer();
         $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
+
+        $invoiceData['fecha'] = NOW();
 
         $invoice = Invoice::create($invoiceData);
 
@@ -132,7 +134,7 @@ class InvoiceService
             $fillableAttributes = $invoice->getFillable();
 
             foreach ($fillableAttributes as $attribute) {
-                if ($attribute !== 'id') {
+                if ($attribute !== 'id' & $attribute !== 'fecha') { // Limpio todos los campos del invoice para poder generarlos de nuevo
                     $invoice->{$attribute} = null;
                 }
             }
@@ -150,13 +152,13 @@ class InvoiceService
         $pedidoDetalleNnCantidad = 0;
 
         $pedidoDetalleCantidad = Pedidodetalle::where('pedido', $request->id)->groupBy('pedido')
-            ->selectRaw('pedido, SUM(cantidad) as suma_cantidad') 
+            ->selectRaw('pedido, SUM(cantidad) as suma_cantidad')
             ->first();
 
 
 
             if($pedidoDetalleCantidad==''){
-                $cantidad = 0; 
+                $cantidad = 0;
             }else{
                 $cantidad = $pedidoDetalleCantidad->suma_cantidad;
             }
@@ -186,7 +188,7 @@ class InvoiceService
         LEFT JOIN producto ON producto.id = pedidodetalle.producto
         WHERE pedidodetalle.pedido = {$request->id}
         UNION
-        SELECT  
+        SELECT
             NULL as id,
             pedidodetallenn.cantidad as qordered,
             pedidodetallenn.cantidad as qshipped,
