@@ -16,6 +16,10 @@ class BannersFilters
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
+        if ($request->tipo) {
+            $query->where('tipoUbicacion', $request->tipo);
+        }
+
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')
         ->paginate($perPage, ['*'], 'page', $page);
