@@ -125,7 +125,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     Route::get('/banner', [BannerController::class, 'index']);
     Route::get('/banner/{id}', [BannerController::class, 'show']);
     Route::post('/banner', [BannerController::class, 'create']);
-    Route::put('/banner/{id}', [BannerController::class, 'update']);
+    Route::post('/banner/update/{id}', [BannerController::class, 'update']);
     Route::delete('/banner/{id}', [BannerController::class, 'delete']);
 
     /* Carrier Routes **/
@@ -698,7 +698,6 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
 
     /* Tipobanner Routes **/
 
-    Route::get('/tipobanner', [TipobannerController::class, 'index']);
     Route::get('/tipobanner/{id}', [TipobannerController::class, 'show']);
     Route::post('/tipobanner', [TipobannerController::class, 'create']);
     Route::put('/tipobanner/{id}', [TipobannerController::class, 'update']);
@@ -807,6 +806,7 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
 });
 
 /* Producto ESTO DEBE IR SIN TOKEN**/
+Route::get('/tipobanner', [TipobannerController::class, 'index']);
 Route::get('/web/color', [ColorWebController::class, 'index']);
 Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
 Route::get('/web/producto', [ProductoWebController::class, 'index']);

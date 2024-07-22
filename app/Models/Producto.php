@@ -325,4 +325,9 @@ class Producto extends Model
     {
         return $this->belongsTo(Color::class, 'color');
     }
+
+    public function scopeRebajados($query)
+    {
+        $query->where('precioPromocional', '<=', 9.99);
+    }
 }

@@ -63,23 +63,27 @@ class ProductosWebFilters
             case 'menos20':
                 $query->Menos20();
                 break;
+            case 'rebajados':
+                $query->Rebajados();
+                break;
         }
 
         $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
             ->select(
-                'producto.id as producto_id', 
-                'producto.nombre', 
-                'producto.codigo', 
-                'producto.categoria', 
-                'producto.precio', 
-                'producto.precioPromocional', 
-                'producto.stock', 
-                'producto.destacado', 
-                'producto.color', 
-                'producto.nuevo', 
-                'producto.imagenPrincipal', 
+                'producto.id as producto_id',
+                'producto.nombre',
+                'producto.codigo',
+                'producto.categoria',
+                'producto.precio',
+                'producto.precioPromocional',
+                'producto.stock',
+                'producto.destacado',
+                'producto.color',
+                'producto.nuevo',
+                'producto.imagenPrincipal',
                 'marcaproducto.nombre as marca_nombre',
-                'marcaproducto.id as marca_id')
+                'marcaproducto.id as marca_id'
+            )
             ->where('producto.stock', '>', 0)
             ->where('producto.suspendido', '=', 0)
             ->orderBy('marcaproducto.nombre', 'asc')
