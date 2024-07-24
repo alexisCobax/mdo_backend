@@ -55,7 +55,7 @@ class BannerService
         $pathOriginal = $imagenOriginal->store('public/');
 
         $imagen = Image::make(storage_path("app/$pathOriginal"))
-            ->resize($tipo->ancho, $tipo->alto)
+            //->resize($tipo->ancho, $tipo->alto)
             ->save(storage_path('app/public/banners/' . $banner->id . '.jpg'));
 
         Storage::delete($pathOriginal);
