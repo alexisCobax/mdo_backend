@@ -29,7 +29,7 @@ class BannerService
     {
         try {
             $sql = 'SELECT banners.id FROM
-            tienda.banners
+            banners
             INNER JOIN
             tipobanners
             ON
