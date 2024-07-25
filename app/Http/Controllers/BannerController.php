@@ -84,4 +84,15 @@ class BannerController extends Controller
     {
         //
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\BannerService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function tag(Request $request)
+    {
+        return $this->service->findByTag($request);
+    }
 }
