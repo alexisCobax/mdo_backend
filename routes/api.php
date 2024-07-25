@@ -807,6 +807,7 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
 
 /* Producto ESTO DEBE IR SIN TOKEN**/
 Route::get('/tipobanner', [TipobannerController::class, 'index']);
+Route::get('/web/banner/{tag}', [BannerController::class, 'tag']);
 Route::get('/web/color', [ColorWebController::class, 'index']);
 Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
 Route::get('/web/producto', [ProductoWebController::class, 'index']);

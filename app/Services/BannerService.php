@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\DB;
+
 
 class BannerService
 {
@@ -20,6 +22,26 @@ class BannerService
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los sliders'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function findByTag(Request $request)
+    {
+        try {
+            $sql = 'SELECT banners.id FROM
+            tienda.banners
+            INNER JOIN
+            tipobanners
+            ON
+            banners.tipoUbicacion = tipobanners.id
+            WHERE
+            tipobanners.palabraClave = ?';
+            $data = DB::select($sql, [$request->tag]);
+
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener la imagen'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
