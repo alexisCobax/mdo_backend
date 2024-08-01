@@ -2,20 +2,21 @@
 
 namespace App\Services;
 
-use App\Filters\Invoices\InvoicesFilters;
-use App\Models\Invoice;
-use App\Models\Invoicedetalle;
+use Error;
 use App\Models\Pedido;
+use App\Models\Cliente;
+use App\Models\Invoice;
+use Illuminate\Http\Request;
 use App\Models\Pedidodetalle;
+use Illuminate\Http\Response;
+use App\Models\Invoicedetalle;
 use App\Models\Pedidodetallenn;
-use App\Transformers\Invoices\CreateDetalleTransformer;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use App\Filters\Invoices\InvoicesFilters;
 use App\Transformers\Invoices\CreateTransformer;
 use App\Transformers\Invoices\FindByIdTransformer;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Error;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use App\Transformers\Invoices\CreateDetalleTransformer;
 
 class InvoiceService
 {
@@ -71,48 +72,105 @@ class InvoiceService
 
     public function create(Request $request)
     {
+        try{
 
-        $pedido = Pedido::find($request->pedido);
+        $cantidad = 0;
 
-        $sqlCantidad = Pedidodetalle::where('pedido', $request->pedido)->groupBy('pedido')
-            ->selectRaw('pedido, SUM(cantidad) as suma_cantidad')
-            ->first();
+        //Busco el pedido
+        $pedido = Pedido::where('id',$request->pedido)->first();
 
-        if($sqlCantidad==''){
-            $cantidad = 0;
-        }else{
-            $cantidad = $sqlCantidad->suma_cantidad;
-        }
+        //Saco la cantidad detalle
+        $cantidad = Pedidodetalle::where('pedido', $request->pedido)
+        ->sum('cantidad');
 
-        $invoiceData = new CreateTransformer();
-        $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);
+        //Saco la cantidad detalleNN
+        $cantidad += Pedidodetallenn::where('pedido', $request->pedido)
+        ->sum('cantidad');
 
-        $invoiceData['fecha'] = NOW();
+        //Busco el cliente
+        $cliente = Cliente::where('id',$pedido->cliente)->first();
 
-        $invoice = Invoice::create($invoiceData);
+        //Calculo
+        $subTotal = $pedido->total - $pedido->DescuentoNeto;
+        $vendedorNombre = $pedido->vendedor ? optional($pedido->vendedores)->nombre : '';
 
-        $pedidosDetalle = Pedidodetalle::where('pedido', $request->pedido)
-            ->select('cantidad', 'precio', 'producto')
-            ->get();
+        //Genero el invoice
+        $invoiceId = DB::table('invoice')->insertGetId([
+            'cliente' => $pedido->cliente,
+            'total' => $pedido->total,
+            'formaDePago' => $pedido->formaDePago,
+            'estado' => 1,
+            'observaciones' => $pedido->observaciones,
+            'anulada' => 0,
+            'billTo' => $cliente->direccionBill,
+            'shipTo' => $cliente->nombreEnvio."\n".$cliente->direccionShape."\n".$cliente->ciudadEnvio."\n".$cliente->regionEnvio."\n".$cliente->paisShape."\n".$cliente->cpShape, // Envío | Cliente
+            'shipVia' => '',
+            'FOB' => '',
+            'Terms' => '',
+            'fechaOrden' => $pedido->fecha,
+            'salesPerson' => $vendedorNombre,
+            'orden' => $pedido->id,
+            'peso' => 0,
+            'cantidad' => $cantidad,
+            'DescuentoNeto' => $pedido->DescuentoNeto,
+            'DescuentoPorcentual' => $pedido->DescuentoPorcentual,
+            'UPS' => '',
+            'TotalEnvio' => $pedido->TotalEnvio,
+            'codigoUPS' => $request->codigoUPS,
+            'subTotal' => $subTotal,
+            'DescuentoPorPromociones' => $pedido->DescuentoPromociones,
+            'IdActiveCampaign' => 0,
+        ]);
 
-        $pedidosDetalleNn = PedidodetalleNn::where('pedido', $request->pedido)
-            ->select('id', 'cantidad', 'precio', 'descripcion')
-            ->get();
+        //Busco los detalles
+        $SQL = "INSERT INTO `invoicedetalle`
+                (`qordered`,
+                `qshipped`,
+                `qborder`,
+                `itemNumber`,
+                `Descripcion`,
+                `listPrice`,
+                `netPrice`,
+                `invoice`)
+                SELECT cantidad AS qordered,
+                    cantidad AS qshipped,
+                    cantidad AS qborder,
+                    pedidodetalle.producto AS itemNumber,
+                    producto.nombre AS descripcion,
+                    pedidodetalle.precio AS listPrice,
+                    pedidodetalle.precio AS netPrice,
+                    {$invoiceId} AS invoice
+                FROM pedidodetalle
+                    LEFT JOIN producto ON producto.id=pedidodetalle.producto
+                    LEFT JOIN marcaproducto ON producto.marca=marcaproducto.id
+                WHERE pedido=?
+                UNION
+                SELECT cantidad AS qordered,
+                    cantidad AS qshipped,
+                    cantidad AS qborder,
+                    'NN' AS itemNumber,
+                    descripcion,
+                    precio AS listPrice,
+                    precio AS netPrice,
+                    {$invoiceId} AS invoice
+                FROM pedidodetallenn
+                WHERE pedido=?;";
 
-        $resultadoFinal = $pedidosDetalle->merge($pedidosDetalleNn);
+        DB::select($SQL, [$pedido->id, $pedido->id]);
 
-        $invoiceDetalle = new CreateDetalleTransformer();
-        $invoiceTransformado = $invoiceDetalle->transform($resultadoFinal, $invoice->id);
-        $invoiceDetalle = Invoicedetalle::insert($invoiceTransformado);
-
-        if (!$invoice) {
-            return response()->json(['error' => 'Failed to create Invoice'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
         $pedido->estado = 2;//pagado
-        $pedido->invoice = $invoice->id;
+        $pedido->invoice = $invoiceId;
         $pedido->save();
 
+        //Busco el  invoice
+        $invoice = Invoice::find($invoiceId);
+
         return response()->json($invoice, Response::HTTP_OK);
+
+    }catch(Error $e){
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
     }
 
     public function regenerate(Request $request)
@@ -172,8 +230,7 @@ class InvoiceService
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
 
-        $query = "
-        INSERT INTO invoicedetalle (id, qordered, qshipped, qborder, itemNumber, descripcion, listPrice, netPrice, invoice)
+        $query = "INSERT INTO invoicedetalle (id, qordered, qshipped, qborder, itemNumber, descripcion, listPrice, netPrice, invoice)
         SELECT
             NULL as id,
             pedidodetalle.cantidad as qordered,
