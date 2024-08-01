@@ -172,15 +172,15 @@ class ReportesService
         $fecha_fin = $request->hasta;
 
         $query = DB::table('recibo')
-        ->select(
-            'recibo.id',
-            'cliente.nombre AS cliente',
-            'recibo.fecha',
-            'formadepago.nombre AS formaDePago',
-            'recibo.total'
-        )
-        ->join('formadepago', 'recibo.formaDePago', '=', 'formadepago.id')
-        ->join('cliente', 'recibo.cliente', '=', 'cliente.id');
+            ->select(
+                'recibo.id',
+                'cliente.nombre AS cliente',
+                'recibo.fecha',
+                'formadepago.nombre AS formaDePago',
+                'recibo.total'
+            )
+            ->join('formadepago', 'recibo.formaDePago', '=', 'formadepago.id')
+            ->join('cliente', 'recibo.cliente', '=', 'cliente.id');
 
         if (!empty($fecha_inicio) && !empty($fecha_fin)) {
             $query->whereBetween('recibo.fecha', [$fecha_inicio, $fecha_fin]);
@@ -229,8 +229,8 @@ class ReportesService
 
         $fecha_condicion = '';
 
-        if (!empty($request->desde) && !empty($request->hasta)) {
-            $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->desde}' AND '{$request->hasta}'";
+        if (!empty($request->fecha_desde) && !empty($request->fecha_hasta)) {
+            $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->fecha_desde}' AND '{$request->fecha_hasta}'";
         }
 
 
@@ -491,7 +491,7 @@ class ReportesService
                 'invoice.TotalEnvio'
             )
             ->leftJoin('cliente', 'invoice.cliente', '=', 'cliente.id')
-            ->orderBy('id','desc');
+            ->orderBy('id', 'desc');
 
         if (!empty($request->desde) && !empty($request->hasta)) {
             $query->whereBetween('invoice.fecha', [$fecha_desde, $fecha_hasta]);
@@ -519,6 +519,16 @@ class ReportesService
 
     public function invoicesReport(Request $request)
     {
+
+        // $fecha_desde = $request->desde . ' 00:00:00';
+        // $fecha_hasta = $request->hasta . ' 23:59:59';
+
+        $fecha_condicion = '';
+
+        if (!empty($request->desde) && !empty($request->hasta)) {
+            $fecha_condicion = "AND invoice.fecha BETWEEN '{$request->desde}' AND '{$request->hasta}'";
+        }
+
         try {
             $sql = "SELECT
             invoice.id as id,
@@ -528,7 +538,8 @@ class ReportesService
             invoice.shipTo,
             invoice.total
             FROM invoice
-            INNER JOIN cliente ON invoice.cliente=cliente.id";
+            INNER JOIN cliente ON invoice.cliente=cliente.id
+            WHERE 1=1 {$fecha_condicion}";
 
             $invoices = DB::select($sql);
 
@@ -552,17 +563,17 @@ class ReportesService
             // Calcular totales
             $totalInvoice = array_sum(array_column($invoices, 'total'));
 
-                        // Añadir línea negra de separación
-                        $currentRow = $highestRow + 1;
-                        $sheet->getStyle('A' . $currentRow . ':' . $sheet->getHighestColumn() . $currentRow)
-                            ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)
-                            ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF000000'));
+            // Añadir línea negra de separación
+            $currentRow = $highestRow + 1;
+            $sheet->getStyle('A' . $currentRow . ':' . $sheet->getHighestColumn() . $currentRow)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)
+                ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF000000'));
 
-                                        // Añadir totales al final de las columnas correspondientes
+            // Añadir totales al final de las columnas correspondientes
             $sheet->setCellValue('A' . ($currentRow), 'TOTALES');
             $sheet->setCellValue('F' . ($currentRow), $totalInvoice);
 
-                         // Poner en negrita las celdas de los totales
+            // Poner en negrita las celdas de los totales
             $sheet->getStyle('A' . ($currentRow))->getFont()->setBold(true);
             $sheet->getStyle('F' . ($currentRow))->getFont()->setBold(true);
 
@@ -585,7 +596,6 @@ class ReportesService
             $writer->save($rutaArchivo);
 
             return response()->download($rutaArchivo, $nombreArchivo)->deleteFileAfterSend(true);
-
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocurrió un error al obtener los invoices'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
