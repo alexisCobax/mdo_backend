@@ -129,5 +129,5 @@ class ProductoController extends Controller
     {
         return $this->service->precioGeneral($request);
     }
-    
+
 }
