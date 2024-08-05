@@ -54,8 +54,7 @@ class ProductosFilters
         $query->grupo($grupo);
         $query->buscador($buscador);
         $query->NuevosProductos($estado);
-
-        //$query->where('stock', '>', 0);
+        $query->whereNull('borrado');
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
