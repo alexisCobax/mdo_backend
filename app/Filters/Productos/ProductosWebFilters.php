@@ -86,6 +86,7 @@ class ProductosWebFilters
             )
             ->where('producto.stock', '>', 0)
             ->where('producto.suspendido', '=', 0)
+            ->whereNull('borrado')
             ->orderBy('marcaproducto.nombre', 'asc')
             ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
             ->orderBy('producto.id', 'asc');
