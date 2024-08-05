@@ -602,6 +602,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     Route::post('/producto', [ProductoController::class, 'create']);
     Route::put('/producto/{id}', [ProductoController::class, 'update']);
     Route::put('/producto/precios/general', [ProductoController::class, 'precioGeneral']);
+    Route::delete('/producto/{id}', [ProductoController::class, 'delete']);
     // Route::post('/producto/related', [ProductoController::class, 'related']);
 
     /* Productogenero Routes **/
