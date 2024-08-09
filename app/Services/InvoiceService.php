@@ -96,6 +96,7 @@ class InvoiceService
 
         //Genero el invoice
         $invoiceId = DB::table('invoice')->insertGetId([
+            'fecha' => date('Y-m-d H:i:s'),
             'cliente' => $pedido->cliente,
             'total' => $pedido->total,
             'formaDePago' => $pedido->formaDePago,
