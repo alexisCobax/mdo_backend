@@ -69,7 +69,7 @@ class CotizacionService
 
         $cotizacion->fecha = date('Y-m-d');
         $cotizacion->cliente = $request->cliente;
-        $cotizacion->estado = 1;
+        $cotizacion->estado = 0; //antes estaba estado 1
         $cotizacion->save();
 
         if (!$cotizacion) {
@@ -142,7 +142,9 @@ class CotizacionService
         $existingProductIds = [];
 
         foreach ($request->productos as $p) {
-            $producto = Producto::find($p['idProducto']);
+
+            $producto = Producto::where('id',$p['idProducto'])->first();
+
             $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
             $total += $precio * $p['cantidad'];
 
