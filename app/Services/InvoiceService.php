@@ -72,59 +72,76 @@ class InvoiceService
 
     public function create(Request $request)
     {
-        try{
+        try {
 
-        $cantidad = 0;
+            $cantidad = 0;
 
-        //Busco el pedido
-        $pedido = Pedido::where('id',$request->pedido)->first();
+            //Busco el pedido
+            $pedido = Pedido::where('id', $request->pedido)->first();
 
-        //Saco la cantidad detalle
-        $cantidad = Pedidodetalle::where('pedido', $request->pedido)
-        ->sum('cantidad');
+            $SQL = "
+                SELECT SUM(total) as total
+                FROM (
+                    SELECT IFNULL(SUM(precio * cantidad), 0) AS total
+                    FROM pedidodetalle
+                    WHERE pedido = ?
+                    UNION ALL
+                    SELECT IFNULL(SUM(precio * cantidad), 0) AS total
+                    FROM pedidodetallenn
+                    WHERE pedido = ?
+                ) AS combined_totals
+            ";
 
-        //Saco la cantidad detalleNN
-        $cantidad += Pedidodetallenn::where('pedido', $request->pedido)
-        ->sum('cantidad');
+            $result = DB::select($SQL, [$pedido->id, $pedido->id]);
 
-        //Busco el cliente
-        $cliente = Cliente::where('id',$pedido->cliente)->first();
+            $subTotal = $result[0]->total;
 
-        //Calculo
-        $subTotal = $pedido->total - $pedido->DescuentoNeto;
-        $vendedorNombre = $pedido->vendedor ? optional($pedido->vendedores)->nombre : '';
+            //Saco la cantidad detalle
+            $cantidad = Pedidodetalle::where('pedido', $request->pedido)
+                ->sum('cantidad');
 
-        //Genero el invoice
-        $invoiceId = DB::table('invoice')->insertGetId([
-            'fecha' => date('Y-m-d H:i:s'),
-            'cliente' => $pedido->cliente,
-            'total' => $pedido->total,
-            'formaDePago' => $pedido->formaDePago,
-            'estado' => 1,
-            'observaciones' => $pedido->observaciones,
-            'anulada' => 0,
-            'billTo' => $cliente->direccionBill,
-            'shipTo' => $cliente->nombreEnvio."\n".$cliente->direccionShape."\n".$cliente->ciudadEnvio."\n".$cliente->regionEnvio."\n".$cliente->paisShape."\n".$cliente->cpShape, // Envío | Cliente
-            'shipVia' => '',
-            'FOB' => '',
-            'Terms' => '',
-            'fechaOrden' => $pedido->fecha,
-            'salesPerson' => $vendedorNombre,
-            'orden' => $pedido->id,
-            'peso' => 0,
-            'cantidad' => $cantidad,
-            'DescuentoNeto' => $pedido->DescuentoNeto,
-            'DescuentoPorcentual' => $pedido->DescuentoPorcentual,
-            'UPS' => '',
-            'TotalEnvio' => $pedido->TotalEnvio,
-            'codigoUPS' => $request->codigoUPS,
-            'subTotal' => $subTotal,
-            'DescuentoPorPromociones' => $pedido->DescuentoPromociones,
-            'IdActiveCampaign' => 0,
-        ]);
+            //Saco la cantidad detalleNN
+            $cantidad += Pedidodetallenn::where('pedido', $request->pedido)
+                ->sum('cantidad');
 
-        //Busco los detalles
-        $SQL = "INSERT INTO `invoicedetalle`
+            //Busco el cliente
+            $cliente = Cliente::where('id', $pedido->cliente)->first();
+
+            //Calculo
+            //$subTotal = $pedido->total - $pedido->envio + $pedido->DescuentoNeto + $pedido->DescuentoPromociones;
+            $vendedorNombre = $pedido->vendedor ? optional($pedido->vendedores)->nombre : '';
+
+            //Genero el invoice
+            $invoiceId = DB::table('invoice')->insertGetId([
+                'fecha' => date('Y-m-d H:i:s'),
+                'cliente' => $pedido->cliente,
+                'total' => $pedido->total,
+                'formaDePago' => $pedido->formaDePago,
+                'estado' => 1,
+                'observaciones' => $pedido->observaciones,
+                'anulada' => 0,
+                'billTo' => $cliente->direccionBill,
+                'shipTo' => $cliente->nombreEnvio . "\n" . $cliente->direccionShape . "\n" . $cliente->ciudadEnvio . "\n" . $cliente->regionEnvio . "\n" . $cliente->paisShape . "\n" . $cliente->cpShape, // Envío | Cliente
+                'shipVia' => '',
+                'FOB' => '',
+                'Terms' => '',
+                'fechaOrden' => $pedido->fecha,
+                'salesPerson' => $vendedorNombre,
+                'orden' => $pedido->id,
+                'peso' => 0,
+                'cantidad' => $cantidad,
+                'DescuentoNeto' => $pedido->DescuentoNeto,
+                'DescuentoPorcentual' => $pedido->DescuentoPorcentual,
+                'UPS' => '',
+                'TotalEnvio' => $pedido->TotalEnvio,
+                'codigoUPS' => $request->codigoUPS,
+                'subTotal' => $subTotal,
+                'DescuentoPorPromociones' => $pedido->DescuentoPromociones,
+                'IdActiveCampaign' => 0,
+            ]);
+
+            //Busco los detalles
+            $SQL = "INSERT INTO `invoicedetalle`
                 (`qordered`,
                 `qshipped`,
                 `qborder`,
@@ -157,21 +174,21 @@ class InvoiceService
                 FROM pedidodetallenn
                 WHERE pedido=?;";
 
-        DB::select($SQL, [$pedido->id, $pedido->id]);
+            DB::select($SQL, [$pedido->id, $pedido->id]);
 
-        $pedido->estado = 2;//pagado
-        $pedido->invoice = $invoiceId;
-        $pedido->save();
+            $pedido->estado = 2; //pagado
+            $pedido->invoice = $invoiceId;
+            $pedido->save();
 
-        //Busco el  invoice
-        $invoice = Invoice::find($invoiceId);
 
-        return response()->json($invoice, Response::HTTP_OK);
 
-    }catch(Error $e){
+            //Busco el  invoice
+            $invoice = Invoice::find($invoiceId);
+
+            return response()->json($invoice, Response::HTTP_OK);
+        } catch (Error $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-    }
-
+        }
     }
 
     public function regenerate(Request $request)
@@ -185,7 +202,7 @@ class InvoiceService
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
 
-        // Borro invoice e invoiceDetalle
+        // Borro invoiceDetalle
         $pedido = Pedido::where('id', $request->id)->first();
 
         try {
@@ -198,6 +215,22 @@ class InvoiceService
                 }
             }
 
+            $SQL = "
+                SELECT SUM(total) as total
+                FROM (
+                    SELECT IFNULL(SUM(precio * cantidad), 0) AS total
+                    FROM pedidodetalle
+                    WHERE pedido = ?
+                    UNION ALL
+                    SELECT IFNULL(SUM(precio * cantidad), 0) AS total
+                    FROM pedidodetallenn
+                    WHERE pedido = ?
+                ) AS combined_totals
+            ";
+
+            $result = DB::select($SQL, [$pedido->id, $pedido->id]);
+
+            $invoice->subTotal = $result[0]->total;
             $invoice->save();
 
             Invoicedetalle::where('invoice', $pedido->invoice)->delete();
@@ -216,11 +249,11 @@ class InvoiceService
 
 
 
-            if($pedidoDetalleCantidad==''){
-                $cantidad = 0;
-            }else{
-                $cantidad = $pedidoDetalleCantidad->suma_cantidad;
-            }
+        if ($pedidoDetalleCantidad == '') {
+            $cantidad = 0;
+        } else {
+            $cantidad = $pedidoDetalleCantidad->suma_cantidad;
+        }
 
         $invoiceData = new CreateTransformer();
         $invoiceData = $invoiceData->transform($pedido, $cantidad, $request);

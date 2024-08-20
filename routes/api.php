@@ -100,6 +100,7 @@ use App\Http\Controllers\MovimientoproductoController;
 use App\Http\Controllers\OrderjetdevolucionController;
 use App\Http\Controllers\PlataformaproductoController;
 use App\Http\Controllers\EmpresatransportadoraController;
+use App\Http\Controllers\GoHighLevelController;
 use App\Http\Controllers\NotificacionesCotizacionController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
 use App\Http\Controllers\PedidodescuentospromocionController;
@@ -913,6 +914,8 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
     Route::get('/reportes/marcas/list', [ReportesController::class, 'topMarcasList']);
     Route::get('/reportes/recibos/report', [ReportesController::class, 'recibosReport']);
     Route::get('/reportes/recibos/list', [ReportesController::class, 'recibosList']);
+
+    Route::get('/test/ghl', [GoHighLevelController::class, 'getRefreshToken']);
     // Route::get('/test/email',function(){
 
     //     Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
