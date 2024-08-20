@@ -25,7 +25,7 @@ class CreateTransformer extends TransformerAbstract
             'codigoSeguimiento' => $request->codigoSeguimiento,
             'idTransportadora' => $request->idTransportadora,
             'tipoDeEnvio' => $request->tipoDeEnvio,
-            'nombreEnvio' => 'asdasdsad',
+            'nombreEnvio' => '---',
             'paisEnvio' => $request->envioPais,
             'regionEnvio' => $request->envioRegion,
             'ciudadEnvio' => $request->envioCiudad,

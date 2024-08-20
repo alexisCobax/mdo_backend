@@ -83,7 +83,7 @@
                         <table>
                             <tr>
                                 <td>
-                                    <strong>Factura N°:</strong>
+                                    <strong>Invoice N°:</strong>
                                 </td>
                                 <td>
                                     {{$invoice['id']}}
@@ -121,7 +121,7 @@
                     <td class="td-right-table">
                         <table class="right-table" style="border-collapse: collapse;">
                             <tr>
-                                <td style="border: 1px solid black;"> 
+                                <td style="border: 1px solid black;">
                                     <strong>Direccion de envio:</strong>
                                 </td>
                             </tr>
@@ -193,7 +193,7 @@
                             </tr>
                         </tfoot>
                     </table>
-                
+
                 </div>
                 <!-- /.col -->
 
@@ -267,11 +267,11 @@
 
 
 
-    <script type="text/php"> 
-    
-        if (isset($pdf)) { 
+    <script type="text/php">
+
+        if (isset($pdf)) {
          //Shows number center-bottom of A4 page with $x,$y values
-            $x = 250;  //X-axis i.e. vertical position 
+            $x = 250;  //X-axis i.e. vertical position
             $y = 820; //Y-axis horizontal position
             $text = "Page {PAGE_NUM} of {PAGE_COUNT}";  //format of display message
             $font =  $fontMetrics->get_font("helvetica", "bold");

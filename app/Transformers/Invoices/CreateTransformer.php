@@ -3,13 +3,31 @@
 namespace App\Transformers\Invoices;
 
 use App\Models\Encargadodeventa;
+use Illuminate\Support\Facades\DB;
 use League\Fractal\TransformerAbstract;
 
 class CreateTransformer extends TransformerAbstract
 {
     public function transform($pedido, $cantidad, $request)
     {
-        $subTotal = $pedido->total - $pedido->DescuentoNeto;
+
+        $SQL = "
+        SELECT SUM(total) as total
+        FROM (
+            SELECT IFNULL(SUM(precio * cantidad), 0) AS total
+            FROM pedidodetalle
+            WHERE pedido = ?
+            UNION ALL
+            SELECT IFNULL(SUM(precio * cantidad), 0) AS total
+            FROM pedidodetallenn
+            WHERE pedido = ?
+        ) AS combined_totals
+    ";
+
+        $result = DB::select($SQL, [$pedido->id, $pedido->id]);
+
+        $subTotal = $result[0]->total;
+        // $subTotal = $pedido->total - $pedido->DescuentoNeto;
         $vendedorNombre = $pedido->vendedor ? optional($pedido->vendedores)->nombre : '';
 
         return [
