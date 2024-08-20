@@ -234,7 +234,7 @@
                             <strong>Subtotal</strong>
                         </td>
                         <td style="text-align:right;">
-                            <strong>U$S {{$invoice['preciosTotales']['subtotal']}}</strong>
+                            <strong>U$S {{$invoice['preciosTotales']['subtotalConDescuento']}}</strong>
                         </td>
                     </tr>
                     <tr>
