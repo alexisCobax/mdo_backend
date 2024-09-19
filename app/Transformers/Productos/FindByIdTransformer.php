@@ -2,6 +2,7 @@
 
 namespace App\Transformers\Productos;
 
+use App\Models\Fotoproducto;
 use App\Models\Producto;
 use League\Fractal\TransformerAbstract;
 
@@ -16,12 +17,28 @@ class FindByIdTransformer extends TransformerAbstract
 
         if ($fotos) {
             foreach ($producto->fotos as $foto) {
+
+                $imagen = '';
+
+                if($foto->url==''){
+                    $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
+                }else{
+                    $imagen = $foto->url;
+                }
                 $imagenes[] = [
                     'id' => $foto->id,
-                    'url' => env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg',
+                    'url' => $imagen,
                     'orden' => $foto->orden,
                 ];
             }
+        }
+
+        $imagen = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
+
+        if($imagen->url==''){
+            $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
+        }else{
+            $urlImagen = $imagen->url;
         }
 
         return [
@@ -57,7 +74,7 @@ class FindByIdTransformer extends TransformerAbstract
             'posicion' => $producto->posicion,
             'stockRoto' => $producto->stockRoto,
             'genero' => $producto->genero,
-            'imagenPrincipal' => $producto->imagenPrincipal . '.jpg',
+            'imagenPrincipal' => $urlImagen,
             //'imagenesSecundarias' => optional($producto->fotos)->orden . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
             'UPCreal' => $producto->UPCreal,
             'mdoNet' => $producto->mdoNet,

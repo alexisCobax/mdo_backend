@@ -26,6 +26,8 @@ class FetchProducts extends Command
         $totalResults = 0;
         $totalFetched = 0;
 
+        DB::table('stockExterno')->truncate();
+
         $token = $this->getToken();
 
         $response = Http::withToken($token)->get($apiUrl, [
@@ -70,7 +72,6 @@ class FetchProducts extends Command
             $this->info('Todos los productos han sido guardados.');
 
             $this->processStock();
-
         } else {
             $this->error('Error al obtener datos de la API.');
         }
@@ -96,7 +97,8 @@ class FetchProducts extends Command
                     'FrameColor' => $product['FrameColor'],
                     'LensColor' => $product['LensColor'],
                     'Country' => $product['Country'],
-                    'AvailableQuantity' => $product['AvailableQuantity'],
+                    'AvailableQuantity' => preg_replace('/\D/', '', $product['AvailableQuantity']),
+                    'Images' => json_encode($product['Images'])
                 ]
             );
         } catch (\Exception $e) {
@@ -112,6 +114,16 @@ class FetchProducts extends Command
 
     function processStock()
     {
+        /**La funcion hace los siguientes pasos:
+         *
+         * 1 limpia todo el stock de los productos del proveedor
+         * 2 inserta todas las marcas que no existen en la DB
+         * 3 inserta todos los productos que no existen en la DB
+         * 4 inserta las imagenes de cada producto
+         * 5 actualiza el stock de cada producto
+         *
+         **/
+
 
         try {
             // Manejo automático de transacción (incluye commit o rollback)
@@ -120,27 +132,81 @@ class FetchProducts extends Command
                 // Limpiar el stock para el proveedor "nywd"
                 DB::update('UPDATE producto SET stock = 0 WHERE proveedorExterno = ?', ['nywd']);
 
-                // Actualizar precio y stock
-                DB::update('
-                    UPDATE producto
-                    LEFT JOIN stockExterno ON stockExterno.sku = producto.codigo
-                    SET producto.precio = stockExterno.price,
-                        producto.stock = stockExterno.availableQuantity
-                    WHERE stockExterno.sku IS NOT NULL
+                $marcas = DB::select('SELECT DISTINCT t.Brand
+                        FROM stockExterno t
+                        LEFT JOIN producto p ON t.Upc = p.codigo
+                        LEFT JOIN marcaproducto mp ON t.Brand=mp.nombre
+                        WHERE p.codigo IS NULL AND mp.id IS NULL');
+
+                foreach ($marcas as $marca) {
+
+                    DB::table('marcaproducto')->insert([
+                        'nombre' => $marca->Brand
+                    ]);
+                }
+
+                $productos = DB::select('SELECT stockExterno.Upc,
+                            stockExterno.Name,
+                            stockExterno.Brand,
+                            stockExterno.Images,
+                            marcaproducto.id AS idMarca
+                    FROM stockExterno
+                        LEFT JOIN producto ON stockExterno.Upc = producto.codigo
+                        LEFT JOIN marcaproducto ON stockExterno.Brand=marcaproducto.nombre
+                    WHERE producto.codigo IS NULL
                 ');
 
-                // Insertar productos nuevos que no existen en la tabla "producto"
-                DB::insert('
-                    INSERT INTO producto (codigo, nombre, marca, imagen)
-                    SELECT t.sku, t.nombre, t.MarcasVehiculo, t.imagen
-                    FROM stockExterno t
-                    LEFT JOIN producto p ON t.sku = p.codigo
-                    WHERE p.codigo IS NULL
-                ');
+                // Recorrer los resultados e insertar en la tabla producto
+                foreach ($productos as $producto) {
+
+                    // Si ya existe, obtenemos el id
+                    $marcaId = $producto->idMarca;
+
+
+                    DB::insert('INSERT INTO producto (codigo, nombre, marca, color, tamano, proveedorExterno) VALUES (?, ?, ?, ?)', [
+                        $producto->Upc,
+                        $producto->Name,
+                        $marcaId,
+                        $producto->Color,
+                        $producto->Size,
+                        "nywd"
+                    ]);
+
+                    $idProducto = DB::getPdo()->lastInsertId();
+
+                    // Decodificar el campo Images (JSON)
+                    $imagenes = json_decode($producto->Images);
+
+                    $imagenPrincipal = 0;
+                    // Insertar cada imagen en la tabla 'fotoproducto'
+                    foreach ($imagenes as $imagen) {
+                        DB::insert('INSERT INTO fotoproducto (idProducto, orden, url) VALUES (?, ?, ?)', [
+                            $idProducto,
+                            $imagen->Number,
+                            $imagen->LargeImageUrl
+                        ]);
+
+                        if ($imagenPrincipal == 0) {
+                            $ImagenPrincipal = DB::getPdo()->lastInsertId();
+                        }
+                    }
+
+                    // Aca se guarda la imagen principal en la tabla producto
+                    DB::table('producto')
+                        ->where('id', $idProducto)
+                        ->update(['imagenPrincipal' => $ImagenPrincipal]);
+                }
+
+                DB::update('UPDATE producto
+                LEFT JOIN stockExterno ON stockExterno.Upc = producto.codigo
+                SET producto.stock = stockExterno.availableQuantity
+                WHERE stockExterno.Upc IS NOT NULL
+            ');
             });
 
             return response()->json(['success' => true, 'message' => 'Precios y stock actualizados correctamente.'], 200);
         } catch (Throwable $e) {
+
             // Laravel ya ha hecho rollback automáticamente al entrar aquí
 
             // Loguear el error con detalles
