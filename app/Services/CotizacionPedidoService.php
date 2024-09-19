@@ -11,6 +11,7 @@ use App\Transformers\CotizacionPedido\CreateCotizacionTransformer;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class CotizacionPedidoService
 {
@@ -33,6 +34,7 @@ class CotizacionPedidoService
         try {
 
             $pedido = Pedido::create($cotizacionData);
+            Log::info('Cotizacion a pedido. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
         } catch (Error $e) {
 
             return response()->json('error', $e->getMessage());

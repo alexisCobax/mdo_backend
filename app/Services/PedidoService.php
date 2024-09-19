@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PedidoService
 {
@@ -106,6 +107,7 @@ class PedidoService
 
             try {
                 Pedidodescuentospromocion::insert($descuentosPromo->toArray());
+                Log::info('pedido. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
             } catch (Error $e) {
                 return response()->json($e->getMessage());
             }
@@ -141,7 +143,7 @@ class PedidoService
         if (!$pedido) {
             return response()->json(['error' => 'Failed to create Pedido'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
+        Log::info('Nuevo pedido. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
         return response()->json($pedido, Response::HTTP_OK);
     }
 
@@ -183,25 +185,6 @@ class PedidoService
 
         $pedido->save();
 
-        // if ($request->detalle) {
-        //     $detalle = collect($request->detalle)->map(function ($dt) use ($pedido) {
-        //         return [
-        //             'pedido' => $pedido->id,
-        //             'producto' => $dt['producto'],
-        //             'precio' => $dt['precio'],
-        //             'cantidad' => $dt['cantidad'],
-        //             'costo' => '0',
-        //             'envio' => '0',
-        //             'tax' => '0',
-        //             'taxEnvio' => '0',
-        //         ];
-        //     });
-
-        //     Pedidodetalle::where('pedido', $pedido->id)->delete();
-        //     Pedidodetalle::insert($detalle->toArray());
-        // }
-
-
 
             $detalleNN = collect($request->detalleNN)->map(function ($dtNN) use ($pedido) {
                 return [
@@ -232,6 +215,7 @@ class PedidoService
 
             try {
                 Pedidodescuentospromocion::insert($descuentosPromo->toArray());
+                Log::info('Update pedido. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
             } catch (Error $e) {
                 return response()->json($e->getMessage());
             }
