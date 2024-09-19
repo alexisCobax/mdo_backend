@@ -74,7 +74,7 @@ class FindByIdTransformer extends TransformerAbstract
             'UPS' => $invoice->UPS,
             'TotalEnvio' => $invoice->TotalEnvio,
             'codigoUPS' => $invoice->codigoUPS,
-            'subTotal' => $invoice->subTotal,
+            'subTotal' => round($invoice->subTotal, 2),
             'DescuentoPorPromociones' => $invoice->DescuentoPorPromociones,
             'IdActiveCampaign' => $invoice->IdActiveCampaign,
             'detalle' => $detalle,
@@ -83,10 +83,10 @@ class FindByIdTransformer extends TransformerAbstract
                 'totalDescuentoPorcentual' => $invoice->subTotal * $invoice->DescuentoPorcentual / 100,
                 'descuentoPorcentual' => $invoice->DescuentoPorcentual,
                 'subtotalConDescuento' => $invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones,
-                'subtotal' => round($invoice->subTotal, 2),
+                'subtotal' => $invoice->subTotal,
                 'totalEnvio' => $invoice->TotalEnvio,
                 'descuentoPorPromociones' => $invoice->DescuentoPorPromociones,
-                'total'  => round($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio, 2),
+                'total'  => round($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio, 2)
                 //'total' => $invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio,
             ],
 
