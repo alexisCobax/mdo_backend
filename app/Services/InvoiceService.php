@@ -215,22 +215,6 @@ class InvoiceService
                 }
             }
 
-            $SQL = "
-                SELECT SUM(total) as total
-                FROM (
-                    SELECT IFNULL(SUM(precio * cantidad), 0) AS total
-                    FROM pedidodetalle
-                    WHERE pedido = ?
-                    UNION ALL
-                    SELECT IFNULL(SUM(precio * cantidad), 0) AS total
-                    FROM pedidodetallenn
-                    WHERE pedido = ?
-                ) AS combined_totals
-            ";
-
-            $result = DB::select($SQL, [$pedido->id, $pedido->id]);
-
-            $invoice->subTotal = $result[0]->total;
             $invoice->save();
 
             Invoicedetalle::where('invoice', $pedido->invoice)->delete();

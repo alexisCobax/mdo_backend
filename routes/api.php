@@ -102,6 +102,7 @@ use App\Http\Controllers\PlataformaproductoController;
 use App\Http\Controllers\EmpresatransportadoraController;
 use App\Http\Controllers\GoHighLevelController;
 use App\Http\Controllers\NotificacionesCotizacionController;
+use App\Http\Controllers\NywdController;
 use App\Http\Controllers\OrderjetdevoluciondetalleController;
 use App\Http\Controllers\PedidodescuentospromocionController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
@@ -915,12 +916,28 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
     Route::get('/reportes/recibos/report', [ReportesController::class, 'recibosReport']);
     Route::get('/reportes/recibos/list', [ReportesController::class, 'recibosList']);
 
-    Route::get('/test/ghl', [GoHighLevelController::class, 'getRefreshToken']);
+
     // Route::get('/test/email',function(){
 
     //     Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
     //     return 'Correo de prueba enviado';
 
     // });
+
+    Route::get('/test/ghl', [GoHighLevelController::class, 'getRefreshToken']);
+
+    Route::get('/test/nywd', [NywdController::class, 'getRefreshToken']);
+
+    Route::post('/test/nywd/login', [NywdController::class, 'login']);
+
+    Route::post('/test/nywd/refresh', [NywdController::class, 'refreshToken']);
+
+    Route::post('/test/nywd/products', [NywdController::class, 'getProducts']);
+
+    Route::post('/test/nywd/brands', [NywdController::class, 'getProductBrands']);
+
+    Route::post('/test/nywd/categories', [NywdController::class, 'getProductCategories']);
+
+    Route::post('/test/nywd/product/sku', [NywdController::class, 'getProductBySku']);
 
 

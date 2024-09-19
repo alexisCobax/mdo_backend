@@ -23,6 +23,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Reader;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Log;
 
 class CotizacionService
 {
@@ -122,7 +123,7 @@ class CotizacionService
         $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
 
         Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip, $rutaArchivoFijo));
-
+        Log::info('Cotizacion. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
         return response()->json($cotizacion, Response::HTTP_OK);
     }
 
@@ -171,7 +172,7 @@ class CotizacionService
 
         $cotizacion->total = $total;
         $cotizacion->save();
-
+        Log::info('Cotizacion update '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
         return response()->json($cotizacion, Response::HTTP_OK);
     }
 
