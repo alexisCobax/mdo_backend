@@ -399,7 +399,7 @@ class CotizacionService
 
         $sheet->MergeCells('AH' . ($i + 4) . ':AL' . ($i + 4) . '');
         $sheet->getStyle('AH' . ($i + 4))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 4), 'U$S ' . ($invoice->subTotal * $invoice->DescuentoPorcentual / 100));
+        $sheet->setCellValue('AH' . ($i + 4), 'U$S ' . (round($invoice->subTotal * $invoice->DescuentoPorcentual / 100,2)));
 
         /* Descuento Neto **/
         $sheet->mergeCells('T' . ($i + 5) . ':AG' . ($i + 5) . '');
@@ -407,7 +407,7 @@ class CotizacionService
 
         $sheet->mergeCells('AH' . ($i + 5) . ':AL' . ($i + 5) . '');
         $sheet->getStyle('AH' . ($i + 5))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 5), 'U$S ' . $invoice->DescuentoNeto);
+        $sheet->setCellValue('AH' . ($i + 5), 'U$S ' . round($invoice->DescuentoNeto,2));
 
         /* Subtotal **/
         $sheet->mergeCells('X' . ($i + 6) . ':AG' . ($i + 6) . '');
@@ -417,7 +417,7 @@ class CotizacionService
         $sheet->mergeCells('AH' . ($i + 6) . ':AL' . ($i + 6) . '');
         $sheet->getStyle('AH' . ($i + 6))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->getStyle('AH' . ($i + 6))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 6), 'U$S ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones));
+        $sheet->setCellValue('AH' . ($i + 6), 'U$S ' . (round($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones,2)));
 
         /* Envio y manejo **/
         $sheet->mergeCells('T' . ($i + 7) . ':AG' . ($i + 7) . '');
@@ -435,7 +435,7 @@ class CotizacionService
         $sheet->mergeCells('AH' . ($i + 8) . ':AL' . ($i + 8) . '');
         $sheet->getStyle('AH' . ($i + 8))->applyFromArray(['font' => ['bold' => true]]);
         $sheet->getStyle('AH' . ($i + 8))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('AH' . ($i + 8), 'U$S ' . ($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio));
+        $sheet->setCellValue('AH' . ($i + 8), 'U$S ' . (round($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio,2)));
 
         $rangoCeldas = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow());
 
