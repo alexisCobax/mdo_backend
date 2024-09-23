@@ -15,23 +15,23 @@ class FindByIdTransformer extends TransformerAbstract
         $fotos = '';
         $imagenes = [];
 
-        if ($fotos) {
-            foreach ($producto->fotos as $foto) {
+        // if ($fotos) {
+        //     foreach ($producto->fotos as $foto) {
 
-                $imagen = '';
+        //         $imagen = '';
 
-                if($foto->url==''){
-                    $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
-                }else{
-                    $imagen = $foto->url;
-                }
-                $imagenes[] = [
-                    'id' => $foto->id,
-                    'url' => $imagen,
-                    'orden' => $foto->orden,
-                ];
-            }
-        }
+        //         if($foto->url==''){
+        //             $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
+        //         }else{
+        //             $imagen = $foto->url;
+        //         }
+        //         $imagenes[] = [
+        //             'id' => $foto->id,
+        //             'url' => $imagen,
+        //             'orden' => $foto->orden,
+        //         ];
+        //     }
+        // }
 
         $imagen = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
 
