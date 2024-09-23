@@ -74,30 +74,32 @@ class ProductoService
 
     public function findByCodigo(Request $request)
     {
-        try {
 
-            $data = collect([Producto::where('codigo', $request->codigo)->first()]);
+        return [];
+        // try {
 
-            if ($data[0]) {
+        //     $data = collect([Producto::where('codigo', $request->codigo)->first()]);
 
-                $transformer = new FindByIdTransformer();
+        //     if ($data[0]) {
 
-                $productosTransformados = $data->map(function ($producto) use ($transformer) {
-                    return $transformer->transform($producto);
-                });
+        //         $transformer = new FindByIdTransformer();
 
-                $response = [
-                    'status' => Response::HTTP_OK,
-                    'message' => $productosTransformados,
-                ];
+        //         $productosTransformados = $data->map(function ($producto) use ($transformer) {
+        //             return $transformer->transform($producto);
+        //         });
 
-                return response()->json(['data' => $response, 'status' => 200], Response::HTTP_OK);
-            } else {
-                return response()->json(['data' => null, 'status' => 201, Response::HTTP_OK]);
-            }
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        //         $response = [
+        //             'status' => Response::HTTP_OK,
+        //             'message' => $productosTransformados,
+        //         ];
+
+        //         return response()->json(['data' => $response, 'status' => 200], Response::HTTP_OK);
+        //     } else {
+        //         return response()->json(['data' => null, 'status' => 201, Response::HTTP_OK]);
+        //     }
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        // }
     }
 
     public function create(Request $request)
