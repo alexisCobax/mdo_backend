@@ -20,12 +20,12 @@ class FindByIdTransformer extends TransformerAbstract
 
                 $imagen = '';
 
-                if($foto->url==''){
+                // if($foto->url==''){
                     $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
-                }else{
-                    //$imagen = $foto->url;
-                    $imagen = '';
-                }
+                // }else{
+                //     //$imagen = $foto->url;
+                //     $imagen = '';
+                // }
                 $imagenes[] = [
                     'id' => $foto->id,
                     'url' => $imagen,
