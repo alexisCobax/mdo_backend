@@ -23,7 +23,8 @@ class FindByIdTransformer extends TransformerAbstract
                 if($foto->url==''){
                     $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
                 }else{
-                    $imagen = $foto->url;
+                    //$imagen = $foto->url;
+                    $imagen = '';
                 }
                 $imagenes[] = [
                     'id' => $foto->id,
