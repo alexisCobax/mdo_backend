@@ -11,8 +11,8 @@ class FindByIdTransformer extends TransformerAbstract
     public function transform(Producto $producto)
     {
 
-        $fotos = optional($producto->fotos);
-
+        //$fotos = optional($producto->fotos);
+        $fotos = '';
         $imagenes = [];
 
         if ($fotos) {
