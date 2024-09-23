@@ -12,7 +12,7 @@ class FindByIdTransformer extends TransformerAbstract
     {
 
         //$fotos = optional($producto->fotos);
-        $fotos = '';
+        $foto = '';
         $imagenes = [];
 
         if ($fotos) {
@@ -20,12 +20,11 @@ class FindByIdTransformer extends TransformerAbstract
 
                 $imagen = '';
 
-                // if($foto->url==''){
+                if($foto->url==''){
                     $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
-                // }else{
-                //     //$imagen = $foto->url;
-                //     $imagen = '';
-                // }
+                }else{
+                    $imagen = $foto->url;
+                }
                 $imagenes[] = [
                     'id' => $foto->id,
                     'url' => $imagen,

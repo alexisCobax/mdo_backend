@@ -23,6 +23,7 @@ class Fotoproducto extends Model
     protected $fillable = [
         'idProducto',
         'orden',
+        'url'
     ];
 
     public function producto()
