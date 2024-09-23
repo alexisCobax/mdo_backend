@@ -12,7 +12,7 @@ class FindByIdTransformer extends TransformerAbstract
     {
 
         //$fotos = optional($producto->fotos);
-        $foto = '';
+        $fotos = '';
         $imagenes = [];
 
         if ($fotos) {
