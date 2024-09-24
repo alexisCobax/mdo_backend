@@ -162,12 +162,18 @@ class FetchProducts extends Command
                     // Si ya existe, obtenemos el id
                     $marcaId = $producto->idMarca;
 
+                    if (isset($product->Color)) {
+                        $color = $product->Color;
+                    } else {
+                        $color = null;
+                    }
+
 
                     DB::insert('INSERT INTO producto (codigo, nombre, marca, color, tamano, proveedorExterno) VALUES (?, ?, ?, ?)', [
                         $producto->Upc,
                         $producto->Name,
                         $marcaId,
-                        $producto->Color,
+                        $color ,
                         $producto->Size,
                         "nywd"
                     ]);
