@@ -11,35 +11,40 @@ class FindByIdTransformer extends TransformerAbstract
     public function transform(Producto $producto)
     {
 
-        //$fotos = optional($producto->fotos);
-        $fotos = '';
+        $fotos = optional($producto->fotos);
+
         $imagenes = [];
 
-        // if ($fotos) {
-        //     foreach ($producto->fotos as $foto) {
+        if ($fotos) {
+            foreach ($producto->fotos as $foto) {
 
-        //         $imagen = '';
+                $imagen = '';
 
-        //         if($foto->url==''){
-        //             $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
-        //         }else{
-        //             $imagen = $foto->url;
-        //         }
-        //         $imagenes[] = [
-        //             'id' => $foto->id,
-        //             'url' => $imagen,
-        //             'orden' => $foto->orden,
-        //         ];
-        //     }
-        // }
-
-        $imagen = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
-
-        if($imagen->url==''){
-            $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
-        }else{
-            $urlImagen = $imagen->url;
+                if($foto->url==''){
+                    $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
+                }else{
+                    $imagen = $foto->url;
+                }
+                $imagenes[] = [
+                    'id' => $foto->id,
+                    'url' => $imagen,
+                    'orden' => $foto->orden,
+                ];
+            }
         }
+
+        if($producto->imagenPrincipa!=0){
+            $imagen = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
+
+            if($imagen->url==NULL){
+                $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
+            }else{
+                $urlImagen = $imagen->url;
+            }
+        }else{
+            $urlImagen = env('URL_IMAGENES_PRODUCTOS').'0.jpg';
+        }
+
 
         return [
             'id' => $producto->id,

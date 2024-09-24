@@ -2,6 +2,8 @@
 
 namespace App\Transformers\Invoices;
 
+use App\Models\Pais;
+use App\Models\Cliente;
 use App\Models\Encargadodeventa;
 use Illuminate\Support\Facades\DB;
 use League\Fractal\TransformerAbstract;
@@ -30,6 +32,10 @@ class CreateTransformer extends TransformerAbstract
         // $subTotal = $pedido->total - $pedido->DescuentoNeto;
         $vendedorNombre = $pedido->vendedor ? optional($pedido->vendedores)->nombre : '';
 
+        $cliente = Cliente::where('id', $pedido->cliente)->first();
+
+        $pais = Pais::where('id', $pedido->paisEnvio)->first();
+
         return [
             'cliente' => $pedido->cliente,
             'total' => $pedido->total,
@@ -37,8 +43,8 @@ class CreateTransformer extends TransformerAbstract
             'estado' => 1,
             'observaciones' => '',
             'anulada' => 0,
-            'billTo' => optional($pedido->cliente)->direccionBill,
-            'shipTo' => optional($pedido->cliente)->nombre,
+            'billTo' => $cliente->direccionBill,
+            'shipTo' => $pedido->nombreEnvio . "\n" . $pedido->domicilioEnvio . "\n" . $pedido->ciudadEnvio . "\n" . $pedido->regionEnvio . "\n" . $pais->nombre . "\n" . 'ZIP: ' .$pedido->cpEnvio, // Envío | Cliente
             'shipVia' => '',
             'FOB' => '',
             'Terms' => '',
