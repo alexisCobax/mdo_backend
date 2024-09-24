@@ -175,7 +175,7 @@ class FetchProducts extends Command
                     }
 
 
-                    DB::insert('INSERT INTO producto (codigo, nombre, marca, color, tamano, proveedorExterno) VALUES (?, ?, ?, ?)', [
+                    DB::insert('INSERT INTO producto (codigo, nombre, marca, color, tamano, proveedorExterno) VALUES (?, ?, ?, ?, ?, ?)', [
                         $producto->Upc,
                         $producto->Name,
                         $marcaId,
