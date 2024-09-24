@@ -168,13 +168,19 @@ class FetchProducts extends Command
                         $color = null;
                     }
 
+                    if (isset($product->Color)) {
+                        $size = $producto->Size;
+                    } else {
+                        $size = null;
+                    }
+
 
                     DB::insert('INSERT INTO producto (codigo, nombre, marca, color, tamano, proveedorExterno) VALUES (?, ?, ?, ?)', [
                         $producto->Upc,
                         $producto->Name,
                         $marcaId,
                         $color ,
-                        $producto->Size,
+                        $size,
                         "nywd"
                     ]);
 
