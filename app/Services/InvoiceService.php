@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Error;
+use App\Models\Pais;
 use App\Models\Pedido;
 use App\Models\Cliente;
 use App\Models\Invoice;
@@ -111,6 +112,8 @@ class InvoiceService
             //$subTotal = $pedido->total - $pedido->envio + $pedido->DescuentoNeto + $pedido->DescuentoPromociones;
             $vendedorNombre = $pedido->vendedor ? optional($pedido->vendedores)->nombre : '';
 
+            $pais = Pais::where('id', $pedido->paisEnvio)->first();
+
             //Genero el invoice
             $invoiceId = DB::table('invoice')->insertGetId([
                 'fecha' => date('Y-m-d H:i:s'),
@@ -121,7 +124,7 @@ class InvoiceService
                 'observaciones' => $pedido->observaciones,
                 'anulada' => 0,
                 'billTo' => $cliente->direccionBill,
-                'shipTo' => $cliente->nombreEnvio . "\n" . $cliente->direccionShape . "\n" . $cliente->ciudadEnvio . "\n" . $cliente->regionEnvio . "\n" . $cliente->paisShape . "\n" . $cliente->cpShape, // Envío | Cliente
+                'shipTo' => $pedido->nombreEnvio . "\n" . $pedido->domicilioEnvio . "\n" . $pedido->ciudadEnvio . "\n" . $pedido->regionEnvio . "\n" . $pais->nombre . "\n" . 'ZIP: ' . $pedido->cpEnvio, // Envío | Cliente
                 'shipVia' => '',
                 'FOB' => '',
                 'Terms' => '',
@@ -153,7 +156,7 @@ class InvoiceService
                 SELECT cantidad AS qordered,
                     cantidad AS qshipped,
                     cantidad AS qborder,
-                    pedidodetalle.producto AS itemNumber,
+                    producto.codigo AS itemNumber,
                     producto.nombre AS descripcion,
                     pedidodetalle.precio AS listPrice,
                     pedidodetalle.precio AS netPrice,
