@@ -3,6 +3,7 @@
 namespace App\Transformers\Productos;
 
 use App\Enums\EstadosProductosEnums;
+use App\Models\Fotoproducto;
 use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract
@@ -11,9 +12,17 @@ class FindAllTransformer extends TransformerAbstract
     {
         $arrayEnum = EstadosProductosEnums::toArray();
 
+        $imagenPrincipal = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
+
+        if(isset($imagenPrincipal->url)){
+            $imagen = $imagenPrincipal->url;
+        }else{
+            $imagen = env('URL_IMAGENES_PRODUCTOS').$producto->imagenPrincipal . '.jpg';
+        }
+
         return [
             'id' => $producto->id,
-            'imagenPrincipal' => $producto->imagenPrincipal . '.jpg',
+            'imagenPrincipal' => $imagen,
             'nombre' => utf8_encode($producto->nombre),
             'codigo' => $producto->codigo,
             'categoria' => $producto->categoria,
