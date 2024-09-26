@@ -113,7 +113,8 @@ class InvoiceService
             $vendedorNombre = $pedido->vendedor ? optional($pedido->vendedores)->nombre : '';
 
             $pais = Pais::where('id', $pedido->paisEnvio)->first();
-
+            $NombrePais = '';
+            if(isset($pais->nombre)){$NombrePais = $pais->nombre;}
             //Genero el invoice
             $invoiceId = DB::table('invoice')->insertGetId([
                 'fecha' => date('Y-m-d H:i:s'),
@@ -124,7 +125,7 @@ class InvoiceService
                 'observaciones' => $pedido->observaciones,
                 'anulada' => 0,
                 'billTo' => $cliente->direccionBill,
-                'shipTo' => $pedido->nombreEnvio . "\n" . $pedido->domicilioEnvio . "\n" . $pedido->ciudadEnvio . "\n" . $pedido->regionEnvio . "\n" . $pais->nombre . "\n" . 'ZIP: ' . $pedido->cpEnvio, // Envío | Cliente
+                'shipTo' => $pedido->nombreEnvio . "\n" . $pedido->domicilioEnvio . "\n" . $pedido->ciudadEnvio . "\n" . $pedido->regionEnvio . "\n" . $NombrePais . "\n" . 'ZIP: ' . $pedido->cpEnvio, // Envío | Cliente
                 'shipVia' => '',
                 'FOB' => '',
                 'Terms' => '',

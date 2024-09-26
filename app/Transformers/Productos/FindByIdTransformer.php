@@ -33,7 +33,7 @@ class FindByIdTransformer extends TransformerAbstract
             }
         }
 
-        if($producto->imagenPrincipa!=0){
+        if($producto->imagenPrincipal!=0){
             $imagen = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
 
             if($imagen->url==NULL){

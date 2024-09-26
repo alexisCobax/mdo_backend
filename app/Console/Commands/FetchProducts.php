@@ -141,14 +141,23 @@ class FetchProducts extends Command
                 foreach ($marcas as $marca) {
 
                     DB::table('marcaproducto')->insert([
-                        'nombre' => $marca->Brand
+                        'nombre' => $marca->Brand,
+                        'MostrarEnWeb' => 1,
+                        'propia' => 0,
+                        'VIP' => 0,
+                        'suspendido' => 0,
+                        'logo' => ''
                     ]);
                 }
 
                 $productos = DB::select('SELECT stockExterno.Upc,
                             stockExterno.Name,
+                            stockExterno.Price,
                             stockExterno.Brand,
                             stockExterno.Images,
+                            stockExterno.Size,
+                            stockExterno.Color,
+                            stockExterno.AvailableQuantity,
                             marcaproducto.id AS idMarca
                     FROM stockExterno
                         LEFT JOIN producto ON stockExterno.Upc = producto.codigo
@@ -162,25 +171,28 @@ class FetchProducts extends Command
                     // Si ya existe, obtenemos el id
                     $marcaId = $producto->idMarca;
 
-                    if (isset($product->Color)) {
-                        $color = $product->Color;
-                    } else {
-                        $color = null;
-                    }
+                    $color = isset($producto->Color) ? $producto->Color : '';
+                    $size = isset($producto->Size) ? $producto->Size : '';
+                    $name = isset($producto->Name) ? $producto->Name : '';
+                    $brand = isset($producto->Brand) ? $producto->Brand : '';
+                    $stock = isset($producto->AvailableQuantity) ? $producto->AvailableQuantity : 0;
+                    $nombre = $brand.' '.$name.' '.$size.' '.$color;
+                    $costo = $producto->Price;
+                    $precio = number_format($producto->Price + ($producto->Price * 0.60),2); //este 60% es a pedido del cliente
 
-                    if (isset($product->Color)) {
-                        $size = $producto->Size;
-                    } else {
-                        $size = null;
-                    }
-
-
-                    DB::insert('INSERT INTO producto (codigo, nombre, marca, color, tamano, proveedorExterno) VALUES (?, ?, ?, ?, ?, ?)', [
+                    $SQL = 'INSERT INTO
+                        producto
+                            (precio, codigo, nombre, marca, stock, color, tamano, costo, proveedorExterno)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                    DB::insert($SQL, [
+                        $precio,
                         $producto->Upc,
-                        $producto->Name,
+                        $nombre,
                         $marcaId,
-                        $color ,
+                        $stock,
+                        $color,
                         $size,
+                        $costo,
                         "nywd"
                     ]);
 
@@ -211,7 +223,9 @@ class FetchProducts extends Command
 
                 DB::update('UPDATE producto
                 LEFT JOIN stockExterno ON stockExterno.Upc = producto.codigo
-                SET producto.stock = stockExterno.availableQuantity
+                LEFT JOIN marcaproducto ON stockExterno.Brand=marcaproducto.nombre
+                SET producto.stock = stockExterno.availableQuantity, producto.proveedorExterno="nywd",
+                producto.borrado=NULL, producto.marca=marcaproducto.id
                 WHERE stockExterno.Upc IS NOT NULL
             ');
             });
