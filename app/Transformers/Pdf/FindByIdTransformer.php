@@ -2,8 +2,9 @@
 
 namespace App\Transformers\Pdf;
 
-use App\Helpers\DateHelper;
 use App\Models\Cliente;
+use App\Helpers\DateHelper;
+use App\Models\Fotoproducto;
 use App\Models\Pedidodetalle;
 use App\Models\Pedidodetallenn;
 use League\Fractal\TransformerAbstract;
@@ -24,11 +25,17 @@ class FindByIdTransformer extends TransformerAbstract
         $subtotal = 0;
 
         foreach ($detalle as $d) {
+
+            $imagenPrincipal = Fotoproducto::where('id',$d->productos->imagenPrincipal)->first();
+
+            if(isset($imagenPrincipal->url)){
+                $imagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
+            }else{
+                $imagen = env('URL_IMAGENES_PRODUCTOS').$d->productos->imagenPrincipal . '.jpg';
+            }
+
             $precio = $d->precio * $d->cantidad;
             $cantidadTotal += $d->cantidad;
-
-            //-----
-
             $subtotal += $d->precio * $d->cantidad;
             $pedidoDetalle[] = [
                 'cantidad' => $d->cantidad,
@@ -39,7 +46,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'color' => optional($d->productos->colores)->id ?? '',
                 'precio' => number_format($d->precio, 2),
                 'total' => number_format($precio, 2),
-                'imagen' => env('URL_IMAGENES_PRODUCTOS') . optional($d->productos)->imagenPrincipal ?? '',
+                'imagen' => $imagen ?? '',
                 'imagenPrincipal' => optional($d->productos)->imagenPrincipal,
             ];
         }
@@ -63,7 +70,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'color' => '',
                 'precio' => number_format($dNn->precio, 2),
                 'total' => number_format($dNn->precio * $dNn->cantidad, 2),
-                'imagen' => env('URL_IMAGENES_PRODUCTOS') . 0,
+                'imagen' => env('URL_IMAGENES_PRODUCTOS') . '0.jpg',
                 'imagenPrincipal' => 0,
             ];
         }

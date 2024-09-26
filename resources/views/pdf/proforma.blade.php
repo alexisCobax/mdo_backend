@@ -142,7 +142,7 @@
                         <tbody>
                             @foreach ($proforma['detalle'] as $p)
                                 <tr>
-                                    <td><img src="{{ env('URL_IMAGENES_PRODUCTOS') }}/{{ $p['imagenPrincipal'] }}.jpg"
+                                    <td><img src="{{ $p['imagen'] }}"
                                             style="width:90px; height: 70px;" alt="" /></td>
                                     <td class="align-center" style="padding-top:20px;">{{ $p['cantidad'] }}</td>
                                     <td class="align-center" style="padding-top:20px;">&nbsp;&nbsp;&nbsp;{{ $p['codigo'] }}&nbsp;&nbsp;&nbsp;</td>
@@ -269,11 +269,11 @@
 
 
 
-    <script type="text/php"> 
-    
-        if (isset($pdf)) { 
+    <script type="text/php">
+
+        if (isset($pdf)) {
          //Shows number center-bottom of A4 page with $x,$y values
-            $x = 250;  //X-axis i.e. vertical position 
+            $x = 250;  //X-axis i.e. vertical position
             $y = 820; //Y-axis horizontal position
             $text = "Page {PAGE_NUM} of {PAGE_COUNT}";  //format of display message
             $font =  $fontMetrics->get_font("helvetica", "bold");
