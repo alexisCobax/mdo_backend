@@ -20,6 +20,10 @@ class FetchProducts extends Command
 
     public function handle()
     {
+
+        // Log de inicio con la fecha y hora actual
+        $this->info('Inicio del comando: ' . now());
+
         $apiUrl = 'https://developer.nywd.com/api/v1/products';
         $page = 1;
         $pageSize = 500;
@@ -75,6 +79,9 @@ class FetchProducts extends Command
         } else {
             $this->error('Error al obtener datos de la API.');
         }
+
+        // Log de fin con la fecha y hora actual
+        $this->info('Fin del comando: ' . now());
     }
 
     public function saveProductToDatabase($product)
@@ -176,9 +183,9 @@ class FetchProducts extends Command
                     $name = isset($producto->Name) ? $producto->Name : '';
                     $brand = isset($producto->Brand) ? $producto->Brand : '';
                     $stock = isset($producto->AvailableQuantity) ? $producto->AvailableQuantity : 0;
-                    $nombre = $brand.' '.$name.' '.$size.' '.$color;
+                    $nombre = $brand . ' ' . $name . ' ' . $size . ' ' . $color;
                     $costo = $producto->Price;
-                    $precio = number_format($producto->Price + ($producto->Price * 0.60),2); //este 60% es a pedido del cliente
+                    $precio = number_format($producto->Price + ($producto->Price * 0.60), 2); //este 60% es a pedido del cliente
 
                     $SQL = 'INSERT INTO
                         producto
