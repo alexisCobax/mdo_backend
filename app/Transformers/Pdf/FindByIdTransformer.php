@@ -29,7 +29,7 @@ class FindByIdTransformer extends TransformerAbstract
             $imagenPrincipal = Fotoproducto::where('id',$d->productos->imagenPrincipal)->first();
 
             if(isset($imagenPrincipal->url)){
-                $imagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
+                $imagen = $imagenPrincipal->url;
             }else{
                 $imagen = env('URL_IMAGENES_PRODUCTOS').$d->productos->imagenPrincipal . '.jpg';
             }
