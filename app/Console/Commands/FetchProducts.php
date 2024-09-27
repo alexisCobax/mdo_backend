@@ -22,8 +22,9 @@ class FetchProducts extends Command
     {
 
         // Log de inicio con la fecha y hora actual
-        $this->info('Inicio del comando: ' . now());
+        Log::info('Inicio del comando para stock externo: ' . date('Y-m-d H:i:s'));
 
+        $proceso = true;
         $apiUrl = 'https://developer.nywd.com/api/v1/products';
         $page = 1;
         $pageSize = 500;
@@ -43,7 +44,7 @@ class FetchProducts extends Command
             $data = $response->json();
             $totalResults = $data['TotalResults'];
 
-
+            Log::info('Empezando a Procesar: ' . date('Y-m-d H:i:s'));
             $this->output->progressStart($totalResults);
 
             do {
@@ -66,22 +67,24 @@ class FetchProducts extends Command
                         $data = $response->json();
                     } else {
                         $this->error('Error al obtener datos de la API en la página ' . $page);
+                        $proceso = false;
                         break;
                     }
                 }
             } while ($totalFetched < $totalResults);
 
+            if ($proceso) {
+                Log::info('Fin del comando: ' . date('Y-m-d H:i:s'));
+
+                $this->processStock();
+            }
             $this->output->progressFinish();
-
-            $this->info('Todos los productos han sido guardados.');
-
-            $this->processStock();
         } else {
-            $this->error('Error al obtener datos de la API.');
+            Log::error('Error al obtener datos de la API ' . date('Y-m-d H:i:s'));
         }
 
         // Log de fin con la fecha y hora actual
-        $this->info('Fin del comando: ' . now());
+        Log::info('Fin del comando para stock externo: ' . date('Y-m-d H:i:s'));
     }
 
     public function saveProductToDatabase($product)
@@ -94,7 +97,7 @@ class FetchProducts extends Command
                     'Price' => $product['Price'],
                     'Category' => $product['Category'],
                     'Brand' => $product['Brand'],
-                    'Upc' => 'N'.$product['Upc'],
+                    'Upc' => 'N' . $product['Upc'],
                     'Size' => $product['Size'],
                     'BridgeSize' => $product['BridgeSize'],
                     'TempleSize' => $product['TempleSize'],
