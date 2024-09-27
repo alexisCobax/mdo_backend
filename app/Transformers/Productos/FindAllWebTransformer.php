@@ -2,7 +2,6 @@
 
 namespace App\Transformers\Productos;
 
-use fotoProducto;
 use App\Models\Fotoproducto;
 use App\Enums\EstadosProductosEnums;
 use League\Fractal\TransformerAbstract;
