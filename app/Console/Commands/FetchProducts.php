@@ -94,7 +94,7 @@ class FetchProducts extends Command
                     'Price' => $product['Price'],
                     'Category' => $product['Category'],
                     'Brand' => $product['Brand'],
-                    'Upc' => $product['Upc'],
+                    'Upc' => 'M'.$product['Upc'],
                     'Size' => $product['Size'],
                     'BridgeSize' => $product['BridgeSize'],
                     'TempleSize' => $product['TempleSize'],
