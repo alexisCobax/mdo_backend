@@ -66,7 +66,7 @@ class FetchProducts extends Command
                     if ($response->successful()) {
                         $data = $response->json();
                     } else {
-                        $this->error('Error al obtener datos de la API en la página ' . $page);
+                        Log::error('Error al obtener datos de la API en la página ' . $page);
                         $proceso = false;
                         break;
                     }
@@ -97,7 +97,7 @@ class FetchProducts extends Command
                     'Price' => $product['Price'],
                     'Category' => $product['Category'],
                     'Brand' => $product['Brand'],
-                    'Upc' => 'N' . $product['Upc'],
+                    'Upc' => 'M' . $product['Upc'],
                     'Size' => $product['Size'],
                     'BridgeSize' => $product['BridgeSize'],
                     'TempleSize' => $product['TempleSize'],
