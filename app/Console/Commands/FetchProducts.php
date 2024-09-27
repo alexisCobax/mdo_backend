@@ -189,15 +189,24 @@ class FetchProducts extends Command
 
                     $SQL = 'INSERT INTO
                         producto
-                            (precio, codigo, nombre, marca, suspendido, stock, color, tamano, costo, proveedorExterno)
+                        (nombre,
+                        marca,
+                        precio,
+                        suspendido,
+                        stock,
+                        codigo,
+                        color,
+                        tamano,
+                        costo,
+                        proveedorExterno)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
                     DB::insert($SQL, [
-                        $precio,
-                        0,
-                        $producto->Upc,
                         $nombre,
                         $marcaId,
+                        $precio,
+                        0,
                         $stock,
+                        $producto->Upc,
                         $color,
                         $size,
                         $costo,
