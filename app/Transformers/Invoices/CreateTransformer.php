@@ -36,6 +36,9 @@ class CreateTransformer extends TransformerAbstract
 
         $pais = Pais::where('id', $pedido->paisEnvio)->first();
 
+        $NombrePais = "";
+        if(isset($pais->nombre )){$NombrePais= $pais->nombre ;}
+
         return [
             'cliente' => $pedido->cliente,
             'total' => $pedido->total,
@@ -44,7 +47,7 @@ class CreateTransformer extends TransformerAbstract
             'observaciones' => '',
             'anulada' => 0,
             'billTo' => $cliente->direccionBill,
-            'shipTo' => $pedido->nombreEnvio . "\n" . $pedido->domicilioEnvio . "\n" . $pedido->ciudadEnvio . "\n" . $pedido->regionEnvio . "\n" . $pais->nombre . "\n" . 'ZIP: ' .$pedido->cpEnvio, // Envío | Cliente
+            'shipTo' => $pedido->nombreEnvio . "\n" . $pedido->domicilioEnvio . "\n" . $pedido->ciudadEnvio . "\n" . $pedido->regionEnvio . "\n" . $NombrePais  . "\n" . 'ZIP: ' .$pedido->cpEnvio, // Envío | Cliente
             'shipVia' => '',
             'FOB' => '',
             'Terms' => '',
