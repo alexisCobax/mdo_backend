@@ -31,9 +31,9 @@ class FetchProducts extends Command
         $totalResults = 0;
         $totalFetched = 0;
 
-        DB::table('stockExterno')->truncate();
-
         $token = $this->getToken();
+
+        DB::table('stockExterno')->truncate();
 
         $response = Http::withToken($token)->get($apiUrl, [
             'page' => $page,
@@ -138,6 +138,11 @@ class FetchProducts extends Command
         try {
             // Manejo automático de transacción (incluye commit o rollback)
             DB::transaction(function () {
+
+                if (!DB::table('stockExterno')->exists()) {
+                    Log::error('Tabla stockExterno sin datos ' . now());
+                    abort(500, 'La tabla stockExterno no contiene datos.');
+                }
 
                 // Limpiar el stock para el proveedor "nywd"
                 DB::update('UPDATE producto SET stock = 0 WHERE proveedorExterno = ?', ['nywd']);
