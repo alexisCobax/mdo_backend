@@ -80,7 +80,7 @@ class FetchProducts extends Command
             }
             $this->output->progressFinish();
         } else {
-            Log::error('Error al obtener datos de la API ' . date('Y-m-d H:i:s'));
+            Log::error('Error al obtener datos de la API ' . date('Y-m-d H:i:s') .' info: '. $response->json());
         }
 
         // Log de fin con la fecha y hora actual
