@@ -924,7 +924,11 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
 
     // });
 
-    Route::get('/test/ghl', [GoHighLevelController::class, 'getRefreshToken']);
+    Route::post('/test/ghl', [GoHighLevelController::class, 'getRefreshToken']);
+
+    Route::post('/test/ghl/crear', [GoHighLevelController::class, 'createContact']);
+
+    Route::post('/test/ghl/refresh', [GoHighLevelController::class, 'getRefreshToken']);
 
     Route::get('/test/nywd', [NywdController::class, 'getRefreshToken']);
 

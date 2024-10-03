@@ -34,7 +34,7 @@ class ClienteWebService
             $data = Cliente::where('nombre', 'LIKE', "%$query%")
             ->select('id', 'nombre')
             ->get()
-            ->pluck('nombre', 'id');    
+            ->pluck('nombre', 'id');
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -77,22 +77,42 @@ class ClienteWebService
             return response()->json(['error' => 'Failed to create Usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        // $payload = [
+        //     'contact' => [
+        //         'email' => $request->email,
+        //         'firstName' => $request->nombre,
+        //         'lastName' => $request->nombre,
+        //         'phone' => $request->telefono,
+        //         'fieldValues' => [
+        //             [
+        //                 'field' => '17',
+        //                 'value' => '9',
+        //             ],
+        //         ],
+        //     ],
+        // ];
+
         $payload = [
-            'contact' => [
-                'email' => $request->email,
-                'firstName' => $request->nombre,
-                'lastName' => $request->nombre,
-                'phone' => $request->telefono,
-                'fieldValues' => [
-                    [
-                        'field' => '17',
-                        'value' => '9',
-                    ],
-                ],
-            ],
+            "firstName" => $request->nombre,
+            "lastName" => $request->nombre,
+            "name" => $request->nombre,
+            "email" => $request->email,
+            //"gender" => "male",
+            "phone" => $request->telefono,
+            "address1" => $request->direccion,
+            "city" => $request->ciudad,
+            //"state" => "AL",
+            "postalCode" => $request->codigoPostal,
+            // "website" => "https://www.tesla.com",
+            // "timezone" => "America/Chihuahua",
+            // "dnd" => false,
+            // "source" => "public api",
+            // "country" => "US",
+            // "companyName" => "DGS VolMAX",
+            "tags" => ["masterlist"]
         ];
 
-        $postData = json_encode($payload);
+        GoHighLevelService::createContact($payload);
 
         // $activeCampaign = new ActiveCampaignService;
 
