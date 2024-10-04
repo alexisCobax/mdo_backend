@@ -29,23 +29,45 @@ class PedidodetalleService
     }
 
     public function findByPedidoId(Request $request)
-    {
-        $pedidoDetalle = Pedidodetalle::where('pedido', $request->id)->get();
+{
+    $pedidoDetalle = Pedidodetalle::where('pedido', $request->id)
+        ->join('productos', 'pedidodetalle.producto', '=', 'productos.id')
+        ->orderBy('productos.nombre', 'ASC')
+        ->get(['pedidodetalle.*', 'productos.nombre as productoNombre', 'productos.codigo as productoCodigo', 'productos.costo as productoCosto']);
 
-        $pedidoDetalleConProductos = $pedidoDetalle->map(function ($detalle) {
-            return [
-                'id' => $detalle->id,
-                'idProducto' => $detalle->producto,
-                'codigo' => optional($detalle->productos)->codigo,
-                'productoNombre' => optional($detalle->productos)->nombre,
-                'productoCosto' => optional($detalle->productos)->costo,
-                'precioProducto' => $detalle->precio,
-                'cantidadProducto' => $detalle->cantidad,
-            ];
-        });
+    $pedidoDetalleConProductos = $pedidoDetalle->map(function ($detalle) {
+        return [
+            'id' => $detalle->id,
+            'idProducto' => $detalle->producto,
+            'codigo' => $detalle->productoCodigo,
+            'productoNombre' => $detalle->productoNombre,
+            'productoCosto' => $detalle->productoCosto,
+            'precioProducto' => $detalle->precio,
+            'cantidadProducto' => $detalle->cantidad,
+        ];
+    });
 
-        return response()->json(['data' => $pedidoDetalleConProductos], Response::HTTP_OK);
-    }
+    return response()->json(['data' => $pedidoDetalleConProductos], Response::HTTP_OK);
+}
+
+    // public function findByPedidoId(Request $request)
+    // {
+    //     $pedidoDetalle = Pedidodetalle::where('pedido', $request->id)->get();
+
+    //     $pedidoDetalleConProductos = $pedidoDetalle->map(function ($detalle) {
+    //         return [
+    //             'id' => $detalle->id,
+    //             'idProducto' => $detalle->producto,
+    //             'codigo' => optional($detalle->productos)->codigo,
+    //             'productoNombre' => optional($detalle->productos)->nombre,
+    //             'productoCosto' => optional($detalle->productos)->costo,
+    //             'precioProducto' => $detalle->precio,
+    //             'cantidadProducto' => $detalle->cantidad,
+    //         ];
+    //     });
+
+    //     return response()->json(['data' => $pedidoDetalleConProductos], Response::HTTP_OK);
+    // }
 
     // public function create(Request $request)
     // {
@@ -92,7 +114,7 @@ class PedidodetalleService
     public function create(Request $request)
 {
     /*control de stock*/
-    
+
     if($request->codigo){
         $producto = Producto::where('codigo', $request->codigo)->first();
         if(!$producto){
