@@ -9,6 +9,7 @@ class MarcasFilters
 {
     public static function getPaginateMarcas($request, $model)
     {
+        echo 2;die;
         // Obtén los parámetros de la solicitud
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
