@@ -68,7 +68,7 @@ class ProductosWebFilters
                 break;
         }
 
-        $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
+        $sql = $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
             ->select(
                 'producto.id as producto_id',
                 'producto.nombre',
@@ -89,7 +89,10 @@ class ProductosWebFilters
             ->whereNull('borrado')
             ->orderBy('marcaproducto.nombre', 'asc')
             ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
-            ->orderBy('producto.id', 'asc');
+            ->orderBy('producto.id', 'asc')
+            ->toSql();
+
+            dd($sql);
 
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
