@@ -24,7 +24,7 @@ class MarcasFilters
 
         if($request->input('src')!='config'){
         // Aplica los filtros si se proporcionan
-        $query->where('suspendido', 0);
+        $query->where('suspendido', 0)->whereNull('stock');
         }
 
 
