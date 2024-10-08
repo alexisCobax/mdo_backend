@@ -9,7 +9,6 @@ class MarcasFilters
 {
     public static function getPaginateMarcas($request, $model)
     {
-        echo 2;die;
         // Obtén los parámetros de la solicitud
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
@@ -25,7 +24,7 @@ class MarcasFilters
 
         if($request->input('src')!='config'){
         // Aplica los filtros si se proporcionan
-        $query->where('suspendido', 0)->whereNull('stock');
+        $query->where('suspendido', 0);
         }
 
 
