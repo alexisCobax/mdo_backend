@@ -46,7 +46,7 @@ class FindByIdTransformer extends TransformerAbstract
                 $gastos[] = [
                     'id' => $cd->id,
                     'descripcion' => $cd->descripcion,
-                    'precioGasto' => $cd->precio,
+                    'precioGasto' => number_format($cd->precio,2),
                     'idCompra' => $cd->idCompra,
                 ];
             }
