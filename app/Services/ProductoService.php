@@ -68,7 +68,7 @@ class ProductoService
                 return response()->json(['data' => null], Response::HTTP_NOT_FOUND);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ocurrió un error al obtener el productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => $e->getMessage(). ' Ocurrió un error al obtener el productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
