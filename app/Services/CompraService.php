@@ -186,13 +186,13 @@ class CompraService
             }
             $compra->save();
         }
-
+        $precio = 0;
         if ($request->gastos) {
 
             try {
-                CompraDetalle::where('idCompra', $request->id)->delete();
+                CompraDetallenn::where('idCompra', $request->id)->delete();
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Error al eliminar los detalles NN de compra.']);
+                return response()->json(['error' => $request->id.' Error al eliminar los detalles NN de compra. '.$e->getMessage()]);
             }
 
             foreach ($request->gastos as $g) {
@@ -202,6 +202,12 @@ class CompraService
                 $compraDetallenn->descripcion = $g['descripcion'];
                 $compraDetallenn->precio = $g['precioGasto'];
                 $compraDetallenn->save();
+            }
+        }else{
+            try {
+                CompraDetallenn::where('idCompra', $request->id)->delete();
+            } catch (\Exception $e) {
+                return response()->json(['error' => $request->id.' Error al eliminar los detalles NN de compra. '.$e->getMessage()]);
             }
         }
 
