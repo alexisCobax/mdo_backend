@@ -49,7 +49,7 @@ class FindByIdTransformer extends TransformerAbstract
                 $gastos[] = [
                     'id' => $cd->id,
                     'descripcion' => $cd->descripcion,
-                    'precioGasto' => $precioGasto.'01',
+                    'precioGasto' => $precioGasto,
                     'idCompra' => $cd->idCompra,
                 ];
             }
