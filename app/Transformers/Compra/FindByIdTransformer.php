@@ -44,7 +44,7 @@ class FindByIdTransformer extends TransformerAbstract
 
 
             foreach ($compraDetallenn as $cd) {
-                $precioGasto = number_format(floatval(str_replace(',', '', $cd->precio)), 2);
+                $precioGasto = number_format(floatval(str_replace(',', '', $cd->precio)), 2, '.', '');
 
                 $gastos[] = [
                     'id' => $cd->id,
