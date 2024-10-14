@@ -124,7 +124,14 @@ class CompraService
     public function update(Request $request)
     {
 
+        $compra = Compra::find($request->id);
+
+        if (!$compra) {
+            return response()->json(['error' => 'Compra not found'], Response::HTTP_NOT_FOUND);
+        }
+
         try {
+            // Sacamos todo el stock de los productos ingresados a deposito
             DB::update("
             UPDATE compradetalle
             LEFT JOIN producto ON compradetalle.producto = producto.id
@@ -133,12 +140,6 @@ class CompraService
         ");
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
-
-        $compra = Compra::find($request->id);
-
-        if (!$compra) {
-            return response()->json(['error' => 'Compra not found'], Response::HTTP_NOT_FOUND);
         }
 
         $compra->proveedor = $request->proveedor;
@@ -150,7 +151,7 @@ class CompraService
         $compra->pagado = $request->pagado;
         $compra->enDeposito = $request->enDeposito;
         $compra->save();
-
+        $precio = 0;
         if ($request->productos) {
 
             try {
@@ -158,7 +159,6 @@ class CompraService
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Error al eliminar los detalles de compra.']);
             }
-            $precio = 0;
             $compra->enDeposito = 1;
             foreach ($request->productos as $p) {
                 $precio += $p['precioUnitario'] * $p['cantidad'];
@@ -172,7 +172,7 @@ class CompraService
                 } else {
                     $compraDetalle->precioUnitario = $p['precioUnitario'];
                 }
-                $compraDetalle->enDeposito = 0;
+                $compraDetalle->enDeposito = $p['enDeposito'];
                 if ($p['precioVenta'] == "") {
                     $producto = Producto::where('id', $p['producto'])->first();
                     $compraDetalle->precioVenta = $producto->precio;
@@ -186,13 +186,13 @@ class CompraService
             }
             $compra->save();
         }
-        $precio = 0;
+
         if ($request->gastos) {
 
             try {
                 CompraDetallenn::where('idCompra', $request->id)->delete();
             } catch (\Exception $e) {
-                return response()->json(['error' => $request->id.' Error al eliminar los detalles NN de compra. '.$e->getMessage()]);
+                return response()->json(['error' => $request->id . ' Error al eliminar los detalles NN de compra. ' . $e->getMessage()]);
             }
 
             foreach ($request->gastos as $g) {
@@ -203,11 +203,11 @@ class CompraService
                 $compraDetallenn->precio = $g['precioGasto'];
                 $compraDetallenn->save();
             }
-        }else{
+        } else {
             try {
                 CompraDetallenn::where('idCompra', $request->id)->delete();
             } catch (\Exception $e) {
-                return response()->json(['error' => $request->id.' Error al eliminar los detalles NN de compra. '.$e->getMessage()]);
+                return response()->json(['error' => $request->id . ' Error al eliminar los detalles NN de compra. ' . $e->getMessage()]);
             }
         }
 
