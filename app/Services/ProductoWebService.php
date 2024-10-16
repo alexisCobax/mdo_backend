@@ -20,7 +20,6 @@ class ProductoWebService
 
         if(isset($request->tag)=='rebajados'){
             try {
-                echo 1;die;
                 $data = ProductosWebFiltersRebajados::getPaginateProducts($request, Producto::class);
 
                 return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
