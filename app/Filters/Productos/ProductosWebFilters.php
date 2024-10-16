@@ -6,7 +6,6 @@ use App\Models\Producto;
 use Illuminate\Http\Response;
 use App\Transformers\Productos\FindAllTransformer;
 use App\Transformers\Productos\FindAllWebTransformer;
-use Illuminate\Support\Facades\DB;
 
 class ProductosWebFilters
 {
@@ -65,48 +64,32 @@ class ProductosWebFilters
                 $query->Menos20();
                 break;
             case 'rebajados':
-                // Consulta raw para 'rebajados'
-                $query = DB::table('producto')
-                    ->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-                    ->select(
-                        'producto.id as producto_id',
-                        'producto.nombre',
-                        'producto.codigo',
-                        'producto.categoria',
-                        'producto.precio',
-                        'producto.precioPromocional',
-                        'producto.stock',
-                        'producto.destacado',
-                        'producto.color',
-                        'producto.nuevo',
-                        'producto.imagenPrincipal',
-                        'marcaproducto.nombre as marca_nombre',
-                        'marcaproducto.id as marca_id'
-                    )
-                    ->where(function($query) {
-                        $query->where('producto.precioPromocional', '>', 0)
-                            ->where('producto.precioPromocional', '<', 9.99)
-                            ->orWhereBetween('producto.precio', [0, 9.99]);
-                    })
-                    ->where('producto.stock', '>', 0)
-                    ->where('producto.suspendido', '=', 0)
-                    ->whereNull('borrado')
-                    ->orderBy('marcaproducto.nombre', 'asc')
-                    ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
-                    ->orderBy('producto.id', 'asc');
+                $query->Rebajados();
                 break;
         }
 
-        // Mantiene los filtros aplicados
-        if ($tag !== 'rebajados') {
-            $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-                ->where('producto.stock', '>', 0)
-                ->where('producto.suspendido', '=', 0)
-                ->whereNull('borrado')
-                ->orderBy('marcaproducto.nombre', 'asc')
-                ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
-                ->orderBy('producto.id', 'asc');
-        }
+        $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
+            ->select(
+                'producto.id as producto_id',
+                'producto.nombre',
+                'producto.codigo',
+                'producto.categoria',
+                'producto.precio',
+                'producto.precioPromocional',
+                'producto.stock',
+                'producto.destacado',
+                'producto.color',
+                'producto.nuevo',
+                'producto.imagenPrincipal',
+                'marcaproducto.nombre as marca_nombre',
+                'marcaproducto.id as marca_id'
+            )
+            ->where('producto.stock', '>', 0)
+            ->where('producto.suspendido', '=', 0)
+            ->whereNull('borrado')
+            ->orderBy('marcaproducto.nombre', 'asc')
+            ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
+            ->orderBy('producto.id', 'asc');
 
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
