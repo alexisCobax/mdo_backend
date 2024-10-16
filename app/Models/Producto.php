@@ -336,11 +336,4 @@ class Producto extends Model
                   });
         });
     }
-
-
-
-    // public function scopeRebajados($query)
-    // {
-    //     $query->where('precioPromocional', '<=', 9.99);
-    // }
 }
