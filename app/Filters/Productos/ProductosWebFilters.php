@@ -91,13 +91,6 @@ class ProductosWebFilters
             ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
             ->orderBy('producto.id', 'asc');
 
-            // Para ver la consulta SQL generada
-$sql = $query->toSql();
-$bindings = $query->getBindings();
-
-// Mostrar la consulta SQL y los bindings
-dd($sql, $bindings);
-
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
