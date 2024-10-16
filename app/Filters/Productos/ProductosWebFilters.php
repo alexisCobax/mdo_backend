@@ -54,44 +54,10 @@ class ProductosWebFilters
         $query->destacado($destacado);
         $query->grupo($grupo);
         $query->buscador($buscador);
-        $query->NuevosProductos($estado);
+        $query->tag($tag); // Asegúrate de que tienes un método scope para el tag.
 
-        switch ($tag) {
-            case 'precioPromocional':
-                $query->PrecioPromocional();
-                break;
-            case 'menos20':
-                $query->Menos20();
-                break;
-            case 'rebajados':
-                $query->Rebajados();
-                break;
-        }
-
-        $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-            ->select(
-                'producto.id as producto_id',
-                'producto.nombre',
-                'producto.codigo',
-                'producto.categoria',
-                'producto.precio',
-                'producto.precioPromocional',
-                'producto.stock',
-                'producto.destacado',
-                'producto.color',
-                'producto.nuevo',
-                'producto.imagenPrincipal',
-                'marcaproducto.nombre as marca_nombre',
-                'marcaproducto.id as marca_id'
-            )
-            ->where('producto.stock', '>', 0)
-            ->where('producto.suspendido', '=', 0)
-            ->whereNull('borrado')
-            ->orderBy('marcaproducto.nombre', 'asc')
-            ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
-            ->orderBy('producto.id', 'asc');
-
-        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        // Paginación
+        return $query->paginate($perPage, ['*'], 'pagina', $page);
 
         // Crea una instancia del transformer
         $transformer = new FindAllWebTransformer();
