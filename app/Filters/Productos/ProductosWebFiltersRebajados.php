@@ -15,18 +15,21 @@ class ProductosWebFiltersRebajados
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
 
-
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
-
         $query->where(function ($query) {
             $query->where('precioPromocional', '>', 0)
-                  ->orWhere(function ($query) {
-                      $query->where('precioPromocional', '<=', 9.99)
-                            ->orWhereBetween('precio', [0, 9.99]);
-                  });
-        });
+                ->orWhere(function ($query) {
+                    $query->where('precioPromocional', '<=', 9.99)
+                        ->orWhereBetween('precio', [0, 9.99]);
+                });
+        })
+            ->where(function ($query) {
+                $query->where('producto.stock', '>', 0)
+                    ->where('producto.suspendido', '=', 0)
+                    ->whereNull('borrado');
+            });
 
         $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
             ->select(
@@ -44,9 +47,6 @@ class ProductosWebFiltersRebajados
                 'marcaproducto.nombre as marca_nombre',
                 'marcaproducto.id as marca_id'
             )
-            ->where('producto.stock', '>', 0)
-            ->where('producto.suspendido', '=', 0)
-            ->whereNull('borrado')
             ->orderBy('marcaproducto.nombre', 'asc')
             ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
             ->orderBy('producto.id', 'asc');
