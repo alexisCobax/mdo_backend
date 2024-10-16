@@ -326,14 +326,8 @@ class Producto extends Model
         return $this->belongsTo(Color::class, 'color');
     }
 
-    public function scopeRebajados($query)
-    {
-        $query->where(function ($query) {
-            $query->whereRaw('CAST(precioPromocional AS DECIMAL(10, 2)) > 0')
-                  ->orWhere(function ($query) {
-                      $query->whereRaw('CAST(precioPromocional AS DECIMAL(10, 2)) <= 9.99')
-                            ->orWhereBetween('precio', [0, 9.99]);
-                  });
-        });
-    }
+    // public function scopeRebajados($query)
+    // {
+    //     $query->where('precioPromocional', '<=', 9.99);
+    // }
 }
