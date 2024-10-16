@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DataTransferObject\ProductoDTO;
 use App\Filters\Productos\ProductosWebFilters;
+use App\Filters\Productos\ProductosWebFiltersRebajados;
 use App\Helpers\ImagesHelper;
 use App\Models\Fotoproducto;
 use App\Models\Producto;
@@ -16,14 +17,27 @@ class ProductoWebService
 {
     public function findAll(Request $request)
     {
-        try {
-            $data = ProductosWebFilters::getPaginateProducts($request, Producto::class);
 
-            return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+        if(isset($request->tag)=='rebajados'){
+            try {
+                $data = ProductosWebFiltersRebajados::getPaginateProducts($request, Producto::class);
 
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }else{
+            try {
+                $data = ProductosWebFilters::getPaginateProducts($request, Producto::class);
+
+                return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
+
     }
 
     public function stock(Request $request)
