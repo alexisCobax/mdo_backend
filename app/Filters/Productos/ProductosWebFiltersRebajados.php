@@ -24,6 +24,7 @@ class ProductosWebFiltersRebajados
                 'producto.id as producto_id',
                 'producto.imagenPrincipal',
                 'producto.codigo',
+                'producto.nombre',
                 'producto.categoria',
                 'categoriaproducto.id as categoria_id',
                 'categoriaproducto.nombre as categoria_nombre',
