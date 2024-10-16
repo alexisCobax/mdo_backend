@@ -18,40 +18,40 @@ class ProductosWebFiltersRebajados
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
-        $query->where(function ($query) {
-            $query->where('precioPromocional', '>', 0)
-                ->orWhere(function ($query) {
-                    $query->where('precioPromocional', '<=', 9.99)
-                        ->orWhereBetween('precio', [0, 9.99]);
-                });
-        })
-            ->where(function ($query) {
-                $query->where('producto.stock', '>', 0)
-                    ->where('producto.suspendido', '=', 0)
-                    ->whereNull('borrado');
-            });
-
         $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
+            ->join('categoriaproducto', 'producto.categoria', '=', 'categoriaproducto.id')
             ->select(
                 'producto.id as producto_id',
-                'producto.nombre',
+                'producto.imagenPrincipal',
                 'producto.codigo',
                 'producto.categoria',
+                'categoriaproducto.id as categoria_id',
+                'categoriaproducto.nombre as categoria_nombre',
                 'producto.precio',
-                'producto.precioPromocional',
                 'producto.stock',
                 'producto.destacado',
-                'producto.color',
-                'producto.nuevo',
-                'producto.imagenPrincipal',
+                'producto.marca',
                 'marcaproducto.nombre as marca_nombre',
-                'marcaproducto.id as marca_id'
+                'producto.color as color_nombre',
+                'producto.precioPromocional',
+                'producto.nuevo',
+                'producto.suspendido'
             )
+            ->where(function ($query) {
+                $query->where('producto.precioPromocional', '>', 0)
+                    ->where('producto.precioPromocional', '<', 9.99)
+                    ->orWhereBetween('producto.precio', [0, 9.99]);
+            })
+            ->where('producto.stock', '>', 0)
+            ->where('producto.suspendido', '=', 0)
+            ->whereNull('producto.borrado')
             ->orderBy('marcaproducto.nombre', 'asc')
             ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
             ->orderBy('producto.id', 'asc');
 
+        // Pagina los resultados
         $data = $query->paginate($perPage, ['*'], 'page', $page);
+
 
         // Crea una instancia del transformer
         $transformer = new FindAllWebTransformer();
