@@ -327,7 +327,19 @@ class Producto extends Model
     }
 
     public function scopeRebajados($query)
-    {
-        $query->where('precioPromocional', '<=', 9.99);
-    }
+{
+    $query->where(function ($query) {
+        $query->where('precioPromocional', '>', 0)
+              ->orWhere(function ($query) {
+                  $query->where('precioPromocional', '<=', 9.99)
+                        ->orWhereBetween('precio', [0, 9.99]);
+              });
+    });
+}
+
+
+    // public function scopeRebajados($query)
+    // {
+    //     $query->where('precioPromocional', '<=', 9.99);
+    // }
 }
