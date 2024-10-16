@@ -328,7 +328,6 @@ class Producto extends Model
 
     public function scopeRebajados($query)
 {
-    echo 1;die;
     $query->where(function ($query) {
         $query->where('precioPromocional', '>', 0)
               ->orWhere(function ($query) {
