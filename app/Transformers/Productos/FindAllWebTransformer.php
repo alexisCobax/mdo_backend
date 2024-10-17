@@ -25,7 +25,7 @@ class FindAllWebTransformer extends TransformerAbstract
         }
 
         return [
-            'id' => $producto->producto_id,
+            //'id' => $producto->producto_id,
             'imagenPrincipal' => $urlImagen,
             'nombre' => utf8_encode($producto->nombre),
             'codigo' => $producto->codigo,
