@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 use App\Transformers\Productos\FindAllTransformer;
 use App\Transformers\Productos\FindAllWebTransformer;
 
-class ProductosWebFiltersRebajados
+class ProductosWebFiltersMenor20
 {
     public static function getPaginateProducts($request, $model)
     {
@@ -39,9 +39,8 @@ class ProductosWebFiltersRebajados
                 'producto.suspendido'
             )
             ->where(function ($query) {
-            $query->where('producto.precioPromocional', '>', 0)
-            ->where('producto.precioPromocional', '<', 9.99)
-            ->where('producto.precio', '>=', \DB::raw('producto.precioPromocional'))
+            $query->whereBetween('producto.precioPromocional', [10, 25])
+            ->orWhereBetween('producto.precio', [10, 25])
             ->where('producto.stock', '>', 0)
             ->where('producto.suspendido', '=', 0)
             ->whereNull('producto.borrado')
