@@ -23,9 +23,9 @@ class FindAllWebTransformer extends TransformerAbstract
         } else {
             $urlImagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
         }
-        echo 8;die;
+
         return [
-            'id' => $producto->producto_id,
+            'id' => $producto->id,
             'imagenPrincipal' => $urlImagen,
             'nombre' => utf8_encode($producto->nombre),
             'codigo' => $producto->codigo,
