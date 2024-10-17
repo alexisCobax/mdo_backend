@@ -47,8 +47,6 @@ class ProductosWebFiltersMenor20
         ->orderBy('producto.ultimoIngresoDeMercaderia', 'DESC')
         ->orderBy('producto.id', 'ASC');
 
-        $sqlQuery = $sql->toSql();die;
-
         $sqlQuery = $sql->toSql();
 
 // Obtener los valores de enlace
