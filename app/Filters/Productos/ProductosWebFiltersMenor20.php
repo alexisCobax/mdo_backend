@@ -17,7 +17,7 @@ class ProductosWebFiltersMenor20
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
-        $query->select(
+        $sql = $query->select(
             'producto.id as producto_id',
             'producto.imagenPrincipal',
             'producto.codigo',
@@ -47,6 +47,15 @@ class ProductosWebFiltersMenor20
         ->orderBy('producto.ultimoIngresoDeMercaderia', 'DESC')
         ->orderBy('producto.id', 'ASC');
 
+        $sqlQuery = $sql->toSql();die;
+
+        $sqlQuery = $sql->toSql();
+
+// Obtener los valores de enlace
+$bindings = $sql->getBindings();
+
+// Mostrar la consulta y los valores
+dd($sqlQuery, $bindings);
 
         // Pagina los resultados
         $data = $query->paginate($perPage, ['*'], 'page', $page);
