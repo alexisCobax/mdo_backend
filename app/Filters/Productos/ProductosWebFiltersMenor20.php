@@ -18,7 +18,7 @@ class ProductosWebFiltersMenor20
         $query = $model::query();
 
         $query->select(
-            'producto.id',
+            'producto.id as producto_id',
             'producto.imagenPrincipal',
             'producto.codigo',
             'producto.categoria',
@@ -34,7 +34,7 @@ class ProductosWebFiltersMenor20
             'producto.nuevo',
             'producto.suspendido'
         )
-        ->join('jkkxjmpypf.marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
+        ->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
         ->join('categoriaproducto', 'producto.categoria', '=', 'categoriaproducto.id')
         ->where(function($query) {
             $query->whereBetween('producto.precioPromocional', [10, 25])
