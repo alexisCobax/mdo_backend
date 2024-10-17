@@ -12,23 +12,17 @@ class FindAllWebTransformer extends TransformerAbstract
     {
         $arrayEnum = EstadosProductosEnums::toArray();
 
-        if ($producto->imagenPrincipal != 0) {
-            $imagen = Fotoproducto::where('id', $producto->imagenPrincipal)->first();
+        $imagenPrincipal = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
 
-            if ($imagen->url == NULL) {
-                $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
-            } else {
-                $urlImagen = $imagen->url;
-            }
-        } else {
-            $urlImagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
+        if(isset($imagenPrincipal->url)){
+            $imagen = $imagenPrincipal->url;
+        }else{
+            $imagen = env('URL_IMAGENES_PRODUCTOS').$producto->imagenPrincipal . '.jpg';
         }
-
-        $urlImagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
 
         return [
             'id' => $producto->producto_id,
-            'imagenPrincipal' => $urlImagen,
+            'imagenPrincipal' => $imagen,
             'nombre' => utf8_encode($producto->nombre),
             'codigo' => $producto->codigo,
             'categoria' => $producto->categoria,
