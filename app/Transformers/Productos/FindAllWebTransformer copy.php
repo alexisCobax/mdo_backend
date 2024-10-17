@@ -12,23 +12,19 @@ class FindAllWebTransformer extends TransformerAbstract
     {
         $arrayEnum = EstadosProductosEnums::toArray();
 
-        // Inicializar la variable $urlImagen
-        $urlImagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg'; // Valor por defecto
-
-        // Verificar si hay una imagen principal
         if ($producto->imagenPrincipal != 0) {
             $imagen = Fotoproducto::where('id', $producto->imagenPrincipal)->first();
 
-            // Verificar si se encontró la imagen
-            if ($imagen) {
-                // Comprobar si la URL es nula
-                if ($imagen->url == NULL) {
-                    $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
-                } else {
-                    $urlImagen = $imagen->url;
-                }
+            if ($imagen->url == NULL) {
+                $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
+            } else {
+                $urlImagen = $imagen->url;
             }
+        } else {
+            $urlImagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
         }
+
+        $urlImagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
 
         return [
             'id' => $producto->producto_id,
