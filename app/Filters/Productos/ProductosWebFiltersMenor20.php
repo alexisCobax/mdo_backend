@@ -15,8 +15,9 @@ class ProductosWebFiltersMenor20
         $perPage = $request->input('cantidad', env('PER_PAGE'));
 
         // Inicializa la consulta utilizando el modelo
-        $query = $model::query()
-        ->select(
+        $query = $model::query();
+
+        $query->select(
             'producto.id',
             'producto.imagenPrincipal',
             'producto.codigo',
@@ -44,8 +45,7 @@ class ProductosWebFiltersMenor20
         ->whereNull('producto.borrado')
         ->orderBy('marcaproducto.nombre', 'ASC')
         ->orderBy('producto.ultimoIngresoDeMercaderia', 'DESC')
-        ->orderBy('producto.id', 'ASC')
-        ->get();
+        ->orderBy('producto.id', 'ASC');
 
 
         // Pagina los resultados
