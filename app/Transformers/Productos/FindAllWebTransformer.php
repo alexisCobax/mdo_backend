@@ -15,7 +15,7 @@ class FindAllWebTransformer extends TransformerAbstract
         if ($producto->imagenPrincipal != 0) {
             $imagen = Fotoproducto::where('id', $producto->imagenPrincipal)->first();
 
-            if (isset($imagen->url) == NULL) {
+            if ($imagen->url == NULL) {
                 $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
             } else {
                 $urlImagen = $imagen->url;
