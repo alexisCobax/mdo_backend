@@ -2,42 +2,48 @@
 
 namespace App\Services;
 
-use App\DataTransferObject\ProductoDTO;
-use App\Filters\Productos\ProductosWebFilters;
-use App\Filters\Productos\ProductosWebFiltersRebajados;
-use App\Helpers\ImagesHelper;
-use App\Models\Fotoproducto;
 use App\Models\Producto;
-use App\Transformers\Productos\FindByIdTransformer;
+use App\Models\Fotoproducto;
 use Illuminate\Http\Request;
+use App\Helpers\ImagesHelper;
 use Illuminate\Http\Response;
+use App\DataTransferObject\ProductoDTO;
 use Illuminate\Support\Facades\Storage;
+use App\Filters\Productos\ProductosWebFilters;
+use App\Transformers\Productos\FindByIdTransformer;
+use App\Filters\Productos\ProductosWebFiltersMenor20;
+use App\Filters\Productos\ProductosWebFiltersRebajados;
 
 class ProductoWebService
 {
     public function findAll(Request $request)
     {
 
-        if(isset($request->tag)=='rebajados'){
+        if (isset($request->tag) == 'rebajados') {
             try {
                 $data = ProductosWebFiltersRebajados::getPaginateProducts($request, Producto::class);
 
                 return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
-
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        }else{
+        } elseif (isset($request->tag) == 'rebajados') {
+            try {
+                $data = ProductosWebFiltersMenor20::getPaginateProducts($request, Producto::class);
+
+                return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } else {
             try {
                 $data = ProductosWebFilters::getPaginateProducts($request, Producto::class);
 
                 return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
-
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
-
     }
 
     public function stock(Request $request)
