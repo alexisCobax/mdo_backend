@@ -27,7 +27,7 @@ class ProductoWebService
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        } elseif (isset($request->tag) == 'rebajados') {
+        } elseif (isset($request->tag) == 'menos20') {
             try {
                 $data = ProductosWebFiltersMenor20::getPaginateProducts($request, Producto::class);
 
