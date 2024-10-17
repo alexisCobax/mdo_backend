@@ -16,36 +16,37 @@ class ProductosWebFiltersMenor20
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query()
-            ->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-            ->join('categoriaproducto', 'producto.categoria', '=', 'categoriaproducto.id')
-            ->select(
-                'producto.id as producto_id',
-                'producto.imagenPrincipal',
-                'producto.codigo',
-                'producto.nombre',
-                'producto.categoria',
-                'categoriaproducto.id as categoria_id',
-                'categoriaproducto.nombre as categoria_nombre',
-                'producto.precio',
-                'producto.stock',
-                'producto.destacado',
-                'producto.marca',
-                'marcaproducto.nombre as marca_nombre',
-                'producto.color as color_nombre',
-                'producto.precioPromocional',
-                'producto.nuevo',
-                'producto.suspendido'
-            )
-            ->where('producto.stock', '>', 0)
-            ->where('producto.suspendido', '=', 0)
-            ->whereNull('producto.borrado')
-            ->where(function ($query) {
-                $query->whereBetween('producto.precioPromocional', [10, 25])
-                      ->orWhereBetween('producto.precio', [10, 25]);
-            })
-            ->orderBy('marcaproducto.nombre', 'asc')
-            ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
-            ->orderBy('producto.id', 'asc');
+        ->select(
+            'producto.id',
+            'producto.imagenPrincipal',
+            'producto.codigo',
+            'producto.categoria',
+            'categoriaproducto.id as categoria_id',
+            'categoriaproducto.nombre as categoria_nombre',
+            'producto.precio',
+            'producto.stock',
+            'producto.destacado',
+            'producto.marca',
+            'marcaproducto.nombre as nombreMarca',
+            'producto.color as colorNombre',
+            'producto.precioPromocional',
+            'producto.nuevo',
+            'producto.suspendido'
+        )
+        ->join('jkkxjmpypf.marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
+        ->join('categoriaproducto', 'producto.categoria', '=', 'categoriaproducto.id')
+        ->where(function($query) {
+            $query->whereBetween('producto.precioPromocional', [10, 25])
+                  ->orWhereBetween('producto.precio', [10, 25]);
+        })
+        ->where('producto.stock', '>', 0)
+        ->where('producto.suspendido', '=', 0)
+        ->whereNull('producto.borrado')
+        ->orderBy('marcaproducto.nombre', 'ASC')
+        ->orderBy('producto.ultimoIngresoDeMercaderia', 'DESC')
+        ->orderBy('producto.id', 'ASC')
+        ->get();
+
 
         // Pagina los resultados
         $data = $query->paginate($perPage, ['*'], 'page', $page);
