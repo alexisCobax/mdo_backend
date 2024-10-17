@@ -4,6 +4,7 @@ namespace App\Filters\Productos;
 
 use App\Models\Producto;
 use Illuminate\Http\Response;
+use App\Transformers\Productos\FindAllTransformer;
 use App\Transformers\Productos\FindAllWebTransformer;
 
 class ProductosWebFiltersRebajados
@@ -11,8 +12,8 @@ class ProductosWebFiltersRebajados
     public static function getPaginateProducts($request, $model)
     {
         // Obtén los parámetros de la solicitud
-        $page = $request->input('pagina', env('PAGE', 1)); // Default page to 1
-        $perPage = $request->input('cantidad', env('PER_PAGE', 15)); // Default items per page to 15
+        $page = $request->input('pagina', env('PAGE'));
+        $perPage = $request->input('cantidad', env('PER_PAGE'));
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
@@ -37,9 +38,11 @@ class ProductosWebFiltersRebajados
                 'producto.nuevo',
                 'producto.suspendido'
             )
-            ->where('producto.precioPromocional', '>', 0)
-            ->where('producto.precioPromocional', '<', 9.99)
-            ->where('producto.precio', '>=', 'producto.precioPromocional')
+            ->where(function ($query) {
+                $query->where('producto.precioPromocional', '>', 0)
+                    ->where('producto.precioPromocional', '<', 9.99)
+                    ->orWhereBetween('producto.precio', [0, 9.99]);
+            })
             ->where('producto.stock', '>', 0)
             ->where('producto.suspendido', '=', 0)
             ->whereNull('producto.borrado')
@@ -48,17 +51,17 @@ class ProductosWebFiltersRebajados
             ->orderBy('producto.id', 'asc');
 
         // Pagina los resultados
-        $data = $query->paginate($perPage, ['*'], 'pagina', $page); // 'pagina' como el nombre del parámetro de página
+        $data = $query->paginate($perPage, ['*'], 'page', $page);
+
 
         // Crea una instancia del transformer
         $transformer = new FindAllWebTransformer();
 
         // Transforma cada producto individualmente
-        $productosTransformados = $data->getCollection()->map(function ($producto) use ($transformer) {
+        $productosTransformados = $data->map(function ($producto) use ($transformer) {
             return $transformer->transform($producto);
         });
 
-        // Crea la respuesta con datos paginados
         $response = [
             'status' => Response::HTTP_OK,
             'total' => $data->total(),
