@@ -19,14 +19,16 @@ class FindAllWebTransformer extends TransformerAbstract
         if ($producto->imagenPrincipal != 0) {
             $imagen = Fotoproducto::where('id', $producto->imagenPrincipal)->first();
 
-            // Verificar si se encontró la imagen
+            // Comprobar si la imagen es válida
             if ($imagen) {
-                // Comprobar si la URL es nula
                 if ($imagen->url == NULL) {
                     $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
                 } else {
                     $urlImagen = $imagen->url;
                 }
+            } else {
+                // Log para entender que no se encontró la imagen
+                \Log::warning('Imagen no encontrada para ID: ' . $producto->imagenPrincipal);
             }
         }
 
