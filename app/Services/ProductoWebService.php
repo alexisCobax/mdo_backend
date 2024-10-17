@@ -19,30 +19,35 @@ class ProductoWebService
     public function findAll(Request $request)
     {
 
-        if (isset($request->tag) == 'rebajados') {
-            try {
-                $data = ProductosWebFiltersRebajados::getPaginateProducts($request, Producto::class);
+        switch ($request->tag) {
+            case 'rebajados':
+                try {
+                    $data = ProductosWebFiltersRebajados::getPaginateProducts($request, Producto::class);
 
-                return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
-            } catch (\Exception $e) {
-                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        } elseif (isset($request->tag) == 'menos20') {
-            try {
-                $data = ProductosWebFiltersMenor20::getPaginateProducts($request, Producto::class);
+                    return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+                break;
 
-                return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
-            } catch (\Exception $e) {
-                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            try {
-                $data = ProductosWebFilters::getPaginateProducts($request, Producto::class);
+            case 'menos20':
+                try {
+                    $data = ProductosWebFiltersMenor20::getPaginateProducts($request, Producto::class);
 
-                return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
-            } catch (\Exception $e) {
-                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+                    return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+                break;
+            default:
+                try {
+                    $data = ProductosWebFilters::getPaginateProducts($request, Producto::class);
+
+                    return response()->json(['data' => $data], Response::HTTP_OK)->header('Content-Type', 'application/json; charset=utf-8');
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+                break;
         }
     }
 
