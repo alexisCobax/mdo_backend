@@ -4,6 +4,7 @@ namespace App\Filters\Productos;
 
 use App\Models\Producto;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use App\Transformers\Productos\FindAllTransformer;
 use App\Transformers\Productos\FindAllWebTransformer;
 
@@ -41,7 +42,7 @@ class ProductosWebFiltersRebajados
             ->where(function ($query) {
                 $query->where('producto.precioPromocional', '>', 0)
                     ->where('producto.precioPromocional', '<', 9.99)
-                    ->orWhereBetween('producto.precio', [0, 9.99]);
+                    ->where('producto.precio', '>=', DB::raw('producto.precioPromocional'));
             })
             ->where('producto.stock', '>', 0)
             ->where('producto.suspendido', '=', 0)
