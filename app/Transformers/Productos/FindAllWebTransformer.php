@@ -23,7 +23,7 @@ class FindAllWebTransformer extends TransformerAbstract
         } else {
             $urlImagen = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
         }
-
+        echo 8;die;
         return [
             'id' => $producto->producto_id,
             'imagenPrincipal' => $urlImagen,
