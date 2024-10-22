@@ -80,6 +80,7 @@ class MarcaproductoService
         }
 
         $marcaproducto->suspendido = 1;
+        $marcaproducto->MostrarEnWeb = 0;
         $marcaproducto->save();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
