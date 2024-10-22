@@ -27,7 +27,27 @@ class PagoWebService
 
         $productosCarrito = Carritodetalle::where('carrito', $carrito['id'])->get();
 
-        $pago = $this->creditCard($productosCarrito, $request->token, $carrito);
+        $totalPorProducto = $productosCarrito->map(function ($item) {
+            return $item->precio * $item->cantidad;
+        });
+
+        $subtotal = $totalPorProducto->sum();
+
+        $cantidades = $productosCarrito->pluck('cantidad');
+        $cantidad = $cantidades->sum();
+
+        $cupon = Cupondescuento::where('id', $carrito['cupon'])->first();
+
+        $descuentos = '0.00';
+
+        if($cupon){
+            $descuentos = $subtotal * $cupon->descuentoPorcentual / 100;
+        }
+
+        $calculosGenerales = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
+        $total = number_format($calculosGenerales['totalConEnvio'], 2, '', '');
+
+        $pago = $this->creditCard($total, $request->token);
 
         $pagoResponse = $pago->getContent();
 
@@ -40,7 +60,7 @@ class PagoWebService
         if (isset($pago->paid) && $pago->paid) {
 
             /** Guardo pedido**/
-            $pedido = $this->savePedido($carrito['cliente']);
+            $pedido = $this->savePedido($calculosGenerales, $carrito['cliente']);
 
             //GENERAR RECIBO
             $recibo = [
@@ -77,7 +97,7 @@ class PagoWebService
         return response()->json(['error' => $pago], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    public function savePedido($cliente)
+    public function savePedido($calculosGenerales, $cliente)
     {
         $pedido = new Pedido;
         $pedido->fecha = NOW();
@@ -88,8 +108,8 @@ class PagoWebService
         $pedido->invoice = 0;
         $pedido->total = '0.00';
         $pedido->descuentoPorcentual = '0.00';
-        $pedido->descuentoNeto = '0.00';
-        $pedido->totalEnvio = '0.00';
+        $pedido->descuentoNeto = $calculosGenerales['descuentos'];
+        $pedido->totalEnvio = $calculosGenerales['totalEnvio'];
         $pedido->origen = 1;
         $pedido->save();
 
@@ -168,27 +188,27 @@ class PagoWebService
         return $pdf->stream();
     }
 
-    public function creditCard($carritoDetalle, $token, $carrito)
+    public function creditCard($calculo, $token)
     {
 
-        $totalPorProducto = $carritoDetalle->map(function ($item) {
-            return $item->precio * $item->cantidad;
-        });
+        // $totalPorProducto = $carritoDetalle->map(function ($item) {
+        //     return $item->precio * $item->cantidad;
+        // });
 
-        $subtotal = $totalPorProducto->sum();
+        // $subtotal = $totalPorProducto->sum();
 
-        $cantidades = $carritoDetalle->pluck('cantidad');
-        $cantidad = $cantidades->sum();
+        // $cantidades = $carritoDetalle->pluck('cantidad');
+        // $cantidad = $cantidades->sum();
 
-        $cupon = Cupondescuento::where('id', $carrito['cupon'])->first();
-        
-        $descuentos = '0.00';
+        // $cupon = Cupondescuento::where('id', $carrito['cupon'])->first();
 
-        if($cupon){
-            $descuentos = $subtotal * $cupon->descuentoPorcentual / 100;
-        }
-        $calculo = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
-        $calculo = number_format($calculo['totalConEnvio'], 2, '', '');
+        // $descuentos = '0.00';
+
+        // if($cupon){
+        //     $descuentos = $subtotal * $cupon->descuentoPorcentual / 100;
+        // }
+        // $calculo = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
+        // $calculo = number_format($calculo['totalConEnvio'], 2, '', '');
 
         try {
             $ch = curl_init();
@@ -203,7 +223,7 @@ class PagoWebService
             $headers[] = 'Accept: application/json';
             //$headers[] = 'Authorization: Bearer 859c0171-ee8b-7c4b-7a07-3a02288fbc03';
             //$headers[] = 'Authorization: Bearer 557ccda4-98cb-5aa7-5ea5-39ad96096908';
-            $headers[] = 'Authorization: Bearer 5382a5f0-10bb-87b9-c38f-ba0b5466ffa1';
+            $headers[] = 'Authorization: Bearer 5382a5f0-10bb-87b9-c38f-ba0b5466ffa1'; //produccion
             $headers[] = 'idempotency-key ' . $this->gen_uuid();
             $headers[] = 'Content-Type: application/json';
 

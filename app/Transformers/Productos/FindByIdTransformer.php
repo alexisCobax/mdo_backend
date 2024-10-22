@@ -20,11 +20,18 @@ class FindByIdTransformer extends TransformerAbstract
 
                 $imagen = '';
 
-                if(isset($foto->url) && $foto->url==''){
-                    $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
-                }else{
+                // if(isset($foto->url) && $foto->url==''){
+                //     $imagen = env('URL_IMAGENES_PRODUCTOS') . $foto->id . '.jpg';
+                // }else{
+                //     $imagen = $foto->url;
+                // }
+
+                if(isset($foto->url)){
                     $imagen = $foto->url;
+                }else{
+                    $imagen = env('URL_IMAGENES_PRODUCTOS').$foto->id . '.jpg';
                 }
+
                 $imagenes[] = [
                     'id' => $foto->id,
                     'url' => $imagen,
@@ -58,7 +65,8 @@ class FindByIdTransformer extends TransformerAbstract
             'material' => $producto->material,
             //'nombreMaterial' => optional($producto->materiales)->nombre,
             'nombreMaterial' => $producto->material,
-            'estuche' => $resultado = $producto->estuche == 0 ? 'No' : ($producto->estuche == 1 ? 'Si' : 'Si, Genérico'),
+            'estuche' => $producto->estuche,
+            'estucheWeb' => $producto->estuche == 0 ? 'No' : ($producto->estuche == 1 ? 'Si' : 'Si, Genérico'),
             'proveedor' => $producto->proveedor,
             'precio' => $producto->precioPromocional == 0 ? $producto->precio : $producto->precioPromocional,
             'suspendido' => $producto->suspendido,
