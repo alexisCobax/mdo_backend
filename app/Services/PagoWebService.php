@@ -2,21 +2,27 @@
 
 namespace App\Services;
 
-use App\Helpers\CalcTotalHelper;
-use App\Helpers\CarritoHelper;
-use App\Helpers\LogHelper;
+use App\Models\Pedido;
+use App\Models\Recibo;
 use App\Models\Carrito;
+use App\Models\Cliente;
+use App\Models\Producto;
+use App\Helpers\LogHelper;
+use App\Models\Transaccion;
+use Illuminate\Http\Request;
+use App\Models\Pedidodetalle;
+use Illuminate\Http\Response;
+use App\Helpers\CarritoHelper;
 use App\Models\Carritodetalle;
 use App\Models\Cupondescuento;
-use App\Models\Pedido;
-use App\Models\Pedidodetalle;
-use App\Models\Producto;
-use App\Models\Recibo;
-use App\Models\Transaccion;
-use App\Transformers\Pdf\FindByIdTransformer;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Helpers\CalcEnvioHelper;
+use App\Helpers\CalcTotalHelper;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EnvioMailAgradecimientoCompra;
+use App\Transformers\Pdf\FindByIdTransformer;
+use App\Services\ProformaService;
 
 class PagoWebService
 {
@@ -40,7 +46,7 @@ class PagoWebService
 
         $descuentos = '0.00';
 
-        if($cupon){
+        if ($cupon) {
             $descuentos = $subtotal * $cupon->descuentoPorcentual / 100;
         }
 
@@ -53,45 +59,93 @@ class PagoWebService
 
         $pago = json_decode($pagoResponse);
 
+
         /* Guardo Transaccion**/
         $this->saveTransaction($carrito['cliente'], json_encode([]), $pago, $pagoResponse);
 
         /* Si concreto la operacion realizo el guardado de datos **/
         if (isset($pago->paid) && $pago->paid) {
 
-            /** Guardo pedido**/
-            $pedido = $this->savePedido($calculosGenerales, $carrito['cliente']);
+        /** Guardo pedido**/
+        $pedido = $this->savePedido($calculosGenerales, $carrito['cliente']);
 
-            //GENERAR RECIBO
-            $recibo = [
-                'cliente' => $carrito['cliente'],
-                'formaDePago' => 2,
-                'total' => $pago->amount / 100,
-                'observaciones' => 'Pago realizado a traves de la plataforma de clover',
-                'pedido' => $pedido->id,
-                'garantia' => 0,
-                'anulado' => 0,
-                'fecha' => NOW(),
+        /** genero recibo**/
+        $recibo = [
+            'cliente' => $carrito['cliente'],
+            'formaDePago' => 2,
+            'total' => $pago->amount / 100,
+            'observaciones' => 'Pago realizado a traves de la plataforma de clover',
+            'pedido' => $pedido->id,
+            'garantia' => 0,
+            'anulado' => 0,
+            'fecha' => NOW(),
+        ];
+
+        $recibo = Recibo::create($recibo);
+
+        /* Guardo detalle de pedidos **/
+        $this->saveDetallePedido($productosCarrito, $pedido);
+
+        /* Elimino carrito **/
+        $carritoUpdate = Carrito::find($carrito['id']);
+        $carritoUpdate->estado = 1;
+        $carritoUpdate->save();
+
+        if (!$recibo) {
+            return response()->json(['error' => 'Failed to create Recibo'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+
+        /** ENVIO EMAIL **/
+        $cliente = Cliente::where('id', $carrito['cliente'])->first();
+
+
+        /** PARA EMAIL **/
+        //$pedidoId = $pedido->id;
+        $pedidoId = 1234;
+        $datosParaEmail = [
+            "pedidoNumero" => $pedidoId,
+            "totalArticulos" => $cantidad,
+            "subtotal" => $subtotal,
+            "costoEnvio" => CalcEnvioHelper::calcular($cantidad),
+            "total" => $total,
+            "fecha" => date('Y-m-d'),
+            "direccionEnvio" => $cliente->direccionShape,
+            "metodoPago" => 'Tarjeta de crédito'
+
+        ];
+
+        $proformaService = new ProformaService;
+        $proformaService->proformaParaEmail($pedidoId);
+
+        Log::info($datosParaEmail);
+
+        /** Envio por email PDF**/
+        $cuerpo = '';
+        $emailMdo = env('MAIL_COTIZACION_MDO');
+        if ($cliente->email) {
+
+            $destinatarios = [
+                $emailMdo,
+                //$cliente->email,
+                'alexiscobax1@gmail.com'
             ];
+        } else {
+            $destinatarios = [
+                $emailMdo,
+            ];
+        }
 
-            $recibo = Recibo::create($recibo);
+        $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'proforma_'.$pedidoId.'.pdf');
 
-            /* Guardo detalle de pedidos **/
-            $this->saveDetallePedido($productosCarrito, $pedido);
+        // $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
 
-            /* Elimino carrito **/
-            $carritoUpdate = Carrito::find($carrito['id']);
-            $carritoUpdate->estado = 1;
-            $carritoUpdate->save();
+        Mail::to($destinatarios)->send(new EnvioMailAgradecimientoCompra($cuerpo, $rutaArchivoZip, $datosParaEmail));
 
-            if (!$recibo) {
-                return response()->json(['error' => 'Failed to create Recibo'], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
 
-            /* genero y envio el recibo**/
-            //$this->sendProforma($pedido);
+        /**********************************/
 
-            return response()->json(['status' => 200, 'mensaje' => 'El pedido fue generado de forma exitosa'], Response::HTTP_OK);
+        return response()->json(['status' => 200, 'mensaje' => 'El pedido fue generado de forma exitosa'], Response::HTTP_OK);
         }
 
         return response()->json(['error' => $pago], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -190,25 +244,6 @@ class PagoWebService
 
     public function creditCard($calculo, $token)
     {
-
-        // $totalPorProducto = $carritoDetalle->map(function ($item) {
-        //     return $item->precio * $item->cantidad;
-        // });
-
-        // $subtotal = $totalPorProducto->sum();
-
-        // $cantidades = $carritoDetalle->pluck('cantidad');
-        // $cantidad = $cantidades->sum();
-
-        // $cupon = Cupondescuento::where('id', $carrito['cupon'])->first();
-
-        // $descuentos = '0.00';
-
-        // if($cupon){
-        //     $descuentos = $subtotal * $cupon->descuentoPorcentual / 100;
-        // }
-        // $calculo = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
-        // $calculo = number_format($calculo['totalConEnvio'], 2, '', '');
 
         try {
             $ch = curl_init();

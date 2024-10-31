@@ -278,10 +278,10 @@ class FetchProducts extends Command
     public function insertStock()
     {
         $query = "
-        INSERT INTO productos (codigo, nombre, marca, imagen)
+        INSERT INTO producto (codigo, nombre, marca, imagen)
         SELECT t.sku, t.nombre, t.MarcasVehiculo, t.imagen
         FROM stockExterno t
-            LEFT JOIN productos p ON t.sku = p.codigo
+            LEFT JOIN producto p ON t.sku = p.codigo
         WHERE p.codigo IS NULL;
     ";
 

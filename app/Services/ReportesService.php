@@ -27,7 +27,8 @@ class ReportesService
                 DB::raw('stock * costo AS CostoStock'),
                 DB::raw('stock * precio AS PrecioStock')
             )
-            ->where('stock', '>', 0);
+            ->where('stock', '>', 0)
+            ->where('proveedorExterno', '!=', 'nywd'); 
         if (isset($request->marca)) {
             $query->where('marca', $request->marca);
         }
@@ -75,22 +76,29 @@ class ReportesService
     {
         try {
             $sql = "SELECT
-                id AS idProducto,
-                codigo,
-                nombre AS nombreProducto,
-                color,
-                stock,
-                costo,
-                precio,
-                stock * costo AS CostoStock,
-                stock * precio AS PrecioStock
+                producto.id AS idProducto,
+                producto.codigo,
+                producto.nombre AS nombreProducto,
+                tipoproducto.nombre AS tipoProducto,
+                producto.color,
+                producto.stock,
+                producto.costo,
+                producto.precio,
+                producto.stock * costo AS CostoStock,
+                producto.stock * precio AS PrecioStock
             FROM
                 producto
+            LEFT JOIN
+                tipoproducto
+            ON
+                 producto.tipo=tipoproducto.id
             WHERE
-                stock > 0";
+                producto.stock > 0
+            AND
+            producto.proveedorExterno != 'nywd'";
 
             if (isset($request->marca)) {
-                $sql .= " AND marca = ?";
+                $sql .= " AND producto.marca = ?";
                 $stock = DB::select($sql, [$request->marca]);
             } else {
                 $stock = DB::select($sql);
@@ -102,7 +110,7 @@ class ReportesService
             }, $stock);
 
             // Definir las cabeceras y el orden deseado
-            $cabeceras = ['idProducto', 'codigo', 'nombreProducto', 'color', 'stock', 'costo', 'precio', 'CostoStock', 'PrecioStock'];
+            $cabeceras = ['idProducto', 'codigo', 'nombreProducto', 'tipoProducto' ,'color', 'stock', 'costo', 'precio', 'CostoStock', 'PrecioStock'];
 
             // Generar el archivo Excel con la función genérica
             $response = ArrayToXlsxHelper::getXlsx($stock, $cabeceras);
@@ -126,15 +134,15 @@ class ReportesService
 
             // Añadir totales al final de las columnas correspondientes
             $sheet->setCellValue('A' . ($currentRow), 'TOTALES');
-            $sheet->setCellValue('E' . ($currentRow), $totalStock);
-            $sheet->setCellValue('H' . ($currentRow), $totalCostoStock);
-            $sheet->setCellValue('I' . ($currentRow), $totalPrecioStock);
+            $sheet->setCellValue('F' . ($currentRow), $totalStock);
+            $sheet->setCellValue('I' . ($currentRow), $totalCostoStock);
+            $sheet->setCellValue('J' . ($currentRow), $totalPrecioStock);
 
             // Poner en negrita las celdas de los totales
             $sheet->getStyle('A' . ($currentRow))->getFont()->setBold(true);
-            $sheet->getStyle('E' . ($currentRow))->getFont()->setBold(true);
-            $sheet->getStyle('H' . ($currentRow))->getFont()->setBold(true);
+            $sheet->getStyle('F' . ($currentRow))->getFont()->setBold(true);
             $sheet->getStyle('I' . ($currentRow))->getFont()->setBold(true);
+            $sheet->getStyle('J' . ($currentRow))->getFont()->setBold(true);
 
             // Alinear el contenido de las columnas de precios a la izquierda
             $sheet->getStyle('F2:F' . ($currentRow))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
