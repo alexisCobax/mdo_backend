@@ -31,9 +31,9 @@ class PedidodetalleService
     public function findByPedidoId(Request $request)
 {
     $pedidoDetalle = Pedidodetalle::where('pedido', $request->id)
-        ->join('productos', 'pedidodetalle.producto', '=', 'productos.id')
-        ->orderBy('productos.nombre', 'ASC')
-        ->get(['pedidodetalle.*', 'productos.nombre as productoNombre', 'productos.codigo as productoCodigo', 'productos.costo as productoCosto']);
+        ->join('producto', 'pedidodetalle.producto', '=', 'producto.id')
+        ->orderBy('producto.nombre', 'ASC')
+        ->get(['pedidodetalle.*', 'producto.nombre as productoNombre', 'producto.codigo as productoCodigo', 'producto.costo as productoCosto']);
 
     $pedidoDetalleConProductos = $pedidoDetalle->map(function ($detalle) {
         return [

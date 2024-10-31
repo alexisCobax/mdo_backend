@@ -269,9 +269,9 @@ class InvoiceService
         UNION
         SELECT
             NULL as id,
-            pedidodetallenn.cantidad as qordered,
-            pedidodetallenn.cantidad as qshipped,
-            pedidodetallenn.cantidad as qborder,
+            sum(pedidodetallenn.cantidad) as qordered,
+            sum(pedidodetallenn.cantidad) as qshipped,
+            sum(pedidodetallenn.cantidad) as qborder,
             'NN' as itemNumber,
             pedidodetallenn.descripcion as descripcion,
             pedidodetallenn.precio as listPrice,
@@ -279,6 +279,7 @@ class InvoiceService
             {$invoice->id} as invoice
         FROM pedidodetallenn
         WHERE pedidodetallenn.pedido = {$request->id}
+        GROUP BY pedidodetallenn.descripcion,pedidodetallenn.precio
     ";
 
         try {

@@ -40,16 +40,12 @@ class FindByIdTransformer extends TransformerAbstract
             }
         }
 
-        if($producto->imagenPrincipal!=0){
-            $imagen = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
+        $imagenPrincipal = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
 
-            if(isset($imagen->url) && $imagen->url==NULL){
-                $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $imagen->id . '.jpg';
-            }else{
-                $urlImagen = $imagen->url;
-            }
+        if(isset($imagenPrincipal->url)){
+            $urlImagen = $imagenPrincipal->url;
         }else{
-            $urlImagen = env('URL_IMAGENES_PRODUCTOS').'0.jpg';
+            $urlImagen = env('URL_IMAGENES_PRODUCTOS').$producto->imagenPrincipal . '.jpg';
         }
 
 

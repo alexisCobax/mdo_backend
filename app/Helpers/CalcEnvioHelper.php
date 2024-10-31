@@ -12,25 +12,24 @@ class CalcEnvioHelper
 
         $carrito = CarritoHelper::getCarrito();
 
-        $cliente = Cliente::where('id', $carrito['cliente'])->where('tipoDeEnvio', 2)->where('paisShape', 224)->first();
+        $cliente = Cliente::where('id', $carrito['cliente'])->first();
 
+        $cantidadCajas = ceil($cantidad / env('UNIDADES_X_CAJA'));
         $totalEnvio = 0;
-
-        if ($cliente) {
+        if($cliente->tipoDeEnvio == 2){
+            
+            $totalEnvio = env('ENVIO_USA')*$cantidadCajas;
 
             $zipCode = Zipcode::where('zip', $cliente->cpShape)->first();
 
             if ($zipCode) {
 
-                $cantidadCajas = ceil($cantidad / env('UNIDADES_X_CAJA'));
                 $totalEnvio = $cantidadCajas * $zipCode->precio;
 
                 return $totalEnvio;
             }
 
-            return 0;
+            return $totalEnvio;
         }
-
-        return 0;
     }
 }

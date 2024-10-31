@@ -2,11 +2,12 @@
 
 namespace App\Transformers\Carrito;
 
-use App\Helpers\CalcHelper;
-use App\Helpers\CalcTotalHelper;
 use App\Models\Carrito;
-use App\Models\Carritodetalle;
 use App\Models\Cliente;
+use App\Helpers\CalcHelper;
+use App\Models\Carritodetalle;
+use App\Models\Cupondescuento;
+use App\Helpers\CalcTotalHelper;
 use App\Services\DescuentosService;
 use Illuminate\Support\Facades\Auth;
 use League\Fractal\TransformerAbstract;
@@ -25,6 +26,17 @@ class FindAllTransformer extends TransformerAbstract
         $descuentosService = new DescuentosService;
 
         $carrito = Carrito::where('id', $id)->first();
+
+        $cupon = Cupondescuento::where('id', $carrito->cupon)
+        ->whereDate('inicio', '<=', date('Y-m-d'))
+        ->whereDate('vencimiento', '>=', date('Y-m-d'))
+        ->where('stock', '>', 0)
+        ->first();
+
+        if (!$cupon) {
+            $carrito->cupon = 0;
+            $carrito->save();
+        }
 
         $response = $detalle->map(function ($detalle) {
 

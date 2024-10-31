@@ -106,26 +106,27 @@ class DescuentosService
     {
         $carrito = CarritoHelper::getCarrito();
 
-        $cupon = Cupondescuento::where('nombre', $request->cupon)->first();
+        $cupon = Cupondescuento::where('nombre', $request->cupon)
+        ->whereDate('inicio', '<=', date('Y-m-d'))
+        ->whereDate('vencimiento', '>=', date('Y-m-d'))
+        ->where('stock', '>', 0)
+        ->first();
+
+        $carrito = Carrito::where('id', $carrito['id'])->first();
 
         if (!$cupon) {
-
+            $carrito->cupon = 0;
+            $carrito->save();
             return response()->json(['mensaje' => 'El cupón no existe', ' status' => 404], Response::HTTP_NOT_FOUND);
         }
 
         try {
-
-            $carrito = Carrito::where('id', $carrito['id'])->first();
-            if ($carrito->cupon) {
-                return response()->json(['cupon' => $cupon->id, 'status' => 404], Response::HTTP_OK);
-            } else {
                 $carrito->cupon = $cupon->id;
                 $carrito->save();
-            }
 
-            return response()->json(['cupon' => $cupon->id, 'status' => 200], Response::HTTP_NOT_FOUND);
+            return response()->json(['cupon' => $cupon->id, 'status' => 200], Response::HTTP_ACCEPTED);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ocurrió un error al obtener los cupones'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Ocurrió un error al obtener los cupones: ',$e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
