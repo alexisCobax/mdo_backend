@@ -101,8 +101,7 @@ class PagoWebService
 
 
         /** PARA EMAIL **/
-        //$pedidoId = $pedido->id;
-        $pedidoId = 1234;
+        $pedidoId = $pedido->id;
         $datosParaEmail = [
             "pedidoNumero" => $pedidoId,
             "totalArticulos" => $cantidad,
@@ -127,12 +126,13 @@ class PagoWebService
 
             $destinatarios = [
                 $emailMdo,
-                //$cliente->email,
-                'alexiscobax1@gmail.com'
+                $cliente->email,
+                'doralice@mayoristasdeopticas.com'
             ];
         } else {
             $destinatarios = [
                 $emailMdo,
+                'doralice@mayoristasdeopticas.com'
             ];
         }
 
