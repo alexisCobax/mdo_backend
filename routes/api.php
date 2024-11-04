@@ -402,6 +402,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     Route::post('/invoice', [InvoiceController::class, 'create']);
     Route::put('/invoice/regenerar/{id}', [InvoiceController::class, 'regenerate']);
     Route::put('/invoice/{id}', [InvoiceController::class, 'update']);
+    Route::put('/invoice/update/send/{id}', [InvoiceController::class, 'updateSend']);
     Route::delete('/invoice/{id}', [InvoiceController::class, 'delete']);
 
     /* Invoicedetalle Routes **/
@@ -917,12 +918,12 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
     Route::get('/reportes/recibos/list', [ReportesController::class, 'recibosList']);
 
 
-    // Route::get('/test/email',function(){
+    Route::get('/test/email',function(){
 
-    //     Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
-    //     return 'Correo de prueba enviado';
+        Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
+        return 'Correo de prueba enviado';
 
-    // });
+    });
 
     Route::post('/test/ghl', [GoHighLevelController::class, 'getRefreshToken']);
 

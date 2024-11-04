@@ -74,6 +74,18 @@ class InvoiceController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  use App\Services\InvoiceService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function updateSend(Request $request)
+    {
+        return $this->service->updateSend($request);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request

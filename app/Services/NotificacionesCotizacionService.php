@@ -42,7 +42,7 @@ class NotificacionesCotizacionService
                     break;
                 case 2:
 
-                    $view = 'mdo.dia2';
+                    $view = 'mdo.notificaciones.cotizaciones.dia2';
 
                     $subject = 'Cotizacion';
 
