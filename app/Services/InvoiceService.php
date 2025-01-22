@@ -168,47 +168,43 @@ class InvoiceService
                 'DescuentoPorcentual' => $pedido->DescuentoPorcentual,
                 'UPS' => '',
                 'TotalEnvio' => $pedido->TotalEnvio,
-                'codigoUPS' => $request->codigoUPS,
+                'codigoUPS' => "'.$request->codigoUPS.'",
                 'subTotal' => $subTotal,
                 'DescuentoPorPromociones' => $pedido->DescuentoPromociones,
                 'IdActiveCampaign' => 0,
             ]);
 
             //Busco los detalles
-            $SQL = "INSERT INTO `invoicedetalle`
-                (`qordered`,
-                `qshipped`,
-                `qborder`,
-                `itemNumber`,
-                `Descripcion`,
-                `listPrice`,
-                `netPrice`,
-                `invoice`)
-                SELECT cantidad AS qordered,
-                    cantidad AS qshipped,
-                    cantidad AS qborder,
-                    producto.codigo AS itemNumber,
-                    producto.nombre AS descripcion,
-                    pedidodetalle.precio AS listPrice,
-                    pedidodetalle.precio AS netPrice,
-                    {$invoiceId} AS invoice
-                FROM pedidodetalle
-                    LEFT JOIN producto ON producto.id=pedidodetalle.producto
-                    LEFT JOIN marcaproducto ON producto.marca=marcaproducto.id
-                WHERE pedido=?
-                UNION
-                SELECT cantidad AS qordered,
-                    cantidad AS qshipped,
-                    cantidad AS qborder,
-                    'NN' AS itemNumber,
-                    descripcion,
-                    precio AS listPrice,
-                    precio AS netPrice,
-                    {$invoiceId} AS invoice
-                FROM pedidodetallenn
-                WHERE pedido=?;";
+            $SQL = "INSERT INTO invoicedetalle (id, qordered, qshipped, qborder, itemNumber, descripcion, listPrice, netPrice, invoice)
+                    SELECT
+                        NULL as id,
+                        pedidodetalle.cantidad as qordered,
+                        pedidodetalle.cantidad as qshipped,
+                        pedidodetalle.cantidad as qborder,
+                        codigo as itemNumber,
+                        producto.nombre as descripcion,
+                        pedidodetalle.precio as listPrice,
+                        pedidodetalle.precio as netPrice,
+                        {$invoiceId} as invoice
+                    FROM pedidodetalle
+                    LEFT JOIN producto ON producto.id = pedidodetalle.producto
+                    WHERE pedidodetalle.pedido = {$pedido->id}
+                    UNION
+                    SELECT
+                        NULL as id,
+                        sum(pedidodetallenn.cantidad) as qordered,
+                        sum(pedidodetallenn.cantidad) as qshipped,
+                        sum(pedidodetallenn.cantidad) as qborder,
+                        'NN' as itemNumber,
+                        pedidodetallenn.descripcion as descripcion,
+                        pedidodetallenn.precio as listPrice,
+                        pedidodetallenn.precio as netPrice,
+                        {$invoiceId} as invoice
+                    FROM pedidodetallenn
+                    WHERE pedidodetallenn.pedido = {$pedido->id}
+                    GROUP BY pedidodetallenn.descripcion,pedidodetallenn.precio";
 
-            DB::select($SQL, [$pedido->id, $pedido->id]);
+            DB::select($SQL);
 
             $pedido->estado = 2; //pagado
             $pedido->invoice = $invoiceId;
@@ -485,7 +481,7 @@ class InvoiceService
             "totalArticulos"=>$totalArticulos,
             "subtotal"=>$request->subTotal,
             "total"=>$request->total,
-            "codigoSeguimiento"=>$request->codigoSeguimiento,
+            "codigoSeguimiento"=>"'.$request->codigoSeguimiento.'",
             "fechaPedido"=>$request->fechaOrden,
             "direccionEnvio"=>$request->shipTo,
             "metodoPago"=>"Tarjeta de Crédito",

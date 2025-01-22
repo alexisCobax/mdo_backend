@@ -52,8 +52,8 @@ class PagoWebService
 
         $calculosGenerales = CalcTotalHelper::calcular($subtotal, $cantidad, $descuentos);
         $total = number_format($calculosGenerales['totalConEnvio'], 2, '', '');
-
-        $pago = $this->creditCard($total, $request->token);
+        $nombreCliente = $carrito['clienteNombre'] ?? '';
+        $pago = $this->creditCard($total, $request->token, $nombreCliente);
 
         $pagoResponse = $pago->getContent();
 
@@ -107,6 +107,7 @@ class PagoWebService
             "totalArticulos" => $cantidad,
             "subtotal" => $subtotal,
             "costoEnvio" => CalcEnvioHelper::calcular($cantidad),
+            "descuentos" => isset($descuentos) && !empty($descuentos) ? $descuentos : '',
             "total" => $total,
             "fecha" => date('Y-m-d'),
             "direccionEnvio" => $cliente->direccionShape,
@@ -144,6 +145,9 @@ class PagoWebService
 
 
         /**********************************/
+
+        $ghl = new GoHighLevelService();
+        $ghl->carritoEstado([$cliente->email]);
 
         return response()->json(['status' => 200, 'mensaje' => 'El pedido fue generado de forma exitosa'], Response::HTTP_OK);
         }
@@ -242,17 +246,24 @@ class PagoWebService
         return $pdf->stream();
     }
 
-    public function creditCard($calculo, $token)
+    public function creditCard($calculo, $token, $nombreCliente)
     {
 
         try {
             $ch = curl_init();
 
+            $data = [
+                "amount" => $calculo,
+                "currency" => "usd",
+                "source" => $token,
+                "description" => $nombreCliente
+            ];
+
             //curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_URL, 'https://scl.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $calculo . ',"currency":"usd","source":"' . $token . '"}');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
             $headers = [];
             $headers[] = 'Accept: application/json';

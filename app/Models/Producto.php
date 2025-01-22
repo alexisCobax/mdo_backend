@@ -131,6 +131,7 @@ class Producto extends Model
         'colorPrincipal',
         'colorSecundario',
         'nuevo',
+        'fechaAlta'
     ];
 
     //Relationships

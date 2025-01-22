@@ -7,6 +7,7 @@ use App\Models\Pedidodetalle;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Services\PedidoService;
 
 class PedidodetalleService
 {
@@ -161,6 +162,9 @@ class PedidodetalleService
     $producto->stock = $producto->stock - $request->cantidad;
     $producto->save();
 
+    $pedidoService = new PedidoService();
+    $pedidoService->calcularTotal($request->pedido);
+
     if (!$producto) {
         return response()->json(['error' => 'Failed to update Producto'], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
@@ -179,6 +183,9 @@ class PedidodetalleService
 
         $pedidodetalle->update($request->all());
         $pedidodetalle->refresh();
+
+        $pedidoService = new PedidoService();
+        $pedidoService->calcularTotal($request->pedido);
 
         return response()->json($pedidodetalle, Response::HTTP_OK);
     }
@@ -212,6 +219,9 @@ class PedidodetalleService
         $pedidodetalle->precio = $request->precio;
         $pedidodetalle->save();
 
+        $pedidoService = new PedidoService();
+        $pedidoService->calcularTotal($request->pedido);
+
         return response()->json($pedidodetalle, Response::HTTP_OK);
     }
 
@@ -229,6 +239,9 @@ class PedidodetalleService
         if (!$pedidodetalle) {
             return response()->json(['error' => 'Pedidodetalle not found'], Response::HTTP_NOT_FOUND);
         }
+
+        $pedidoService = new PedidoService();
+        $pedidoService->calcularTotal($request->pedido);
 
         $pedidodetalle->delete();
 

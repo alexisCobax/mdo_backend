@@ -5,6 +5,7 @@ namespace App\Transformers\Carrito;
 use App\Models\Carrito;
 use App\Models\Cliente;
 use App\Helpers\CalcHelper;
+use App\Models\Fotoproducto;
 use App\Models\Carritodetalle;
 use App\Models\Cupondescuento;
 use App\Helpers\CalcTotalHelper;
@@ -40,6 +41,14 @@ class FindAllTransformer extends TransformerAbstract
 
         $response = $detalle->map(function ($detalle) {
 
+            $imagenPrincipal = Fotoproducto::where('id',optional($detalle->productos)->imagenPrincipal)->first();
+
+            if(isset($imagenPrincipal->url)){
+                $imagen = $imagenPrincipal->url;
+            }else{
+                $imagen = env('URL_IMAGENES_PRODUCTOS').optional($detalle->productos)->imagenPrincipal . '.jpg';
+            }
+
             $subTotal = CalcHelper::ListProduct(optional($detalle->productos)->precio, optional($detalle->productos)->precioPromocional);
 
             $producto = [
@@ -47,7 +56,7 @@ class FindAllTransformer extends TransformerAbstract
                 'nombre' => optional($detalle->productos)->nombre,
                 'marcaNombre' => optional(optional($detalle->productos)->marcas)->nombre,
                 'precio' => $subTotal,
-                'imagen' => optional($detalle->productos)->imagenPrincipal,
+                'imagen' => $imagen,
                 'color' => optional(optional($detalle->productos)->colores)->nombre,
                 'tamano' => optional($detalle->productos)->tamano,
             ];

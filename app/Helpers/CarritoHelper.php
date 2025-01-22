@@ -21,6 +21,7 @@ class CarritoHelper
                 'id' => '',
                 'cupon' => 0,
                 'cliente' => $cliente->id,
+                'clienteNombre' => $cliente->nombre,
                 'usuario' => $user['id'],
             ];
         }
@@ -29,6 +30,7 @@ class CarritoHelper
             'id' => $carrito->id,
             'cupon' => $carrito->cupon,
             'cliente' => $cliente->id,
+            'clienteNombre' => $cliente->nombre,
             'usuario' => $user['id'],
         ];
     }

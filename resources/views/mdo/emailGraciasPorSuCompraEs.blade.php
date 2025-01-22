@@ -47,6 +47,12 @@
                             <td style="padding: 8px; color: #b7b7b7;">Envío:</td>
                             <td style="padding: 8px; color: #b7b7b7;">${{$datos['costoEnvio']}}</td>
                         </tr>
+                        @if(!empty($datos['descuentos']))
+                        <tr>
+                            <td style="padding: 8px; color: #b7b7b7;">Descuentos:</td>
+                            <td style="padding: 8px; color: #b7b7b7;">${{$datos['descuentos']}}</td>
+                        </tr>
+                    @endif
                         <tr>
                             <td style="padding: 8px; font-weight: bold; color: #b7b7b7;">Total:</td>
                             <td style="padding: 8px; font-weight: bold; color: #b7b7b7;">${{$datos['total']}}</td>
