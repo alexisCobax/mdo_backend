@@ -20,10 +20,12 @@ class CotizacionesFilters
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
-
+        $query->where('id', '>', 4087);
         $query->clienteFiltro($nombreCliente);
         $query->id($id);
         $query->desdeHasta($desde,$hasta);
+
+
 
         // Realiza la paginación de la consulta
         $data = $query->orderBy('id', 'desc')

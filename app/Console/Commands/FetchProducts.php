@@ -47,6 +47,8 @@ class FetchProducts extends Command
             Log::info('Empezando a Procesar: ' . date('Y-m-d H:i:s'));
             $this->output->progressStart($totalResults);
 
+            Log::info(['totalResults' => $data['TotalResults'], 'timestamp' => date('Y-m-d H:i:s')]);
+
             do {
                 foreach ($data['Products'] as $product) {
                     $this->saveProductToDatabase($product);
@@ -195,6 +197,8 @@ class FetchProducts extends Command
                     $costo = $producto->Price;
                     $precio = number_format($producto->Price + ($producto->Price * 0.70), 2); //este 70% es a pedido del cliente
 
+                    Log::info("producto insertado: ".$producto->Upc . now());
+
                     $SQL = 'INSERT INTO
                         producto
                         (nombre,
@@ -206,8 +210,9 @@ class FetchProducts extends Command
                         color,
                         tamano,
                         costo,
-                        proveedorExterno)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                        proveedorExterno,
+                        fechaAlta)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
                     DB::insert($SQL, [
                         $nombre,
                         $marcaId,
@@ -218,7 +223,8 @@ class FetchProducts extends Command
                         $color,
                         $size,
                         $costo,
-                        "nywd"
+                        "nywd",
+                        date('Y-m-d')
                     ]);
 
                     $idProducto = DB::getPdo()->lastInsertId();
@@ -250,9 +256,9 @@ class FetchProducts extends Command
                 LEFT JOIN stockExterno ON stockExterno.Upc = producto.codigo
                 LEFT JOIN marcaproducto ON stockExterno.Brand=marcaproducto.nombre
                 SET producto.stock = stockExterno.availableQuantity, producto.proveedorExterno="nywd",
-                producto.borrado=NULL, producto.marca=marcaproducto.id
+                producto.borrado=NULL, producto.marca=marcaproducto.id, producto.ultimoIngresoDeMercaderia=?
                 WHERE stockExterno.Upc IS NOT NULL
-            ');
+            ', [date('Y-m-d')]);
             });
 
             return response()->json(['success' => true, 'message' => 'Precios y stock actualizados correctamente.'], 200);

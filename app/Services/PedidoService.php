@@ -107,7 +107,7 @@ class PedidoService
 
             try {
                 Pedidodescuentospromocion::insert($descuentosPromo->toArray());
-                Log::info('pedido. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
+                Log::info('pedido. ' . date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
             } catch (Error $e) {
                 return response()->json($e->getMessage());
             }
@@ -143,7 +143,7 @@ class PedidoService
         if (!$pedido) {
             return response()->json(['error' => 'Failed to create Pedido'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        Log::info('Nuevo pedido. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
+        Log::info('Nuevo pedido. ' . date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
         return response()->json($pedido, Response::HTTP_OK);
     }
 
@@ -186,16 +186,16 @@ class PedidoService
         $pedido->save();
 
 
-            $detalleNN = collect($request->detalleNN)->map(function ($dtNN) use ($pedido) {
-                return [
-                    'descripcion' => $dtNN['descripcion'],
-                    'precio' => $dtNN['precio'],
-                    'pedido' => $pedido->id,
-                    'cantidad' => $dtNN['cantidad'],
-                ];
-            });
+        $detalleNN = collect($request->detalleNN)->map(function ($dtNN) use ($pedido) {
+            return [
+                'descripcion' => $dtNN['descripcion'],
+                'precio' => $dtNN['precio'],
+                'pedido' => $pedido->id,
+                'cantidad' => $dtNN['cantidad'],
+            ];
+        });
 
-            Pedidodetallenn::where('pedido', $pedido->id)->delete();
+        Pedidodetallenn::where('pedido', $pedido->id)->delete();
 
         if ($request->detalleNN) {
             Pedidodetallenn::insert($detalleNN->toArray());
@@ -215,11 +215,13 @@ class PedidoService
 
             try {
                 Pedidodescuentospromocion::insert($descuentosPromo->toArray());
-                Log::info('Update pedido. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
+                Log::info('Update pedido. ' . date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
             } catch (Error $e) {
                 return response()->json($e->getMessage());
             }
         }
+
+        $this->calcularTotal($request->pedido);
 
         return response()->json($pedido, Response::HTTP_OK);
     }
@@ -261,5 +263,36 @@ class PedidoService
         $pedido->save();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+
+    public function calcularTotal($pedidoId)
+    {
+
+        $SQL = "UPDATE
+                pedido
+                LEFT JOIN (
+                    SELECT pedidodetalle.pedido, SUM(pedidodetalle.precio * pedidodetalle.cantidad) AS total
+                    FROM pedidodetalle
+                    GROUP BY pedidodetalle.pedido
+                ) AS detalle ON detalle.pedido = pedido.id
+                LEFT JOIN (
+                    SELECT pedidodetallenn.pedido, SUM(pedidodetallenn.precio * pedidodetallenn.cantidad) AS total
+                    FROM pedidodetallenn
+                    GROUP BY pedidodetallenn.pedido
+                ) AS detallenn ON detallenn.pedido = pedido.id
+                SET   pedido.total =   (COALESCE(detalle.total, 0) + COALESCE(detallenn.total, 0))
+                    - pedido.DescuentoNeto
+                    - pedido.descuentoPromociones
+                    + pedido.totalEnvio
+                    - ((pedido.DescuentoPorcentual / 100) * (COALESCE(detalle.total, 0) + COALESCE(detallenn.total, 0)))
+                WHERE pedido.id = :pedidoId";
+
+        $result = DB::update($SQL, ['pedidoId' => $pedidoId]);
+
+        if (!empty($result)) {
+            return true;
+        } else {
+            return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
+        }
     }
 }

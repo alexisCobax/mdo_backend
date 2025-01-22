@@ -69,6 +69,7 @@ class CompraService
         $precio = 0;
         if ($request->productos) {
             foreach ($request->productos as $p) {
+                Producto::where('id', $p['producto'])->update(['borrado' => null]);
                 $precio += $p['precioUnitario'] * $p['cantidad'];
                 $compraDetalle = new Compradetalle();
                 $compraDetalle->compra = $compraId;

@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Usuario;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\Configuracion;
 use App\Helpers\ProtegerClaveHelper;
@@ -918,10 +920,312 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
     Route::get('/reportes/recibos/list', [ReportesController::class, 'recibosList']);
 
 
-    Route::get('/test/email',function(){
 
-        Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
-        return 'Correo de prueba enviado';
+    Route::get('/test/email',function(){
+// $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
+
+// $SQL = "
+//     SELECT
+//         producto.id AS productoId,
+//         producto.color,
+//         producto.nombre AS nombreProducto,
+//         marcaproducto.nombre AS nombreMarca,
+//         COALESCE(
+//             fotoproducto.url,
+//             CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+//         ) AS imagen
+//     FROM producto
+//     LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+//     LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+//     WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355, 
+//     72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023, 
+//     72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946, 
+//     74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252, 
+//     62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084, 
+//     65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718, 
+//     65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650, 
+//     74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678, 
+//     74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751, 
+//     74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809, 
+//     74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847, 
+//     74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875, 
+//     74878, 74881)
+//     ORDER BY producto.precio ASC";
+
+// $productos = DB::select($SQL);
+
+// $html = '<table style="width:100%; border-collapse:collapse;">'; // Inicia la tabla principal
+// $totalProductos = count($productos);
+
+// // Estilos CSS inline
+// $styleContainer = 'width: 100%; max-width: 600px; margin: 0 auto; text-align: center;';
+// $styleRow = 'width: 100%; display: table-row;';
+// $styleColumn = 'width: 33.33%; display: table-cell; padding: 10px; text-align: center;';
+// $styleImg = 'max-width: 100%; height: auto; display: block; margin: 0 auto;';
+// $styleTitle = 'font-size: 16px; font-weight: bold; color: #333; text-decoration: none; margin-top: 8px;';
+// $styleDescription = 'font-size: 14px; color: #666; margin: 5px 0; text-align: center;';
+
+// foreach ($productos as $index => $producto) {
+//     if ($index % 3 === 0) {
+//         $html .= '<tr style="' . $styleRow . '">';
+//     }
+
+//     $html .= '<td style="' . $styleColumn . '">
+//                 <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '">
+//                     <img src="' . $producto->imagen . '" alt="' . $producto->nombreProducto . '" style="' . $styleImg . '" width="120">
+//                 </a>
+//                 <br/>
+//                 <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '" style="' . $styleTitle . '">
+//                     ' . $producto->nombreMarca . '
+//                 </a>
+//                 <br/>
+//                 <p style="' . $styleDescription . '">' . $producto->nombreProducto . ' | ' . $producto->color . '</p>
+//               </td>';
+
+//     if (($index + 1) % 3 === 0 || $index + 1 === $totalProductos) {
+//         $html .= '</tr>';
+//     }
+// }
+
+// $html .= '</table>'; // Cierra la tabla principal
+
+// $payload = ["product" => $html];
+
+// $response = Http::post(
+//     'https://services.leadconnectorhq.com/hooks/40UecLU7dZ4KdLepJ7UR/webhook-trigger/3ee8c15e-7d8e-4149-b1a0-76414a16dd08',
+//     $payload
+// );
+
+// if ($response->successful()) {
+//     return response()->json(['status' => 'success', 'message' => 'Productos enviados correctamente.']);
+// } else {
+//     return response()->json(['status' => 'error', 'message' => 'Error al enviar los productos.', 'details' => $response->body()]);
+// }
+// });
+
+
+$urlImagenes = env('URL_IMAGENES_PRODUCTOS');
+
+$SQL = "
+    SELECT
+        producto.id AS productoId,
+        producto.color,
+        producto.nombre AS nombreProducto,
+        marcaproducto.nombre AS nombreMarca,
+        COALESCE(
+            fotoproducto.url,
+            CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+        ) AS imagen
+    FROM producto
+    LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+    LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+    WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355, 
+    72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023, 
+    72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946, 
+    74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252, 
+    62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084, 
+    65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718, 
+    65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650, 
+    74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678, 
+    74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751, 
+    74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809, 
+    74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847, 
+    74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875, 
+    74878, 74881)
+    ORDER BY producto.precio ASC";
+
+$productos = DB::select($SQL);
+
+$html = '<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Arrivals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 10px;
+        }
+
+        .product-item {
+            width: calc(33.333% - 10px); /* 3 columnas con espacio entre ellas */
+            box-sizing: border-box;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .product-item img {
+            width: 120px;
+            height: auto;
+            border: 0;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .product-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #607C8B;
+            text-decoration: none;
+        }
+
+        .product-description {
+            font-size: 12px;
+            color: #6C757B;
+        }
+
+        .footer {
+            background-color: #354449;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .footer div {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="container" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 650px;">
+        <!-- Header -->
+        <tr>
+            <td>
+                <img src="https://mayoristasdeopticas.com/tienda/assets/imgs/logos/logo-ngo.png" alt="Logo"
+                    style="width: 100%; height: auto;">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="https://mayoristasdeopticas.com/tienda/" target="_blank">
+                    <img src="https://phpstack-1091339-3819555.cloudwaysapps.com/storage/newArrivalsBanner.png"
+                        alt="New Arrivals">
+                </a>
+            </td>
+        </tr>
+
+        <!-- Productos -->
+        <tr>
+            <td>';
+
+$html .= '<table style="width:100%; border-collapse:collapse;">'; // Inicia la tabla principal
+$totalProductos = count($productos);
+
+// Estilos CSS inline
+$styleRow = 'width: 100%; display: table-row;';
+$styleColumn = 'width: 33.33%; display: table-cell; padding: 10px; text-align: center;';
+$styleImg = 'max-width: 100%; height: auto; display: block; margin: 0 auto;';
+$styleTitle = 'font-size: 16px; font-weight: bold; color: #333; text-decoration: none; margin-top: 8px;';
+$styleDescription = 'font-size: 14px; color: #666; margin: 5px 0; text-align: center;';
+
+foreach ($productos as $index => $producto) {
+    if ($index % 3 === 0) {
+        $html .= '<tr style="' . $styleRow . '">';
+    }
+
+    $html .= '<td style="' . $styleColumn . '">
+                <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '">
+                    <img src="' . $producto->imagen . '" alt="' . $producto->nombreProducto . '" style="' . $styleImg . '" width="120">
+                </a>
+                <br/>
+                <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '" style="' . $styleTitle . '">
+                    ' . $producto->nombreMarca . '
+                </a>
+                <br/>
+                <p style="' . $styleDescription . '">' . $producto->nombreProducto . ' | ' . $producto->color . '</p>
+              </td>';
+
+    if (($index + 1) % 3 === 0 || $index + 1 === $totalProductos) {
+        $html .= '</tr>';
+    }
+}
+
+$html .= '</table>'; // Cierra la tabla principal
+
+$html .= '</td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td class="footer">
+                <div>2618 NW 112th Ave. Miami, FL, 33172, EE.UU.</div>
+                <div>+1 (305) 513-9177 / +1 (305) 513-9191</div>
+                <div>Whatsapp servicio al cliente: +7868000990</div>
+                <div>Ventas: +1 (305) 316-8267</div>
+            </td>
+        </tr>
+                <tr>
+            <td style="text-align:center">
+               <a href="{{email.unsubscribe_link}}">Unsubscribe</a>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>';
+
+// Imprimir el HTML generado en el navegador
+
+// Mostrar el HTML como texto plano escapado
+echo '<pre>' . htmlspecialchars($html) . '</pre>';
+
+
+    //     Route::get('/test/email',function(){
+
+    //         $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
+    
+    //         $SQL = "
+    //             SELECT
+    //                 producto.id AS productoId,
+    //                 producto.color,
+    //                 producto.nombre AS nombreProducto,
+    //                 marcaproducto.nombre AS nombreMarca,
+    //                 COALESCE(
+    //                     fotoproducto.url,
+    //                     CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+    //                 ) AS imagen
+    //             FROM producto
+    //             LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+    //             LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+    //             ORDER BY producto.id DESC
+    //             LIMIT 10";
+    
+    // // Realiza la consulta a la base de datos
+    // //$productos = DB::select('SELECT producto.color, producto.nombre AS nombreProducto, marcaproducto.nombre AS nombreMarca FROM producto LEFT JOIN marcaproducto ON producto.marca=marcaproducto.id LIMIT 10');
+    
+    // $productos = DB::select($SQL);
+    
+    // return ['product'=>$productos];
+    // // // Convierte el array de objetos en una colección
+    // // $productos = collect($productos);
+    
+    // // // Ahora puedes usar chunk
+    // // $productos = $productos->chunk(3);
+    
+    // //return json_encode($productos);
+
+    // // // Enviar el correo
+    // // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail($productos));
+    
+    // // return 'Correo de prueba enviado';
+    
+
+    //     // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
+    //     // return 'Correo de prueba enviado';
 
     });
 
