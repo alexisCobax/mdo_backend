@@ -37,6 +37,18 @@ class PedidodetallennController extends Controller
         return $this->service->findById($request);
     }
 
+        /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\PedidodetallennService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function showPedido(Request $request)
+    {
+        return $this->service->findByPedidoId($request);
+    }
+
     /**
      * Creating a new resource.
      *
@@ -68,9 +80,9 @@ class PedidodetallennController extends Controller
      * @param  use App\Services\PedidodetallennService $service
      * @return \Illuminate\Http\Response
      */
-    public function delete(Request $request)
+    public function delete(Request $request, $id)
     {
-        return $this->service->delete($request);
+        return $this->service->delete($request, $id);
     }
 
     /**
