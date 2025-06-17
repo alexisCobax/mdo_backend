@@ -2,8 +2,9 @@
 
 namespace App\Transformers\Invoices;
 
-use App\Helpers\DateHelper;
+use App\Models\Recibo;
 use App\Models\Cliente;
+use App\Helpers\DateHelper;
 use App\Models\Invoicedetalle;
 use League\Fractal\TransformerAbstract;
 
@@ -12,8 +13,7 @@ class FindByIdTransformer extends TransformerAbstract
     public function transform($invoice, $request)
     {
         $invoiceDetalle = Invoicedetalle::where('invoice', $request->id)->orderBy('Descripcion', 'asc')->get()->ToArray();
-
-        // $cliente = Cliente::where('id',$invoice->cliente)->first();
+        $recibo = Recibo::where('invoice',$request->id)->first();
 
         $detalle = [];
         // $datosEnvio = [];
@@ -89,7 +89,8 @@ class FindByIdTransformer extends TransformerAbstract
                 'total'  => round($invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio, 2)
                 //'total' => $invoice->subTotal - $invoice->DescuentoNeto - ($invoice->subTotal * $invoice->DescuentoPorcentual / 100) - $invoice->DescuentoPorPromociones + $invoice->TotalEnvio,
             ],
-
+            'montoRecibo' => isset($recibo->total) ? $recibo->total : 0,
+            'garantia' => isset($recibo->garantia) ? $recibo->garantia : 0,
             // 'datosEnvio' => $datosEnvio
         ];
     }

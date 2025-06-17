@@ -28,7 +28,7 @@ class ReportesService
                 DB::raw('stock * precio AS PrecioStock')
             )
             ->where('stock', '>', 0)
-            ->where('proveedorExterno', '!=', 'nywd'); 
+            ->where('proveedorExterno', '!=', 'nywd');
         if (isset($request->marca)) {
             $query->where('marca', $request->marca);
         }

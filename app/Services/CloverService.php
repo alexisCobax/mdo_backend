@@ -20,7 +20,7 @@ class CloverService
 
             $ch = curl_init();
 
-            curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
+            //curl_setopt($ch, CURLOPT_URL, 'https://scl-sandbox.dev.clover.com/v1/charges');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, '{"amount":' . $request->amount . ',"currency":"usd","source":"' . $request->token . '"}');

@@ -265,34 +265,34 @@ class PedidoService
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
 
-    public function calcularTotal($pedidoId)
-    {
+        public function calcularTotal($pedidoId)
+        {
 
-        $SQL = "UPDATE
-                pedido
-                LEFT JOIN (
-                    SELECT pedidodetalle.pedido, SUM(pedidodetalle.precio * pedidodetalle.cantidad) AS total
-                    FROM pedidodetalle
-                    GROUP BY pedidodetalle.pedido
-                ) AS detalle ON detalle.pedido = pedido.id
-                LEFT JOIN (
-                    SELECT pedidodetallenn.pedido, SUM(pedidodetallenn.precio * pedidodetallenn.cantidad) AS total
-                    FROM pedidodetallenn
-                    GROUP BY pedidodetallenn.pedido
-                ) AS detallenn ON detallenn.pedido = pedido.id
-                SET   pedido.total =   (COALESCE(detalle.total, 0) + COALESCE(detallenn.total, 0))
-                    - pedido.DescuentoNeto
-                    - pedido.descuentoPromociones
-                    + pedido.totalEnvio
-                    - ((pedido.DescuentoPorcentual / 100) * (COALESCE(detalle.total, 0) + COALESCE(detallenn.total, 0)))
-                WHERE pedido.id = :pedidoId";
+            $SQL = "UPDATE
+                    pedido
+                    LEFT JOIN (
+                        SELECT pedidodetalle.pedido, SUM(pedidodetalle.precio * pedidodetalle.cantidad) AS total
+                        FROM pedidodetalle
+                        GROUP BY pedidodetalle.pedido
+                    ) AS detalle ON detalle.pedido = pedido.id
+                    LEFT JOIN (
+                        SELECT pedidodetallenn.pedido, SUM(pedidodetallenn.precio * pedidodetallenn.cantidad) AS total
+                        FROM pedidodetallenn
+                        GROUP BY pedidodetallenn.pedido
+                    ) AS detallenn ON detallenn.pedido = pedido.id
+                    SET   pedido.total =   (COALESCE(detalle.total, 0) + COALESCE(detallenn.total, 0))
+                        - COALESCE(pedido.DescuentoNeto, 0)
+                        - COALESCE(pedido.descuentoPromociones, 0)
+                        + COALESCE(pedido.totalEnvio, 0)
+                        - ((COALESCE(pedido.DescuentoPorcentual, 0) / 100) * (COALESCE(detalle.total, 0) + COALESCE(detallenn.total, 0)))
+                    WHERE pedido.id = :pedidoId";
 
-        $result = DB::update($SQL, ['pedidoId' => $pedidoId]);
+            $result = DB::update($SQL, ['pedidoId' => $pedidoId]);
 
-        if (!empty($result)) {
-            return true;
-        } else {
-            return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
+            if (!empty($result)) {
+                return true;
+            } else {
+                return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
+            }
         }
-    }
 }

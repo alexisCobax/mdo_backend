@@ -562,6 +562,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
 
     Route::get('/pedidodetallenn', [PedidodetallennController::class, 'index']);
     Route::get('/pedidodetallenn/{id}', [PedidodetallennController::class, 'show']);
+    Route::get('/pedidodetallenn/pedido/{id}', [PedidodetallennController::class, 'showPedido']);
     Route::post('/pedidodetallenn', [PedidodetallennController::class, 'create']);
     Route::put('/pedidodetallenn/{id}', [PedidodetallennController::class, 'update']);
     Route::delete('/pedidodetallenn/{id}', [PedidodetallennController::class, 'delete']);
@@ -937,18 +938,18 @@ Route::get('notificacion/cotizacion', [NotificacionesCotizacionController::class
 //     FROM producto
 //     LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
 //     LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
-//     WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355, 
-//     72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023, 
-//     72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946, 
-//     74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252, 
-//     62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084, 
-//     65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718, 
-//     65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650, 
-//     74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678, 
-//     74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751, 
-//     74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809, 
-//     74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847, 
-//     74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875, 
+//     WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355,
+//     72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023,
+//     72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946,
+//     74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252,
+//     62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084,
+//     65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718,
+//     65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650,
+//     74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678,
+//     74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751,
+//     74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809,
+//     74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847,
+//     74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875,
 //     74878, 74881)
 //     ORDER BY producto.precio ASC";
 
@@ -1019,18 +1020,18 @@ $SQL = "
     FROM producto
     LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
     LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
-    WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355, 
-    72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023, 
-    72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946, 
-    74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252, 
-    62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084, 
-    65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718, 
-    65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650, 
-    74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678, 
-    74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751, 
-    74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809, 
-    74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847, 
-    74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875, 
+    WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355,
+    72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023,
+    72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946,
+    74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252,
+    62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084,
+    65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718,
+    65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650,
+    74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678,
+    74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751,
+    74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809,
+    74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847,
+    74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875,
     74878, 74881)
     ORDER BY producto.precio ASC";
 
@@ -1187,7 +1188,7 @@ echo '<pre>' . htmlspecialchars($html) . '</pre>';
     //     Route::get('/test/email',function(){
 
     //         $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
-    
+
     //         $SQL = "
     //             SELECT
     //                 producto.id AS productoId,
@@ -1203,26 +1204,26 @@ echo '<pre>' . htmlspecialchars($html) . '</pre>';
     //             LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
     //             ORDER BY producto.id DESC
     //             LIMIT 10";
-    
+
     // // Realiza la consulta a la base de datos
     // //$productos = DB::select('SELECT producto.color, producto.nombre AS nombreProducto, marcaproducto.nombre AS nombreMarca FROM producto LEFT JOIN marcaproducto ON producto.marca=marcaproducto.id LIMIT 10');
-    
+
     // $productos = DB::select($SQL);
-    
+
     // return ['product'=>$productos];
     // // // Convierte el array de objetos en una colección
     // // $productos = collect($productos);
-    
+
     // // // Ahora puedes usar chunk
     // // $productos = $productos->chunk(3);
-    
+
     // //return json_encode($productos);
 
     // // // Enviar el correo
     // // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail($productos));
-    
+
     // // return 'Correo de prueba enviado';
-    
+
 
     //     // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
     //     // return 'Correo de prueba enviado';

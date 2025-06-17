@@ -93,7 +93,8 @@ class ProductoService
 
                 return response()->json(['data' => $response, 'status' => 200], Response::HTTP_OK);
             } else {
-                return response()->json(['data' => null, 'status' => 201, Response::HTTP_OK]);
+                $response = ['status' => 201,'message' => [],];
+                return response()->json(['data' => $response, 'status' => 201], Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

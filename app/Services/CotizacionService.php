@@ -98,32 +98,32 @@ class CotizacionService
         $cotizacion->total = $totalCotizacion;
         $cotizacion->save();
 
-        /* genero invoice PDF **/
-        $this->generarCotizacionMailPdf($cotizacion->id);
+        // /* genero invoice PDF **/
+        // $this->generarCotizacionMailPdf($cotizacion->id);
 
-        $cliente = Cliente::where('id', $request->cliente)->first();
+        // $cliente = Cliente::where('id', $request->cliente)->first();
 
-        /** Envio por email PDF**/
-        $cuerpo = '';
-        $emailMdo = env('MAIL_COTIZACION_MDO');
-        if ($cliente->email) {
+        // /** Envio por email PDF**/
+        // $cuerpo = '';
+        // $emailMdo = env('MAIL_COTIZACION_MDO');
+        // if ($cliente->email) {
 
-            $destinatarios = [
-                $emailMdo,
-                $cliente->email,
-            ];
-        } else {
-            $destinatarios = [
-                $emailMdo,
-            ];
-        }
+        //     $destinatarios = [
+        //         $emailMdo,
+        //         $cliente->email,
+        //     ];
+        // } else {
+        //     $destinatarios = [
+        //         $emailMdo,
+        //     ];
+        // }
 
-        $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
+        // $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $cotizacion->id . '.pdf');
 
-        $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
+        // $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
 
-        Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip, $rutaArchivoFijo));
-        Log::info('Cotizacion. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
+        // Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip, $rutaArchivoFijo));
+        // Log::info('Cotizacion. '.date('Y-m-d H:i:s'), ['user_id' => auth()->id()]);
         return response()->json($cotizacion, Response::HTTP_OK);
     }
 

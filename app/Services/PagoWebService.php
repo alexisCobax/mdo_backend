@@ -269,7 +269,8 @@ class PagoWebService
             $headers[] = 'Accept: application/json';
             //$headers[] = 'Authorization: Bearer 859c0171-ee8b-7c4b-7a07-3a02288fbc03';
             //$headers[] = 'Authorization: Bearer 557ccda4-98cb-5aa7-5ea5-39ad96096908';
-            $headers[] = 'Authorization: Bearer 5382a5f0-10bb-87b9-c38f-ba0b5466ffa1'; //produccion
+            //$headers[] = 'Authorization: Bearer 5382a5f0-10bb-87b9-c38f-ba0b5466ffa1'; //produccion
+            $headers[] = 'Authorization: Bearer 9f0919d8-6bc3-d88b-2bee-fcd1102b4b6a'; //produccion
             $headers[] = 'idempotency-key ' . $this->gen_uuid();
             $headers[] = 'Content-Type: application/json';
 

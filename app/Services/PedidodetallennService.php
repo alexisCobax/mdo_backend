@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\PaginateHelper;
 use App\Models\Pedidodetallenn;
+use App\Repositories\Pedidos\PedidoDetalleNNRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -20,17 +21,37 @@ class PedidodetallennService
         }
     }
 
+    //MIGRADO A REPOSITORIOS
     public function findById(Request $request)
     {
-        $data = Pedidodetallenn::find($request->id);
+        $repository = new PedidoDetalleNNRepository;
+        $pedidodetallenn = $repository->findPedidoDetalleNNById($request->id);
 
-        return response()->json(['data' => $data], Response::HTTP_OK);
+        if (!$pedidodetallenn) {
+            return response()->json(['error' => 'No se encuentra pedido'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($pedidodetallenn, Response::HTTP_OK);
     }
 
+    //MIGRADO A REPOSITORIOS
+    public function findByPedidoId(Request $request)
+    {
+        $repository = new PedidoDetalleNNRepository;
+        $pedidodetallenn = $repository->findPedidoDetalleNNByPedidoId($request->id);
+
+        if (!$pedidodetallenn) {
+            return response()->json(['error' => 'No se encuentra pedido'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($pedidodetallenn, Response::HTTP_OK);
+    }
+
+    //MIGRADO A REPOSITORIOS
     public function create(Request $request)
     {
-        $data = $request->all();
-        $pedidodetallenn = Pedidodetallenn::create($data);
+        $repository = new PedidoDetalleNNRepository;
+        $pedidodetallenn = $repository->createPedidoDetalleNN($request);
 
         if (!$pedidodetallenn) {
             return response()->json(['error' => 'Failed to create Pedidodetallenn'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -53,16 +74,16 @@ class PedidodetallennService
         return response()->json($pedidodetallenn, Response::HTTP_OK);
     }
 
-    public function delete(Request $request)
+    //MIGRADO A REPOSITORIOS
+    public function delete(Request $request, $id)
     {
-        $pedidodetallenn = Pedidodetallenn::find($request->id);
+        $repository = new PedidoDetalleNNRepository;
+        $pedidodetallenn = $repository->deletePedidoDetalleNN($request, $id);
 
         if (!$pedidodetallenn) {
-            return response()->json(['error' => 'Pedidodetallenn not found'], Response::HTTP_NOT_FOUND);
+            return response()->json(['error' => 'Failed to delete Pedidodetallenn'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $pedidodetallenn->delete();
-
-        return response()->json(['id' => $request->id], Response::HTTP_OK);
+        return response()->json($pedidodetallenn, Response::HTTP_OK);
     }
 }

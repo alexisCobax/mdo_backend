@@ -2,12 +2,13 @@
 
 namespace App\Services;
 
-use App\Filters\Recibos\RecibosFilters;
-use App\Helpers\DateHelper;
 use App\Models\Recibo;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Filters\Recibos\RecibosFilters;
+use Illuminate\Support\Facades\Storage;
 
 class ReciboService
 {
@@ -46,7 +47,15 @@ class ReciboService
 
         $pdf->getDomPDF();
 
+        $pdfContent = $pdf->output();
+
+        $pdfPath = 'public/tmpdf/' . 'recibo_' . $recibo->id . '.pdf';
+
+        Storage::put($pdfPath, $pdfContent);
+
         return $pdf->download();
+
+        //        $pdfPath = 'public/tmpdf/' . 'proforma_' . $pedidoId . '.pdf';
 
         // $pdf->getDomPDF();
 
@@ -74,9 +83,10 @@ class ReciboService
             'cliente' => $request->cliente,
             'formaDePago' => $request->formaDePago,
             'total' => $request->total,
-            'observaciones' => $request->observaciones,
+            'observaciones' => $request->observaciones ? $request->observaciones : "",
             'pedido' => 0,
             'garantia' => $request->garantia ? 1 : 0,
+            'invoice' => $request->invoice,
             'anulado' => 0,
             'fecha' => NOW(),
         ];

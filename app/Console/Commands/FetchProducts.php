@@ -195,7 +195,7 @@ class FetchProducts extends Command
                     $stock = isset($producto->AvailableQuantity) ? $producto->AvailableQuantity : 0;
                     $nombre = $brand . ' ' . $name . ' ' . $size . ' ' . $color;
                     $costo = $producto->Price;
-                    $precio = number_format($producto->Price + ($producto->Price * 0.70), 2); //este 70% es a pedido del cliente
+                    $precio = number_format($producto->Price + ($producto->Price * 0.75), 2); //este 75% es a pedido del cliente
 
                     Log::info("producto insertado: ".$producto->Upc . now());
 

@@ -60,7 +60,7 @@ class CuentaCorrienteService
             ->where('cliente', $clienteId)
             ->sum(DB::raw('ABS(total)'));
 
-        $total += Invoice::where('anulada', 0)
+        $total -= Invoice::where('anulada', 0)
             ->where('fecha', '>=', $fechaInicio)
             ->where('cliente', $clienteId)
             ->sum(DB::raw('ABS(total)'));
@@ -76,7 +76,7 @@ class CuentaCorrienteService
                 'results' => $resultados->items(),
                 'exception' => null,
                 'cliente' => $cliente->nombre,
-                'ctacteTotal' => $total,
+                'ctacteTotal' => number_format($total, 2, '.', ''),
             ],
         ];
 

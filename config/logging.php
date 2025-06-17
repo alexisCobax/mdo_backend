@@ -113,6 +113,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'monthly' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/' . date('Y-m') . '.log'),
+            'level' => 'info',
+        ],
     ],
 
 ];

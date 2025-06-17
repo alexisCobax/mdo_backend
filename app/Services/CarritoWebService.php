@@ -11,10 +11,12 @@ use Illuminate\Http\Response;
 use App\Helpers\CarritoHelper;
 use App\Models\Carritodetalle;
 use App\Models\Cotizaciondetalle;
+use Illuminate\Support\Facades\DB;
 use App\Services\CotizacionService;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EnvioCotizacionMailConAdjunto;
 use App\Transformers\Carrito\FindAllTransformer;
+use PDOException;
 
 class CarritoWebService
 {
@@ -28,6 +30,7 @@ class CarritoWebService
         $carrito = CarritoHelper::getCarrito();
 
         if ($carrito['id']) {
+            $this->deleteSiNoExiste($carrito['id']);
             return $this->findCarritoDetalle($carrito['id']);
         } else {
             $data = [
@@ -43,6 +46,36 @@ class CarritoWebService
             return ['data' => ['carrito' => $carrito['id']]];
         }
     }
+
+    public function deleteSiNoExiste($id)
+    {
+        try{
+        $sqlCount = "
+            SELECT COUNT(*) as total
+            FROM carritodetalle cd
+            LEFT JOIN producto p ON cd.producto = p.id
+            WHERE cd.carrito = :id;
+        ";
+
+        $countResult = DB::selectOne($sqlCount, ['id' => $id]);
+
+        if (empty($countResult) || $countResult->total == 0) return;
+
+        // Eliminar registro inválido con SQL plano
+        $sqlDelete = "
+            DELETE cd
+            FROM carritodetalle cd
+            LEFT JOIN producto p ON cd.producto = p.id
+            WHERE cd.carrito = :id
+              AND (p.id IS NULL OR p.borrado IS NOT NULL)
+        ";
+
+        DB::delete($sqlDelete, ['id' => $id]);
+        }catch(PDOException $e){
+            return $e->getMessage();
+        }
+    }
+
 
     public function findStatus(Request $request)
     {
@@ -119,51 +152,52 @@ class CarritoWebService
 
     public function procesar()
     {
-
         $carritoHelper = CarritoHelper::getCarrito();
-
-        //Cotizacion::where('cliente', $carritoHelper['cliente'])->update(['estado' => 1]);
 
         if (!$carritoHelper['id']) {
             return response()->json(['error' => 'El carro de compras no existe'], Response::HTTP_NOT_FOUND);
         }
 
-        $carritoDetalle = Carritodetalle::where('carrito', $carritoHelper['id'])->get();
+        $carritoDetalle = DB::table('carritodetalle')
+            ->select('producto', 'precio', 'cantidad')
+            ->where('carrito', $carritoHelper['id'])
+            ->get();
 
-        $total = $carritoDetalle->map(function ($detalle) {
-            return $detalle->precio * $detalle->cantidad;
-        })->sum();
+        $total = $carritoDetalle->reduce(fn($carry, $item) => $carry + ($item->precio * $item->cantidad), 0);
 
-        $carrito = Carrito::find($carritoHelper['id'])->first();
+        // Crear cotización
+        $cotizacion = new Cotizacion([
+            'fecha' => now(),
+            'cliente' => $carritoHelper['cliente'],
+            'total' => $total,
+            'estado' => 0,
+            'descuento' => '0.00',
+        ]);
 
-        $cotizacion = new Cotizacion;
-        $cotizacion->fecha = NOW();
-        $cotizacion->cliente = $carritoHelper['cliente'];
-        $cotizacion->total = $total;
-        $cotizacion->estado = 0;
-        $cotizacion->descuento = '0.00';
         try {
             $cotizacion->save();
-        } catch (Error $e) {
-            echo $e->getMessage();
-            die;
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $idCotizacion = $cotizacion->id;
 
-        foreach ($carritoDetalle as $cd) {
+        $detalles = $carritoDetalle->map(function ($cd) use ($idCotizacion) {
+            return [
+                'cotizacion' => $idCotizacion,
+                'producto' => $cd->producto,
+                'precio' => $cd->precio,
+                'cantidad' => isset($cd->cantidad) ? $cd->cantidad : 0
+            ];
+        })->toArray();
 
-            $cotizacionDetalle = new Cotizaciondetalle;
-            $cotizacionDetalle->cotizacion = $idCotizacion;
-            $cotizacionDetalle->producto = $cd['producto'];
-            $cotizacionDetalle->precio = $cd['precio'];
-            $cotizacionDetalle->cantidad = $cd['cantidad'];
-            $cotizacionDetalle->save();
-        }
+        Cotizaciondetalle::insert($detalles);
 
-        $carritoUpdate = Carrito::find($carritoHelper['id']);
-        $carritoUpdate->estado = 1;
-        $carritoUpdate->save();
+        // Actualizar el estado del carrito directamente
+        DB::table('carrito')
+            ->where('id', $carritoHelper['id'])
+            ->update(['estado' => 1]);
+
 
         if (!$cotizacion) {
             return response()->json(['error' => 'Cotizacion not found'], Response::HTTP_NOT_FOUND);
@@ -171,32 +205,32 @@ class CarritoWebService
 
         // ACA MANDAR EL EMAIL
 
-        $cotizacion = new CotizacionService();
+        // $cotizacion = new CotizacionService();
 
-        $cotizacion->generarCotizacionMailPdf($idCotizacion);
+        // $cotizacion->generarCotizacionMailPdf($idCotizacion);
 
-        $cliente = Cliente::where('id', $carritoHelper['cliente'])->first();
+        // $cliente = Cliente::where('id', $carritoHelper['cliente'])->first();
 
-        /** Envio por email PDF**/
-        $cuerpo = '';
-        $emailMdo = env('MAIL_COTIZACION_MDO');
-        if ($cliente->email) {
+        // /** Envio por email PDF**/
+        // $cuerpo = '';
+        // $emailMdo = env('MAIL_COTIZACION_MDO');
+        // if ($cliente->email) {
 
-            $destinatarios = [
-                $emailMdo,
-                $cliente->email,
-            ];
-        } else {
-            $destinatarios = [
-                $emailMdo,
-            ];
-        }
+        //     $destinatarios = [
+        //         $emailMdo,
+        //         $cliente->email,
+        //     ];
+        // } else {
+        //     $destinatarios = [
+        //         $emailMdo,
+        //     ];
+        // }
 
-        $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $idCotizacion . '.pdf');
+        // $rutaArchivoZip = storage_path('app/public/tmpdf/' . 'cotizacion_' . $idCotizacion . '.pdf');
 
-        $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
+        // $rutaArchivoFijo = storage_path('app/public/fijos/Inf.TRANSFERENCIA_BANCARIA.pdf');
 
-        Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip, $rutaArchivoFijo));
+        // Mail::to($destinatarios)->send(new EnvioCotizacionMailConAdjunto($cuerpo, $rutaArchivoZip, $rutaArchivoFijo));
 
         return response()->json(['data' => $cotizacion], Response::HTTP_OK);
     }
