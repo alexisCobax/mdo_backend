@@ -37,6 +37,8 @@ class Pedidodetalle extends Model
         'tax',
         'taxEnvio',
         'jet_order_item_id',
+        'created_at',
+        'updated_at'
     ];
 
     public function productos()

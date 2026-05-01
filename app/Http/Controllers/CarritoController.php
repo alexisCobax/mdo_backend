@@ -26,6 +26,17 @@ class CarritoController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\CarritoService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function indexVendedor(Request $request)
+    {
+        return $this->service->findAllVendedor($request);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request $request

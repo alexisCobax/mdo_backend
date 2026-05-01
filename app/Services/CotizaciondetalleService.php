@@ -4,8 +4,12 @@ namespace App\Services;
 
 use App\Helpers\PaginateHelper;
 use App\Models\Cotizaciondetalle;
+use App\Models\Cotizacion;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+
 
 class CotizaciondetalleService
 {
@@ -22,9 +26,57 @@ class CotizaciondetalleService
 
     public function findById(Request $request)
     {
-        $data = Cotizaciondetalle::find($request->id);
 
-        return response()->json(['data' => $data], Response::HTTP_OK);
+        $cotizacion = Cotizacion::where('id', $request->id)->first();
+        
+        $cliente = Cliente::where('id', $cotizacion->cliente)->first();
+    
+        $clienteDatos = [
+            "nombre"    => $cliente->nombre ?? '',
+            "email"     => $cliente->email ?? '',
+            "telefono"  => $cliente->telefono ?? '',
+            "domicilio" => $cliente->domicilio ?? '',
+            "whatsapp"  => $cliente->whatsapp ?? ''
+        ];
+    
+
+        $baseUrl = env('URL_IMAGENES_PRODUCTOS');
+
+        $SQL = "SELECT 
+        cotizaciondetalle.precio,
+        cotizaciondetalle.cantidad,
+        producto.nombre AS producto,
+        marcaproducto.nombre AS nombremarca,
+        IF(fotoproducto.url IS NOT NULL, 
+            fotoproducto.url, 
+            CONCAT(?, producto.imagenPrincipal, '.jpg')
+        ) AS imagen,
+        (cotizaciondetalle.precio * cotizaciondetalle.cantidad) AS total
+        FROM 
+        cotizaciondetalle
+        LEFT JOIN 
+        producto ON cotizaciondetalle.producto=producto.id
+        LEFT JOIN 
+        fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+        LEFT JOIN marcaproducto ON marcaproducto.id = producto.marca
+        WHERE 
+        cotizacion = ?";
+
+        $data = DB::select($SQL, [$baseUrl,$request->id]);
+
+
+        $response = [
+            'status' => Response::HTTP_OK,
+            // 'total' => $data->total(),
+            // 'cantidad_por_pagina' => $data->perPage(),
+            // 'pagina' => $data->currentPage(),
+            // 'cantidad_total' => $data->total(),
+            'results' => $data,
+            'cliente' => $clienteDatos,
+
+        ];
+
+        return response()->json($response);
     }
 
     public function create(Request $request)

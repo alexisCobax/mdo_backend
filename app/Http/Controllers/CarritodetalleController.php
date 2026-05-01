@@ -25,6 +25,54 @@ class CarritodetalleController extends Controller
         return $this->service->findAll($request);
     }
 
+        
+    /**
+     * Creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\CarritodetalleService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function asignarVendedor(Request $request)
+    {
+        return $this->service->asignarVendedor($request);
+    }
+
+    /**
+     * Creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\CarritodetalleService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function LiberarVendedor(Request $request)
+    {
+        return $this->service->liberarVendedor($request);
+    }
+
+    /* Generate a pedido from carrito.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @param  use App\Services\CarritodetalleService $service
+    * @return \Illuminate\Http\Response
+    */
+   public function generarPedido(Request $request)
+   {
+       return $this->service->generarPedido($request);
+   }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\CarritodetalleService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function showVendedor(Request $request)
+    {
+        return $this->service->findByIdVendedor($request);
+    }
+
     /**
      * Display the specified resource.
      *

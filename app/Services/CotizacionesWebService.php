@@ -123,6 +123,7 @@ class CotizacionesWebService
         $carrito->cliente = $cotizacion->cliente;
         $carrito->estado = 0;
         $carrito->vendedor = 1;
+        $carrito->fecha_modificacion = now();
         $carrito->save();
 
         $cotizacionDetalle = Cotizaciondetalle::where('cotizacion', $request->cotizacion)->get();

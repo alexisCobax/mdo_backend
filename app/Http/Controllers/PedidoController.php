@@ -26,6 +26,17 @@ class PedidoController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\PedidoService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function pedidosParaVendedores(Request $request)
+    {
+        return $this->service->pedidosParaVendedores($request);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request $request

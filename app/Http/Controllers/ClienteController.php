@@ -25,6 +25,29 @@ class ClienteController extends Controller
         return $this->service->findAll($request);
     }
 
+        /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ClienteService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function indexClienteVendedor(Request $request)
+    {
+        return $this->service->findAllClientes($request);
+    }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\ClienteService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function showClienteVendedor(Request $request)
+    {
+        return $this->service->findById($request);
+    }
+
     /**
      * Display the specified resource.
      *

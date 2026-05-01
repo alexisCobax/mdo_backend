@@ -38,6 +38,17 @@ class CotizacionService
         }
     }
 
+    public function cotizacionesParaVendedores(Request $request)
+    {
+        try {
+            $data = CotizacionesFilters::getPaginateCotizaciones($request, Cotizacion::class);
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener las cotizaciones', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function findById(Request $request)
     {
         try {

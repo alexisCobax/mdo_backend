@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\PaginateHelper;
 use App\Models\Pais;
+use App\Models\PaisOrdenado;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -12,7 +13,8 @@ class PaisService
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Pais::class);
+            //$data = PaginateHelper::getPaginatedData($request, Pais::class);
+            $data = PaginateHelper::getPaginatedData($request, PaisOrdenado::class);
 
             return response()->json(['data' => $data], Response::HTTP_OK);
         } catch (\Exception $e) {

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use App\Filters\Compras\ComprasFilters;
 use App\Filters\Compras\ComprasProductoFilters;
 use App\Transformers\Compra\FindByIdTransformer;
+use App\Services\ProformaService;
+use Illuminate\Support\Facades\Log;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -253,4 +255,148 @@ class CompraService
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }
+
+    public function compraEmail(Request $request){
+        
+        // LOG INICIAL - Verificar que el método se ejecuta (múltiples métodos)
+        error_log('========================================');
+        error_log('CompraService::compraEmail - INICIO DEL MÉTODO (error_log)');
+        error_log('CompraService::compraEmail - Request recibido: ' . json_encode($request->all()));
+        error_log('========================================');
+        
+        Log::info('========================================');
+        Log::info('CompraService::compraEmail - INICIO DEL MÉTODO');
+        Log::info('CompraService::compraEmail - Request recibido: ' . json_encode($request->all()));
+        Log::info('========================================');
+
+        $service = new PagoWebService();
+
+        $carrito = $service->createNotCreditCard($request);
+        
+        // Obtener el ID del pedido de la respuesta
+        $carritoData = json_decode($carrito->getContent(), true);
+        $pedidoId = $carritoData['pedidoId'] ?? null;
+
+        // Log para debugging
+        Log::info('CompraService::compraEmail - PedidoId obtenido: ' . ($pedidoId ?? 'NULL'));
+        Log::info('CompraService::compraEmail - Respuesta completa createNotCreditCard: ' . json_encode($carritoData));
+
+        // Generar la proforma solo si tenemos el ID del pedido
+        $proformaLink = null;
+        if ($pedidoId) {
+            try {
+                $proformaService = new ProformaService();
+                $proformaService->proformaParaEmail($pedidoId);
+                
+                // Construir la URL de descarga de la proforma
+                $appUrl = env('APP_URL', 'http://localhost');
+                $proformaLink = 'https://phpstack-1091339-3819555.cloudwaysapps.com/api/pdf/proforma/' . $pedidoId;
+                
+                Log::info('CompraService::compraEmail - Proforma generada exitosamente. Link: ' . $proformaLink);
+            } catch (\Exception $e) {
+                // Si hay error generando la proforma, continuamos sin el link
+                Log::error('Error generando proforma: ' . $e->getMessage());
+                Log::error('Stack trace: ' . $e->getTraceAsString());
+            }
+        } else {
+            Log::error('CompraService::compraEmail - ERROR: No se pudo obtener el pedidoId de la respuesta');
+            Log::error('CompraService::compraEmail - Respuesta completa createNotCreditCard: ' . json_encode($carritoData));
+        }
+
+        /* Envio email a cliente **/
+        try {
+
+            $curl = curl_init();
+            
+            // Construir el payload base con el email
+            $payload = [
+                'email' => $request->email,
+            ];
+            
+            // Solo agregar proformaLink y pedidoId si realmente existen
+            if (!empty($pedidoId) && !empty($proformaLink)) {
+                $payload['proformaLink'] = $proformaLink;
+                $payload['pedidoId'] = $pedidoId;
+                Log::info('CompraService::compraEmail - ✅ Payload CON proforma y pedidoId: ' . json_encode($payload, JSON_UNESCAPED_SLASHES));
+            } else {
+                if (empty($pedidoId)) {
+                    Log::error('CompraService::compraEmail - ⚠️ No se enviará proformaLink ni pedidoId porque no hay pedidoId');
+                } else if (empty($proformaLink)) {
+                    Log::warning('CompraService::compraEmail - ⚠️ No se enviará proformaLink porque falló la generación, pero sí se enviará pedidoId');
+                    $payload['pedidoId'] = $pedidoId;
+                }
+                Log::info('CompraService::compraEmail - Payload final: ' . json_encode($payload, JSON_UNESCAPED_SLASHES));
+            }
+            
+            // CÓDIGO ORIGINAL (comentado para pruebas):
+            // if (!empty($proformaLink) && !empty($pedidoId)) {
+            //     $payload['proformaLink'] = $proformaLink;
+            //     $payload['pedidoId'] = $pedidoId;
+            //     Log::info('CompraService::compraEmail - ✅ Payload CON proforma: ' . json_encode($payload, JSON_UNESCAPED_SLASHES));
+            // } else {
+            //     // Si no hay proformaLink, al menos intentar enviar el pedidoId si existe
+            //     if (!empty($pedidoId)) {
+            //         $payload['pedidoId'] = $pedidoId;
+            //         Log::warning('CompraService::compraEmail - ⚠️ Payload sin proformaLink pero con pedidoId: ' . json_encode($payload, JSON_UNESCAPED_SLASHES));
+            //     } else {
+            //         Log::warning('CompraService::compraEmail - ⚠️ Payload sin proforma (solo email): ' . json_encode($payload, JSON_UNESCAPED_SLASHES));
+            //     }
+            // }
+            
+            // Log final del payload que se enviará
+            Log::info('CompraService::compraEmail - 📤 Payload final que se enviará al webhook: ' . json_encode($payload, JSON_UNESCAPED_SLASHES));
+
+            // Preparar el JSON del payload
+            $payloadJson = json_encode($payload, JSON_UNESCAPED_SLASHES);
+            
+            // Log del payload JSON que se enviará
+            Log::info('CompraService::compraEmail - 🚀 Enviando al webhook. Payload JSON: ' . $payloadJson);
+            
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => 'https://services.leadconnectorhq.com/hooks/40UecLU7dZ4KdLepJ7UR/webhook-trigger/lePUNpSmeUT55aL0evkC',
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => $payloadJson,
+              CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+              ),
+            ));
+
+          $response = curl_exec($curl);
+          $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+          
+          Log::info('CompraService::compraEmail - Respuesta del webhook GoHighLevel. HTTP Code: ' . $httpCode);
+          Log::info('CompraService::compraEmail - Respuesta: ' . $response);
+
+          curl_close($curl);
+
+          if ($httpCode >= 200 && $httpCode < 300) {
+              return response()->json([
+                  'Response' => 'Enviado Correctamente', 
+                  'pedidoId' => $pedidoId, 
+                  'proformaLink' => $proformaLink,
+                  'webhookResponse' => json_decode($response, true)
+              ], Response::HTTP_OK);
+          } else {
+              Log::error('CompraService::compraEmail - Error en webhook. HTTP Code: ' . $httpCode . ', Response: ' . $response);
+              return response()->json([
+                  'Response' => 'Enviado con advertencias', 
+                  'pedidoId' => $pedidoId, 
+                  'proformaLink' => $proformaLink,
+                  'error' => 'El webhook retornó código: ' . $httpCode,
+                  'webhookResponse' => json_decode($response, true)
+              ], Response::HTTP_OK);
+          }
+          } catch (\Exception $e) {
+              Log::error('CompraService::compraEmail - Excepción: ' . $e->getMessage());
+              Log::error('CompraService::compraEmail - Stack trace: ' . $e->getTraceAsString());
+              return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+          }
+
+  }
 }

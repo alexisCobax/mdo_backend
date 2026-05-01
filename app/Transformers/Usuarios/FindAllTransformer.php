@@ -9,13 +9,11 @@ class FindAllTransformer extends TransformerAbstract
 {
     public function transform(Usuario $usuario)
     {
-        $compra = [
+        return [
             'id' => $usuario->id,
             'nombre' => $usuario->nombre,
-            'perfil' => 'Usuario',
+            'perfil' => $usuario->permiso ? $usuario->permiso->nombre : (string) $usuario->permisos,
             'estado' => $usuario->suspendido,
         ];
-
-        return $compra;
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Producto;
 use Illuminate\Http\Response;
 use App\Transformers\Productos\FindAllTransformer;
 use App\Transformers\Productos\FindAllWebTransformer;
+use Illuminate\Support\Facades\DB;
 
 class ProductosWebFilters
 {
@@ -41,7 +42,7 @@ class ProductosWebFilters
 
         // Aplica los filtros si se proporcionan
         $query->codigo($codigo);
-        $query->categoria($categoria);
+        //$query->categoria($categoria);
         $query->nombre($nombre);
         $query->nombreMarca($nombreMarca);
         $query->suspendido($suspendido);
@@ -69,27 +70,40 @@ class ProductosWebFilters
         }
 
         $query->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-            ->select(
-                'producto.id as producto_id',
-                'producto.nombre',
-                'producto.codigo',
-                'producto.categoria',
-                'producto.precio',
-                'producto.precioPromocional',
-                'producto.stock',
-                'producto.destacado',
-                'producto.color',
-                'producto.nuevo',
-                'producto.imagenPrincipal',
-                'marcaproducto.nombre as marca_nombre',
-                'marcaproducto.id as marca_id'
+    ->leftJoin('fotoproducto', 'fotoproducto.id', '=', 'producto.imagenPrincipal')
+    ->select(
+        'producto.id as producto_id',
+        'producto.nombre',
+        'producto.codigo',
+        'producto.precio',
+        'producto.precioPromocional',
+        'producto.stock',
+        'producto.destacado',
+        'producto.color',
+        'producto.nuevo',
+        DB::raw("CONCAT('https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/',
+            COALESCE(
+                IF(producto.proveedorExterno='nywd',
+                    IF(
+                        fotoproducto.descargada = 2,
+                        SUBSTRING_INDEX(fotoproducto.url, '/', -1),
+                        '0.jpg'
+                    ),
+                    CONCAT(producto.imagenPrincipal, '.jpg')
+                ),
+                '0.jpg'
             )
-            ->where('producto.stock', '>', 0)
-            ->where('producto.suspendido', '=', 0)
-            ->whereNull('borrado')
-            ->orderBy('marcaproducto.nombre', 'asc')
-            ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
-            ->orderBy('producto.id', 'asc');
+        ) as imagenPrincipal"),
+        'marcaproducto.nombre as marca_nombre',
+        'marcaproducto.id as marca_id'
+    )
+    ->where('producto.stock', '>', 0)
+    ->where('producto.suspendido', '=', 0)
+    ->whereNull('producto.borrado')
+    ->orderBy('marcaproducto.nombre', 'asc')
+    ->orderBy('producto.ultimoIngresoDeMercaderia', 'desc')
+    ->orderBy('producto.id', 'asc');
+
 
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 

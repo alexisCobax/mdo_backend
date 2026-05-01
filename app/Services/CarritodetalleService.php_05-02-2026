@@ -1,0 +1,400 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Carrito;
+use App\Models\Cliente;
+use App\Models\Cupondescuento;
+use App\Models\Producto;
+use App\Helpers\CalcHelper;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Models\Carritodetalle;
+use App\Helpers\PaginateHelper;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Pedido;
+use App\Models\Pedidodetalle;
+use App\Helpers\CalcTotalHelper;
+use Illuminate\Support\Facades\Log;
+
+
+class CarritodetalleService
+{
+
+    public function asignarVendedor(Request $request){
+
+        try {
+        $user = Auth::user();
+
+        $carrito = Carrito::where('id', $request->id)->first();
+        $carrito->gestionadoPor = $user['id'];
+        $carrito->save();
+        
+        Cliente::where('id', $carrito->cliente)->update(['asesor' => $user['id']]);
+
+        return response()->json(Response::HTTP_OK);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    }
+
+    public function liberarVendedor(Request $request){
+
+        try {
+
+        Carrito::where('id', $request->id)->update(['gestionadoPor' => 0]);
+
+        return response()->json(Response::HTTP_OK);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Ocurrió un error al asignar el carrito'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    }
+
+    public function findAll(Request $request)
+    {
+        try {
+            $data = PaginateHelper::getPaginatedData($request, Carritodetalle::class);
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function findByIdVendedor(Request $request)
+    {
+        try {
+            $carrito = Carrito::where('id', $request->id)->first();
+        
+            $cliente = Cliente::where('id', $carrito->cliente)->first();
+        
+            $clienteDatos = [
+                "nombre"    => $cliente->nombre ?? '',
+                "email"     => $cliente->email ?? '',
+                "telefono"  => $cliente->telefono ?? '',
+                "domicilio" => $cliente->domicilio ?? '',
+                "whatsapp"  => $cliente->whatsapp ?? ''
+            ];
+        
+            $baseUrl = env('URL_IMAGENES_PRODUCTOS');
+        
+            $SQL1 = "SELECT 
+                    c.precio, 
+                    c.cantidad, 
+                    p.nombre AS producto, 
+                    mp.nombre AS nombremarca,
+                    cr.cupon,
+
+                    -- Valor numérico del descuento
+                    COALESCE(
+                        NULLIF(cp.descuentoFijo, 0),
+                        NULLIF(cp.descuentoPorcentual, 0)
+                    ) AS descuentoAplicado,
+
+                    -- Tipo del descuento
+                    CASE
+                        WHEN cp.descuentoFijo IS NOT NULL AND cp.descuentoFijo != 0 
+                            THEN 'FIJO'
+                        WHEN cp.descuentoPorcentual IS NOT NULL AND cp.descuentoPorcentual != 0 
+                            THEN 'PORCENTAJE'
+                        ELSE 'NINGUNO'
+                    END AS tipoDescuento,
+
+                    -- Símbolo del descuento
+                    CASE
+                        WHEN cp.descuentoFijo IS NOT NULL AND cp.descuentoFijo != 0 
+                            THEN '$'
+                        WHEN cp.descuentoPorcentual IS NOT NULL AND cp.descuentoPorcentual != 0 
+                            THEN '%'
+                        ELSE ''
+                    END AS simboloDescuento,
+
+                    IF(fp.url IS NOT NULL, 
+                        fp.url, 
+                        CONCAT(:baseUrl, p.imagenPrincipal, '.jpg')
+                    ) AS imagen,
+
+                    ROUND(c.precio * c.cantidad, 2) AS total,
+
+                    ROUND(
+                        CASE
+                            WHEN cp.descuentoFijo IS NOT NULL AND cp.descuentoFijo != 0 
+                                THEN (c.precio * c.cantidad) - cp.descuentoFijo
+                            WHEN cp.descuentoPorcentual IS NOT NULL AND cp.descuentoPorcentual != 0 
+                                THEN (c.precio * c.cantidad) * (1 - (cp.descuentoPorcentual / 100))
+                            ELSE (c.precio * c.cantidad)
+                        END
+                    , 2) AS totalConDescuento
+
+                FROM carritodetalle c
+                JOIN producto p ON p.id = c.producto
+                LEFT JOIN fotoproducto fp ON fp.id = p.imagenPrincipal
+                LEFT JOIN marcaproducto mp ON mp.id = p.marca
+                LEFT JOIN carrito cr ON c.carrito = cr.id
+                LEFT JOIN cupondescuento cp ON cr.cupon = cp.id
+                WHERE c.carrito = :carritoId
+                ORDER BY c.id DESC";
+
+        
+            $rows = DB::select($SQL1, [
+                'carritoId' => $request->id,
+                'baseUrl'   => $baseUrl,
+            ]);
+        
+            return response()->json([
+                'status'  => Response::HTTP_OK,
+                'results' => $rows,
+                'cliente' => $clienteDatos,
+                'gestionadoPor' => $carrito->gestionadoPor ?? ''
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => 'Ocurrió un error al obtener los detalles',
+                'message' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
+        
+    }
+
+    public function findById(Request $request)
+    {
+        $data = Carritodetalle::find($request->id);
+
+        return response()->json(['data' => $data], Response::HTTP_OK);
+    }
+
+    public function create(Request $request)
+    {
+
+        $productoExistente = Carritodetalle::where('carrito', $request->carrito)
+            ->where('producto', $request->producto)->get();
+
+        if (count($productoExistente)) {
+            $cantidad = $productoExistente[0]['cantidad'] + $request->cantidad;
+            $detalle = [
+                'carrito' => $request->carrito,
+                'producto' => $request->producto,
+                'precio' => $productoExistente[0]['precio'] * $cantidad,
+                'cantidad' => $cantidad,
+            ];
+
+            $carritodetalle = Carritodetalle::find($request->id);
+
+            $carritodetalle->update($detalle);
+            $carritodetalle->refresh();
+        } else {
+
+            $producto = Producto::find($request->producto);
+            $precio = CalcHelper::ListProduct($producto->precio, $producto->precioPromocional);
+
+            $detalle = [
+                'carrito' => $request->carrito,
+                'producto' => $request->producto,
+                'precio' => $precio * $request->cantidad,
+                'cantidad' => $request->cantidad,
+            ];
+
+            $carritodetalle = Carritodetalle::create($detalle);
+        }
+
+        if (!$carritodetalle) {
+            return response()->json(['error' => 'Failed to create Carritodetalle'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json($carritodetalle, Response::HTTP_OK);
+    }
+
+    public function update(Request $request)
+    {
+        $carritodetalle = Carritodetalle::find($request->id);
+
+        if (!$carritodetalle) {
+            return response()->json(['error' => 'Carritodetalle not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $carritodetalle->update($request->all());
+        $carritodetalle->refresh();
+
+        return response()->json($carritodetalle, Response::HTTP_OK);
+    }
+
+    public function delete(Request $request)
+    {
+        $carritodetalle = Carritodetalle::find($request->id);
+
+        if (!$carritodetalle) {
+            return response()->json(['error' => 'Carritodetalle not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $carritodetalle->delete();
+
+        return response()->json(['id' => $request->id], Response::HTTP_OK);
+    }
+
+    /**
+     * Generate a pedido from carrito (vendedor flow).
+     * Does not use CalcTotalHelper (which relies on CarritoHelper::getCarrito() for web/cliente).
+     *
+     * @param  \Illuminate\Http\Request $request  Must contain 'id' (carrito id)
+     * @return \Illuminate\Http\Response
+     */
+    public function generarPedido(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['error' => 'Usuario no autenticado'], Response::HTTP_UNAUTHORIZED);
+            }
+
+            $carritoId = $request->input('id');
+            if (!$carritoId) {
+                return response()->json(['error' => 'Falta el ID del carrito'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $carrito = Carrito::where('id', $carritoId)->first();
+            if (!$carrito) {
+                return response()->json(['error' => 'Carrito no encontrado'], Response::HTTP_NOT_FOUND);
+            }
+
+            if ($carrito->estado == 1) {
+                return response()->json(['error' => 'El carrito ya fue convertido en pedido'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $productosCarrito = Carritodetalle::where('carrito', $carritoId)->get();
+            if ($productosCarrito->isEmpty()) {
+                return response()->json(['error' => 'El carrito está vacío'], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Totales sin CalcTotalHelper (flujo vendedor: totalEnvio = 0)
+            $subtotal = $productosCarrito->sum(function ($item) {
+                return (float) $item->precio * (int) $item->cantidad;
+            });
+            $cantidad = $productosCarrito->sum('cantidad');
+            $descuentos = 0.0;
+
+            if ($carrito->cupon) {
+                $cupon = Cupondescuento::find($carrito->cupon);
+                if ($cupon) {
+                    if ($cupon->descuentoPorcentual) {
+                        $descuentos = $subtotal * (float) $cupon->descuentoPorcentual / 100;
+                    } elseif ($cupon->descuentoFijo) {
+                        $descuentos = (float) $cupon->descuentoFijo;
+                    }
+                }
+            }
+
+            $totalPedido = round($subtotal - $descuentos, 2);
+            $totalEnvio = 0.0;
+            $descuentoNeto = round($descuentos, 2);
+
+            $cliente = Cliente::where('id', $carrito->cliente)->first();
+            if (!$cliente) {
+                return response()->json(['error' => 'Cliente del carrito no encontrado'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $pedidoId = null;
+            DB::beginTransaction();
+            try {
+                $pedido = new Pedido();
+                $pedido->fecha = now();
+                $pedido->cliente = $carrito->cliente;
+                $pedido->estado = 1;
+                $pedido->vendedor = $user->id;
+                $pedido->formaDePago = $carrito->formaDePago ?? 1;
+                $pedido->invoice = 0;
+                $pedido->total = $totalPedido + $totalEnvio;
+                $pedido->descuentoPorcentual = '0.00';
+                $pedido->descuentoNeto = $descuentoNeto;
+                $pedido->totalEnvio = $totalEnvio;
+                $pedido->origen = 2; // vendedor
+                $pedido->nombreEnvio = $cliente->nombreEnvio ?? $cliente->nombre ?? null;
+                $pedido->domicilioEnvio = $cliente->direccionShape ?? $cliente->direccion ?? null;
+                $pedido->paisEnvio = $cliente->paisShape ?? $cliente->pais ?? null;
+                $pedido->regionEnvio = $cliente->regionEnvio ?? null;
+                $pedido->ciudadEnvio = $cliente->ciudadEnvio ?? $cliente->ciudad ?? null;
+                $pedido->cpEnvio = $cliente->cpShape ?? $cliente->codigoPostal ?? null;
+                $pedido->transportadoraNombre = $cliente->transportadora ?? null;
+                $pedido->telefonoTransportadora = $cliente->telefonoTransportadora ?? null;
+                $pedido->observaciones = $cliente->observaciones ?? null;
+                $pedido->tipoDeEnvio = $cliente->tipoDeEnvio ?? null;
+                $pedido->save();
+                $pedidoId = $pedido->id;
+
+                $detalles = [];
+                foreach ($productosCarrito as $item) {
+                    $producto = Producto::find($item->producto);
+                    if (!$producto) {
+                        throw new \Exception('Producto no encontrado: ' . $item->producto);
+                    }
+                    $cant = (int) $item->cantidad;
+                    $stock = (int) $producto->stock;
+                    if ($stock < $cant) {
+                        throw new \Exception('Stock insuficiente para el producto: ' . ($producto->nombre ?? $producto->id) . ' (requerido: ' . $cant . ', disponible: ' . $stock . ')');
+                    }
+                    $detalles[] = [
+                        'pedido'   => $pedidoId,
+                        'producto' => $item->producto,
+                        'precio'   => (float) $item->precio,
+                        'cantidad' => $cant,
+                        'costo'    => 0,
+                        'envio'    => 0,
+                        'tax'      => 0,
+                        'taxEnvio' => 0,
+                    ];
+                }
+
+                Pedidodetalle::insert($detalles);
+
+                foreach ($productosCarrito as $item) {
+                    Producto::where('id', $item->producto)->decrement('stock', (int) $item->cantidad);
+                }
+
+                $pedido->total = $totalPedido + $totalEnvio;
+                $pedido->save();
+
+                Carrito::where('id', $carritoId)->update(['estado' => 1]);
+
+                DB::commit();
+
+                Log::info('CarritodetalleService::generarPedido - Pedido generado exitosamente', [
+                    'pedido_id'  => $pedidoId,
+                    'carrito_id' => $carritoId,
+                    'vendedor_id' => $user->id,
+                ]);
+
+                return response()->json([
+                    'status'    => 'ok',
+                    'mensaje'   => 'Pedido generado correctamente',
+                    'pedidoId'  => $pedidoId,
+                ], Response::HTTP_OK);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('CarritodetalleService::generarPedido - Error en transacción', [
+                    'carrito_id' => $carritoId,
+                    'message'    => $e->getMessage(),
+                ]);
+                return response()->json([
+                    'error'   => 'Error al generar el pedido',
+                    'message' => $e->getMessage(),
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('CarritodetalleService::generarPedido', [
+                'message' => $e->getMessage(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'error'   => 'Ocurrió un error al generar el pedido',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+}

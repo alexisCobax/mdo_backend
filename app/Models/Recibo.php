@@ -36,6 +36,7 @@ class Recibo extends Model
         'observaciones',
         'pedido',
         'garantia',
+        'invoice'
     ];
 
     public function clientes()

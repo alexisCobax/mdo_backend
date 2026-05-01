@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $cantidadUtilizados
  * @property Carbon|null $inicio
  * @property bool|null $combinable
+ * @property int|null $grupo
  */
 class Cupondescuento extends Model
 {
@@ -50,5 +51,7 @@ class Cupondescuento extends Model
         'cantidadUtilizados',
         'inicio',
         'combinable',
+        'soloClienteNuevo',
+        'grupo'
     ];
 }

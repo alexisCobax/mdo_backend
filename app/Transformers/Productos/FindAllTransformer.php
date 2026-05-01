@@ -12,6 +12,8 @@ class FindAllTransformer extends TransformerAbstract
     {
         $arrayEnum = EstadosProductosEnums::toArray();
 
+        // $imagenPrincipal = $producto->imagenPrincipal;
+
         $imagenPrincipal = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
 
         if(isset($imagenPrincipal->url)){
@@ -37,7 +39,7 @@ class FindAllTransformer extends TransformerAbstract
             'colorNombre' => $producto->color,
             'precioPromocional' => number_format($producto->precioPromocional, 2),
             'nuevo' => $producto->nuevo,
-            'estado' => $producto->suspendido == $arrayEnum[EstadosProductosEnums::SUSPENDIDO] ? EstadosProductosEnums::SUSPENDIDO : EstadosProductosEnums::PUBLICADO,
+            'estado' => $producto->suspendido == $arrayEnum[EstadosProductosEnums::SUSPENDIDO] ? EstadosProductosEnums::SUSPENDIDO : EstadosProductosEnums::PUBLICADO
         ];
     }
 }

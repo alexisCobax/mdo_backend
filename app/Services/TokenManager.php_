@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Services;
+
+use Exception;
+
+/**
+ * Token Manager para GoHighLevel
+ * Maneja la renovación automática de tokens de acceso
+ */
+class TokenManager
+{
+    private $configFile;
+    private $config;
+
+    public function __construct($configFile = null) {
+        // Si no se especifica archivo, usar el de la carpeta config de Laravel
+                    //echo base_path('app/config/gohighlevel.json');die;
+
+        if ($configFile === null) {
+            $this->configFile = base_path('config/gohighlevel.json');
+        } else {
+            $this->configFile = $configFile;
+        }
+        $this->loadConfig();
+    }
+
+    /**
+     * Carga la configuración desde el archivo JSON
+     */
+    private function loadConfig() {
+        if (!file_exists($this->configFile)) {
+            throw new Exception('Archivo de configuración no encontrado: ' . $this->configFile);
+        }
+
+        $this->config = json_decode(file_get_contents($this->configFile), true);
+        if ($this->config === null) {
+            throw new Exception('Error al decodificar el archivo de configuración JSON');
+        }
+    }
+
+    /**
+     * Guarda la configuración en el archivo JSON
+     */
+    private function saveConfig() {
+        $result = file_put_contents($this->configFile, json_encode($this->config, JSON_PRETTY_PRINT));
+        if ($result === false) {
+            throw new Exception('Error al guardar la configuración');
+        }
+    }
+
+    /**
+     * Verifica si el token actual es válido
+     */
+    public function isTokenValid() {
+        if (empty($this->config['access_token'])) {
+            return false;
+        }
+
+        // Verifica si el token ha expirado (con un margen de 5 minutos)
+        if (isset($this->config['token_expires_at'])) {
+            $currentTime = time();
+            $expiresAt = $this->config['token_expires_at'];
+            $margin = 300; // 5 minutos en segundos
+
+            return ($currentTime < ($expiresAt - $margin));
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtiene un token válido, renovándolo si es necesario
+     */
+    public function getValidToken() {
+        if ($this->isTokenValid()) {
+            return $this->config['access_token'];
+        }
+
+        // Si no hay refresh token, necesitamos autorización inicial
+        if (empty($this->config['refreshToken'])) {
+            throw new Exception('No hay refresh token disponible. Necesitas autorización inicial.');
+        }
+
+        // Renovar el token usando el refresh token
+        return $this->refreshToken();
+    }
+
+    /**
+     * Renueva el token usando el refresh token
+     */
+    private function refreshToken() {
+        $data = array(
+            'client_id' => $this->config['clientId'],
+            'client_secret' => $this->config['clientSecret'],
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $this->config['refreshToken'],
+            'user_type' => 'Location'
+        );
+
+        $postData = http_build_query($data);
+
+        $curl = curl_init();
+
+        $options = array(
+            CURLOPT_URL => 'https://services.leadconnectorhq.com/oauth/token',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $postData,
+            CURLOPT_HTTPHEADER => array(
+                'Accept: application/json',
+                'Content-Type: application/x-www-form-urlencoded'
+            ),
+        );
+
+        curl_setopt_array($curl, $options);
+
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($curl)) {
+            throw new Exception('Error cURL: ' . curl_error($curl));
+        }
+
+        curl_close($curl);
+
+        $responseData = json_decode($response, true);
+
+        if ($responseData === null) {
+            throw new Exception('Error al decodificar respuesta JSON');
+        }
+
+        if ($httpCode !== 200) {
+            $error = isset($responseData['error']) ? $responseData['error'] : 'Error desconocido';
+            $description = isset($responseData['error_description']) ? $responseData['error_description'] : '';
+            throw new Exception("Error al renovar token: $error - $description");
+        }
+
+        // Actualizar la configuración con el nuevo token
+        $this->config['access_token'] = $responseData['access_token'];
+        $this->config['refreshToken'] = $responseData['refresh_token'];
+        $this->config['expires_in'] = $responseData['expires_in'];
+        $this->config['token_expires_at'] = time() + $responseData['expires_in'];
+
+        // Guardar la configuración actualizada
+        $this->saveConfig();
+
+        return $responseData['access_token'];
+    }
+
+    /**
+     * Obtiene información del token actual
+     */
+    public function getTokenInfo() {
+        return array(
+            'access_token' => $this->config['access_token'] ?? '',
+            'refresh_token' => $this->config['refreshToken'] ?? '',
+            'expires_in' => $this->config['expires_in'] ?? 0,
+            'token_expires_at' => $this->config['token_expires_at'] ?? 0,
+            'is_valid' => $this->isTokenValid(),
+            'current_time' => time()
+        );
+    }
+}

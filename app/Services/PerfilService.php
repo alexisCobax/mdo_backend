@@ -2,27 +2,34 @@
 
 namespace App\Services;
 
-use App\Helpers\PaginateHelper;
-use App\Models\Perfil;
+use App\Models\Permiso;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class PerfilService
 {
+    /**
+     * Lista todos los perfiles/permisos (tabla permiso) para filtros y selectores.
+     * El frontend espera res.data.results con array de { id, nombre }.
+     */
     public function findAll(Request $request)
     {
         try {
-            $data = PaginateHelper::getPaginatedData($request, Perfil::class);
+            $results = Permiso::orderBy('id')->get(['id', 'nombre']);
 
-            return response()->json(['data' => $data], Response::HTTP_OK);
+            // El frontend espera res.data.results (axios: res.data = cuerpo JSON)
+            return response()->json(['results' => $results], Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'error' => 'Ocurrió un error al obtener los perfiles',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     public function findById(Request $request)
     {
-        $data = Perfil::find($request->id);
+        $data = Permiso::find($request->id);
 
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
@@ -30,38 +37,38 @@ class PerfilService
     public function create(Request $request)
     {
         $data = $request->all();
-        $perfil = Perfil::create($data);
+        $permiso = Permiso::create($data);
 
-        if (!$perfil) {
-            return response()->json(['error' => 'Failed to create Perfil'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        if (!$permiso) {
+            return response()->json(['error' => 'Failed to create Permiso'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json($perfil, Response::HTTP_OK);
+        return response()->json($permiso, Response::HTTP_OK);
     }
 
     public function update(Request $request)
     {
-        $perfil = Perfil::find($request->id);
+        $permiso = Permiso::find($request->id);
 
-        if (!$perfil) {
-            return response()->json(['error' => 'Perfil not found'], Response::HTTP_NOT_FOUND);
+        if (!$permiso) {
+            return response()->json(['error' => 'Permiso not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $perfil->update($request->all());
-        $perfil->refresh();
+        $permiso->update($request->all());
+        $permiso->refresh();
 
-        return response()->json($perfil, Response::HTTP_OK);
+        return response()->json($permiso, Response::HTTP_OK);
     }
 
     public function delete(Request $request)
     {
-        $perfil = Perfil::find($request->id);
+        $permiso = Permiso::find($request->id);
 
-        if (!$perfil) {
-            return response()->json(['error' => 'Perfil not found'], Response::HTTP_NOT_FOUND);
+        if (!$permiso) {
+            return response()->json(['error' => 'Permiso not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $perfil->delete();
+        $permiso->delete();
 
         return response()->json(['id' => $request->id], Response::HTTP_OK);
     }

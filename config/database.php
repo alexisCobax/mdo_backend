@@ -86,6 +86,24 @@ return [
                 ]) : [],
         ],
 
+        // TEMPORAL: conexión a producción para sincronizar credenciales GHL. ELIMINAR.
+        'production' => [
+            'driver' => 'mysql',
+            'host' => env('DB_PROD_HOST', '147.182.139.71'),
+            'port' => env('DB_PROD_PORT', '3306'),
+            'database' => env('DB_PROD_DATABASE', 'jkkxjmpypf'),
+            'username' => env('DB_PROD_USERNAME', 'jkkxjmpypf'),
+            'password' => env('DB_PROD_PASSWORD', 'CtZxUaBfS8'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

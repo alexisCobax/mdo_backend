@@ -26,6 +26,17 @@ class ClienteService
         }
     }
 
+        public function findAllClientes(Request $request)
+    {
+        try {
+            $data = ClientesFilters::getPaginateClientesToVendedores($request);
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     // public function findById(Request $request)
     // {
     //     $data = Cliente::find($request->id);
@@ -36,7 +47,13 @@ class ClienteService
     public function findById(Request $request)
     {
 
-        $cliente = Cliente::with('usuarios')->find($request->id);
+        //$cliente = Cliente::with('usuarios')->find($request->id);
+
+        $cliente = Cliente::with('usuarios')
+    ->leftJoin('pais', 'cliente.pais', '=', 'pais.id')
+    ->where('cliente.id', $request->id)
+    ->select('cliente.*', 'pais.nombre as pais', 'pais.id as idPais')
+    ->first();
 
         $nombreUsuario = $cliente->usuarios->nombre;
 

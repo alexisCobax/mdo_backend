@@ -27,18 +27,18 @@ class CuentaCorrienteService
 
         $cliente = Cliente::where('id', $clienteId)->first();
 
-        $resultados = Recibo::select('id', 'cliente', DB::raw("'RECIBO' AS comprobante"), 'id AS numero', 'fecha', 'total', DB::raw("CONCAT('/recibo/', id, '.pdf') AS link"))
+        $resultados = Recibo::select('id', 'cliente', DB::raw("'RECIBO' AS comprobante"), 'id AS numero', 'fecha', 'total', DB::raw("CONCAT('/pdf/recibo/', id) AS link"))
             ->where('anulado', 0)
             ->where('fecha', '>=', $fechaInicio)
             ->where('cliente', $clienteId)
             ->union(
-                Reintegro::select('id', 'cliente', DB::raw("'REINTEGRO' AS comprobante"), DB::raw("'id' AS numero"), 'fecha', DB::raw('(total * -1) AS total'), DB::raw("CONCAT('/reintegro/', id, '.pdf') AS link"))
+                Reintegro::select('id', 'cliente', DB::raw("'REINTEGRO' AS comprobante"), DB::raw("'id' AS numero"), 'fecha', DB::raw('(total * -1) AS total'), DB::raw("CONCAT('/pdf/reintegro/', id) AS link"))
                     ->where('anulado', 0)
                     ->where('fecha', '>=', $fechaInicio)
                     ->where('cliente', $clienteId)
             )
             ->union(
-                Invoice::select('id', 'cliente', DB::raw("'INVOICE' AS comprobante"), 'id AS numero', 'fecha', DB::raw('(total * -1) AS total'), DB::raw("CONCAT('/invoice/', id, '.pdf') AS link"))
+                Invoice::select('id', 'cliente', DB::raw("'INVOICE' AS comprobante"), 'id AS numero', 'fecha', DB::raw('(total * -1) AS total'), DB::raw("CONCAT('/pdf/invoice/', id) AS link"))
                     ->where('anulada', 0)
                     ->where('fecha', '>=', $fechaInicio)
                     ->where('cliente', $clienteId)
@@ -60,7 +60,7 @@ class CuentaCorrienteService
             ->where('cliente', $clienteId)
             ->sum(DB::raw('ABS(total)'));
 
-        $total += Invoice::where('anulada', 0)
+        $total -= Invoice::where('anulada', 0)
             ->where('fecha', '>=', $fechaInicio)
             ->where('cliente', $clienteId)
             ->sum(DB::raw('ABS(total)'));
@@ -76,7 +76,7 @@ class CuentaCorrienteService
                 'results' => $resultados->items(),
                 'exception' => null,
                 'cliente' => $cliente->nombre,
-                'ctacteTotal' => $total,
+                'ctacteTotal' => number_format($total, 2, '.', ''),
             ],
         ];
 

@@ -14,7 +14,9 @@ class GoHighLevelService
     public static function createContact($payload)
     {
         try {
+
             $token = GoHighLevelHelper::getToken();
+    
             if (!$token || !isset($token['access_token'])) {
                 throw new Exception('Error al obtener el token de acceso.');
             }

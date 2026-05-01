@@ -206,19 +206,21 @@ class FetchProducts extends Command
                         precio,
                         suspendido,
                         stock,
+                        estuche,
                         codigo,
                         color,
                         tamano,
                         costo,
                         proveedorExterno,
                         fechaAlta)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
                     DB::insert($SQL, [
                         $nombre,
                         $marcaId,
                         $precio,
                         0,
                         $stock,
+                        1,
                         $producto->Upc,
                         $color,
                         $size,
@@ -235,7 +237,7 @@ class FetchProducts extends Command
                     $imagenPrincipal = 0;
                     // Insertar cada imagen en la tabla 'fotoproducto'
                     foreach ($imagenes as $imagen) {
-                        DB::insert('INSERT INTO fotoproducto (idProducto, orden, url) VALUES (?, ?, ?)', [
+                        DB::insert('INSERT INTO fotoproducto (idProducto, orden, url, descargada) VALUES (?, ?, ?, 1)', [
                             $idProducto,
                             $imagen->Number,
                             $imagen->LargeImageUrl
@@ -252,11 +254,13 @@ class FetchProducts extends Command
                         ->update(['imagenPrincipal' => $ImagenPrincipal]);
                 }
 
+                //este (stockExterno.price*1.75) 75% es a pedido del cliente
                 DB::update('UPDATE producto
                 LEFT JOIN stockExterno ON stockExterno.Upc = producto.codigo
                 LEFT JOIN marcaproducto ON stockExterno.Brand=marcaproducto.nombre
                 SET producto.stock = stockExterno.availableQuantity, producto.proveedorExterno="nywd",
-                producto.borrado=NULL, producto.marca=marcaproducto.id, producto.ultimoIngresoDeMercaderia=?
+                producto.borrado=NULL, producto.marca=marcaproducto.id, producto.ultimoIngresoDeMercaderia=?,
+                producto.costo=stockExterno.price, producto.precio=(stockExterno.price*1.75) 
                 WHERE stockExterno.Upc IS NOT NULL
             ', [date('Y-m-d')]);
             });

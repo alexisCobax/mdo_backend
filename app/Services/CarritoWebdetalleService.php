@@ -7,6 +7,7 @@ use App\Helpers\CarritoHelper;
 use App\Helpers\PaginateHelper;
 use App\Helpers\StockHelper;
 use App\Models\Carritodetalle;
+use App\Models\Carrito;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -112,6 +113,8 @@ class CarritoWebdetalleService
     public function updateProductCart($producto, $carritodetalle, $precio, $carrito, $request, $status, $stock)
     {
 
+        $carritoId = CarritoHelper::getCarrito()['id'];
+
         $cantidad = $carritodetalle->cantidad + $request->cantidad;
 
         if (!$status) {
@@ -119,20 +122,23 @@ class CarritoWebdetalleService
             $cantidad = $producto->stock;
 
             $payload = [
-                'carrito' => $carrito,
+                'carrito' => $carritoId,
                 'producto' => $request->producto,
                 'precio' => $precio,
                 'cantidad' => $cantidad,
             ];
+
         } else {
 
             $payload = [
-                'carrito' => $carrito,
+                'carrito' => $carritoId,
                 'producto' => $request->producto,
                 'precio' => $precio,
                 'cantidad' => $cantidad,
             ];
         }
+
+        Carrito::where('id', $carritoId)->update(['fecha_modificacion' => now()->format('Y-m-d H:i:s')]);
 
         return $payload;
     }
@@ -140,10 +146,12 @@ class CarritoWebdetalleService
     public function createProductCart($producto, $precio, $carrito, $request, $status, $stock)
     {
 
+        $carritoId = CarritoHelper::getCarrito()['id'];
+
         if (!$status) {
 
             $payload = [
-                'carrito' => $carrito,
+                'carrito' => $carritoId,
                 'producto' => $request->producto,
                 'precio' => $precio,
                 'cantidad' => $producto->stock,
@@ -152,7 +160,7 @@ class CarritoWebdetalleService
             ];
         } else {
             $payload = [
-                'carrito' => $carrito,
+                'carrito' => $carritoId,
                 'producto' => $request->producto,
                 'precio' => $precio,
                 'cantidad' => $request->cantidad,
@@ -160,6 +168,9 @@ class CarritoWebdetalleService
                 'stock' => $stock,
             ];
         }
+
+        Carrito::where('id', $carritoId)->update(['fecha_modificacion' => now()->format('Y-m-d H:i:s')]);
+
 
         return $payload;
     }

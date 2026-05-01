@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\PaginateHelper;
 use App\Mail\EnvioCotizacionMailSinAdjunto;
 use App\Models\Cliente;
+use App\Models\Pais;
 use App\Models\Usuario;
 use App\Transformers\Cliente\CreateWebTransformer;
 use Illuminate\Http\Request;
@@ -77,54 +78,108 @@ class ClienteWebService
             return response()->json(['error' => 'Failed to create Usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // $payload = [
-        //     'contact' => [
-        //         'email' => $request->email,
-        //         'firstName' => $request->nombre,
-        //         'lastName' => $request->nombre,
-        //         'phone' => $request->telefono,
-        //         'fieldValues' => [
-        //             [
-        //                 'field' => '17',
-        //                 'value' => '9',
-        //             ],
-        //         ],
-        //     ],
-        // ];
+        $pais = Pais::where('id', $request->pais)->first();
+        if (!$pais) {
+            return response()->json(['error' => 'Pais no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
+        // ---- NORMALIZAR COUNTRY A ISO2 (para API de GoHighLevel) ----
+
+$countryRaw = trim(strtolower($pais->codigo ?? ''));
+
+// mapa para toda América
+$countryMap = [
+
+    // Sudamérica
+    'argentina' => 'AR', 'arg' => 'AR', 'ar' => 'AR',
+    'brasil' => 'BR', 'brazil' => 'BR', 'bra' => 'BR', 'br' => 'BR',
+    'chile' => 'CL', 'chl' => 'CL', 'cl' => 'CL',
+    'uruguay' => 'UY', 'ury' => 'UY', 'uy' => 'UY',
+    'paraguay' => 'PY', 'pry' => 'PY', 'py' => 'PY',
+    'bolivia' => 'BO', 'bol' => 'BO', 'bo' => 'BO',
+    'peru' => 'PE', 'per' => 'PE', 'pe' => 'PE',
+    'ecuador' => 'EC', 'ecu' => 'EC', 'ec' => 'EC',
+    'colombia' => 'CO', 'col' => 'CO', 'co' => 'CO',
+    'venezuela' => 'VE', 'ven' => 'VE', 've' => 'VE',
+    'guyana' => 'GY', 'gy' => 'GY',
+    'suriname' => 'SR', 'sr' => 'SR',
+
+    // Centroamérica
+    'mexico' => 'MX', 'mex' => 'MX', 'mx' => 'MX',
+    'guatemala' => 'GT', 'gt' => 'GT',
+    'honduras' => 'HN', 'hn' => 'HN',
+    'elsalvador' => 'SV', 'el salvador' => 'SV', 'sv' => 'SV',
+    'nicaragua' => 'NI', 'ni' => 'NI',
+    'costarica' => 'CR', 'costa rica' => 'CR', 'cr' => 'CR',
+    'panama' => 'PA', 'pa' => 'PA',
+
+    // Norteamérica
+    'estados unidos' => 'US', 'united states' => 'US', 'usa' => 'US', 'us' => 'US',
+    'canada' => 'CA', 'ca' => 'CA',
+
+    // Caribe principales
+    'cuba' => 'CU', 'cu' => 'CU',
+    'republica dominicana' => 'DO', 'dominican republic' => 'DO', 'do' => 'DO',
+    'puerto rico' => 'PR', 'pr' => 'PR',
+];
+
+// resolver country
+$countryISO2 = $countryMap[$countryRaw] ?? strtoupper(substr($pais->codigo, 0, 2));
+
+// fallback seguro (API de :contentReference[oaicite:0]{index=0} exige valor válido)
+if (!$countryISO2 || strlen($countryISO2) != 2) {
+    $countryISO2 = 'AR';
+}
 
         $payload = [
             "firstName" => $request->nombre,
             "lastName" => $request->nombre,
             "name" => $request->nombre,
             "email" => $request->email,
-            //"gender" => "male",
             "phone" => $request->telefono,
             "address1" => $request->direccion,
-            "city" => $request->ciudad,
-            //"state" => "AL",
+            "city" => $request->ciudad, 
+            "country" => $countryISO2,
             "postalCode" => $request->codigoPostal,
-            // "website" => "https://www.tesla.com",
-            // "timezone" => "America/Chihuahua",
-            // "dnd" => false,
-            // "source" => "public api",
-            // "country" => "US",
-            // "companyName" => "DGS VolMAX",
             "tags" => ["masterlist"]
         ];
+        
 
-        GoHighLevelService::createContact($payload);
+        //-------------------------------------------------------
 
-        // $activeCampaign = new ActiveCampaignService;
+$curl = curl_init();
 
-        // $response =  $activeCampaign->post('https://cobax1694091376.api-us1.com/api/3/contacts', $postData);
-        // $response = json_decode($response, true);
+curl_setopt_array($curl, array(
+  CURLOPT_URL => 'https://rest.gohighlevel.com/v1/contacts/',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 0,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'POST',
+  CURLOPT_POSTFIELDS => json_encode($payload),
+  CURLOPT_HTTPHEADER => array(
+    'Content-Type: application/json',
+    'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6IjQwVWVjTFU3ZFo0S2RMZXBKN1VSIiwidmVyc2lvbiI6MSwiaWF0IjoxNzIzMTUxNjE1Mzc3LCJzdWIiOiIyNUJiU0sybjhOMjR3dHFiU3MxVSJ9.DIcblz5hF35Hr1XO_w9mM0TboQCJhQ_YtWckwibBqbc'
+  ),
+));
 
-        // $transformer = new CreateWebTransformer();
-        // $cliente = $transformer->transform($request, $usuario->id, $response['contact']['id']);
+$response = curl_exec($curl);
+
+curl_close($curl);
+echo $response;
+
+
+        //-------------------------------------------------------
+
+        // GoHighLevelService::createContact($payload);
 
         $transformer = new CreateWebTransformer();
         $cliente = $transformer->transform($request, $usuario->id);
         $nombre = (!empty($request->nombre)) ? $request->nombre : '';
+        $usuario = (!empty($request->email)) ? $request->email : '';
+        $clave = (!empty($request->clave)) ? $request->clave : '';
 
         $cliente = Cliente::create($cliente);
 
@@ -133,15 +188,43 @@ class ClienteWebService
         }
 
         /* Envio email a cliente **/
+        // try {
+        //     $cuerpo = 'pdf.alta_cliente';
+        //     $subject = 'Nueva Alta';
+        //     $destinatarios = [
+        //         $request->email
+        //     ];
 
+        //     Mail::to($destinatarios)->send(new EnvioCotizacionMailSinAdjunto($cuerpo, $subject, $nombre, $usuario, $clave));
+
+        /* Envio email a cliente **/
         try {
-            $cuerpo = 'pdf.alta_cliente_prospecto';
-            $subject = 'Cotizacion';
-            $destinatarios = [
-                $request->email,
-            ];
 
-            Mail::to($destinatarios)->send(new EnvioCotizacionMailSinAdjunto($cuerpo, $subject, $nombre));
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://services.leadconnectorhq.com/hooks/40UecLU7dZ4KdLepJ7UR/webhook-trigger/55fead57-9600-4280-ae96-73f0b9b2e5c1',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_POSTFIELDS =>'{
+            "email":"'.$usuario.'",
+            "usuario":"'.$usuario.'",
+            "nombre-completo": "'.$nombre.'",
+            "clave" : "'.$clave.'"
+        }',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json'
+        ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
 
             return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
         } catch (\Exception $e) {

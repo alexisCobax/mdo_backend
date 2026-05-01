@@ -246,6 +246,26 @@
                             {{!empty($invoice['preciosTotales']['totalEnvio']) ? $invoice['preciosTotales']['totalEnvio'] : '0.00'}}
                         </td>
                     </tr>
+                    @if ( $invoice['montoRecibo'] > 0)
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            <strong>Descuento por Garantía</strong>
+                        </td>
+                        <td style="text-align:right;">
+                            <strong>U$S {{$invoice['montoRecibo']}}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                        <td style="text-align:right;">
+                            <strong>Total</strong>
+                        </td>
+                        <td style="text-align:right;">
+                            <strong>U$S {{$invoice['preciosTotales']['total']-$invoice['montoRecibo']}}</strong>
+                        </td>
+                    </tr>
+                    @else
                     <tr>
                         <td colspan="3">&nbsp;</td>
                         <td style="text-align:right;">
@@ -255,6 +275,7 @@
                             <strong>U$S {{$invoice['preciosTotales']['total']}}</strong>
                         </td>
                     </tr>
+                    @endif
 
                 </table>
             </div>

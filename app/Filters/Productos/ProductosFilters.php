@@ -10,6 +10,7 @@ class ProductosFilters
 {
     public static function getPaginateProducts($request, $model)
     {
+        
         // Obtén los parámetros de la solicitud
         $page = $request->input('pagina', env('PAGE'));
         $perPage = $request->input('cantidad', env('PER_PAGE'));
@@ -55,6 +56,9 @@ class ProductosFilters
         $query->buscador($buscador);
         $query->NuevosProductos($estado);
         $query->whereNull('borrado');
+
+        //$query->where('stock', '>', 0); //temporal
+        
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer

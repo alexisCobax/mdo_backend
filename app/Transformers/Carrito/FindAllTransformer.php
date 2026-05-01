@@ -39,7 +39,7 @@ class FindAllTransformer extends TransformerAbstract
             $carrito->save();
         }
 
-        $response = $detalle->map(function ($detalle) {
+        $response = $detalle->map(function ($detalle) use ($cliente) {
 
             $imagenPrincipal = Fotoproducto::where('id',optional($detalle->productos)->imagenPrincipal)->first();
 
@@ -62,6 +62,7 @@ class FindAllTransformer extends TransformerAbstract
             ];
 
             $detalleCarrito = [
+                'montoMaximoDePago' => optional($cliente)->montoMaximoDePago,
                 'id' => $detalle->id,
                 'carrito' => $detalle->carrito,
                 'producto' => $producto,
@@ -87,17 +88,21 @@ class FindAllTransformer extends TransformerAbstract
             $total = $calculo['total'] - $descuento;
         }
 
-        return [
-            'carrito' => $id,
-            'total' => $total == 0 ? '0.00' : number_format($total, 2),
-            'descuentos' => $descuento == 0 ? '0.00' : number_format($descuento, 2),
-            'cupon' => optional($carrito->cupones)->nombre,
-            'subtotal' => $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'],
-            'totalConEnvio' => $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'],
-            'totalEnvio' => $calculo['totalEnvio'] == 0 ? '0.00' : $calculo['totalEnvio'],
-            'detalles' => $response->toArray(),
-            'cantidadUnidades' => $cantidades,
-            'montoMaximoDePago' => $cliente->montoMaximoDePago,
-        ];
+
+    return [
+        'carrito' => $id,
+        'total' => $total == 0 ? '0.00' : number_format($total, 2),
+        'descuentos' => $descuento == 0 ? '0.00' : number_format($descuento, 2),
+        'cupon' => optional($carrito->cupones)->nombre,
+        'subtotal' => $calculo['subTotal'] == 0 ? '0.00' : $calculo['subTotal'],
+        'totalConEnvio' => $calculo['totalConEnvio'] == 0 ? '0.00' : $calculo['totalConEnvio'],
+        'totalEnvio' => $calculo['totalEnvio'] == 0 ? '0.00' : $calculo['totalEnvio'],
+        'detalles' => $response->toArray(),
+        'cantidadUnidades' => $cantidades,
+        'montoMaximoDePago' => $cliente->montoMaximoDePago,
+    ];
+
+
+
     }
 }

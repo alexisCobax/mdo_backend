@@ -25,6 +25,17 @@ class CotizacionController extends Controller
         return $this->service->findAll($request);
     }
 
+        /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\CotizacionService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function cotizacionesParaVendedores(Request $request)
+    {
+        return $this->service->cotizacionesParaVendedores($request);
+    }
+
     /**
      * Display the specified resource.
      *

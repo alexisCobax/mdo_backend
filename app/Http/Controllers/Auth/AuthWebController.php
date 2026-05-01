@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\TokenExpiredException;
-use App\Exceptions\TokenInvalidException;
-use App\Exceptions\TokenNotParsedException;
-use App\Http\Controllers\Controller;
-use App\Mail\EnvioMailCambiarClave;
-use App\Models\Cliente;
-use App\Models\User;
-use App\Models\Usuario;
+use Error;
 use Exception;
+use App\Models\User;
+use App\Models\Cliente;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use App\Mail\EnvioMailCambiarClave;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Exceptions\TokenExpiredException;
+use App\Exceptions\TokenInvalidException;
 use Illuminate\Support\Facades\Validator;
+use App\Exceptions\TokenNotParsedException;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthWebController extends Controller
@@ -237,27 +238,132 @@ class AuthWebController extends Controller
         try {
             $user = Auth::user();
             $user = Usuario::where('id', $user->id)->first();
+
             $user->clave = Hash::make($request->clave);
 
-            /* Envio un Email **/
+            $user->save();
 
-            try {
-                $cuerpo = 'mdo.emailCambiarClave';
-                $subject = 'Cambio de clave';
-                $nombre = 'Cambio de clave';
+            // /* Envio un Email **/
 
-                $destinatarios = [
-                    'alexiscobax1@gmail.com',
-                ];
+            // try {
+            //     $cuerpo = 'mdo.emailCambiarClave';
+            //     $subject = 'Cambio de clave';
+            //     $nombre = 'Cambio de clave';
 
-                Mail::to($destinatarios)->send(new EnvioMailCambiarClave($cuerpo, $subject, $nombre));
+            //     $destinatarios = [
+            //         'alexiscobax1@gmail.com',
+            //     ];
 
-                return response()->json(['response' => 'Su clave ha sido cambiada con exito!'], 200);
-            } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+            //     Mail::to($destinatarios)->send(new EnvioMailCambiarClave($cuerpo, $subject, $nombre));
+
+            //     return response()->json(['response' => 'Su clave ha sido cambiada con exito!'], 200);
+            // } catch (Exception $e) {
+            //     return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            // }
+            return response()->json(['response' => 'Su clave ha sido cambiada con exito!', 'status' => 200], 200);
         } catch (\Exception $e) {
             return response()->json(['error'], $e->getMessage());
+        }
+    }
+
+    function generarAlfanumerico($longitud = 10)
+    {
+        $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $resultado = '';
+        $max = strlen($caracteres) - 1;
+
+        for ($i = 0; $i < $longitud; $i++) {
+            $resultado .= $caracteres[random_int(0, $max)];
+        }
+
+        return $resultado;
+    }
+
+    public function recuperar(Request $request)
+    {
+
+        try {
+
+            $clave_temporal = $this->generarAlfanumerico(10);
+            $clave = Hash::make($clave_temporal);
+
+            // Buscar el usuario por email
+            $usuario = Usuario::where('nombre', $request->email)->first();
+
+            if ($usuario) {
+                // Actualizar la clave
+                $usuario->clave = $clave;
+                $usuario->save();
+            }
+            // Obtener el id
+            $idUsuario = $usuario->id;
+
+            $cliente = Cliente::where('usuario', $idUsuario)->first();
+
+            $nombreCliente = $cliente->nombre;
+
+            $clave_temporal = $this->generarAlfanumerico(10);
+
+            $clave = Hash::make($clave_temporal);
+
+            Usuario::where('nombre', $request->email)
+                ->update(['clave' => $clave]);
+
+
+            /* Envio email a cliente **/
+            try {
+
+                $emailCCO = "doralice@mayoristasdeopticas.com";
+
+                $usuario = $request->email;
+                $email = $request->email;
+
+                $payload = [
+                    "usuario"       => $usuario,
+                    "email"         => $email,
+                    "clave"         => $clave_temporal,
+                    "emailCCO"      => $emailCCO,
+                    "nombreCliente" => $nombreCliente
+                ];
+
+                $curl = curl_init();
+
+                curl_setopt_array($curl, [
+                    CURLOPT_URL => 'https://services.leadconnectorhq.com/hooks/40UecLU7dZ4KdLepJ7UR/webhook-trigger/EaO0YMcQbDbGG6Ma7iXc',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => json_encode($payload),
+                    CURLOPT_HTTPHEADER => [
+                        'Content-Type: application/json'
+                    ],
+                ]);
+
+                $response = curl_exec($curl);
+
+                if ($response === false) {
+                    echo "cURL Error: " . curl_error($curl);
+                } else {
+                    echo "Response: " . $response;
+                }
+
+                $info = curl_getinfo($curl);
+                print_r($info);
+
+                curl_close($curl);
+            
+
+
+                return response()->json(['Response' => 'Enviado Correctamente'], Response::HTTP_OK);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } catch (Error $e) {
+            return response()->json(['error' => $e->getMessage()], 200);
         }
     }
 }

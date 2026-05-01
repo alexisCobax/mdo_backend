@@ -32,6 +32,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EstucheController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PagoWebController;
+use App\Http\Controllers\PagoDirectoWebController;
 use App\Http\Controllers\PaisWebController;
 use App\Http\Controllers\PayeezyController;
 use App\Http\Controllers\PortadaController;
@@ -53,6 +54,7 @@ use App\Http\Controllers\ReintegroController;
 use App\Http\Controllers\CarritoWebController;
 use App\Http\Controllers\ClienteWebController;
 use App\Http\Controllers\CotizacionController;
+use App\Http\Controllers\CotizaciondetalleController;
 use App\Http\Controllers\DescuentosController;
 use App\Http\Controllers\InvoiceWebController;
 use App\Http\Controllers\PlataformaController;
@@ -65,6 +67,7 @@ use App\Http\Controllers\ProductoWebController;
 use App\Http\Controllers\TipodeenvioController;
 use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\Auth\AuthWebController;
+use App\Http\Controllers\Auth\AuthVendedorController;
 use App\Http\Controllers\EstadopedidoController;
 use App\Http\Controllers\FotoproductoController;
 use App\Http\Controllers\OrigenpedidoController;
@@ -110,6 +113,7 @@ use App\Http\Controllers\PedidodescuentospromocionController;
 use App\Http\Controllers\PromocioncomprandoxgratiszController;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TestEmail;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +125,24 @@ use App\Mail\TestEmail;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::middleware(['auth:sanctum'])->group(function () {
+
+// Route::get('/vendedor/carrito', [CarritoController::class, 'indexVendedor']);
+// Route::post('/vendedor/carritodetalle/asignar', [CarritodetalleController::class, 'asignarVendedor']);
+// Route::post('/vendedor/carritodetalle/liberar', [CarritodetalleController::class, 'liberarVendedor']);
+// Route::get('/vendedor/carritodetalle/{id}', [CarritodetalleController::class, 'showVendedor']);
+ Route::get('/producto/vendedor', [ProductoController::class, 'indexVendedor']);
+// Route::get('/producto/vendedor/{id}', [ProductoController::class, 'showVendedor']);
+// Route::get('/recibo/vendedor', [ReciboController::class, 'recibosParaVendedores']);
+// Route::get('/cotizacion/vendedor', [CotizacionController::class, 'cotizacionesParaVendedores']);
+// Route::get('/cotizaciondetalle/vendedor/{id}', [CotizaciondetalleController::class, 'show']);
+// Route::get('/pedidos/vendedor', [PedidoController::class, 'pedidosParaVendedores']);
+
+});
+
+// Route::get('/vendedor/cliente', [ClienteController::class, 'indexClienteVendedor']);
+// Route::get('/vendedor/cliente/{id}', [ClienteController::class, 'showClienteVendedor']);
 
 Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
 
@@ -151,6 +173,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     /* Carrito Routes **/
 
     Route::get('/carrito', [CarritoController::class, 'index']);
+
     Route::get('/carrito/{id}', [CarritoController::class, 'show']);
     Route::post('/carrito', [CarritoController::class, 'create']);
     Route::put('/carrito/{id}', [CarritoController::class, 'update']);
@@ -161,6 +184,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
 
     Route::get('/carritodetalle', [CarritodetalleController::class, 'index']);
     Route::get('/carritodetalle/{id}', [CarritodetalleController::class, 'show']);
+
     Route::post('/carritodetalle', [CarritodetalleController::class, 'create']);
     Route::put('/carritodetalle/{id}', [CarritodetalleController::class, 'update']);
     Route::delete('/carritodetalle/{id}', [CarritodetalleController::class, 'delete']);
@@ -502,7 +526,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     Route::post('/pagostarjetum', [PagostarjetumController::class, 'create']);
     Route::put('/pagostarjetum/{id}', [PagostarjetumController::class, 'update']);
     Route::delete('/pagostarjetum/{id}', [PagostarjetumController::class, 'delete']);
-
+    Route::post('/web/pagar/directo', [PagoDirectoWebController::class, 'create']); 
     /* Pais Routes **/
 
     Route::get('/pais', [PaisController::class, 'index']);
@@ -602,7 +626,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     /* Producto Routes **/
 
     Route::get('/producto', [ProductoController::class, 'index']);
-    Route::get('/producto/{id}', [ProductoController::class, 'show']);
+    //Route::get('/producto/{id}', [ProductoController::class, 'show']);
     Route::get('/producto/codigo/{codigo}', [ProductoController::class, 'showCodigo']);
     Route::get('/producto/stock/{id}', [ProductoController::class, 'stock']);
     Route::post('/producto', [ProductoController::class, 'create']);
@@ -657,6 +681,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     /* Recibo Routes **/
 
     Route::get('/recibo', [ReciboController::class, 'index']);
+
     Route::get('/recibo/{id}', [ReciboController::class, 'show']);
     Route::post('/recibo', [ReciboController::class, 'create']);
     Route::post('/recibo/manual', [ReciboController::class, 'createOne']);
@@ -775,9 +800,12 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
      *
      **/
 
+    Route::post('/compra/mediosDePagosOffLine', [CompraController::class, 'compraEmail']);
+    Route::post('/web/carrito/limpiar', [CarritoWebController::class, 'limpiar']);
     /* Carrito**/
     Route::post('/web/carrito/status', [CarritoWebController::class, 'show']);
     Route::post('/web/carrito/cotizacion', [CarritoWebController::class, 'procesar']);
+
     Route::post('/web/refresh', [AuthWebController::class, 'refresh']);
 
     /* Invoice **/
@@ -809,6 +837,9 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     Route::post('/web/descuento', [DescuentosController::class, 'show']);
     Route::post('/web/descuento/add', [DescuentosController::class, 'add']);
 
+    /* Consulta Agente **/
+    Route::post('/web/consulta-agente', [GoHighLevelController::class, 'enviarConsultaAgente']);
+
     Route::post('/web/me', [AuthWebController::class, 'me']);
 });
 
@@ -818,7 +849,7 @@ Route::get('/web/banner/{tag}', [BannerController::class, 'tag']);
 Route::get('/web/color', [ColorWebController::class, 'index']);
 Route::get('/web/producto/{id}', [ProductoWebController::class, 'show']);
 Route::get('/web/producto', [ProductoWebController::class, 'index']);
-Route::post('/producto/related', [ProductoController::class, 'related']);
+//Route::post('/producto/related', [ProductoController::class, 'related']);
 Route::get('/web/marcaproducto', [MarcaproductoController::class, 'index']);
 Route::get('/web/vistamarca', [MarcaproductoController::class, 'vista']);
 Route::get('/web/generar-productos-csv', [ExcelController::class, 'GenerarProductosCsv']);
@@ -832,6 +863,10 @@ Route::post('/web/rescue', [AuthWebController::class, 'rescue']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
 Route::post('register', [AuthController::class, 'register']);
+Route::post('diagnostic', [AuthController::class, 'diagnostic']); // TEMPORAL - ELIMINAR EN PRODUCCIÓN
+Route::post('rehash-password', [AuthController::class, 'rehashPassword']); // TEMPORAL - ELIMINAR EN PRODUCCIÓN
+
+//Route::post('/vendedor/login', [AuthVendedorController::class, 'login']);
 
 /* Categorias Routes Not Auth **/
 
@@ -855,9 +890,21 @@ Route::get('/pdf/recibo/{id}', [PdfController::class, 'recibo']);
 
 Route::get('/pdf/cotizacion/{id}', [PdfController::class, 'cotizacion']);
 
+// TEMPORAL: Endpoint simple para generar recibo por transacción y pedido
+Route::post('/recibo/generar-temp', [ReciboController::class, 'generarPorTransaccionPedido']);
+
 Route::post('/payment/payeezy', [PayeezyController::class, 'processPayeezyPayment']);
 
 Route::post('/payment/clover', [CloverController::class, 'processCloverPayment']);
+Route::get('/web/clover/config', [CloverController::class, 'getConfig']);
+
+// Endpoints para gestión de API keys de Clover
+Route::post('/clover/validate-api-key', [CloverController::class, 'validateApiKey']);
+Route::post('/clover/update-api-key', [CloverController::class, 'updateApiKey']);
+Route::post('/clover/update-public-key', [CloverController::class, 'updatePublicKey']);
+Route::get('/clover/api-key-status', [CloverController::class, 'getApiKeyStatus']);
+Route::post('/clover/attempt-renewal', [CloverController::class, 'attemptRenewal']);
+Route::post('/clover/try-regenerate', [CloverController::class, 'tryRegenerateApiKey']);
 
 Route::post('/subir-cuenta', [ActiveCampaignController::class, 'subirCuenta']);
 
@@ -920,251 +967,295 @@ Route::get('/reportes/marcas/list', [ReportesController::class, 'topMarcasList']
 Route::get('/reportes/recibos/report', [ReportesController::class, 'recibosReport']);
 Route::get('/reportes/recibos/list', [ReportesController::class, 'recibosList']);
 
+Route::get('/gohighlevel/nuevosarribos', [GoHighLevelController::class, 'enviarNuevosArribos']);
+Route::get('/gohighlevel/nuevosarribosaccesorios', [GoHighLevelController::class, 'templateNuevosArribosAccesorios']);
+
+Route::get('/gohighlevel/nuevosarribospormarca', [GoHighLevelController::class, 'templateNuevosArribosPorMarca']);
+
+Route::get('/gohighlevel/nuevosarribos', [GoHighLevelController::class, 'enviarNuevosArribos']);
+Route::middleware(['auth:sanctum', 'permission:1'])->post('/gohighlevel/nuevos-arribos-por-marca', [GoHighLevelController::class, 'enviarNuevosArribosPorMarca']);
 
 
-Route::get('/test/email', function () {
 
-    $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
+// Route::get('/test/email', function () {
 
-    // $SQL = "
-    //     SELECT
-    //         producto.id AS productoId,
-    //         producto.color,
-    //         producto.nombre AS nombreProducto,
-    //         marcaproducto.nombre AS nombreMarca,
-    //         COALESCE(
-    //             fotoproducto.url,
-    //             CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
-    //         ) AS imagen
-    //     FROM producto
-    //     LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
-    //     LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
-    //     WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355, 
-    //     72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023, 
-    //     72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946, 
-    //     74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252, 
-    //     62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084, 
-    //     65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718, 
-    //     65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650, 
-    //     74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678, 
-    //     74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751, 
-    //     74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809, 
-    //     74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847, 
-    //     74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875, 
-    //     74878, 74881)
-    //     ORDER BY producto.precio ASC";
+//     $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
 
-    $SQL = "SELECT
-        producto.id AS productoId,
-        producto.color,
-        producto.nombre AS nombreProducto,
-        marcaproducto.nombre AS nombreMarca,
-        COALESCE(
-            fotoproducto.url,
-            CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
-        ) AS imagen
-    FROM producto
-    LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
-    LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
-    WHERE producto.fechaAlta > '2025-01-10' 
-    AND producto.proveedorExterno='nywd' 
-    AND producto.stock > 0 
-    ORDER BY precio ASC LIMIT 0,100";
+//     // $SQL = "
+//     //     SELECT
+//     //         producto.id AS productoId,
+//     //         producto.color,
+//     //         producto.nombre AS nombreProducto,
+//     //         marcaproducto.nombre AS nombreMarca,
+//     //         COALESCE(
+//     //             fotoproducto.url,
+//     //             CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+//     //         ) AS imagen
+//     //     FROM producto
+//     //     LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+//     //     LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+//     //     WHERE producto.id IN (72325, 73879, 74479, 74045, 74050, 72324, 72355,
+//     //     72309, 72437, 74468, 72306, 73347, 72278, 71812, 72239, 71539, 73023,
+//     //     72965, 72960, 72905, 72528, 72517, 72295, 72246, 72296, 72036, 71946,
+//     //     74440, 74439, 74257, 74166, 61461, 61669, 61670, 61686, 61919, 62252,
+//     //     62306, 62945, 63429, 63551, 63859, 64125, 64412, 64523, 64559, 65084,
+//     //     65097, 65147, 65431, 65434, 65679, 65684, 65693, 65714, 65715, 65718,
+//     //     65856, 65901, 65955, 74627, 74630, 74631, 74641, 74652, 74646, 74650,
+//     //     74653, 74655, 74656, 74657, 74664, 74666, 74669, 74817, 74672, 74678,
+//     //     74680, 74682, 74692, 74819, 74724, 74725, 74728, 74740, 74748, 74751,
+//     //     74753, 74755, 74770, 74785, 74791, 74793, 74794, 74801, 74814, 74809,
+//     //     74820, 74804, 74823, 74825, 74828, 74829, 74834, 74836, 74845, 74847,
+//     //     74848, 74852, 74856, 74858, 74864, 74865, 74866, 74870, 74872, 74875,
+//     //     74878, 74881)
+//     //     ORDER BY producto.precio ASC";
 
-    $productos = DB::select($SQL);
+//     $SQL = "SELECT
+//         producto.id AS productoId,
+//         producto.color,
+//         producto.nombre AS nombreProducto,
+//         marcaproducto.nombre AS nombreMarca,
+//         COALESCE(
+//             fotoproducto.url,
+//             CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+//         ) AS imagen
+//     FROM producto
+//     LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+//     LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+//     WHERE producto.fechaAlta > '2025-01-10'
+//     AND producto.proveedorExterno='nywd'
+//     AND producto.stock > 0
+//     ORDER BY precio ASC LIMIT 0,100";
 
-    $html = '<!DOCTYPE html>
-<html lang="es">
+//     $productos = DB::select($SQL);
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Arrivals</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+//     $html = '<!DOCTYPE html>
+// <html lang="es">
 
-        .container {
-            max-width: 650px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 10px;
-        }
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <title>New Arrivals</title>
+//     <style>
+//         body {
+//             font-family: Arial, sans-serif;
+//             margin: 0;
+//             padding: 0;
+//             background-color: #f4f4f4;
+//         }
 
-        .product-item {
-            width: calc(33.333% - 10px); /* 3 columnas con espacio entre ellas */
-            box-sizing: border-box;
-            text-align: center;
-            vertical-align: top;
-        }
+//         .container {
+//             max-width: 650px;
+//             margin: 0 auto;
+//             background-color: #ffffff;
+//             padding: 10px;
+//         }
 
-        .product-item img {
-            width: 120px;
-            height: auto;
-            border: 0;
-            display: block;
-            margin: 0 auto;
-        }
+//         .product-item {
+//             width: calc(33.333% - 10px); /* 3 columnas con espacio entre ellas */
+//             box-sizing: border-box;
+//             text-align: center;
+//             vertical-align: top;
+//         }
 
-        .product-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #607C8B;
-            text-decoration: none;
-        }
+//         .product-item img {
+//             width: 120px;
+//             height: auto;
+//             border: 0;
+//             display: block;
+//             margin: 0 auto;
+//         }
 
-        .product-description {
-            font-size: 12px;
-            color: #6C757B;
-        }
+//         .product-title {
+//             font-size: 14px;
+//             font-weight: bold;
+//             color: #607C8B;
+//             text-decoration: none;
+//         }
 
-        .footer {
-            background-color: #354449;
-            color: #ffffff;
-            text-align: center;
-            padding: 20px;
-            font-size: 14px;
-        }
+//         .product-description {
+//             font-size: 12px;
+//             color: #6C757B;
+//         }
 
-        .footer div {
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
+//         .footer {
+//             background-color: #354449;
+//             color: #ffffff;
+//             text-align: center;
+//             padding: 20px;
+//             font-size: 14px;
+//         }
 
-<body>
-    <table class="container" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 650px;">
-        <!-- Header -->
-        <tr>
-            <td>
-                <img src="https://mayoristasdeopticas.com/tienda/assets/imgs/logos/logo-ngo.png" alt="Logo"
-                    style="width: 100%; height: auto;">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a href="https://mayoristasdeopticas.com/tienda/" target="_blank">
-                    <img src="https://phpstack-1091339-3819555.cloudwaysapps.com/storage/newArrivalsBanner.png"
-                        alt="New Arrivals">
-                </a>
-            </td>
-        </tr>
+//         .footer div {
+//             margin-bottom: 10px;
+//         }
+//     </style>
+// </head>
 
-        <!-- Productos -->
-        <tr>
-            <td>';
+// <body>
+//     <table class="container" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 650px;">
+//         <!-- Header -->
+//         <tr>
+//             <td>
+//                 <img src="https://mayoristasdeopticas.com/tienda/assets/imgs/logos/logo-ngo.png" alt="Logo"
+//                     style="width: 100%; height: auto;">
+//             </td>
+//         </tr>
+//         <tr>
+//             <td>
+//                 <a href="https://mayoristasdeopticas.com/tienda/" target="_blank">
+//                     <img src="https://phpstack-1091339-3819555.cloudwaysapps.com/storage/newArrivalsBanner.png"
+//                         alt="New Arrivals">
+//                 </a>
+//             </td>
+//         </tr>
 
-    $html .= '<table style="width:100%; border-collapse:collapse;">'; // Inicia la tabla principal
-    $totalProductos = count($productos);
+//         <!-- Productos -->
+//         <tr>
+//             <td>';
 
-    // Estilos CSS inline
-    $styleRow = 'width: 100%; display: table-row;';
-    $styleColumn = 'width: 33.33%; display: table-cell; padding: 10px; text-align: center;';
-    $styleImg = 'max-width: 100%; height: auto; display: block; margin: 0 auto;';
-    $styleTitle = 'font-size: 16px; font-weight: bold; color: #333; text-decoration: none; margin-top: 8px;';
-    $styleDescription = 'font-size: 14px; color: #666; margin: 5px 0; text-align: center;';
+//     $html .= '<table style="width:100%; border-collapse:collapse;">'; // Inicia la tabla principal
+//     $totalProductos = count($productos);
 
-    foreach ($productos as $index => $producto) {
-        if ($index % 3 === 0) {
-            $html .= '<tr style="' . $styleRow . '">';
-        }
+//     // Estilos CSS inline
+//     $styleRow = 'width: 100%; display: table-row;';
+//     $styleColumn = 'width: 33.33%; display: table-cell; padding: 10px; text-align: center;';
+//     $styleImg = 'max-width: 100%; height: auto; display: block; margin: 0 auto;';
+//     $styleTitle = 'font-size: 16px; font-weight: bold; color: #333; text-decoration: none; margin-top: 8px;';
+//     $styleDescription = 'font-size: 14px; color: #666; margin: 5px 0; text-align: center;';
 
-        $html .= '<td style="' . $styleColumn . '">
-                <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '">
-                    <img src="' . $producto->imagen . '" alt="' . $producto->nombreProducto . '" style="' . $styleImg . '" width="120">
-                </a>
-                <br/>
-                <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '" style="' . $styleTitle . '">
-                    ' . $producto->nombreMarca . '
-                </a>
-                <br/>
-                <p style="' . $styleDescription . '">' . $producto->nombreProducto . ' | ' . $producto->color . '</p>
-              </td>';
+//     foreach ($productos as $index => $producto) {
+//         if ($index % 3 === 0) {
+//             $html .= '<tr style="' . $styleRow . '">';
+//         }
 
-        if (($index + 1) % 3 === 0 || $index + 1 === $totalProductos) {
-            $html .= '</tr>';
-        }
-    }
+//         $html .= '<td style="' . $styleColumn . '">
+//                 <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '">
+//                     <img src="' . $producto->imagen . '" alt="' . $producto->nombreProducto . '" style="' . $styleImg . '" width="120">
+//                 </a>
+//                 <br/>
+//                 <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '" style="' . $styleTitle . '">
+//                     ' . $producto->nombreMarca . '
+//                 </a>
+//                 <br/>
+//                 <p style="' . $styleDescription . '">' . $producto->nombreProducto . ' | ' . $producto->color . '</p>
+//               </td>';
 
-    $html .= '</table>'; // Cierra la tabla principal
+//         if (($index + 1) % 3 === 0 || $index + 1 === $totalProductos) {
+//             $html .= '</tr>';
+//         }
+//     }
 
-    $html .= '</td>
-        </tr>
+//     $html .= '</table>'; // Cierra la tabla principal
 
-        <!-- Footer -->
-        <tr>
-            <td class="footer">
-                <div>2618 NW 112th Ave. Miami, FL, 33172, EE.UU.</div>
-                <div>+1 (305) 513-9177 / +1 (305) 513-9191</div>
-                <div>Whatsapp servicio al cliente: +7868000990</div>
-                <div>Ventas: +1 (305) 316-8267</div>
-            </td>
-        </tr>
-                <tr>
-            <td style="text-align:center">
-               <a href="{{email.unsubscribe_link}}">Unsubscribe</a>
-            </td>
-        </tr>
-    </table>
+//     $html .= '</td>
+//         </tr>
 
-</body>
+//         <!-- Footer -->
+//         <tr>
+//             <td class="footer">
+//                 <div>2618 NW 112th Ave. Miami, FL, 33172, EE.UU.</div>
+//                 <div>+1 (305) 513-9177 / +1 (305) 513-9191</div>
+//                 <div>Whatsapp servicio al cliente: +7868000990</div>
+//                 <div>Ventas: +1 (305) 316-8267</div>
+//             </td>
+//         </tr>
+//                 <tr>
+//             <td style="text-align:center">
+//                <a href="{{email.unsubscribe_link}}">Unsubscribe</a>
+//             </td>
+//         </tr>
+//     </table>
 
-</html>';
+// </body>
 
-    // Imprimir el HTML generado en el navegador
+// </html>';
 
-    // Mostrar el HTML como texto plano escapado
-    echo '<pre>' . htmlspecialchars($html) . '</pre>';
+// $payload = [
+//   "locationId"   => "40UecLU7dZ4KdLepJ7UR",
+//   "templateId"   => "689e3e8af892621e5c9bbd69",
+//   "updatedBy"    => "zYy3YOUuHxgomU1uYJty",
+//   "dnd"          => "{elements:[], attrs:{}, templateSettings:{}}",
+//   "html"         => $html,  // acá pasamos el string HTML
+//   "editorType"   => "html",
+//   "previewText"  => "zYy3YOUuHxgomU1uYJty",
+//   "isPlainText"  => false
+// ];
 
+// $curl = curl_init();
+// curl_setopt_array($curl, array(
+//   CURLOPT_URL => 'https://services.leadconnectorhq.com/emails/builder/data',
+//   CURLOPT_RETURNTRANSFER => true,
+//   CURLOPT_ENCODING => '',
+//   CURLOPT_MAXREDIRS => 10,
+//   CURLOPT_TIMEOUT => 0,
+//   CURLOPT_FOLLOWLOCATION => true,
+//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//   CURLOPT_CUSTOMREQUEST => 'POST',
+//   CURLOPT_POSTFIELDS => json_encode($payload), // 🔥 se encarga de escapar el HTML correctamente
+//   CURLOPT_HTTPHEADER => array(
+//     'Content-Type: application/json',
+//     'Accept: application/json',
+//     'Version: 2021-07-28',
+//     'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoQ2xhc3MiOiJMb2NhdGlvbiIsImF1dGhDbGFzc0lkIjoiNDBVZWNMVTdkWjRLZExlcEo3VVIiLCJzb3VyY2UiOiJJTlRFR1JBVElPTiIsInNvdXJjZUlkIjoiNjhhMzY3MTJhNzUxNWQzZjlhYWMwZTc2LW1laGV1ZnF6IiwiY2hhbm5lbCI6Ik9BVVRIIiwicHJpbWFyeUF1dGhDbGFzc0lkIjoiNDBVZWNMVTdkWjRLZExlcEo3VVIiLCJvYXV0aE1ldGEiOnsic2NvcGVzIjpbImludm9pY2VzL3RlbXBsYXRlLnJlYWRvbmx5IiwiaW52b2ljZXMvdGVtcGxhdGUud3JpdGUiLCJsb2NhdGlvbnMvdGVtcGxhdGVzLnJlYWRvbmx5IiwiZG9jdW1lbnRzX2NvbnRyYWN0c190ZW1wbGF0ZS9zZW5kTGluay53cml0ZSIsImRvY3VtZW50c19jb250cmFjdHNfdGVtcGxhdGUvbGlzdC5yZWFkb25seSIsImVtYWlscy9idWlsZGVyLndyaXRlIiwiZW1haWxzL2J1aWxkZXIucmVhZG9ubHkiLCJlbWFpbHMvc2NoZWR1bGUucmVhZG9ubHkiLCJjYW1wYWlnbnMucmVhZG9ubHkiXSwiY2xpZW50IjoiNjhhMzY3MTJhNzUxNWQzZjlhYWMwZTc2IiwidmVyc2lvbklkIjoiNjhhMzY3MTJhNzUxNWQzZjlhYWMwZTc2IiwiY2xpZW50S2V5IjoiNjhhMzY3MTJhNzUxNWQzZjlhYWMwZTc2LW1laGV1ZnF6In0sImlhdCI6MTc1NTU1NjE4NS43MzksImV4cCI6MTc1NTY0MjU4NS43Mzl9.ws1_3Lp1ZzMXzJMkMvFmNONS4orAc-u7_ggdZZiCKySKf18EoG-DrDrjzLJXTqQMO0HHG2PVddX_vf5VWPtsDcBDzPU_E-MogLLtFl8UcDGmCaLPSonNhoFadguyQugDJbVYjOSUUqmrCEdqO_4HE9SO8Q0js6cyyWEcoyp21itdaeQ7eN89MOXtL0KXlqQARWiwjZVpuz1tqBCq6KvMt89FyEW5TfWOr__PKbpqvB-DB1ucYtPCqCN6yjHG7o-29GbDGAfL6KJe8HEYHFz0ReUcRX-evXvlnHAFMVZBnutVAHYrRvM4QsscWE9HH__yr4BWz8YtqqHkkpxRCvWyipi-guPcVjYzqN1zrVJbjPg_nP6iF9boDMfhWeAk8NuuJMZKUJKtXvyw-5dGi6oOOJwlNJVdHTUCRCwPtIe6SeQmkx8F5foh3CO_VYTYrKk2bW49MepvEGe6HvBq_jZrskqxDP-k1TH0WGND4FTCtmwc-ROf9VF5GaG8g2LvEubyeWzPdT0KzSqx5cEwdffvp9myRnLgEt-WlMCSkgLpNybhSmh6Wp2Jz_PBIUjnkZgs9nBlDavj3oIg90cFitAa9BIqF9ppKFK3pnkPrMR3v4tqO62a-RL7f4-_r9-H9_4a_VLkFr-t6vDN2VjEkRu4Px_Y2iJ4vNNsO7LTJWwvoVA'
+//   ),
+// ));
 
-    //     Route::get('/test/email',function(){
+// $response = curl_exec($curl);
+// curl_close($curl);
 
-    //         $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
-
-    //         $SQL = "
-    //             SELECT
-    //                 producto.id AS productoId,
-    //                 producto.color,
-    //                 producto.nombre AS nombreProducto,
-    //                 marcaproducto.nombre AS nombreMarca,
-    //                 COALESCE(
-    //                     fotoproducto.url,
-    //                     CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
-    //                 ) AS imagen
-    //             FROM producto
-    //             LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
-    //             LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
-    //             ORDER BY producto.id DESC
-    //             LIMIT 10";
-
-    // // Realiza la consulta a la base de datos
-    // //$productos = DB::select('SELECT producto.color, producto.nombre AS nombreProducto, marcaproducto.nombre AS nombreMarca FROM producto LEFT JOIN marcaproducto ON producto.marca=marcaproducto.id LIMIT 10');
-
-    // $productos = DB::select($SQL);
-
-    // return ['product'=>$productos];
-    // // // Convierte el array de objetos en una colección
-    // // $productos = collect($productos);
-
-    // // // Ahora puedes usar chunk
-    // // $productos = $productos->chunk(3);
-
-    // //return json_encode($productos);
-
-    // // // Enviar el correo
-    // // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail($productos));
-
-    // // return 'Correo de prueba enviado';
+// echo $response;
 
 
-    //     // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
-    //     // return 'Correo de prueba enviado';
+//     // Imprimir el HTML generado en el navegador
 
-});
+//     // Mostrar el HTML como texto plano escapado
+//     //echo '<pre>' . htmlspecialchars($html) . '</pre>';
+
+
+//     //     Route::get('/test/email',function(){
+
+//     //         $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
+
+//     //         $SQL = "
+//     //             SELECT
+//     //                 producto.id AS productoId,
+//     //                 producto.color,
+//     //                 producto.nombre AS nombreProducto,
+//     //                 marcaproducto.nombre AS nombreMarca,
+//     //                 COALESCE(
+//     //                     fotoproducto.url,
+//     //                     CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+//     //                 ) AS imagen
+//     //             FROM producto
+//     //             LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+//     //             LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+//     //             ORDER BY producto.id DESC
+//     //             LIMIT 10";
+
+//     // // Realiza la consulta a la base de datos
+//     // //$productos = DB::select('SELECT producto.color, producto.nombre AS nombreProducto, marcaproducto.nombre AS nombreMarca FROM producto LEFT JOIN marcaproducto ON producto.marca=marcaproducto.id LIMIT 10');
+
+//     // $productos = DB::select($SQL);
+
+//     // return ['product'=>$productos];
+//     // // // Convierte el array de objetos en una colección
+//     // // $productos = collect($productos);
+
+//     // // // Ahora puedes usar chunk
+//     // // $productos = $productos->chunk(3);
+
+//     // //return json_encode($productos);
+
+//     // // // Enviar el correo
+//     // // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail($productos));
+
+//     // // return 'Correo de prueba enviado';
+
+
+//     //     // Mail::to(['mgarralda@cobax.com.ar','alexiscobax1@gmail.com'])->send(new TestEmail());
+//     //     // return 'Correo de prueba enviado';
+
+// });
 
 Route::post('/test/ghl', [GoHighLevelController::class, 'getRefreshToken']);
 
@@ -1185,3 +1276,40 @@ Route::post('/test/nywd/brands', [NywdController::class, 'getProductBrands']);
 Route::post('/test/nywd/categories', [NywdController::class, 'getProductCategories']);
 
 Route::post('/test/nywd/product/sku', [NywdController::class, 'getProductBySku']);
+
+Route::post('/compra/email', [CompraController::class, 'compraEmail']);
+
+Route::post('/web/clave/reestablecer', [AuthWebController::class, 'recuperar']);
+
+Route::get('/producto/{id}', [ProductoController::class, 'show']);
+
+Route::post('/producto/related', [ProductoController::class, 'related']);
+
+Route::get('/web/marca/{id}', [MarcaproductoController::class, 'show']);
+
+Route::post('/admin/logout-user', [AuthVendedorController::class, 'forceLogoutUser']);
+    //->middleware('auth:sanctum'); // opcional: proteger con un rol de admin
+
+    Route::middleware(['auth:sanctum', 'permission:3'])->group(function () {
+
+Route::get('/vendedor/carrito', [CarritoController::class, 'indexVendedor']);
+Route::post('/vendedor/carritodetalle/asignar', [CarritodetalleController::class, 'asignarVendedor']);
+Route::post('/vendedor/carritodetalle/liberar', [CarritodetalleController::class, 'liberarVendedor']);
+Route::post('/vendedor/carritodetalle/generar-pedido', [CarritodetalleController::class, 'generarPedido']); 
+Route::get('/vendedor/carritodetalle/{id}', [CarritodetalleController::class, 'showVendedor']);
+//Route::get('/producto/vendedor', [ProductoController::class, 'indexVendedor']);
+Route::get('/producto/vendedor/{id}', [ProductoController::class, 'showVendedor']);
+Route::get('/recibo/vendedor', [ReciboController::class, 'recibosParaVendedores']);
+Route::get('/cotizacion/vendedor', [CotizacionController::class, 'cotizacionesParaVendedores']);
+Route::get('/cotizaciondetalle/vendedor/{id}', [CotizaciondetalleController::class, 'show']);
+Route::get('/pedidos/vendedor', [PedidoController::class, 'pedidosParaVendedores']);
+Route::get('/vendedor/cliente', [ClienteController::class, 'indexClienteVendedor']);
+Route::get('/vendedor/cliente/{id}', [ClienteController::class, 'showClienteVendedor']);
+
+    });
+
+    Route::post('/vendedor/login', [AuthVendedorController::class, 'login']);
+
+
+Route::post('/enviar-agradecimiento', [TestController::class, 'index']);
+

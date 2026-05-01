@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Filters\Recibos\RecibosFilters;
+use App\Filters\Recibos\RecibosVendedoresFilters;
 use App\Helpers\DateHelper;
 use App\Models\Recibo;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -22,14 +23,27 @@ class ReciboService
         }
     }
 
+    public function recibosParaVendedores(Request $request)
+    {
+        try {
+            $data = RecibosVendedoresFilters::getPaginateRecibo($request, Recibo::class);
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener los productos'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function findById(Request $request)
     {
-        if ($request->recibo) {
+        // if ($request->recibo) {
 
-            $recibo = Recibo::where('id', $request->recibo)->first();
-        } else {
-            $recibo = Recibo::where('pedido', $request->id)->first();
-        }
+        //     $recibo = Recibo::where('id', $request->recibo)->first();
+        // } else {
+        //     $recibo = Recibo::where('pedido', $request->id)->first();
+        // }
+
+        $recibo = Recibo::where('id', $request->id)->first();
 
         $data = [
             'recibo' => [
@@ -74,9 +88,10 @@ class ReciboService
             'cliente' => $request->cliente,
             'formaDePago' => $request->formaDePago,
             'total' => $request->total,
-            'observaciones' => $request->observaciones,
+            'observaciones' => $request->observaciones ? $request->observaciones : "",
             'pedido' => 0,
             'garantia' => $request->garantia ? 1 : 0,
+            'invoice' => $request->invoice,
             'anulado' => 0,
             'fecha' => NOW(),
         ];

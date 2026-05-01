@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Helpers\CarritoHelper;
 use App\Models\Cupondescuento;
 use App\Helpers\CalcCuponHelper;
+use App\Models\Cliente;
 use Illuminate\Support\Facades\DB;
 use App\Models\Promocioncomprandoxgratisz;
 
@@ -104,7 +105,10 @@ class DescuentosService
 
     public function add($request)
     {
+        //busco el cupon, existe? si tiene campo tildado aplicar sino no
         $carrito = CarritoHelper::getCarrito();
+
+        $cliente = Cliente::where('usuario',$carrito['usuario'])->first();
 
         $cupon = Cupondescuento::where('nombre', $request->cupon)
         ->whereDate('inicio', '<=', date('Y-m-d'))
@@ -118,6 +122,20 @@ class DescuentosService
             $carrito->cupon = 0;
             $carrito->save();
             return response()->json(['mensaje' => 'El cupón no existe', ' status' => 404], Response::HTTP_NOT_FOUND);
+        }else{
+            if($cupon->soloClienteNuevo == 1){
+
+                $clienteViejo = DB::table('pedido')
+                            ->where('cliente', $cliente->id)
+                            ->where('estado', 2)
+                            ->exists();
+
+                if($clienteViejo){
+                    $carrito->cupon = 0;
+                    $carrito->save();
+                    return response()->json(['mensaje' => 'El cupón no existe', ' status' => 404], Response::HTTP_NOT_FOUND);
+                }
+            }
         }
 
         try {

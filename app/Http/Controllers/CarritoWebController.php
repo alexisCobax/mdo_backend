@@ -25,17 +25,7 @@ class CarritoWebController extends Controller
         return $this->service->findAll($request);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  use App\Services\CarritoWebService $service
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request)
-    {
-        return $this->service->findByToken($request);
-    }
+
 
     /**
      * Display the specified resource.
@@ -47,6 +37,30 @@ class CarritoWebController extends Controller
     public function status(Request $request)
     {
         return $this->service->findStatus($request);
+    }
+
+            /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\CarritoWebService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function limpiar(Request $request)
+    {
+        return $this->service->limpiar($request);
+    }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\CarritoWebService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request)
+    {
+        return $this->service->findByToken($request);
     }
 
     /**

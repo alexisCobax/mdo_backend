@@ -27,6 +27,9 @@ class MarcasFilters
         $query->where('suspendido', 0);
         }
 
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->input('nombre') . '%');
+        }
 
         $data = $query->orderBy('nombre', 'asc')
         ->paginate($perPage, ['*'], 'page', $page);

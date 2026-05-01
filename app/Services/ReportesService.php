@@ -235,32 +235,62 @@ class ReportesService
     public function recibosReport(Request $request)
     {
 
+        // $fecha_condicion = '';
+
+        // if (!empty($request->fecha_desde) && !empty($request->fecha_hasta)) {
+        //     $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->fecha_desde}' AND '{$request->fecha_hasta}'";
+        // }
+
+
+        // try {
+        //     $sql = "SELECT
+        //     cliente.nombre AS cliente,
+        //     recibo.fecha,
+        //     formadepago.nombre AS formaDePago,
+        //     recibo.total
+        // FROM
+        //     recibo
+        // INNER JOIN
+        //     formadepago
+        // ON
+        //     recibo.formaDePago = formadepago.id
+        // INNER JOIN
+        //     cliente
+        // ON
+        //     recibo.cliente = cliente.id
+        //     {$fecha_condicion}";
+
+        //     $recibo = DB::select($sql);
+
         $fecha_condicion = '';
 
-        if (!empty($request->fecha_desde) && !empty($request->fecha_hasta)) {
-            $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->fecha_desde}' AND '{$request->fecha_hasta}'";
-        }
+if (!empty($request->fecha_desde) && !empty($request->fecha_hasta)) {
+    $fecha_condicion = "WHERE recibo.fecha BETWEEN '{$request->fecha_desde}' AND '{$request->fecha_hasta}'";
+}
 
+try {
+    $sql = "
+        SELECT 
+            recibo.id, 
+            recibo.fecha, 
+            recibo.total, 
+            cliente.nombre, 
+            cliente.email, 
+            cliente.telefono, 
+            cliente.whatsapp, 
+            pais.nombre AS pais
+        FROM 
+            jkkxjmpypf.recibo
+        LEFT JOIN 
+            jkkxjmpypf.cliente ON cliente.id = recibo.cliente
+        LEFT JOIN  
+            jkkxjmpypf.pais ON pais.id = cliente.pais
+        {$fecha_condicion}
+        ORDER BY 
+            recibo.id DESC
+    ";
 
-        try {
-            $sql = "SELECT
-            cliente.nombre AS cliente,
-            recibo.fecha,
-            formadepago.nombre AS formaDePago,
-            recibo.total
-        FROM
-            recibo
-        INNER JOIN
-            formadepago
-        ON
-            recibo.formaDePago = formadepago.id
-        INNER JOIN
-            cliente
-        ON
-            recibo.cliente = cliente.id
-            {$fecha_condicion}";
-
-            $recibo = DB::select($sql);
+    $recibo = DB::select($sql);
 
             // Convertir los objetos stdClass en arrays asociativos
             $recibo = array_map(function ($item) {
@@ -268,7 +298,8 @@ class ReportesService
             }, $recibo);
 
             // Definir las cabeceras y el orden deseado
-            $cabeceras = ['Cliente', 'Fecha', 'formaDePago', 'total'];
+            // $cabeceras = ['Cliente', 'Fecha', 'formaDePago', 'total'];
+            $cabeceras = ['N° Recibo', 'Fecha', 'Total', 'Nombre', 'Email', 'Telefono', 'WhatsApp', 'Pais'];
 
             // Generar el archivo Excel con la función genérica
             $response = ArrayToXlsxHelper::getXlsx($recibo, $cabeceras);

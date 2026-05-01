@@ -15,16 +15,31 @@ class UsuariosFilters
 
         // Obtén los parámetros del filtro
         $perfil = $request->input('perfil');
+        $permisos = $request->input('permisos');
 
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
-        // Aplica los filtros si se proporcionan
-        $query->perfil($perfil);
+        // Filtro por permisos (ej. permisos=2,3): solo usuarios con esos permisos
+        if ($permisos !== null && $permisos !== '') {
+            $ids = array_map('intval', array_filter(explode(',', $permisos)));
+            if (!empty($ids)) {
+                $query->whereIn('permisos', $ids);
+            }
+        } else {
+            // Aplica filtro por perfil solo si no se envió permisos
+            $query->perfil($perfil);
+        }
 
-        // Realiza la paginación de la consulta
-        $data = $query->orderBy('id', 'desc')
-        ->paginate($perPage, ['*'], 'page', $page);
+        // Filtro por perfil desde el formulario (selector de perfiles): restringe a un perfil
+        if ($perfil !== null && $perfil !== '' && is_numeric($perfil) && (int) $perfil > 0) {
+            $query->where('permisos', (int) $perfil);
+        }
+
+        // Eager load permiso para el nombre del perfil (evita N+1)
+        $data = $query->with('permiso')
+            ->orderBy('id', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
 
         // Crea una instancia del transformer
         $transformer = new FindAllTransformer();

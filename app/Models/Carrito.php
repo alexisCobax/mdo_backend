@@ -36,6 +36,10 @@ class Carrito extends Model
         'formaDePago',
         'session',
         'observaciones',
+        'cupon',
+        'fecha_modificacion',
+        'gestionadoPor',
+        'cerrado'
     ];
 
     public function cupones()

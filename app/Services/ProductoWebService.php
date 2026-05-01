@@ -249,7 +249,7 @@ class ProductoWebService
     public function related(Request $request)
     {
         $producto = Producto::select('*')
-            ->where('categoria', '=', $request->categoria)
+            ->where('marcaproducto', '=', $request->marca) 
             ->where('id', '!=', $request->producto)
             ->where('stock', '>', 0)
             ->orderBy('id', 'DESC')

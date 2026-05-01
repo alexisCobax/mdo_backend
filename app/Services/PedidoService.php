@@ -34,6 +34,17 @@ class PedidoService
         }
     }
 
+    public function pedidosParaVendedores(Request $request)
+    {
+        try {
+                $data = PedidosFilters::getPaginatePedidos($request, Pedido::class);
+
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al obtener los productos', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function findById(Request $request)
     {
         try {

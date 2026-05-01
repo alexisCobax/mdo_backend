@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $producto
  * @property float $precio
  * @property int $cantidad
+ * @property int $asesor
  */
 class Carritodetalle extends Model
 {
@@ -27,6 +28,7 @@ class Carritodetalle extends Model
         'producto',
         'precio',
         'cantidad',
+        'asesor'
     ];
 
     //Relationships

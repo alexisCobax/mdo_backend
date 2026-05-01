@@ -10,19 +10,22 @@ class FindAllWebTransformer extends TransformerAbstract
 {
     public function transform($producto)
     {
+        
         $arrayEnum = EstadosProductosEnums::toArray();
 
-        $imagenPrincipal = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
+        //$imagenPrincipal = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
 
-        if(isset($imagenPrincipal->url)){
-            $imagen = $imagenPrincipal->url;
-        }else{
-            $imagen = env('URL_IMAGENES_PRODUCTOS').$producto->imagenPrincipal . '.jpg';
-        }
+        $imagen = $producto->imagenPrincipal;
+
+        // if(isset($imagenPrincipal->url)){
+        //     $imagen = $imagenPrincipal->url;
+        // }else{
+        //     $imagen = env('URL_IMAGENES_PRODUCTOS').$producto->imagenPrincipal . '.jpg';
+        // }
 
         return [
             'id' => $producto->producto_id,
-            'imagenPrincipal' => $imagen,
+            'imagenPrincipal' => $producto->imagenPrincipal,
             'nombre' => utf8_encode($producto->nombre),
             'codigo' => $producto->codigo,
             'categoria' => $producto->categoria,

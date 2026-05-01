@@ -26,11 +26,16 @@ class FindByIdTransformer extends TransformerAbstract
                 //     $imagen = $foto->url;
                 // }
 
-                if(isset($foto->url)){
-                    $imagen = $foto->url;
-                }else{
-                    $imagen = env('URL_IMAGENES_PRODUCTOS').$foto->id . '.jpg';
+                // if(isset($foto->url)){
+                //     $imagen = $foto->url;
+                // }else{
+                //     $imagen = env('URL_IMAGENES_PRODUCTOS').$foto->id . '.jpg';
+                // }
+
+                if (!empty($foto->url)) {
+                    $imagen = 'https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/' . basename($foto->url);
                 }
+
 
                 $imagenes[] = [
                     'id' => $foto->id,
@@ -40,12 +45,12 @@ class FindByIdTransformer extends TransformerAbstract
             }
         }
 
-        $imagenPrincipal = Fotoproducto::where('id',$producto->imagenPrincipal)->first();
+        $imagenPrincipal = Fotoproducto::where('id', $producto->imagenPrincipal)->first();
 
-        if(isset($imagenPrincipal->url)){
+        if (isset($imagenPrincipal->url)) {
             $urlImagen = $imagenPrincipal->url;
-        }else{
-            $urlImagen = env('URL_IMAGENES_PRODUCTOS').$producto->imagenPrincipal . '.jpg';
+        } else {
+            $urlImagen = env('URL_IMAGENES_PRODUCTOS') . $producto->imagenPrincipal . '.jpg';
         }
 
 
@@ -83,7 +88,7 @@ class FindByIdTransformer extends TransformerAbstract
             'posicion' => $producto->posicion,
             'stockRoto' => $producto->stockRoto,
             'genero' => $producto->genero,
-            'imagenPrincipal' => $urlImagen,
+            'imagenPrincipal' => $this->generarImagenPrincipal($producto),
             //'imagenesSecundarias' => optional($producto->fotos)->orden . '.' . env('EXTENSION_IMAGEN_PRODUCTO'),
             'UPCreal' => $producto->UPCreal,
             'mdoNet' => $producto->mdoNet,
@@ -102,5 +107,26 @@ class FindByIdTransformer extends TransformerAbstract
             'descripcionLarga' => $producto->descripcionLarga,
             'imagenes' => $imagenes,
         ];
+    }
+
+    private function generarImagenPrincipal($producto)
+    {
+        $baseUrl = 'https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/';
+
+        if ($producto->proveedorExterno === 'nywd') {
+            // Buscar la primera foto asociada al producto
+            $foto = $producto->fotos->first();
+
+            if ($foto && $foto->descargada == 2 && !empty($foto->url)) {
+                $filename = basename($foto->url); // toma solo el nombre del archivo
+                return $baseUrl . $filename;
+            } else {
+                return $baseUrl . '0.jpg';
+            }
+        } elseif (!empty($producto->imagenPrincipal)) {
+            return $baseUrl . $producto->imagenPrincipal . '.jpg';
+        }
+
+        return $baseUrl . '0.jpg';
     }
 }

@@ -11,6 +11,7 @@ use App\Transformers\Productos\FindByIdTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProductoService
 {
@@ -25,7 +26,19 @@ class ProductoService
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    
+    public function findAllVendedor(Request $request)
+    {
+        try {
+            $data = ProductosFilters::getPaginateProducts($request, Producto::class);
 
+            return response()->json(['data' => $data], Response::HTTP_OK);
+        } catch (\Exception $e) {
+
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     public function stock(Request $request)
     {
         try {
@@ -254,19 +267,43 @@ class ProductoService
 
     public function related(Request $request)
     {
-        $producto = Producto::select('*')
-            ->where('categoria', '=', $request->categoria)
-            ->where('id', '!=', $request->producto)
-            ->where('stock', '>', 0)
-            ->orderBy('id', 'DESC')
+        // $producto = Producto::select('*')
+        //     ->where('categoria', '=', $request->categoria)
+        //     ->where('id', '!=', $request->producto)
+        //     ->where('stock', '>', 0)
+        //     ->orderBy('id', 'DESC')
+        //     ->limit(4)
+        //     ->get();
+
+        $productos = Producto::select([
+                'producto.*',
+                DB::raw("CONCAT('https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/',
+                    COALESCE(
+                        IF(producto.proveedorExterno='nywd',
+                            IF(
+                                fotoproducto.descargada = 2,
+                                SUBSTRING_INDEX(fotoproducto.url, '/', -1),
+                                '0.jpg'
+                            ),
+                            CONCAT(producto.imagenPrincipal, '.jpg')
+                        ),
+                        '0.jpg'
+                    )
+                ) as imagenPrincipal")
+            ])
+            ->leftJoin('fotoproducto', 'fotoproducto.idProducto', '=', 'producto.id')
+            ->where('producto.marca', $request->marca)
+            ->where('producto.id', '!=', $request->producto)
+            ->where('producto.stock', '>', 0)
+            ->orderByDesc('producto.id')
             ->limit(4)
             ->get();
 
-        if (!$producto) {
+        if (!$productos) {
             return response()->json(['error' => 'Related product not found'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json($producto, Response::HTTP_OK);
+        return response()->json($productos, Response::HTTP_OK);
     }
 
     public function precioGeneral(Request $request){

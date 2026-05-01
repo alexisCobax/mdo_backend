@@ -5,6 +5,7 @@ namespace App\Filters\Productos;
 use App\Models\Producto;
 use Illuminate\Http\Response;
 use App\Transformers\Productos\FindAllWebTransformer;
+use Illuminate\Support\Facades\DB;
 
 class ProductosWebFiltersMenor20
 {
@@ -17,9 +18,21 @@ class ProductosWebFiltersMenor20
         // Inicializa la consulta utilizando el modelo
         $query = $model::query();
 
-        $query->select(
+$query->select(
             'producto.id as producto_id',
-            'producto.imagenPrincipal',
+            DB::raw("CONCAT('https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/',
+                COALESCE(
+                    IF(producto.proveedorExterno='nywd',
+                        IF(
+                            fotoproducto.descargada = 2,
+                            SUBSTRING_INDEX(fotoproducto.url, '/', -1),
+                            '0.jpg'
+                        ),
+                        CONCAT(producto.imagenPrincipal, '.jpg')
+                    ),
+                    '0.jpg'
+                )
+            ) AS imagenPrincipal"),
             'producto.codigo',
             'producto.nombre',
             'producto.categoria',
@@ -35,11 +48,12 @@ class ProductosWebFiltersMenor20
             'producto.nuevo',
             'producto.suspendido'
         )
-        ->join('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
-        ->join('categoriaproducto', 'producto.categoria', '=', 'categoriaproducto.id')
+        ->leftjoin('marcaproducto', 'producto.marca', '=', 'marcaproducto.id')
+        ->leftjoin('categoriaproducto', 'producto.categoria', '=', 'categoriaproducto.id')
+        ->leftJoin('fotoproducto', 'fotoproducto.id', '=', 'producto.imagenPrincipal')
         ->where(function($query) {
             $query->whereBetween('producto.precioPromocional', [10, 25])
-                  ->orWhereBetween('producto.precio', [10, 25]);
+                ->orWhereBetween('producto.precio', [10, 25]);
         })
         ->where('producto.stock', '>', 0)
         ->where('producto.suspendido', '=', 0)

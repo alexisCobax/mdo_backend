@@ -26,6 +26,17 @@ class ProductoController extends Controller
         return $this->service->findAll($request);
     }
 
+        /**
+     * Display a listing of the resource.
+     *
+     * @param  use App\Services\ProductoService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function indexVendedor(Request $request)
+    {
+        return $this->service->findAllVendedor($request);
+    }
+
     /**
      * Display the specified stock resource.
      *

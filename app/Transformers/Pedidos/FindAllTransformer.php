@@ -4,12 +4,23 @@ namespace App\Transformers\Pedidos;
 
 use App\Helpers\DateHelper;
 use App\Models\Pedido;
+use App\Models\Pedidodetalle;
+use App\Models\Pedidodetallenn;
 use League\Fractal\TransformerAbstract;
 
 class FindAllTransformer extends TransformerAbstract
 {
     public function transform(Pedido $pedido)
     {
+        // Subtotal = suma de (cantidad × precio) de cada línea, sin descuentos ni envío
+        $subtotalDetalle = (float) Pedidodetalle::where('pedido', $pedido->id)
+            ->get()
+            ->sum(fn ($d) => (float) $d->precio * (int) $d->cantidad);
+        $subtotalNN = (float) Pedidodetallenn::where('pedido', $pedido->id)
+            ->get()
+            ->sum(fn ($d) => (float) $d->precio * (int) $d->cantidad);
+        $subtotal = round($subtotalDetalle + $subtotalNN, 2);
+
         return [
             'id' => $pedido->id,
             'fecha' => DateHelper::ToDateCustom($pedido->fecha),
@@ -24,6 +35,7 @@ class FindAllTransformer extends TransformerAbstract
             'observaciones' => $pedido->observaciones,
             'invoice' => $pedido->invoice,
             'total' => number_format($pedido->total, 2),
+            'subtotal' => number_format($subtotal, 2),
             'descuentoPorcentual' => $pedido->descuentoPorcentual,
             'descuentoNeto' => $pedido->descuentoNeto,
             'totalEnvio' => $pedido->totalEnvio,

@@ -50,6 +50,18 @@ class CompraController extends Controller
     }
 
     /**
+     * Creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  use App\Services\CompraService $service
+     * @return \Illuminate\Http\Response
+     */
+    public function compraEmail(Request $request)
+    {
+        return $this->service->compraEmail($request);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -79,7 +79,7 @@ class NotificacionesCotizacionService
             if ($enviarEmail) {
 
                 /* genero invoice PDF **/
-                $this->generarCotizacionMailPdf($cotizacion->id);
+                //$this->generarCotizacionMailPdf($cotizacion->id);
 
                 $cliente = Cliente::where('id', $cotizacion->cliente)->first();
 

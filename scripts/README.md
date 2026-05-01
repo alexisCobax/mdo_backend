@@ -1,0 +1,1 @@
+a la vista la exporta con el usuario de la base de datos de produccion, hay que ingresar a la vista y poner el usuario sde la base de datos donde se exporta

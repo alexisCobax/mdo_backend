@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $pedido
  * @property string $resultado
  * @property string $ctr
+ * @property string $payload
  */
 class Transaccion extends Model
 {
@@ -32,5 +33,13 @@ class Transaccion extends Model
         'pedido',
         'resultado',
         'ctr',
+        // Campos opcionales (solo si existen en la tabla)
+        'carrito',
+        'recibo',
+        'payload',
+    ];
+
+    protected $casts = [
+        'payload' => 'array',
     ];
 }

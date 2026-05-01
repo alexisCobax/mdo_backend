@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\GenerateDocumentation;
+use App\Console\Commands\NotificacionCarritoAbandonado;
 use Bacoder\Servicesgenerator\GenerateService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -12,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         GenerateService::class,
         GenerateDocumentation::class,
+        NotificacionCarritoAbandonado::class,
         \App\Console\Commands\EncryptClavesUsuarios::class,
     ];
 

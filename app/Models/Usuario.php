@@ -44,7 +44,16 @@ class Usuario extends Authenticatable
         'suspendido',
         'clave_old',
         'frase',
+        'dev',
     ];
+
+    /**
+     * Relación con el catálogo de permisos/perfil (tabla permiso).
+     */
+    public function permiso()
+    {
+        return $this->belongsTo(Permiso::class, 'permisos', 'id');
+    }
 
     public function scopePerfil($query, $perfil)
     {
