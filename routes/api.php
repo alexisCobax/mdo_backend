@@ -972,6 +972,8 @@ Route::get('/gohighlevel/nuevosarribosaccesorios', [GoHighLevelController::class
 
 Route::get('/gohighlevel/nuevosarribospormarca', [GoHighLevelController::class, 'templateNuevosArribosPorMarca']);
 
+Route::get('/gohighlevel/nuevosarribos/diadelamadre', [GoHighLevelController::class, 'templateNuevosArribosPorMarcaDiaDeLaMadre']);
+
 Route::get('/gohighlevel/nuevosarribos', [GoHighLevelController::class, 'enviarNuevosArribos']);
 Route::middleware(['auth:sanctum', 'permission:1'])->post('/gohighlevel/nuevos-arribos-por-marca', [GoHighLevelController::class, 'enviarNuevosArribosPorMarca']);
 

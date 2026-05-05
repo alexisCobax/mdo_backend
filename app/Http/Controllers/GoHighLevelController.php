@@ -503,6 +503,205 @@ ORDER BY
 
     }
 
+    public function templateNuevosArribosPorMarcaDiaDeLaMadre($marcaId = null){
+
+        $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
+        $marcaId = $marcaId ?? 359;
+    
+        // $SQL = "SELECT *
+        //     FROM (
+        //         SELECT
+        //             producto.id AS productoId,
+        //             producto.color,
+        //             producto.nombre AS nombreProducto,
+        //             marcaproducto.nombre AS nombreMarca,
+        //             producto.precio,
+        //             producto.fechaAlta,
+        //             COALESCE(
+        //                 fotoproducto.url,
+        //                 CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+        //             ) AS imagen
+        //         FROM producto
+        //         LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+        //         LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+        //         WHERE producto.stock > 0
+        //         AND producto.marca = ?
+        //         ORDER BY producto.id DESC
+        //         LIMIT 100
+        //     ) AS ultimos
+        //     ORDER BY ultimos.precio ASC";
+
+        $SQL = "SELECT *
+FROM (
+    SELECT
+        producto.id AS productoId,
+        producto.color,
+        producto.nombre AS nombreProducto,
+        marcaproducto.nombre AS nombreMarca,
+        producto.precio,
+        producto.fechaAlta,
+
+        CONCAT(
+            'https://phpstack-1091339-3819555.cloudwaysapps.com/storage/app/public/images/',
+            COALESCE(
+                IF(producto.proveedorExterno = 'nywd',
+                    IF(
+                        fotoproducto.descargada = 2,
+                        SUBSTRING_INDEX(fotoproducto.url, '/', -1),
+                        '0.jpg'
+                    ),
+                    CONCAT(producto.imagenPrincipal, '.jpg')
+                ),
+                '0.jpg'
+            )
+        ) AS imagen
+
+    FROM producto
+    LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+    LEFT JOIN categoriaproducto ON producto.categoria = categoriaproducto.id
+    LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+
+    WHERE
+        producto.precioPromocional > 0
+        AND producto.stock > 0
+        AND producto.suspendido = 0
+        AND (producto.destacado = 1 OR producto.nuevo = 1)
+        AND producto.borrado IS NULL
+
+    ORDER BY
+        CASE
+            WHEN producto.marca IN (359,789,797,800,787) THEN 0
+            ELSE 3
+        END ASC,
+        marcaproducto.nombre ASC,
+        producto.ultimoIngresoDeMercaderia DESC,
+        producto.id ASC
+
+) AS productos
+ORDER BY productos.precio ASC;";
+    
+        $productos = DB::select($SQL);
+    
+        $html = '<!DOCTYPE html>
+    <html lang="es">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo Día de la Madre</title>
+    </head>
+    
+    <body style="margin:0; padding:0; background-color:#f4f4f4; font-family: Arial, sans-serif;">
+    
+    <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width:750px; background:#ffffff;">
+    
+    <!-- LOGO -->
+    <tr>
+    <td style="text-align:center;">
+    <img src="https://mayoristasdeopticas.com/tienda/assets/imgs/logos/logo-ngo.png" style="width:100%;">
+    </td>
+    </tr>
+    
+    <!-- BANNER PROMO -->
+    <tr>
+    <td style="
+    background-image:url(\'https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=1200\');
+    background-size:cover;
+    background-position:center;
+    text-align:center;
+    padding:40px 20px;
+    ">
+    
+    <div style="background:rgba(255,255,255,0.88); padding:25px;">
+    
+    <h2 style="color:#e91e63;">🌷 PROMO DÍA DE LA MADRE 🌷</h2>
+    
+    <p><strong>10% OFF en TODA la tienda virtual</strong></p>
+    <p>Solo en mayo - Mayoristas de Ópticas</p>
+    
+    <p>✅ Todas las marcas</p>
+    <p>✅ Todos los modelos</p>
+    <p>✅ Cuenta comercial activa</p>
+    
+    <p><strong>Pide tu cupón antes de finalizar tu pedido</strong></p>
+    
+    <a href="https://mayoristasdeopticas.com/tienda/marcas.php"
+    style="display:inline-block; padding:12px 20px; background:#e91e63; color:#fff; text-decoration:none; border-radius:5px;">
+    Ir a la tienda
+    </a>
+    
+    <p style="margin-top:15px;">📲 +1 (786) 800-0990</p>
+    
+    </div>
+    
+    </td>
+    </tr>
+    
+    <!-- PRODUCTOS -->
+    <tr>
+    <td>';
+    
+        $html .= '<table style="width:100%; border-collapse:collapse;">';
+    
+        $totalProductos = count($productos);
+    
+        $styleColumn = 'width: 33.33%; padding: 15px 10px; text-align: center;';
+        $styleImg = 'max-width: 100%; height: auto; display: block; margin: 0 auto;';
+        $styleTitle = 'font-size: 14px; font-weight: bold; color: #333; text-decoration: none;';
+        $styleDescription = 'font-size: 12px; color: #666; margin: 5px 0;';
+    
+        foreach ($productos as $index => $producto) {
+    
+            if ($index % 3 === 0) {
+                $html .= '<tr>';
+            }
+    
+            $html .= '<td style="'.$styleColumn.'">
+                <a href="https://mayoristasdeopticas.com/tienda/producto.php?id='.$producto->productoId.'">
+                    <img src="'.$producto->imagen.'" alt="'.$producto->nombreProducto.'" style="'.$styleImg.'" width="140">
+                </a>
+                <br/>
+                <a href="https://mayoristasdeopticas.com/tienda/producto.php?id='.$producto->productoId.'" style="'.$styleTitle.'">
+                    '.$producto->nombreMarca.'
+                </a>
+                <br/>
+                <p style="'.$styleDescription.'">
+                    '.$producto->nombreProducto.' | '.$producto->color.'
+                </p>
+            </td>';
+    
+            if (($index + 1) % 3 === 0 || $index + 1 === $totalProductos) {
+                $html .= '</tr>';
+            }
+        }
+    
+        $html .= '</table>';
+    
+        $html .= '</td>
+    </tr>
+    
+    <!-- FOOTER -->
+    <tr>
+    <td style="background:#354449; color:#ffffff; text-align:center; padding:20px; font-size:14px;">
+    <div>2618 NW 112th Ave. Miami, FL, 33172, EE.UU.</div>
+    <div>+1 (305) 513-9177 / +1 (305) 513-9191</div>
+    <div>Whatsapp servicio al cliente: +1(305) 496-5187</div>
+    <div>Ventas: +1 (305) 316-8267</div>
+    </td>
+    </tr>
+    
+    <tr>
+    <td style="text-align:center; padding:10px;">
+    <a href="{{email.unsubscribe_link}}">Unsubscribe</a>
+    </td>
+    </tr>
+    
+    </table>
+    </body>
+    </html>';
+    
+        return $html;
+    }
+
     public function templateNuevosArribosPorMarca($marcaId = null){
 
         $urlImagenes = env('URL_IMAGENES_PRODUCTOS');

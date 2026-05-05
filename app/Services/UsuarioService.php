@@ -75,10 +75,17 @@ class UsuarioService
         if (!$usuario) {
             return response()->json(['error' => 'Usuario not found'], Response::HTTP_NOT_FOUND);
         }
-
-        $usuario->update($request->all());
+        
+        $data = $request->all();
+        
+        // 👉 Solo si viene la clave, la hasheás
+        if (isset($data['clave'])) {
+            $data['clave'] = Hash::make($data['clave']);
+        }
+        
+        $usuario->update($data);
         $usuario->refresh();
-
+        
         return response()->json($usuario, Response::HTTP_OK);
     }
 
