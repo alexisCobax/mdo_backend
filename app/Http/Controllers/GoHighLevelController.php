@@ -707,7 +707,7 @@ ORDER BY productos.precio ASC;";
         $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
 
         // Si no se proporciona marcaId, usar 359 por defecto (comportamiento anterior)
-        $marcaId = $marcaId ?? 359;
+        $marcaId = $marcaId ?? 895;
         
         // \Illuminate\Support\Facades\Log::info('GoHighLevel: Generando template para marca', [
         //     'marca_id' => $marcaId
@@ -838,6 +838,213 @@ ORDER BY productos.precio ASC;";
                 <td>
                     <a href="https://mayoristasdeopticas.com/tienda/" target="_blank">
                         <img src="https://phpstack-1091339-3819555.cloudwaysapps.com/storage/newArrivalsBanner.png"
+                            alt="New Arrivals">
+                    </a>
+                </td>
+            </tr>
+
+            <!-- Productos -->
+            <tr>
+                <td>';
+
+        $html .= '<table style="width:100%; border-collapse:collapse;">'; // Inicia la tabla principal
+        $totalProductos = count($productos);
+
+        // Estilos CSS inline
+        $styleRow = 'width: 100%; display: table-row;';
+        $styleColumn = 'width: 33.33%; display: table-cell; padding: 10px; text-align: center;';
+        $styleImg = 'max-width: 100%; height: auto; display: block; margin: 0 auto;';
+        $styleTitle = 'font-size: 16px; font-weight: bold; color: #333; text-decoration: none; margin-top: 8px;';
+        $styleDescription = 'font-size: 14px; color: #666; margin: 5px 0; text-align: center;';
+
+        foreach ($productos as $index => $producto) {
+            if ($index % 3 === 0) {
+                $html .= '<tr style="' . $styleRow . '">';
+            }
+
+            $html .= '<td style="' . $styleColumn . '">
+                    <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '">
+                        <img src="' . $producto->imagen . '" alt="' . $producto->nombreProducto . '" style="' . $styleImg . '" width="120">
+                    </a>
+                    <br/>
+                    <a href="https://mayoristasdeopticas.com/tienda/producto.php?id=' . $producto->productoId . '" style="' . $styleTitle . '">
+                        ' . $producto->nombreMarca . '
+                    </a>
+                    <br/>
+                    <p style="' . $styleDescription . '">' . $producto->nombreProducto . ' | ' . $producto->color . '</p>
+                  </td>';
+
+            if (($index + 1) % 3 === 0 || $index + 1 === $totalProductos) {
+                $html .= '</tr>';
+            }
+        }
+
+        $html .= '</table>'; // Cierra la tabla principal
+
+        $html .= '</td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+                <td class="footer">
+                    <div>2618 NW 112th Ave. Miami, FL, 33172, EE.UU.</div>
+                    <div>+1 (305) 513-9177 / +1 (305) 513-9191</div>
+                    <div>Whatsapp servicio al cliente: +1(305) 496-5187</div>
+                    <div>Ventas: +1 (305) 316-8267</div>
+                </td>
+            </tr>
+                    <tr>
+                <td style="text-align:center">
+                   <a href="{{email.unsubscribe_link}}">Unsubscribe</a>
+                </td>
+            </tr>
+        </table>
+
+    </body>
+
+    </html>';
+
+    return $html;
+
+    }
+
+    public function templateNuevosArribosPorMarca15OffMitadAnio($marcaId = null){
+
+        $urlImagenes = env('URL_IMAGENES_PRODUCTOS');
+
+        // Si no se proporciona marcaId, usar 359 por defecto (comportamiento anterior)
+        $marcaId = $marcaId ?? 359;
+        
+        // \Illuminate\Support\Facades\Log::info('GoHighLevel: Generando template para marca', [
+        //     'marca_id' => $marcaId
+        // ]);
+
+                $SQL = "SELECT *
+                    FROM (
+                        SELECT
+                            producto.id AS productoId,
+                            producto.color,
+                            producto.nombre AS nombreProducto,
+                            marcaproducto.nombre AS nombreMarca,
+                            producto.precio,
+                            producto.fechaAlta,
+                            COALESCE(
+                                fotoproducto.url,
+                                CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+                            ) AS imagen
+                        FROM producto
+                        LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+                        LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+                        WHERE producto.stock > 0
+                        AND producto.marca = ?
+                        ORDER BY producto.id DESC
+                        LIMIT 21
+                    ) AS ultimos
+                    ORDER BY ultimos.precio ASC";
+
+                    // $SQL = "SELECT *
+                    // FROM (
+                    //     SELECT
+                    //         producto.id AS productoId,
+                    //         producto.color,
+                    //         producto.nombre AS nombreProducto,
+                    //         marcaproducto.nombre AS nombreMarca,
+                    //         producto.precio,
+                    //         producto.fechaAlta,
+                    //         COALESCE(
+                    //             fotoproducto.url,
+                    //             CONCAT('$urlImagenes', producto.imagenPrincipal, '.jpg')
+                    //         ) AS imagen
+                    //     FROM producto
+                    //     LEFT JOIN marcaproducto ON producto.marca = marcaproducto.id
+                    //     LEFT JOIN fotoproducto ON fotoproducto.id = producto.imagenPrincipal
+                    //     WHERE producto.proveedorExterno='nywd'
+                    //     AND producto.stock > 0
+                    //     AND marcaproducto.nombre LIKE '%GUESS%'
+                    //     ORDER BY producto.fechaAlta DESC
+                    //     LIMIT 100
+                    // ) AS ultimos
+                    // ORDER BY ultimos.precio ASC;";
+
+                    $productos = DB::select($SQL, [$marcaId]);
+
+        $html = '<!DOCTYPE html>
+    <html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>New Arrivals</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+            .container {
+                max-width: 650px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                padding: 10px;
+            }
+
+            .product-item {
+                width: calc(33.333% - 10px); /* 3 columnas con espacio entre ellas */
+                box-sizing: border-box;
+                text-align: center;
+                vertical-align: top;
+            }
+
+            .product-item img {
+                width: 120px;
+                height: auto;
+                border: 0;
+                display: block;
+                margin: 0 auto;
+            }
+
+            .product-title {
+                font-size: 14px;
+                font-weight: bold;
+                color: #607C8B;
+                text-decoration: none;
+            }
+
+            .product-description {
+                font-size: 12px;
+                color: #6C757B;
+            }
+
+            .footer {
+                background-color: #354449;
+                color: #ffffff;
+                text-align: center;
+                padding: 20px;
+                font-size: 14px;
+            }
+
+            .footer div {
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <table class="container" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 650px;">
+            <!-- Header -->
+            <tr>
+                <td>
+                    <img src="https://mayoristasdeopticas.com/tienda/assets/imgs/logos/logo-ngo.png" alt="MDO"
+                        style="width: 100%; height: auto;">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://mayoristasdeopticas.com/tienda/" target="_blank">
+                        <img src="https://phpstack-1091339-3819555.cloudwaysapps.com/storage/15desc.jpeg"
+                        width="750" style="display:block; width:100%; max-width:750px; height:auto; border:0;"
                             alt="New Arrivals">
                     </a>
                 </td>

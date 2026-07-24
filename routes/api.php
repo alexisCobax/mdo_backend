@@ -526,7 +526,7 @@ Route::middleware(['auth:sanctum', 'permission:1'])->group(function () {
     Route::post('/pagostarjetum', [PagostarjetumController::class, 'create']);
     Route::put('/pagostarjetum/{id}', [PagostarjetumController::class, 'update']);
     Route::delete('/pagostarjetum/{id}', [PagostarjetumController::class, 'delete']);
-    Route::post('/web/pagar/directo', [PagoDirectoWebController::class, 'create']); 
+    
     /* Pais Routes **/
 
     Route::get('/pais', [PaisController::class, 'index']);
@@ -841,6 +841,8 @@ Route::middleware(['auth:sanctum', 'permission:2'])->group(function () {
     Route::post('/web/consulta-agente', [GoHighLevelController::class, 'enviarConsultaAgente']);
 
     Route::post('/web/me', [AuthWebController::class, 'me']);
+/* Pago Directo **/
+    Route::post('/web/pagar/directo', [PagoDirectoWebController::class, 'create']); 
 });
 
 /* Producto ESTO DEBE IR SIN TOKEN**/
@@ -969,6 +971,7 @@ Route::get('/reportes/recibos/list', [ReportesController::class, 'recibosList'])
 
 Route::get('/gohighlevel/nuevosarribos', [GoHighLevelController::class, 'enviarNuevosArribos']);
 Route::get('/gohighlevel/nuevosarribosaccesorios', [GoHighLevelController::class, 'templateNuevosArribosAccesorios']);
+Route::get('/gohighlevel/nuevosarribos15offmitadanio', [GoHighLevelController::class, 'templateNuevosArribosPorMarca15OffMitadAnio']);
 
 Route::get('/gohighlevel/nuevosarribospormarca', [GoHighLevelController::class, 'templateNuevosArribosPorMarca']);
 

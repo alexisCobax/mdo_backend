@@ -11,44 +11,73 @@ use League\Fractal\TransformerAbstract;
 use Illuminate\Support\Facades\Log;
 
 class FindByIdTransformer extends TransformerAbstract
-{
+        {private function reducirImagen($imageData, $maxWidth = 300, $quality = 70)
+        {
+            $img = @imagecreatefromstring($imageData);
+            if (!$img) {
+                return null;
+            }
+
+            $width  = imagesx($img);
+            $height = imagesy($img);
+
+            // Si ya es chica, no tocarla
+            if ($width <= $maxWidth) {
+                return $imageData;
+            }
+
+            $newWidth  = $maxWidth;
+            $newHeight = intval($height * ($maxWidth / $width));
+
+            $tmp = imagecreatetruecolor($newWidth, $newHeight);
+            imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+            ob_start();
+            imagejpeg($tmp, null, $quality); // fuerza JPEG comprimido
+            $output = ob_get_clean();
+
+            imagedestroy($img);
+            imagedestroy($tmp);
+
+            return $output;
+        }
     public function transform($pedido)
     {
         $tiempoInicio = microtime(true);
-
+        
         // Reducir memory limit ya que optimizamos las queries
-        ini_set('memory_limit', '512M');
-
+        ini_set('memory_limit', '1024M'); 
+        
         $pedidoDetalle = [];
         $cliente = Cliente::find($pedido->cliente);
-
+        
         // ✅ OPTIMIZACIÓN: Usar where en lugar de orWhere
-        $tiempoQuery = microtime(true);
+        //$tiempoQuery = microtime(true);
         $detalle = Pedidodetalle::with('productos.colores')
             ->where('pedido', $pedido->id)
             ->get();
         $detalleNn = Pedidodetallenn::where('pedido', $pedido->id)->get();
-        $this->logTiempo('Transformer: Queries de detalles', $tiempoQuery);
+        //$this->logTiempo('Transformer: Queries de detalles', $tiempoQuery);
 
         // ✅ OPTIMIZACIÓN: Cargar todas las imágenes en una sola query (elimina N+1)
-        $tiempoImagenes = microtime(true);
+        //$tiempoImagenes = microtime(true);
         $imagenIds = $detalle->pluck('productos.imagenPrincipal')
             ->filter()
             ->unique()
             ->values()
             ->toArray();
-
+        
         $imagenes = collect();
         if (!empty($imagenIds)) {
             $imagenes = Fotoproducto::whereIn('id', $imagenIds)->get()->keyBy('id');
         }
-        $this->logTiempo('Transformer: Query de imágenes', $tiempoImagenes);
+        //$this->logTiempo('Transformer: Query de imágenes', $tiempoImagenes);
 
         $cantidadTotal = 0;
         $subtotal = 0;
 
         // ✅ OPTIMIZACIÓN: Descargar todas las imágenes en paralelo antes del loop
-        $tiempoDescarga = microtime(true);
+        //$tiempoDescarga = microtime(true);
         $urlsImagenes = [];
         foreach ($detalle as $d) {
             $imagenPrincipal = null;
@@ -57,17 +86,17 @@ class FindByIdTransformer extends TransformerAbstract
             }
 
             if ($imagenPrincipal && isset($imagenPrincipal->url)) {
-                $urlsImagenes[] = $imagenPrincipal->url;
+                $urlsImagenes[] = env('URL_IMAGENES_PRODUCTOS') . $imagenPrincipal->nombre;
             } elseif ($d->productos && $d->productos->imagenPrincipal) {
                 $urlsImagenes[] = env('URL_IMAGENES_PRODUCTOS') . $d->productos->imagenPrincipal . '.jpg';
             } else {
                 $urlsImagenes[] = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
             }
         }
-
+        
         // Descargar todas las imágenes en paralelo usando multi-curl
         $imagenesBase64 = $this->descargarImagenesEnParalelo($urlsImagenes);
-        $this->logTiempo('Transformer: Descarga de imágenes en paralelo', $tiempoDescarga);
+        //$this->logTiempo('Transformer: Descarga de imágenes en paralelo', $tiempoDescarga);
 
         $tiempoLoop = microtime(true);
         $indiceImagen = 0;
@@ -92,18 +121,18 @@ class FindByIdTransformer extends TransformerAbstract
                 'imagenPrincipal' => optional($d->productos)->imagenPrincipal,
             ];
         }
-        $this->logTiempo('Transformer: Loop de procesamiento', $tiempoLoop);
+        //$this->logTiempo('Transformer: Loop de procesamiento', $tiempoLoop);
 
         $tiempoSort = microtime(true);
         usort($pedidoDetalle, function ($a, $b) {
             return strcmp($a['nombreProducto'], $b['nombreProducto']);
         });
-        $this->logTiempo('Transformer: Ordenamiento', $tiempoSort);
+        //$this->logTiempo('Transformer: Ordenamiento', $tiempoSort);
 
         $tiempoDetalleNn = microtime(true);
         $imagenDefault = env('URL_IMAGENES_PRODUCTOS') . '0.jpg';
         $imagenDefaultBase64 = $this->convertirImagenABase64($imagenDefault);
-
+        
         foreach ($detalleNn as $dNn) {
             $cantidadTotal += $dNn->cantidad;
             $subtotal += $dNn->precio * $dNn->cantidad;
@@ -121,7 +150,7 @@ class FindByIdTransformer extends TransformerAbstract
                 'imagenPrincipal' => 0,
             ];
         }
-        $this->logTiempo('Transformer: Procesamiento detalle NN', $tiempoDetalleNn);
+        //$this->logTiempo('Transformer: Procesamiento detalle NN', $tiempoDetalleNn);
 
         $descuentoPorcentual = $subtotal * ($pedido->DescuentoPorcentual / 100);
         $totalDescuentos = $descuentoPorcentual + $pedido->DescuentoPromociones + $pedido->DescuentoNeto;
@@ -149,24 +178,21 @@ class FindByIdTransformer extends TransformerAbstract
                 'descuentoPorcentualTotal' => number_format($descuentoPorcentual, 2),
                 'descuentoPromociones' => number_format($pedido->DescuentoPromociones, 2),
                 'descuentoNeto' => number_format($pedido->DescuentoNeto, 2),
-                //'total' => number_format($pedido->total - $pedido->TotalEnvio, 2),
-                'total' => number_format($subtotal-$totalDescuentos, 2),
+                'total' => number_format($pedido->total - $pedido->TotalEnvio, 2),
                 'totalEnvio' => number_format($totalEnvio, 2),
-                //'subTotalConEnvio' => number_format($pedido->total, 2),
-                'subTotalConEnvio' => number_format($subtotal-$totalDescuentos+$totalEnvio, 2),
+                'subTotalConEnvio' => number_format($pedido->total, 2),
                 'creditoDisponible' => number_format($cliente->ctacte ?? 0, 2),
-                //'totalAabonar' => number_format($pedido->total - ($cliente->ctacte ?? 0), 2),
-                'totalAabonar' => number_format($subtotal-$totalDescuentos+$totalEnvio - ($cliente->ctacte ?? 0), 2),
+                'totalAabonar' => number_format($pedido->total - ($cliente->ctacte ?? 0), 2),
                 'cantidad' => $cantidadTotal,
             ],
         ];
-
-        $this->logTiempo('Transformer: TOTAL transformación', $tiempoInicio);
+        
+        //$this->logTiempo('Transformer: TOTAL transformación', $tiempoInicio);
     }
 
     /**
      * Descarga múltiples imágenes en paralelo usando multi-curl
-     *
+     * 
      * @param array $urls Array de URLs de imágenes
      * @return array Array de imágenes en formato base64
      */
@@ -190,7 +216,7 @@ class FindByIdTransformer extends TransformerAbstract
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
-
+            
             curl_multi_add_handle($multiHandle, $ch);
             $curlHandles[$index] = $ch;
             $resultados[$index] = ''; // Inicializar con string vacío
@@ -218,11 +244,15 @@ class FindByIdTransformer extends TransformerAbstract
                         $mimeType = 'image/jpeg';
                     }
 
-                    $base64 = base64_encode($imageData);
-                    $resultados[$index] = 'data:' . $mimeType . ';base64,' . $base64;
+                    $imagenReducida = $this->reducirImagen($imageData, 300, 70);
+
+                    if ($imagenReducida) {
+                        $base64 = base64_encode($imagenReducida);
+                        $resultados[$index] = 'data:image/jpeg;base64,' . $base64;
+                    }
                 }
             }
-
+            
             curl_multi_remove_handle($multiHandle, $ch);
             curl_close($ch);
         }
@@ -234,10 +264,10 @@ class FindByIdTransformer extends TransformerAbstract
 
     /**
      * Verifica si el logging de tiempos está habilitado
-     *
+     * 
      * Se puede activar/desactivar mediante la variable de entorno ENABLE_PAGO_WEB_TIME_LOGS
      * o mediante config('pago_web.enable_time_logs', false)
-     *
+     * 
      * @return bool true si los logs están habilitados, false en caso contrario
      */
     private function isTimeLoggingEnabled()
@@ -247,17 +277,17 @@ class FindByIdTransformer extends TransformerAbstract
         if ($envValue !== null) {
             return filter_var($envValue, FILTER_VALIDATE_BOOLEAN);
         }
-
+        
         return config('pago_web.enable_time_logs', false);
     }
 
     /**
      * Registra tiempo de una operación en el log
-     *
+     * 
      * NOTA: Este logging se puede activar/desactivar mediante:
      * - Variable de entorno: ENABLE_PAGO_WEB_TIME_LOGS=true
      * - Configuración: config('pago_web.enable_time_logs', true)
-     *
+     * 
      * Por defecto está DESACTIVADO para no impactar el rendimiento en producción.
      * Activar solo cuando se necesite analizar tiempos de ejecución.
      */
@@ -267,25 +297,25 @@ class FindByIdTransformer extends TransformerAbstract
         if (!$this->isTimeLoggingEnabled()) {
             return;
         }
-
+        
         $duracion = (microtime(true) - $tiempoInicio) * 1000; // en ms
         $fecha = date('Y-m-d');
         $logFile = storage_path('logs/pago_web_tiempos_' . $fecha . '.txt');
         $timestamp = date('H:i:s');
-
+        
         $linea = sprintf(
             "[%s] %s | Duración: %.2fms\n",
             $timestamp,
             $operacion,
             $duracion
         );
-
+        
         file_put_contents($logFile, $linea, FILE_APPEND | LOCK_EX);
     }
 
     /**
      * Convierte una imagen desde URL a Base64 para evitar descargas durante la generación del PDF
-     *
+     * 
      * @param string $url URL de la imagen
      * @return string Imagen en formato base64 o string vacío si falla
      */
@@ -311,7 +341,7 @@ class FindByIdTransformer extends TransformerAbstract
 
             // Intentar descargar la imagen
             $imageData = @file_get_contents($url, false, $context);
-
+            
             if ($imageData === false) {
                 // Si falla, retornar string vacío (el PDF mostrará imagen rota pero no bloqueará)
                 return '';

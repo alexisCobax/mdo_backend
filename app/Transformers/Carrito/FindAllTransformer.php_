@@ -28,44 +28,6 @@ class FindAllTransformer extends TransformerAbstract
 
         $carrito = Carrito::where('id', $id)->first();
 
-        /* ============================================================
-         * TEMPORAL - PROMO CUPÓN "DESC16062026" (válida solo 2026-06-16)
-         * ------------------------------------------------------------
-         * Auto-asigna el cupón a todo carrito que tenga al menos un
-         * producto de la marca 359. Se reevalúa en cada render, así que
-         * si se quita el producto, también se quita el cupón.
-         *
-         * PARA REVERTIR (a partir del 2026-06-18): borrar este bloque
-         * completo entre las marcas TEMPORAL. Nada más depende de él.
-         * ============================================================ */
-        // $CUPON_PROMO_ID = 29;  // id en tabla cupondescuento del cupón DESC16062026
-        // $MARCA_PROMO_ID = 359; // id de marcaproducto que dispara la promo
-
-        // $tieneMarcaPromo = Carritodetalle::where('carritodetalle.carrito', $id)
-        //     ->join('producto', 'producto.id', '=', 'carritodetalle.producto')
-        //     ->where('producto.marca', $MARCA_PROMO_ID)
-        //     ->exists();
-
-        // if ($tieneMarcaPromo && $carrito->cupon != $CUPON_PROMO_ID) {
-        //     $carrito->cupon = $CUPON_PROMO_ID;
-        //     $carrito->save();
-        // } elseif (!$tieneMarcaPromo && $carrito->cupon == $CUPON_PROMO_ID) {
-        //     $carrito->cupon = 0; // se quitó el producto de marca 359 -> se quita el cupón
-        //     $carrito->save();
-        // }
-        /* ===================== FIN TEMPORAL ========================= */
-
-        /* ============================================================
-        * TEMPORAL - Asignar cupón automáticamente a todos los carritos
-        * ============================================================ */
-        // $CUPON_PROMO_ID = 30;
-
-        // if ($carrito->cupon != $CUPON_PROMO_ID) {
-        //     $carrito->cupon = $CUPON_PROMO_ID;
-        //     $carrito->save();
-        // }
-        /* ===================== FIN TEMPORAL ========================= */
-
         $cupon = Cupondescuento::where('id', $carrito->cupon)
         ->whereDate('inicio', '<=', date('Y-m-d'))
         ->whereDate('vencimiento', '>=', date('Y-m-d'))

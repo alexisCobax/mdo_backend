@@ -895,9 +895,24 @@ class PagoWebService
             Producto::where('id', $productoId)->decrement('stock', $cantidadDescuento);
         }
 
+        /** HICIMOS ESTO POR QUE NO ESTABAMOS GUARDANDO EL SUBTOTAL DEL PEDIDO, SOLO EL TOTAL SI FUNCIONA VOLARLO! */
+
         // Actualizar total del pedido
         $pedido->total = $totalPedido;
         $pedido->save();
+
+        try {
+            $pedido->total = $totalPedido+$pedido->totalEnvio-$pedido->descuentoNeto-($pedido->descuentoPorcentual*$totalPedido/100);
+            $pedido->save();
+        } catch (\Exception $e) {
+            Log::error('PagoWebService::saveDetallePedidoOptimizado - Error al actualizar total del pedido', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'pedido_id' => $pedido->id
+            ]);
+        }
+
+        /** ---------------------------------------------------------------------------------------------------- **/
 
         Log::info('PagoWebService::saveDetallePedidoOptimizado - Detalles guardados', [
             'pedido_id' => $pedido->id,
